@@ -1,0 +1,51 @@
+{
+  "name": "linagora.esn.ticketing",
+  "version": "0.0.1",
+  "description": "linagora.esn.ticketing module",
+  "main": "index.js",
+  "devDependencies": {
+    "chai": "3.5.0",
+    "chai-shallow-deep-equal": "1.4.0",
+    "grunt": "0.4.5",
+    "grunt-eslint": "19.0.0",
+    "grunt-contrib-jshint": "1.0.0",
+    "grunt-karma": "2.0.0",
+    "grunt-lint-pattern": "0.1.4",
+    "grunt-mocha-cli": "2.1.0",
+    "eslint": "3.5.0",
+    "eslint-config-airbnb": "11.1.0",
+    "eslint-plugin-import": "1.14.0",
+    "eslint-plugin-jsx-a11y": "2.2.1",
+    "eslint-plugin-react": "6.2.0",
+    "karma": "1.3.0",
+    "karma-chrome-launcher": "2.0.0",
+    "karma-coverage": "1.1.1",
+    "karma-firefox-launcher": "1.0.0",
+    "karma-mocha": "1.1.1",
+    "karma-ng-jade2module-preprocessor": "git+https://ci.open-paas.org/stash/scm/or/karma-ng-jade2module-preprocessor.git",
+    "karma-phantomjs-launcher": "1.0.2",
+    "karma-spec-reporter": "0.0.26",
+    "mocha": "3.0.2",
+    "mockery": "1.7.0",
+    "phantomjs": "1.9.18",
+    "socket.io": "1.2.1"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "postinstall": "./node_modules/bower/bin/bower install --allow-root"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://ci.open-paas.org/stash/scm/om/linagora.esn.ticketing.git"
+  },
+  "author": "Linagora R&D",
+  "license": "AGPLv3",
+  "dependencies": {
+    "awesome-module": "1.0.0",
+    "bower": "1.7.9",
+    "express": "4.14.0",
+    "i18n": "0.8.3",
+    "glob": "^7.0.3",
+    "glob-all": "^3.0.3"
+  }
+}
