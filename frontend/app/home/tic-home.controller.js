@@ -4,14 +4,14 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-         .controller('ticController', ticController);
+         .controller('ticHomeController', ticHomeController);
 
-  ticController.$inject = [
+  ticHomeController.$inject = [
     '$scope',
     'ticGetHome'
   ];
 
-   function ticController(
+   function ticHomeController(
      $scope,
      ticGetHome) {
       ticGetHome.then(function(message) {
