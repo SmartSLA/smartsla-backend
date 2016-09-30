@@ -10,13 +10,15 @@ const FRONTEND_JS_PATH = __dirname + '/frontend/app/';
 const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
   dependencies: [
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.logger', 'logger'),
-    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.wrapper', 'webserver-wrapper')
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.wrapper', 'webserver-wrapper'),
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.db', 'db'),
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.middleware.authorization', 'authorizationMW')
   ],
 
   states: {
     lib: function(dependencies, callback) {
       const ticketinglib = require('./backend/lib')(dependencies);
-      const ticketing = require('./backend/webserver/api/ticketing')(dependencies);
+      const ticketing = require('./backend/webserver/api')(dependencies, ticketinglib);
 
       const lib = {
         api: {
@@ -30,9 +32,9 @@ const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
 
     deploy: function(dependencies, callback) {
       // Register the webapp
-      const app = require('./backend/webserver')(dependencies, this);
+      const app = require('./backend/webserver/application')(dependencies, this);
       // Register every exposed endpoints
-      app.use('/', this.api.ticketing);
+      app.use('/api', this.api.ticketing);
 
       const webserverWrapper = dependencies('webserver-wrapper');
       // Register every exposed frontend scripts
