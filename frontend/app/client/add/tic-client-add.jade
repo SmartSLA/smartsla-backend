@@ -1,0 +1,18 @@
+sub-header
+  tic-client-add-subheader(create-client="ctrl.createClient(createClientForm)", cancel="ctrl.cancel()")
+
+.tic-client-add
+  form.tic-client-add-form(name='createClientForm', ng-submit='ctrl.createClient(createClientForm)')
+    input.form-control.floating-label(type='text', placeholder='#{__("Name")}', ng-model='client.name', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("Street")}', ng-model='client.address.street', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("Zip")}', ng-model='client.address.zip', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("City")}', ng-model='client.address.city', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("Country")}', ng-model='client.address.country', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("Access Code")}', ng-model='client.access_code', required)
+    input.form-control.floating-label(type='text', placeholder='#{__("Access Code Hint")}', ng-model='client.access_code_hint', required)
+    .tic-client-logo(modal-launcher, template="/linagora.esn.ticketing/app/client/add/tic-client-add-logo-modal", ng-click="showModal()")
+      a
+        img(ng-src="{{ctrl.getClientLogo()}}", alt='#{__("Logo")}')
+      a.tic-client-logo-edit
+        i.mdi.mdi-camera
+        span #{__("Update Logo")}

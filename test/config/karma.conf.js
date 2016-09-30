@@ -14,6 +14,8 @@ module.exports = function(config) {
       'frontend/components/angular-component/dist/angular-component.min.js',
       'frontend/components/restangular/dist/restangular.min.js',
       'frontend/components/lodash/dist/lodash.min.js',
+      'frontend/components/sinon-chai/lib/sinon-chai.js',
+      'frontend/components/sinon-1.15.4/index.js',
       'frontend/app/tic.app.js',
       'frontend/app/**/*.js',
       'frontend/app/**/*.jade',

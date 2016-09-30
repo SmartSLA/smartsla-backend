@@ -1,0 +1,85 @@
+.tic-client-add {
+  padding: 30px 0px;
+
+  .tic-client-add-form {
+    .flex-column;
+    .flex-wrap;
+    width: 100%;
+
+    background: @m-white;
+    box-shadow: 0 1px 1px @m-black-fade-15;
+
+    .tic-client-logo {
+      .align-self(center);
+
+      display: inline-block;
+      position: relative;
+
+      &:hover > .tic-client-logo-edit {
+        background: @m-black-fade-80;
+      }
+
+      img {
+        .clickable;
+
+        margin-top: 20px;
+        width: 300px;
+        height: 300px;
+        border-radius: 3px;
+      }
+
+      .tic-client-logo-edit {
+        .clickable;
+
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: @m-black-fade-20;
+        text-align: center;
+        border-radius: 0 0 3px 3px;
+        padding: 10px 10px 11px;
+        margin-top: 20px;
+
+        &:hover {
+          background: @m-black-fade-80;
+        }
+
+        i {
+          font-size: 18px;
+          vertical-align: middle;
+          margin-top: -3px;
+        }
+
+      }
+    }
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  .tic-client-add {
+    margin-top: 15px;
+    padding-top: 10px;
+
+    .tic-client-add-form {
+      height: 400px;
+      padding: 15px;
+
+      .form-control {
+        margin: 5px;
+        width: 40%;
+      }
+
+      .tic-client-logo {
+        max-height: 512px;
+        max-width: 512px;
+        margin-right: 15px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
