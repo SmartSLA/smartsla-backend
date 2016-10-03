@@ -45,7 +45,7 @@ const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
         return filepath.replace(FRONTEND_JS_PATH, '');
       });
       webserverWrapper.injectAngularAppModules(linagoraEsnTicketing, jsFiles, [linagoraEsnTicketing], ['esn']);
-      const lessFile = path.resolve(__dirname, './frontend/app/ticketing/tic-home.less');
+      const lessFile = path.resolve(__dirname, './frontend/app/ticketing/ticketing.less');
       webserverWrapper.injectLess(linagoraEsnTicketing, [lessFile], 'esn');
       webserverWrapper.addApp(linagoraEsnTicketing, app);
 
