@@ -27,8 +27,12 @@
     "karma-spec-reporter": "0.0.26",
     "mocha": "3.0.2",
     "mockery": "1.7.0",
-    "phantomjs": "1.9.18",
-    "socket.io": "1.2.1"
+    "phantomjs-prebuilt": "2.1.12",
+    "socket.io": "1.2.1",
+    "eslint": "3.6.0",
+    "eslint-config-airbnb-base": "8.0.0",
+    "eslint-plugin-import": "1.16.0",
+    "eslint-config-linagora-esn": "1.0.0"
   },
   "scripts": {
     "test": "grunt test",
