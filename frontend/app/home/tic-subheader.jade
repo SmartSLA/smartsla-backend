@@ -1,4 +1,9 @@
-extends ../layout/tic-subheader
+extends /modules/subheader/responsive-subheader
 
-block title
-  | #{__('Ticketing Module')}
+block left
+  a.button.hidden-md(contextual-sidebar, data-content-template="/linagora.esn.ticketing/app/home/tic-sidebar.html")
+    i.mdi.mdi-menu
+  span.tic-subheader-content
+    | #{__('Ticketing Module')}
+
+block right

@@ -15,9 +15,6 @@
             'main@ticketing': {
               templateUrl: '/linagora.esn.ticketing/app/home/tic-main.html'
             },
-            'subheader@ticketing': {
-              templateUrl: '/linagora.esn.ticketing/app/home/tic-subheader.html'
-            },
             'sidebar@ticketing': {
               templateUrl: '/linagora.esn.ticketing/app/home/tic-sidebar.html'
             }

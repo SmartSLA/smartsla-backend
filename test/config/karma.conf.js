@@ -49,7 +49,8 @@ module.exports = function(config) {
       jadeRenderConfig: {
         __: function(str) {
           return str;
-        }
+        },
+        basedir: require('path').resolve(__dirname, '../../node_modules/linagora-rse/frontend/views')
       },
       moduleName: 'jadeTemplates'
     }
