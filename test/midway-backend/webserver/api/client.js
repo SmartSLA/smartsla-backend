@@ -4,11 +4,9 @@ const request = require('supertest');
 const expect = require('chai').expect;
 const q = require('q');
 const _ = require('lodash');
-const redis = require('redis');
-const async = require('async');
 
 describe('The client API', function() {
-  let deps, mongoose, userId, user, app, redisClient;
+  let deps, mongoose, userId, user, app;
 
   function dependencies(name) {
     return deps[name];
@@ -19,7 +17,6 @@ describe('The client API', function() {
     mongoose.Promise = q.promise;
     mongoose.connect(this.testEnv.mongoUrl);
     userId = mongoose.Types.ObjectId();
-    redisClient = redis.createClient(this.testEnv.redisPort);
 
     deps = {
       logger: require('../../fixtures/logger'),
@@ -29,11 +26,6 @@ describe('The client API', function() {
       db: {
         mongo: {
           mongoose: mongoose
-        },
-        redis: {
-          getClient: function(callback) {
-            callback(null, redisClient);
-          }
         }
       },
       authorizationMW: {
@@ -61,7 +53,7 @@ describe('The client API', function() {
   });
 
   afterEach(function(done) {
-    async.parallel([this.helpers.mongo.dropDatabase, this.helpers.resetRedis], done);
+    this.helpers.mongo.dropDatabase(done);
   });
 
   describe('GET /api/clients', function() {
