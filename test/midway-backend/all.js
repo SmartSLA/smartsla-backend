@@ -57,7 +57,7 @@ before(function() {
   };
 
   this.helpers.resetRedis = function(callback) {
-    const redisClient = redis.createClient(testEnv.redisPort);
+    const redisClient = redis.createClient(testEnv.serversConfig.redis.port);
 
     return redisClient.flushall(callback);
   };
