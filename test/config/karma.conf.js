@@ -12,6 +12,8 @@ module.exports = function(config) {
       'frontend/components/angular-mocks/angular-mocks.js',
       'frontend/components/dynamic-directive/dist/dynamic-directive.min.js',
       'frontend/components/angular-component/dist/angular-component.min.js',
+      'frontend/components/restangular/dist/restangular.min.js',
+      'frontend/components/lodash/dist/lodash.min.js',
       'frontend/app/tic.app.js',
       'frontend/app/**/*.js',
       'frontend/app/**/*.jade',

@@ -40,9 +40,9 @@ const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
       // Register every exposed frontend scripts
       const jsFiles = glob.sync([
         FRONTEND_JS_PATH + 'tic.app.js',
-        FRONTEND_JS_PATH + 'tic.app.config.js',
-        FRONTEND_JS_PATH + 'tic.app.router.js',
-        FRONTEND_JS_PATH + '*/!(*spec).js'
+        FRONTEND_JS_PATH + '*.js',
+        FRONTEND_JS_PATH + '*/!(*spec).js',
+        FRONTEND_JS_PATH + '**/*/!(*spec).js'
       ]).map(function(filepath) {
         return filepath.replace(FRONTEND_JS_PATH, '');
       });
