@@ -4,11 +4,12 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddLogoController', ticClientAddLogoController);
 
-  function ticClientAddLogoController($scope, selectionService, fileUploadService) {
+  function ticClientAddLogoController($scope, selectionService, ticClientLogoService, fileUploadService) {
     var self = this;
 
     self.imageSelected = imageSelected;
     self.saveClientAvatar = saveClientAvatar;
+    self.getClientLogo = ticClientLogoService.getClientLogo;
 
     ////////////
 

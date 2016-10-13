@@ -5,7 +5,7 @@
         button.close(type="button", ng-click="$toggle()")
         h4.modal-title #{__('Choose the Logo')}
       .modal-body
-        avatar-picker(avatar-placeholder="{{client.logo || 'linagora.esn.ticketing/app/client/add/default_avatar.png'}}")
+        avatar-picker(avatar-placeholder="{{ ctrl.getClientLogo(client) }}")
       .modal-footer
         button.btn.btn-default(type="button", ng-click="ctrl.saveClientAvatar()", ng-disabled="ctrl.loading || !ctrl.imageSelected()") #{__('Save')}
         button.btn.btn-default(type="button", ng-click="$toggle()", ng-disabled="ctrl.loading") #{__('Cancel')}

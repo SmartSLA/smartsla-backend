@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientAddLogoController', function() {
 
-  var $rootscope, $scope, $controller, $window, selectionService, fileUploadService, addFileSpy;
+  var $rootscope, $scope, $q, $controller, $window, selectionService, fileUploadService, ticClientLogoService, addFileSpy;
 
   beforeEach(function() {
     addFileSpy = sinon.spy();
@@ -28,18 +28,27 @@ describe('the ticClientAddLogoController', function() {
       }
     };
 
+    ticClientLogoService = {
+      getClientLogo: sinon.spy(function() {
+        return $q.when();
+      })
+    };
+
     angular.mock.module('linagora.esn.ticketing', function($provide) {
       $provide.value('selectionService', selectionService);
       $provide.value('fileUploadService', fileUploadService);
+      $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$window_, _selectionService_, _fileUploadService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$window_, _$q_, _selectionService_, _fileUploadService_, _ticClientLogoService_) {
       $rootscope = _$rootScope_;
       $scope = $rootscope.$new();
       $controller = _$controller_;
       $window = _$window_;
+      $q = _$q_;
       selectionService = _selectionService_;
       fileUploadService = _fileUploadService_;
+      ticClientLogoService = _ticClientLogoService_;
     });
   });
 
@@ -115,6 +124,18 @@ describe('the ticClientAddLogoController', function() {
       expect($scope.modal.hide).to.have.been.called;
       expect(addFileSpy).to.have.been.called;
       expect($scope.client.logo).to.equal(imageAsBase64);
+    });
+  });
+
+  describe('the getClientLogo function', function() {
+
+    it('should call ticClientLogoService.getClientLogo method', function() {
+      var ctrl = initController();
+      var client = {};
+
+      ctrl.getClientLogo(client);
+
+      expect(ticClientLogoService.getClientLogo).to.have.been.calledWith(client);
     });
   });
 
