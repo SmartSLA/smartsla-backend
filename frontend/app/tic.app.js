@@ -3,7 +3,8 @@
 
   angular.module('linagora.esn.ticketing', [
     'ui.router',
-    'op.dynamicDirective'
+    'op.dynamicDirective',
+    'restangular'
   ]);
 
 })();
