@@ -18,7 +18,7 @@ module.exports = function(dependencies, lib) {
   }
 
   function getClient(req, res) {
-    res.status(200).json({client: req.client});
+    res.status(200).json(req.client);
   }
 
   function listClients(req, res) {

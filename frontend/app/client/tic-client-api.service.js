@@ -7,7 +7,8 @@
   function ticClientApiService(ticRestangular) {
     return {
       getClients: getClients,
-      createClient: createClient
+      createClient: createClient,
+      getClient: getClient
     };
 
     ////////////
@@ -18,6 +19,10 @@
 
     function createClient(client) {
       return ticRestangular.all('clients').post(client);
+    }
+
+    function getClient(clientId) {
+      return ticRestangular.all('clients').one(clientId).get();
     }
   }
 })();
