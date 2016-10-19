@@ -4,9 +4,9 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController($scope, $state, notificationFactory, ticClientApiService) {
+  function ticClientAddController($scope, $state, notificationFactory, ticClientApiService, ticClientLogoService) {
     this.createClient = createClient;
-    this.getClientLogo = getClientLogo;
+    this.getClientLogo = ticClientLogoService.getClientLogo;
     this.cancel = cancel;
     $scope.client = {};
 
@@ -41,10 +41,6 @@
         }, function(error) {
           notificationFactory.weakError('Error', 'Error ' + error.message);
         });
-    }
-
-    function getClientLogo() {
-      return ($scope.client && $scope.client.logo) || '/linagora.esn.ticketing/app/client/add/default_avatar.png';
     }
 
     function cancel() {
