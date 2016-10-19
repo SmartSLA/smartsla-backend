@@ -19,4 +19,20 @@ describe('The ticClientApi service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('the createClient function', function() {
+    var client;
+
+    beforeEach(function() {
+      client = {
+        name: 'Test'
+      };
+    });
+
+    it('should send a request to /linagora.esn.ticketing/api/clients', function() {
+      $httpBackend.expectPOST('/linagora.esn.ticketing/api/clients', client).respond(200, []);
+      ticClientApiService.createClient(client);
+      $httpBackend.flush();
+    });
+  });
 });

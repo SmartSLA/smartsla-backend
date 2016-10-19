@@ -6,13 +6,18 @@
 
   function ticClientApiService(ticRestangular) {
     return {
-      getClients: getClients
+      getClients: getClients,
+      createClient: createClient
     };
 
     ////////////
 
     function getClients() {
       ticRestangular.all('clients').getList();
+    }
+
+    function createClient(client) {
+      return ticRestangular.all('clients').post(client);
     }
   }
 })();

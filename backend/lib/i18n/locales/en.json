@@ -1,3 +1,19 @@
 {
-  "My module": "My module"
+  "My module": "My module",
+  "Name": "Name",
+  "Street": "Street",
+  "Zip": "Zip",
+  "City": "City",
+  "Country": "Country",
+  "Inactive": "Inactive",
+  "Access Code": "Access Code",
+  "Access Code Hint": "Access Code Hint",
+  "Logo": "Logo",
+  "Update Logo": "Update Logo",
+  "Choose the Logo": "Choose the Logo",
+  "Create": "Create",
+  "Save": "Save",
+  "Cancel": "Cancel",
+  "Client Created": "Client Created",
+  "Error": "Error"
 }

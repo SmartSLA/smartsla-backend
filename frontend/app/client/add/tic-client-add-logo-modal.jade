@@ -1,0 +1,11 @@
+.modal(tabindex="-1", role="dialog", ng-controller="ticClientAddLogoController as ctrl")
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type="button", ng-click="$toggle()")
+        h4.modal-title #{__('Choose the Logo')}
+      .modal-body
+        avatar-picker(avatar-placeholder="{{client.logo || 'linagora.esn.ticketing/app/client/add/default_avatar.png'}}")
+      .modal-footer
+        button.btn.btn-default(type="button", ng-click="ctrl.saveClientAvatar()", ng-disabled="ctrl.loading || !ctrl.imageSelected()") #{__('Save')}
+        button.btn.btn-default(type="button", ng-click="$toggle()", ng-disabled="ctrl.loading") #{__('Cancel')}
