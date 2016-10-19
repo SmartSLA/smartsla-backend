@@ -1,0 +1,11 @@
+extends /modules/subheader/responsive-subheader
+
+block left
+  a(href='', ng-click= "ctrl.createClient()")
+    i.mdi.mdi-check
+    | #{__('Create')}
+
+block right
+  a(href='', ng-click='ctrl.cancel()')
+    i.mdi.mdi-close
+    | #{__('Cancel')}

@@ -11,7 +11,7 @@ module.exports = function(dependencies) {
       required: true
     },
     address: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
       required: true
     },
     access_code: {
