@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientAddController', function() {
 
-  var $rootScope, $scope, $controller, $q, $state, notificationFactory, ticClientApiService;
+  var $rootScope, $scope, $controller, $q, $state, notificationFactory, ticClientApiService, ticClientLogoService;
 
   beforeEach(function() {
     $state = {
@@ -25,13 +25,18 @@ describe('the ticClientAddController', function() {
       weakInfo: sinon.spy()
     };
 
+    ticClientLogoService = {
+      getClientLogo: angular.noop
+    };
+
     angular.mock.module('linagora.esn.ticketing', function($provide) {
       $provide.value('ticClientApiService', ticClientApiService);
       $provide.value('notificationFactory', notificationFactory);
+      $provide.value('ticClientLogoService', ticClientLogoService);
       $provide.value('$state', $state);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$state_, _ticClientApiService_, _notificationFactory_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$state_, _ticClientApiService_, _notificationFactory_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
@@ -39,6 +44,7 @@ describe('the ticClientAddController', function() {
       $state = _$state_;
       ticClientApiService = _ticClientApiService_;
       notificationFactory = _notificationFactory_;
+      ticClientLogoService = _ticClientLogoService_;
     });
   });
 
@@ -114,4 +120,11 @@ describe('the ticClientAddController', function() {
     });
   });
 
+  describe('the cancel method', function() {
+    it('should redirect to home page', function() {
+      initController().cancel();
+
+      expect($state.go).to.have.been.calledWith('ticketing.home');
+    });
+  });
 });
