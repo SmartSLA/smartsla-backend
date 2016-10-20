@@ -55,7 +55,10 @@
     "url": "https://ci.open-paas.org/stash/scm/om/linagora.esn.ticketing.git"
   },
   "author": "Linagora R&D",
-  "license": "AGPLv3",
+  "license": "AGPL-3.0",
+  "engines" : {
+    "node" : ">=6.5.0"
+  },
   "dependencies": {
     "awesome-module": "1.0.0",
     "async": "2.0.1",
