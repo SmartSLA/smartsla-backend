@@ -123,7 +123,7 @@ describe('the ticClientAddLogoController', function() {
       expect(ctrl.loading).to.be.false;
       expect($scope.modal.hide).to.have.been.called;
       expect(addFileSpy).to.have.been.called;
-      expect($scope.client.logo).to.equal(imageAsBase64);
+      expect($scope.client.logoAsBase64).to.equal(imageAsBase64);
     });
   });
 

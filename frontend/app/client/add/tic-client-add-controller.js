@@ -23,6 +23,7 @@
           function(result) {
             $scope.client.logo = result[0].response.data._id;
             delete $scope.client.avatarUploader;
+            delete $scope.client.logoAsBase64;
 
             _createClientAndNotify();
           }, function(error) {
