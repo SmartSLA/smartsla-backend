@@ -38,6 +38,14 @@
                 template: '<tic-client-add />'
             }
           }
+        })
+        .state('ticketing.clients-list', {
+          url: '/clients/list',
+          views: {
+            'main@ticketing': {
+              template: '<tic-clients-list/>'
+            }
+          }
         });
       });
 })();

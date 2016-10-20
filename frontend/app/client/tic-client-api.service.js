@@ -13,7 +13,7 @@
     ////////////
 
     function getClients() {
-      ticRestangular.all('clients').getList();
+      return ticRestangular.all('clients').getList();
     }
 
     function createClient(client) {

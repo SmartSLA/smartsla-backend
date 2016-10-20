@@ -1,0 +1,38 @@
+.tic-client-list {
+  width: 100%;
+
+  .card-client {
+    .tic-card-client-clickable {
+      .flex;
+
+      height: 65px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid @m-gray-lighten-30;
+
+      .tic-client-logo {
+        img {
+          height: 40px;
+          margin: 12px;
+        }
+      }
+
+      .tic-client-information {
+        .flex-direction(column);
+
+        .tic-client-name {
+          font-weight: 700;
+          text-transform: capitalize;
+          margin: 10px 0 5px 10px;
+          font-size: 16px;
+        }
+
+        .tic-client-address {
+          font-weight: 600;
+          text-transform: capitalize;
+          margin-left: 15px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
