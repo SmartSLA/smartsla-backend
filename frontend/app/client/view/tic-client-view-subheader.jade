@@ -1,0 +1,9 @@
+extends /modules/subheader/responsive-subheader
+
+block left
+  a.button.hidden-md(contextual-sidebar, data-content-template="/linagora.esn.ticketing/app/home/tic-sidebar.html")
+    i.mdi.mdi-menu
+
+block right
+  span.tic-subheader-content
+    | {{ ::ctrl.client.name }}

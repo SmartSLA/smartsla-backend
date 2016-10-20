@@ -94,8 +94,7 @@ describe('The client API', function() {
               if (err) {
                 return done(err);
               }
-
-              expect(res.body.client).to.deep.equal(JSON.parse(JSON.stringify(mongoResult)));
+              expect(res.body).to.deep.equal(JSON.parse(JSON.stringify(mongoResult)));
 
               done();
             });

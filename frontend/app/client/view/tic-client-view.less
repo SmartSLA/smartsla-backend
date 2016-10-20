@@ -1,0 +1,66 @@
+.tic-client-view {
+
+  .tic-client-view-card {
+
+    .tic-profile-overview {
+      .flex-column;
+      .align-items(center);
+
+      background-color: @m-black;
+      padding: 20px;
+
+      .tic-profile-pic {
+        img {
+          border-radius: 50%;
+          border: 4px solid @m-white;
+          width: 180px;
+          height: 180px;
+        }
+      }
+
+      .tic-profile-info {
+        .flex-column;
+        .all-centered;
+
+        border-radius: 0 0 2px 2px;
+        color: @m-white;
+        padding: 10px 5px 0 5px;
+
+        .tic-client-name {
+          font-weight: 400;
+          font-size: 1.4em;
+        }
+
+        .tic-client-address {
+          font-size: 1.2em;
+        }
+      }
+    }
+  }
+}
+
+@media(min-width: @screen-md-min) {
+  .tic-client-view {
+    .tic-client-view-card {
+      background-color: @m-white;
+
+      .tic-profile-overview {
+        .align-items(stretch);
+
+        background-color: @darkenBgColor;
+        width: 250px;
+
+        .tic-profile-pic {
+          img {
+            width: 100%;
+            border-radius: 2px 2px 0 0;
+          }
+        }
+
+        .tic-profile-info {
+          background: @accentColor;
+        }
+      }
+    }
+  }
+}
