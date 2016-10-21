@@ -1,0 +1,19 @@
+{
+  "My module": "Mon module",
+  "Name": "Nom",
+  "Street": "Rue",
+  "Zip": "Code Postal",
+  "City": "Ville",
+  "Country": "Pays",
+  "Inactive": "Inactif",
+  "Access Code": "Code d'Acces",
+  "Access Code Hint": "Code Hint",
+  "Logo": "Logo",
+  "Update Logo": "Mettre à jour le Logo",
+  "Choose the Logo": "Changer le Logo",
+  "Create": "Créer",
+  "Save": "Enregistrer",
+  "Cancel": "Annuler",
+  "Client Created": "Client créé",
+  "Error": "Erreur"
+}

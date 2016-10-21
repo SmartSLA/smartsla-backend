@@ -3,9 +3,9 @@
     .modal-content
       .modal-header
         button.close(type="button", ng-click="$toggle()")
-        h4.modal-title #{__('Choose the Logo')}
+        h4.modal-title {{ 'Choose the Logo' | translate }}
       .modal-body
         avatar-picker(avatar-placeholder="{{ ctrl.getClientLogo(client) }}")
       .modal-footer
-        button.btn.btn-default(type="button", ng-click="ctrl.saveClientAvatar()", ng-disabled="ctrl.loading || !ctrl.imageSelected()") #{__('Save')}
-        button.btn.btn-default(type="button", ng-click="$toggle()", ng-disabled="ctrl.loading") #{__('Cancel')}
+        button.btn.btn-default(type="button", ng-click="ctrl.saveClientAvatar()", ng-disabled="ctrl.loading || !ctrl.imageSelected()") {{ 'Save' | translate }}
+        button.btn.btn-default(type="button", ng-click="$toggle()", ng-disabled="ctrl.loading") {{ 'Cancel' | translate }}

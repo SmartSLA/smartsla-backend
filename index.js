@@ -49,6 +49,11 @@ const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
       webserverWrapper.injectAngularAppModules(linagoraEsnTicketing, jsFiles, [linagoraEsnTicketing], ['esn']);
       const lessFile = path.resolve(__dirname, './frontend/app/tic.styles.less');
       webserverWrapper.injectLess(linagoraEsnTicketing, [lessFile], 'esn');
+      const jsResourceFiles = [
+        "../components/angular-translate/angular-translate.min.js",
+        "../components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"
+      ];
+      webserverWrapper.injectJS(linagoraEsnTicketing, jsResourceFiles, 'esn');
       webserverWrapper.addApp(linagoraEsnTicketing, app);
 
       return callback();

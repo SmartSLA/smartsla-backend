@@ -16,11 +16,11 @@ module.exports = function(config) {
       'frontend/components/lodash/dist/lodash.min.js',
       'frontend/components/sinon-chai/lib/sinon-chai.js',
       'frontend/components/sinon-1.15.4/index.js',
+      'test/config/mocks.js',
       'frontend/app/tic.app.js',
       'frontend/app/**/*.js',
       'frontend/app/**/*.jade',
       'frontend/app/*.js'
-
     ],
     frameworks: ['mocha'],
     colors: true,
