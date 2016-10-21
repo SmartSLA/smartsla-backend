@@ -54,20 +54,7 @@
           },
           views: {
             'main@ticketing': {
-              templateUrl: '/linagora.esn.ticketing/app/client/view/tic-client-view.html',
-              controller: 'ticClientViewController',
-              controllerAs: 'ctrl'
-            }
-          },
-          resolve: {
-            client: function($stateParams, ticClientApiService) {
-              if ($stateParams.client) {
-                return $stateParams.client;
-              }
-
-              return ticClientApiService.getClient($stateParams.clientId).then(function(result) {
-                return result.data;
-              });
+              template: '<tic-client-view />'
             }
           }
         });
