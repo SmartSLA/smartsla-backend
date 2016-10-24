@@ -27,6 +27,8 @@
     "angular": "1.3.20",
     "angular-component": "https://github.com/toddmotto/angular-component.git#~0.1.2",
     "angular-mocks": "1.3.20",
+    "angular-translate": "^2.11.0",
+    "angular-translate-loader-static-files": "^2.11.0",
     "angular-ui-router": "0.2.18",
     "chai": "~3.0.0",
     "dynamic-directive": "2.0.0",

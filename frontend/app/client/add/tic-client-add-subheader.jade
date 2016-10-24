@@ -3,9 +3,9 @@ extends /modules/subheader/responsive-subheader
 block left
   a(href='', ng-click= "ctrl.createClient()")
     i.mdi.mdi-check
-    | #{__('Create')}
+    | {{ 'Create' | translate }}
 
 block right
   a(href='', ng-click='ctrl.cancel()')
     i.mdi.mdi-close
-    | #{__('Cancel')}
+    | {{ 'Cancel' | translate }}

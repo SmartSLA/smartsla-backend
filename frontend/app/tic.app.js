@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing', [
     'ui.router',
     'op.dynamicDirective',
-    'restangular'
+    'restangular',
+    'pascalprecht.translate'
   ]);
-
 })();
