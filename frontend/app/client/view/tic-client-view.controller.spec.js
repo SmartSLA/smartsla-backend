@@ -1,52 +1,84 @@
 'use strict';
 
 /* global chai: false */
+/* global sinon: false */
 
 var expect = chai.expect;
 
 describe('the ticClientViewController', function() {
 
-  var $controller, ticClientLogoService, client;
+  var $rootScope, $controller, $stateParams, $q, ticClientLogoService, ticClientApiService;
 
   beforeEach(function() {
 
-    client = {
-      _id: '1',
-      name: 'Linagora'
+    ticClientApiService = {
+      getClient: sinon.spy(function() {
+        return $q.when();
+      })
     };
 
     ticClientLogoService = {
-      getClientLogo: angular.noop
+      getClientLogo: sinon.spy(function() {
+        return $q.when();
+      })
+    };
+
+    $stateParams = {
+      clientId: '1'
     };
 
     angular.mock.module('linagora.esn.ticketing', function($provide) {
+      $provide.value('ticClientApiService', ticClientApiService);
       $provide.value('ticClientLogoService', ticClientLogoService);
+      $provide.value('$stateParams', $stateParams);
     });
 
-    angular.mock.inject(function(_$controller_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$stateParams_, _$q_, _ticClientApiService_, _ticClientLogoService_) {
+      $rootScope = _$rootScope_;
+      $q = _$q_;
       $controller = _$controller_;
+      $stateParams = _$stateParams_;
+      ticClientApiService = _ticClientApiService_;
       ticClientLogoService = _ticClientLogoService_;
     });
   });
 
-  function initController(ctrl) {
-    var controller = $controller(ctrl, {
-      client: client,
-      getClientLogo: ticClientLogoService.getClientLogo
+  describe('the getClientLogo method', function() {
+    it('should expose ticClientLogoService.getClientLogo method', function() {
+      var ctrl = $controller('ticClientViewController');
+      var client = {
+          name: 'Linagora',
+          address: 'Ghazela'
+        };
+
+        ctrl.getClientLogo(client);
+
+        expect(ticClientLogoService.getClientLogo).to.have.been.calledWith(client);
     });
-
-    return controller;
-  }
-
-  it('should attach client to the controller', function() {
-    var ctrl = initController('ticClientViewController');
-
-    expect(ctrl.client).to.equals(client);
   });
 
-  it('should attach getClientLogo to the controller', function() {
-    var ctrl = initController('ticClientViewController');
+  describe('the initialization', function() {
+    it('should init ctrl.client from stateParams.client if it exists', function() {
+      $stateParams.client = { _id: 'id' };
+      var ctrl = $controller('ticClientViewController');
 
-    expect(ctrl.getClientLogo).to.equals(ticClientLogoService.getClientLogo);
+      expect(ctrl.client).to.equal($stateParams.client);
+    });
+
+    it('should fetch the client if stateParams.client does not exists', function() {
+      var result = {
+        data: { _id: 'anId' }
+      };
+
+      ticClientApiService.getClient = sinon.spy(function() {
+        return $q.when(result);
+      });
+
+      var ctrl = $controller('ticClientViewController');
+
+      $rootScope.$digest();
+      expect(ticClientApiService.getClient).to.have.been.calledWith($stateParams.clientId);
+      expect(ctrl.client).to.equal(result.data);
+    });
   });
 });
