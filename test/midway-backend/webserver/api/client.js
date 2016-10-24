@@ -25,7 +25,10 @@ describe('The client API', function() {
       },
       db: {
         mongo: {
-          mongoose: mongoose
+          mongoose: mongoose,
+          schemas: {
+            address: {}
+          }
         }
       },
       authorizationMW: {

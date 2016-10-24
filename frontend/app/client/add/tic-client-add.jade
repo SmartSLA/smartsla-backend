@@ -4,6 +4,8 @@ sub-header
 .tic-client-add
   form.tic-client-add-form(name='createClientForm', ng-submit='ctrl.createClient(createClientForm)')
     input.form-control.floating-label(type='text', placeholder='{{ "Name" | translate }}', ng-model='client.name', required)
+    input.form-control.floating-label(type='text', placeholder='{{ "Post box" | translate }}', ng-model='client.address.post_box')
+    input.form-control.floating-label(type='text', placeholder='{{ "Extended address" | translate }}', ng-model='client.address.extended_address')
     input.form-control.floating-label(type='text', placeholder='{{ "Street" | translate }}', ng-model='client.address.street', required)
     input.form-control.floating-label(type='text', placeholder='{{ "Zip" | translate }}', ng-model='client.address.zip', required)
     input.form-control.floating-label(type='text', placeholder='{{ "City" | translate }}', ng-model='client.address.city', required)

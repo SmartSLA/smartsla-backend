@@ -4,14 +4,13 @@ module.exports = function(dependencies) {
 
   const mongoose = dependencies('db').mongo.mongoose;
   const ObjectId = mongoose.Schema.ObjectId;
-
   const ClientSchema = new mongoose.Schema({
     name: {
       type: String,
       required: true
     },
     address: {
-      type: mongoose.Schema.Types.Mixed,
+      type: dependencies('db').mongo.schemas.address,
       required: true
     },
     access_code: {

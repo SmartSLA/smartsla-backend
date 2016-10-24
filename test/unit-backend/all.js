@@ -25,18 +25,6 @@ beforeEach(function() {
     depsStore[name] = dep;
   };
 
-  this.deps = {
-    db: {
-      mongo: {
-        mongoose: require('mongoose')
-      }
-    }
-  };
-
-  this.deps.db.mongo.mongoose.model = function(name, constructor) {
-    return constructor;
-  };
-
   this.moduleHelpers = {
     backendPath: path.normalize(__dirname + '/../../backend'),
     addDep: addDep,

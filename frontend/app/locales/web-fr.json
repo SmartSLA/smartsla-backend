@@ -1,6 +1,8 @@
 {
   "My module": "Mon module",
   "Name": "Nom",
+  "Post box": "boîte aux lettres",
+  "Extended address": "complément d'adresse",
   "Street": "Rue",
   "Zip": "Code Postal",
   "City": "Ville",
