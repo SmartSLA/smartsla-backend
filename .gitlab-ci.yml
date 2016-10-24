@@ -1,0 +1,24 @@
+stages:
+  - prepare
+  - test
+
+cache:
+  key: "$CI_PROJECT_NAME/dependencies"
+  paths:
+  - node_modules
+  - frontend/components
+
+before_script:
+  - nvm use 6
+
+prepare:
+  stage: prepare
+  script:
+   - npm i
+   - npm prune
+   - bower prune
+
+test:
+  stage: test
+  script:
+   - grunt
