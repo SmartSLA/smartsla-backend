@@ -10,4 +10,6 @@ sub-header
           | {{ client.name }}
         .tic-client-address-preview
           | {{ client.address.city }} {{ client.address.country }}
+    .tic-delete-icon(modal-launcher, template="/linagora.esn.ticketing/app/client/delete/tic-client-delete-modal", ng-click="showModal()")
+      .mdi.mdi-delete
 fab(ui-sref='ticketing.clients-add')

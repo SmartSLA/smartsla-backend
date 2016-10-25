@@ -2,18 +2,27 @@
   width: 100%;
 
   .tic-client-display {
+    .flex;
+
+    border-bottom: 1px solid @m-gray-lighten-30;
+
+    .tic-delete-icon {
+      .all-centered;
+
+      width: 15%;
+      font-size: 2.2em;
+    }
+
     .tic-client-card {
       .flex-row;
 
-      width: 100%;
-      margin-bottom: 10px;
-      background: @m-white;
-      border-bottom: 1px solid @m-gray-lighten-30;
+      width: 85%;
+      margin-bottom: 5px;
 
       .tic-client-logo {
         .all-centered;
-        
-        width: 40px;
+
+        width: 60px;
         height: 60px;
         margin-right: 5px;
         margin-left: 5px;
@@ -26,8 +35,9 @@
       .tic-client-information {
         .flex-direction(column);
 
-        width: calc(~'100% - 40px');
+        width: calc(~'100% - 60px');
         padding: 5px;
+        margin: 5px;
 
         .tic-client-name {
           font-weight: 700;
