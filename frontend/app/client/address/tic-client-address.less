@@ -1,0 +1,26 @@
+.tic-client-address {
+  .flex-column;
+
+  width: 100%;
+  padding: 30px;
+
+  .tic-client-address-label {
+    padding-right: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .tic-client-address-content {
+    p {
+      font-size: 1.4em;
+      text-align: left;
+      margin: 0 0 0 30px;
+    }
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  .tic-client-address {
+    .flex-row();
+  }
+}

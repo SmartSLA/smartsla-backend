@@ -1,0 +1,9 @@
+.tic-client-address
+  .tic-client-address-label
+    | {{ 'Address' | translate }}
+  .tic-client-address-content
+    p {{ ::ctrl.address.extended_address }}
+    p {{ ::ctrl.address.post_box }}
+    p {{ ::ctrl.address.street }}
+    p {{ ::ctrl.address.zip }} {{ ctrl.address.city }}
+    p {{ ::ctrl.address.country }}

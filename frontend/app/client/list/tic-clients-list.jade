@@ -8,6 +8,6 @@ sub-header
       .tic-client-information
         .tic-client-name
           | {{ client.name }}
-        .tic-client-address
-          | {{ client.address }}
+        .tic-client-address-preview
+          | {{ client.address.city }} {{ client.address.country }}
 fab(ui-sref='ticketing.clients-add')

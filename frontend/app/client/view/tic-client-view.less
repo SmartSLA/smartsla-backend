@@ -1,11 +1,13 @@
 .tic-client-view {
 
   .tic-client-view-card {
+    .flex-wrap;
 
     .tic-profile-overview {
       .flex-column;
       .align-items(center);
 
+      width:100%;
       background-color: @m-black;
       padding: 20px;
 
@@ -30,10 +32,6 @@
           font-weight: 400;
           font-size: 1.4em;
         }
-
-        .tic-client-address {
-          font-size: 1.2em;
-        }
       }
     }
   }
@@ -48,11 +46,10 @@
         .align-items(stretch);
 
         background-color: @darkenBgColor;
-        width: 250px;
+        width: 220px;
 
         .tic-profile-pic {
           img {
-            width: 100%;
             border-radius: 2px 2px 0 0;
           }
         }

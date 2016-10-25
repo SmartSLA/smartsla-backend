@@ -1,6 +1,7 @@
 {
   "My module": "Mon module",
   "Name": "Nom",
+  "Address": "Adresse",
   "Post box": "boîte aux lettres",
   "Extended address": "complément d'adresse",
   "Street": "Rue",
