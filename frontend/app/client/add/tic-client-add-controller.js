@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController($scope, $state, notificationFactory, ticClientApiService, ticClientLogoService) {
+  function ticClientAddController($scope, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
     this.createClient = createClient;
     this.getClientLogo = ticClientLogoService.getClientLogo;
     this.cancel = cancel;
@@ -26,7 +26,7 @@
 
             _createClientAndNotify();
           }, function(error) {
-            notificationFactory.weakError('Error', 'Error ' + error.message);
+            ticNotificationFactory.weakError('Error', 'Error ' + error.message);
           });
       } else {
         _createClientAndNotify();
@@ -36,10 +36,10 @@
     function _createClientAndNotify() {
       return ticClientApiService.createClient($scope.client)
         .then(function() {
-          notificationFactory.weakInfo('Success', 'Client Created');
+          ticNotificationFactory.weakInfo('Success', 'Client Created');
           $state.go('ticketing.home');
         }, function(error) {
-          notificationFactory.weakError('Error', 'Error ' + error.message);
+          ticNotificationFactory.weakError('Error', 'Error ' + error.message);
         });
     }
 
