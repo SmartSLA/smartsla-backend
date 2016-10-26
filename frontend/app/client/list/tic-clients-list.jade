@@ -1,8 +1,8 @@
 sub-header
   tic-clients-list-subheader
-.tic-client-list
-  .card-client(ng-repeat= "client in ctrl.clients")
-    .tic-card-client-clickable(ui-sref="ticketing.client-view({ client: client, clientId: client._id })")
+.tic-clients-list
+  .tic-client-display(ng-repeat= "client in ctrl.clients")
+    .tic-client-card(ui-sref="ticketing.client-view({ client: client, clientId: client._id })")
       span.tic-client-logo
         img(ng-src="{{ ctrl.getClientLogo(client) }}", alt='{{ "Logo" | translate }}')
       .tic-client-information
