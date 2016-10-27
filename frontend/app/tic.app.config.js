@@ -3,7 +3,7 @@
 
   angular.module('linagora.esn.ticketing')
     .config(function(dynamicDirectiveServiceProvider) {
-      var home = new dynamicDirectiveServiceProvider.DynamicDirective(true, 'tic-application-menu-esn');
+      var home = new dynamicDirectiveServiceProvider.DynamicDirective(true, 'tic-application-menu');
 
       dynamicDirectiveServiceProvider.addInjection('esn-application-menu', home);
     })
