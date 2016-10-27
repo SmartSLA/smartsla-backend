@@ -1,11 +1,7 @@
 extends /modules/subheader/responsive-subheader
 
 block left
-  a(href='', ng-click= "ctrl.createClient()")
-    i.mdi.mdi-check
-    | {{ 'Create' | translate }}
+  tic-create-button(ng-click='ctrl.createClient()')
 
 block right
-  a(href='', ng-click='ctrl.cancel()')
-    i.mdi.mdi-close
-    | {{ 'Cancel' | translate }}
+  tic-close-button(ng-click='ctrl.cancel()')
