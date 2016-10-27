@@ -1,38 +1,56 @@
-.tic-client-list {
+.tic-clients-list {
   width: 100%;
 
-  .card-client {
-    .tic-card-client-clickable {
-      .flex;
+  .tic-client-display {
+    .tic-client-card {
+      .flex-row;
 
-      height: 65px;
+      width: 100%;
       margin-bottom: 10px;
+      background: @m-white;
       border-bottom: 1px solid @m-gray-lighten-30;
 
       .tic-client-logo {
+        .all-centered;
+        
+        width: 40px;
+        height: 60px;
+        margin-right: 5px;
+        margin-left: 5px;
+
         img {
           height: 40px;
-          margin: 12px;
         }
       }
 
       .tic-client-information {
         .flex-direction(column);
 
+        width: calc(~'100% - 40px');
+        padding: 5px;
+
         .tic-client-name {
           font-weight: 700;
           text-transform: capitalize;
-          margin: 10px 0 5px 10px;
           font-size: 16px;
         }
 
         .tic-client-address-preview {
           font-weight: 600;
           text-transform: capitalize;
-          margin-left: 15px;
           font-size: 14px;
           color: @m-black-fade-20;
         }
+      }
+    }
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  .tic-clients-list {
+    .tic-client-display {
+      .tic-client-card > .tic-client-information {
+        width: 100%;
       }
     }
   }
