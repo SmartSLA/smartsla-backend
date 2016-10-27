@@ -2,57 +2,41 @@
 
 const request = require('supertest');
 const expect = require('chai').expect;
-const q = require('q');
-const _ = require('lodash');
 
 describe('The client API', function() {
-  let deps, mongoose, userId, user, app;
-
-  function dependencies(name) {
-    return deps[name];
-  }
+  let user, app;
+  const password = 'secret';
+  const client = {
+    name: 'Linagora',
+    address: 'Tunisia',
+    access_code: '123',
+    access_code_hint: 'hint'
+  };
 
   beforeEach(function(done) {
-    mongoose = require('mongoose');
-    mongoose.Promise = q.promise;
-    mongoose.connect(this.testEnv.mongoUrl);
-    userId = mongoose.Types.ObjectId();
+    const self = this;
 
-    deps = {
-      logger: require('../../fixtures/logger'),
-      user: {
-        moderation: {registerHandler: _.constant()}
-      },
-      db: {
-        mongo: {
-          mongoose: mongoose,
-          schemas: {
-            address: {}
-          }
-        }
-      },
-      authorizationMW: {
-        requiresAPILogin: function(req, res, next) {
-          req.user = {
-            _id: userId
-          };
-
-          next();
-        }
+    this.helpers.modules.initMidway('linagora.esn.ticketing', function(err) {
+      if (err) {
+        return done(err);
       }
-    };
+      const ticketApp = require(self.testEnv.backendPath + '/webserver/application')(self.helpers.modules.current.deps);
+      const api = require(self.testEnv.backendPath + '/webserver/api')(self.helpers.modules.current.deps, self.helpers.modules.current.lib.lib);
 
-    app = this.helpers.loadApplication(dependencies);
-    const UserSchema = mongoose.model('User');
+      ticketApp.use(require('body-parser').json());
+      ticketApp.use('/api', api);
 
-    user = new UserSchema({
-      _id: userId,
-      firstname: 'Gutz',
-      username: 'gatsu',
-      lastname: 'Von Berlichingen'
+      app = self.helpers.modules.getWebServer(ticketApp);
+
+      self.helpers.api.applyDomainDeployment('linagora_IT', function(err, models) {
+        if (err) {
+          return done(err);
+        }
+        user = models.users[0];
+
+        done();
+      });
     });
-
-    user.save(done);
   });
 
   afterEach(function(done) {
@@ -60,131 +44,242 @@ describe('The client API', function() {
   });
 
   describe('GET /api/clients', function() {
-    it('should return a list of clients', function(done) {
-      app.lib.client.list({}).then(function(clients) {
-        request(app.express)
-          .get('/api/clients')
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end(function(err, res) {
-            if (err) {
-              return done(err);
-            }
+    it('should return 401 if not logged in', function(done) {
+      this.helpers.api.requireLogin(app, 'get', '/api/clients', done);
+    });
 
+    it('should return a list of clients', function(done) {
+      const self = this;
+
+      this.helpers.modules.current.lib.lib.client.list({}).then(function(clients) {
+        self.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+          if (err) {
+            return done(err);
+          }
+          const req = requestAsMember(request(app).get('/api/clients'));
+
+          req.expect(200).end(function(err, res) {
+            expect(err).to.not.exist;
             expect(res.body).to.deep.equal(clients);
 
             done();
           });
-        }, done);
+        });
+      }, done);
     });
   });
 
-  describe('Get /api/clients/:clientId', function() {
+  describe('GET /api/clients/:clientId', function() {
+    let clientInMongo;
+
+    beforeEach(function(done) {
+      this.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
+        clientInMongo = mongoResult;
+
+        done();
+      }, done);
+    });
+
+    it('should return 500 if the id is not an ObjectId', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).get('/api/clients/pipoID'));
+
+        req.expect(500).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 404 if id is not the id of an existing client', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).get('/api/clients/' + user._id));
+
+        req.expect(404).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 401 if not logged in', function(done) {
+      this.helpers.api.requireLogin(app, 'get', '/api/clients/' + clientInMongo._id, done);
+    });
+
     it('should return the client', function(done) {
-      const client = {
-        name: 'Linagora',
-        address: 'Tunisia',
-        access_code: '123',
-        access_code_hint: 'hint'
-      };
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).get('/api/clients/' + clientInMongo._id));
 
-      app.lib.client.create(client).then(function(mongoResult) {
-          request(app.express)
-            .get('/api/clients/' + mongoResult._id)
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function(err, res) {
-              if (err) {
-                return done(err);
-              }
-              expect(res.body).to.deep.equal(JSON.parse(JSON.stringify(mongoResult)));
+        req.expect(200).end(function(err, res) {
+          expect(err).to.not.exist;
+          expect(res.body).to.shallowDeepEqual(client);
 
-              done();
-            });
-        }, done);
+          done();
+        });
+      });
     });
   });
 
   describe('POST /api/clients', function() {
-    it('should create the client', function(done) {
-      request(app.express)
-        .post('/api/clients')
-        .type('json')
-        .send({
-          name: 'Linagora',
-          address: 'Tunisia',
-          access_code: '123',
-          access_code_hint: 'hint'
-        })
-        .expect('Content-Type', /json/)
-        .expect(201)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
+    it('should return 401 if not logged in', function(done) {
+      this.helpers.api.requireLogin(app, 'post', '/api/clients', done);
+    });
 
-          expect(res.body).to.shallowDeepEqual({
-            name: 'Linagora',
-            address: 'Tunisia',
-            access_code: '123',
-            access_code_hint: 'hint'
-          });
+    it('should create the client', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).post('/api/clients'));
+
+        req.send(client).expect(201).end(function(err, res) {
+          expect(err).to.not.exist;
+          expect(res.body).to.shallowDeepEqual(client);
 
           done();
         });
+      });
     });
   });
 
   describe('PUT /api/clients/:clientId', function() {
+    let clientInMongo;
+
+    beforeEach(function(done) {
+      this.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
+        clientInMongo = mongoResult;
+
+        done();
+      }, done);
+    });
+
+    it('should return 500 if the id is not an ObjectId', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).put('/api/clients/pipoID'));
+
+        req.expect(500).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 404 if id is not the id of an existing client', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).put('/api/clients/' + user._id));
+
+        req.expect(404).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 401 if not logged in', function(done) {
+      this.helpers.api.requireLogin(app, 'put', '/api/clients/' + clientInMongo._id, done);
+    });
+
     it('should update the client', function(done) {
-      const client = {
+      const newClient = {
         name: 'Linagora',
-        address: 'Tunisia',
+        address: 'Tolosa',
         access_code: '123',
-        access_code_hint: 'hint'
+        access_code_hint: 'anotherhint'
       };
 
-      app.lib.client.create(client).then(function(mongoResult) {
-          request(app.express)
-            .put('/api/clients/' + mongoResult._id)
-            .send({
-              address: 'Paris'
-            })
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function(err, res) {
-              if (err) {
-                return done(err);
-              }
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).put('/api/clients/' + clientInMongo._id));
 
-              expect(res.body).to.shallowDeepEqual({
-                name: 'Linagora',
-                address: 'Paris',
-                access_code: '123',
-                access_code_hint: 'hint'
-              });
+        req.send(newClient).expect(200).end(function(err, res) {
+          expect(err).to.not.exist;
+          expect(res.body).to.shallowDeepEqual(newClient);
 
-              done();
-            });
-        }, done);
+          done();
+        });
+      });
     });
   });
 
   describe('DELETE /api/clients/:clientId', function() {
-    it('should remove the client', function(done) {
-      const client = {
-        name: 'Linagora',
-        address: 'Tunisia',
-        access_code: '123',
-        access_code_hint: 'hint'
-      };
+    let clientInMongo;
 
-      app.lib.client.create(client).then(function(mongoResult) {
-          request(app.express)
-            .delete('/api/clients/' + mongoResult._id)
-            .expect(204)
-            .end(done);
-        }, done);
+    beforeEach(function(done) {
+      this.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
+        clientInMongo = mongoResult;
+
+        done();
+      }, done);
+    });
+
+    it('should return 500 if the id is not an ObjectId', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).delete('/api/clients/pipoID'));
+
+        req.expect(500).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 404 if id is not the id of an existing client', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).delete('/api/clients/' + user._id));
+
+        req.expect(404).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
+    });
+
+    it('should return 401 if not logged in', function(done) {
+      this.helpers.api.requireLogin(app, 'delete', '/api/clients/' + clientInMongo._id, done);
+    });
+
+    it('should remove the client', function(done) {
+      this.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).delete('/api/clients/' + clientInMongo._id));
+
+        req.expect(204).end(function(err) {
+          expect(err).to.not.exist;
+
+          done();
+        });
+      });
     });
   });
 });

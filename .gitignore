@@ -1,3 +1,4 @@
 node_modules
 frontend/components
 .idea
+*.log
