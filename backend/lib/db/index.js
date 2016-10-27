@@ -3,8 +3,10 @@
 module.exports = function(dependencies) {
 
   const client = require('./client')(dependencies);
+  const group = require('./group')(dependencies);
 
   return {
-    client
+    client,
+    group
   };
 };

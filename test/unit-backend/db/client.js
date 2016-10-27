@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect;
 
-describe('The linagora.esn.ticketing db model', function() {
+describe('The linagora.esn.ticketing db client model', function() {
 
   let clientDBModule;
 
@@ -32,7 +32,8 @@ describe('The linagora.esn.ticketing db model', function() {
         country: 'USA'
       },
       access_code: '123',
-      access_code_hint: '456'
+      access_code_hint: '456',
+      groups: []
     })).to.be.an.instanceof(this.moduleHelpers.dependencies('db').mongo.mongoose.Model);
   });
 });

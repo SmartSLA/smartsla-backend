@@ -21,6 +21,7 @@ module.exports = function(dependencies) {
       type: String,
       required: true
     },
+    groups: [{ type: ObjectId, ref: 'TicGroup' }],
     timestamps: {
       creation: {type: Date, default: Date.now}
     },
