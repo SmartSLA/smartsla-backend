@@ -20,5 +20,8 @@
   "Client Created": "Client Created",
   "Error": "Error",
   "List of clients": "List of clients",
-  "Success": "Success"
+  "Success": "Success",
+  "Delete a client": "Delete a client",
+  "Are you sure you want to delete this client?": "Are you sure you want to delete this client?",
+  "Confirm": "Confirm"
 }

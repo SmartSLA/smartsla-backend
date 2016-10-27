@@ -8,7 +8,8 @@
     return {
       getClients: getClients,
       createClient: createClient,
-      getClient: getClient
+      getClient: getClient,
+      deleteClient: deleteClient
     };
 
     ////////////
@@ -23,6 +24,10 @@
 
     function getClient(clientId) {
       return ticRestangular.all('clients').one(clientId).get();
+    }
+
+    function deleteClient(clientId) {
+      return ticRestangular.all('clients').one(clientId).remove();
     }
   }
 })();
