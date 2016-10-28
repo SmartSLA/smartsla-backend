@@ -57,6 +57,17 @@
               template: '<tic-client-view />'
             }
           }
+        })
+        .state('ticketing.client-edit', {
+          url: '/clients/:clientId/edit',
+          params: {
+            client: null
+          },
+          views: {
+            'main@ticketing': {
+              template: '<tic-client-edit />'
+            }
+          }
         });
       });
 })();
