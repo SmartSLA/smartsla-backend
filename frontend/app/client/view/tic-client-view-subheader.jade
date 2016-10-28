@@ -1,8 +1,7 @@
 extends /modules/subheader/responsive-subheader
 
 block left
-  tic-burger-button.hidden-md
+  tic-back-button(ui-sref="ticketing.clients-list")
 
 block right
-  span.tic-subheader-content
-    | {{ ::ctrl.client.name }}
+  tic-edit-button(ui-sref="ticketing.clients-edit({ client: ctrl.client, clientId: ctrl.client._id })")
