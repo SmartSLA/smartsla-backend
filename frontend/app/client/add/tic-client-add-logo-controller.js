@@ -24,7 +24,7 @@
           var reader = new FileReader();
 
           reader.onloadend = function() {
-            $scope.client.logo = reader.result;
+            $scope.client.logoAsBase64 = reader.result;
             $scope.client.avatarUploader = fileUploadService.get();
             $scope.client.avatarUploader.addFile(blob);
             selectionService.clear();

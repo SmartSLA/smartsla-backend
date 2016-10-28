@@ -2,7 +2,7 @@
 
 /* global chai: false */
 
-describe('The ticClientApi service', function() {
+describe('The ticClientLogo service', function() {
   var ticClientLogoService;
   var expect = chai.expect;
 
@@ -15,6 +15,14 @@ describe('The ticClientApi service', function() {
   });
 
   describe('the getClientLogo function', function() {
+    it('should return client.logoAsBase64 if it exists', function() {
+      var client = {
+        logoAsBase64: '1234'
+      };
+
+      expect(ticClientLogoService.getClientLogo(client)).to.equal(client.logoAsBase64);
+    });
+
     it('should return client.logo if it exists', function() {
       var client = {
         logo: '1234'

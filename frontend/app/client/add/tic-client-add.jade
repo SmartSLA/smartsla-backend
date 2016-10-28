@@ -14,7 +14,7 @@ sub-header
     input.form-control.floating-label(type='text', placeholder='{{ "Access Code Hint" | translate }}', ng-model='client.access_code_hint', required)
     .tic-client-logo(modal-launcher, template="/linagora.esn.ticketing/app/client/add/tic-client-add-logo-modal", ng-click="showModal()")
       a
-        img(ng-src="{{ ctrl.getClientLogo() }}", alt='{{ "Logo" | translate }}')
+        img(ng-src="{{ ctrl.getClientLogo(client) }}", alt='{{ "Logo" | translate }}')
       a.tic-client-logo-edit
         i.mdi.mdi-camera
         span {{ "Update Logo" | translate }}

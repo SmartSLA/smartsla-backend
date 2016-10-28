@@ -13,8 +13,15 @@
     ////////////
 
     function getClientLogo(client) {
+      if (client) {
+        if (client.logoAsBase64) {
+          return client.logoAsBase64;
+        } else if (client.logo) {
+          return String('/api/files/' + client.logo);
+        }
+      }
 
-      return (client && client.logo && String('/api/files/' + client.logo)) || '/linagora.esn.ticketing/app/client/logo/default_logo.png';
+      return '/linagora.esn.ticketing/app/client/logo/default_logo.png';
     }
   }
 })();
