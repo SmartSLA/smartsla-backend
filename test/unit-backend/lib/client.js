@@ -6,7 +6,7 @@ const q = require('q');
 
 describe('The linagora.esn.ticketing client lib', function() {
 
-  let client, deps, logger, modelsMock, ObjectIdMock, modelMethode;
+  let client, deps, logger, modelsMock, modelPopulateMethode, ObjectIdMock, modelMethode;
 
   function dependencies(name) {
     return deps[name];
@@ -29,13 +29,25 @@ describe('The linagora.esn.ticketing client lib', function() {
       };
     });
 
+    modelPopulateMethode = sinon.spy(function() {
+      return {
+        populate() {
+          return {
+            exec() {
+              return q.when();
+            }
+          };
+        }
+      };
+    });
+
     modelsMock = {
       TicClient: {
         create: sinon.spy(function() {
           return q.when();
         }),
-        findById: modelMethode,
-        find: modelMethode,
+        findById: modelPopulateMethode,
+        find: modelPopulateMethode,
         findByIdAndUpdate: modelMethode,
         findByIdAndRemove: modelMethode
       }
@@ -46,11 +58,11 @@ describe('The linagora.esn.ticketing client lib', function() {
       db: {
         mongo: {
           mongoose: {
-            model: function(type) {
+            model(type) {
               return modelsMock[type];
             },
             Types: {
-              ObjectId: function() {
+              ObjectId() {
                 return ObjectIdMock.apply(this, arguments);
               }
             }
