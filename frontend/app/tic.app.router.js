@@ -31,7 +31,7 @@
             }
           }
         })
-        .state('ticketing.clients-add', {
+        .state('ticketing.client-add', {
           url: '/clients/add',
           views: {
             'main@ticketing': {
