@@ -119,12 +119,4 @@ describe('the ticClientAddController', function() {
       expect(ticClientApiService.createClient).to.not.have.been.called;
     });
   });
-
-  describe('the cancel method', function() {
-    it('should redirect to home page', function() {
-      initController().cancel();
-
-      expect($state.go).to.have.been.calledWith('ticketing.home');
-    });
-  });
 });

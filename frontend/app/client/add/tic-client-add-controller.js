@@ -7,7 +7,6 @@
   function ticClientAddController($scope, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
     this.createClient = createClient;
     this.getClientLogo = ticClientLogoService.getClientLogo;
-    this.cancel = cancel;
     $scope.client = {};
 
     ////////////
@@ -42,10 +41,6 @@
         }, function(error) {
           ticNotificationFactory.weakError('Error', 'Error ' + error.message);
         });
-    }
-
-    function cancel() {
-      $state.go('ticketing.home');
     }
   }
 })();
