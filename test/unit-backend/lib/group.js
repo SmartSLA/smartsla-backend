@@ -46,11 +46,11 @@ describe('The linagora.esn.ticketing group lib', function() {
       db: {
         mongo: {
           mongoose: {
-            model: function(type) {
+            model(type) {
               return modelsMock[type];
             },
             Types: {
-              ObjectId: function() {
+              ObjectId() {
                 return ObjectIdMock.apply(this, arguments);
               }
             }
