@@ -8,10 +8,10 @@ module.exports = function(dependencies, lib) {
     lib.client.get(clientId).then(
       function(client) {
         if (!client) {
-          res.status(400).json({
+          res.status(404).json({
             error: {
-              code: 400,
-              message: 'Bad request',
+              code: 404,
+              message: 'Not found',
               details: 'Can not find client'
             }
           });
