@@ -224,13 +224,29 @@ describe('The client API', function() {
 
   describe('DELETE /api/clients/:clientId', function() {
     let clientInMongo;
+    const group = {
+      name: 'Ticketing'
+    };
 
     beforeEach(function(done) {
-      this.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
-        clientInMongo = mongoResult;
+      const self = this;
+      let client;
 
-        done();
-      }, done);
+      self.helpers.modules.current.lib.lib.group.create(group).then(function(mongoResult) {
+        client = {
+          name: 'linagora',
+          address: 'Tolosa',
+          access_code: '123',
+          access_code_hint: 'anotherhint',
+          groups: [mongoResult._id]
+        };
+
+        self.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
+          clientInMongo = mongoResult;
+
+          done();
+        }, done);
+      });
     });
 
     it('should return 500 if the id is not an ObjectId', function(done) {
@@ -278,6 +294,26 @@ describe('The client API', function() {
           expect(err).to.not.exist;
 
           done();
+        });
+      });
+    });
+
+    it('should remove the groups', function(done) {
+      const self = this;
+
+      self.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+        if (err) {
+          return done(err);
+        }
+        const req = requestAsMember(request(app).delete('/api/clients/' + clientInMongo._id));
+
+        req.expect(204).end(function(err) {
+          self.helpers.modules.current.lib.lib.group.get(clientInMongo.groups[0]._id).then(function(mongoResult) {
+            expect(mongoResult).to.be.null;
+            expect(err).to.not.exist;
+
+            done();
+          });
         });
       });
     });

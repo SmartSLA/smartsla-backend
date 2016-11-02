@@ -4,6 +4,7 @@ module.exports = function(dependencies, lib) {
 
   const helpers = require('../helpers');
   const _ = require('lodash');
+  const q = require('q');
 
   function getClientFromReq(req) {
     const client = {
@@ -23,12 +24,8 @@ module.exports = function(dependencies, lib) {
 
   function listClients(req, res) {
     lib.client.list({}).then(
-      function(result) {
-        return res.status(200).json(result);
-      },
-      function(err) {
-        return res.status(500).json(helpers.createErrorMessage(err, 'Error while listing clients'));
-      }
+      result => res.status(200).json(result),
+      err => res.status(500).json(helpers.createErrorMessage(err, 'Error while listing clients'))
     );
   }
 
@@ -36,12 +33,8 @@ module.exports = function(dependencies, lib) {
     const client = getClientFromReq(req);
 
     lib.client.create(client).then(
-      function(result) {
-        return res.status(201).json(result);
-      },
-      function(err) {
-        return res.status(500).json(helpers.createErrorMessage(err, 'Error while creating client'));
-      }
+      result => res.status(201).json(result),
+      err => res.status(500).json(helpers.createErrorMessage(err, 'Error while creating client'))
     );
   }
 
@@ -52,12 +45,8 @@ module.exports = function(dependencies, lib) {
     };
 
     lib.client.update(clientId, client).then(
-      function(result) {
-        return res.status(200).json(result);
-      },
-      function(err) {
-        return res.status(500).json(helpers.createErrorMessage(err, 'Error while updating client'));
-      }
+      result => res.status(200).json(result),
+      err => res.status(500).json(helpers.createErrorMessage(err, 'Error while updating client'))
     );
   }
 
@@ -66,13 +55,25 @@ module.exports = function(dependencies, lib) {
       _id: req.params.clientId
     };
 
-    lib.client.remove(clientId).then(
-      function() {
-        return res.status(204).end();
-      },
-      function(err) {
-        return res.status(500).json(helpers.createErrorMessage(err, 'Error while deleting client'));
+    lib.client.remove(clientId)
+    .then(
+      result => {
+        const groups = result.groups;
+
+        if (groups.length) {
+          return q.all(
+            groups.map(
+              group => lib.group.remove(group)
+            )
+          );
+        }
+
+        return result;
       }
+    )
+    .then(
+      result => res.status(204).json(result),
+      err => res.status(500).json(helpers.createErrorMessage(err, 'Error while deleting client'))
     );
   }
 
