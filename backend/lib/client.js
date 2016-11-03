@@ -10,11 +10,11 @@ module.exports = function(dependencies) {
   }
 
   function get(id) {
-    return Client.findById(id).exec();
+    return Client.findById(id).populate('groups').exec();
   }
 
   function list(options) {
-    return Client.find(options).exec();
+    return Client.find(options).populate('groups').exec();
   }
 
   function update(id, client) {
