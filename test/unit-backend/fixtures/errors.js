@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  send: function(res, code, error) {
+  send(res, code, error) {
     res.json(code, error);
   }
 };

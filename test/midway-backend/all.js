@@ -26,13 +26,13 @@ before(function(done) {
     backendPath: backendPath,
     fixtures: path.resolve(basePath, 'test/midway-backend/fixtures'),
     mongoUrl: 'mongodb://' + host + ':' + testConfig.mongodb.port + '/' + testConfig.mongodb.dbname,
-    writeDBConfigFile: function() {
+    writeDBConfigFile() {
       fs.writeFileSync(tmpPath + '/db.json', JSON.stringify({connectionString: 'mongodb://' + host + ':' + testConfig.mongodb.port + '/' + testConfig.mongodb.dbname, connectionOptions: {auto_reconnect: false}}));
     },
-    removeDBConfigFile: function() {
+    removeDBConfigFile() {
       fs.unlinkSync(tmpPath + '/db.json');
     },
-    initCore: function(callback) {
+    initCore(callback) {
       mongoose.Promise = require('q').Promise;
       rse.core.init(() => { callback && process.nextTick(callback); });
     }
