@@ -13,7 +13,7 @@
   "Country": "Country",
   "Create": "Create",
   "Delete a client": "Delete a client",
-  "Edit": "Edit"
+  "Edit": "Edit",
   "Error": "Error",
   "Error while deleting the client": "Error while deleting the client",
   "Extended address": "Extended address",
@@ -27,5 +27,5 @@
   "Street": "Street",
   "Success": "Success",
   "Update Logo": "Update Logo",
-  "Zip": "Zip",
+  "Zip": "Zip"
 }

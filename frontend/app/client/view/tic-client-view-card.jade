@@ -1,7 +1,7 @@
 .tic-client-view-card
   .tic-profile-overview
     .tic-profile-pic
-        img(ng-src="{{ ctrl.getClientLogo(ctrl.client) }}", alt='#{ __("Logo") }')
+        img(ng-src="{{ ctrl.getClientLogo(ctrl.client) }}", alt='{{ "Logo" | translate }}')
     .tic-profile-info
       .tic-client-name {{ ::ctrl.client.name }}
   tic-client-address(address="ctrl.client.address")
