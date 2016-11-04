@@ -1,6 +1,10 @@
+before_script:
+  - nvm use 6
+
 stages:
   - prepare
   - test
+  - deploy
 
 cache:
   key: "$CI_PROJECT_NAME/dependencies"
@@ -8,17 +12,29 @@ cache:
   - node_modules
   - frontend/components
 
-before_script:
-  - nvm use 6
-
 prepare:
   stage: prepare
   script:
    - npm i
    - npm prune
    - bower prune
+  only:
+   - branches
+  except:
+   - master
 
 test:
   stage: test
   script:
    - grunt
+  only:
+   - branches
+  except:
+   - master
+
+deploy:
+  stage: deploy
+  script:
+   - ssh jenkins@openpaas-rse.linagora.dc1 "/home/jenkins/bin/update-ticketing-dev.sh 2>&1"
+  only:
+   - master
