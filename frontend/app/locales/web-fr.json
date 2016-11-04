@@ -13,7 +13,7 @@
   "Country": "Pays",
   "Create": "Créer",
   "Delete a client": "Supprimer un client",
-  "Edit": "Modifier"
+  "Edit": "Modifier",
   "Error": "Erreur",
   "Error while deleting the client": "Erreur lors de la suppression du client",
   "Extended address": "complément d'adresse",
@@ -27,5 +27,5 @@
   "Street": "Rue",
   "Success": "Succès",
   "Update Logo": "Mettre à jour le Logo",
-  "Zip": "Code Postal",
+  "Zip": "Code Postal"
 }
