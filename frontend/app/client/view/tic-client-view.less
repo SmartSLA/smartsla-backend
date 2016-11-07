@@ -1,36 +1,85 @@
 .tic-client-view {
 
   .tic-client-view-card {
-    .flex-wrap;
+    .flex-column;
 
-    .tic-profile-overview {
+    .tic-client-view-card-overview {
       .flex-column;
-      .align-items(center);
+      .align-items(stretch);
 
-      width:100%;
-      background-color: @m-black;
-      padding: 20px;
+      .tic-client-view-card-pic {
 
-      .tic-profile-pic {
         img {
-          border-radius: 50%;
-          border: 4px solid @m-white;
-          width: 180px;
-          height: 180px;
+          width: 100%;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
         }
       }
 
-      .tic-profile-info {
+      .tic-client-view-card-info {
         .flex-column;
         .all-centered;
 
-        border-radius: 0 0 2px 2px;
+        background: @accentColor;
         color: @m-white;
-        padding: 10px 5px 0 5px;
+        height: 45px;
 
         .tic-client-name {
-          font-weight: 400;
-          font-size: 1.4em;
+          font-weight: 500;
+          font-size: 27px;
+        }
+      }
+    }
+
+    .tic-client-view-card-details {
+      .flex-column;
+
+      background-color: @m-white;
+      width: 100%;
+      padding: 5px;
+
+      .tic-client-view-card-line {
+        .flex-column;
+
+        margin-bottom: 20px;
+
+        .tic-client-view-card-line-key {
+          .flex-vertical-centered;
+
+          margin-bottom: 10px;
+          font-size: 20px;
+
+          .tic-client-view-card-line-key-title{
+            margin: 0 0 0 5px;
+            font-weight: 100;
+          }
+        }
+
+        .tic-client-view-card-line-value {
+          .flex-row;
+
+          padding: 15px;
+          color: @m-black;
+          font-size: 13px;
+
+          .tic-client-view-card-line-value-title {
+            .flex-shorthand(1, 0, 0%);
+            .flex-start;
+
+            font-weight: bold;
+
+            i {
+              margin-right: 4px;
+              position: relative;
+              top: 1px;
+            }
+          }
+
+          .tic-client-view-card-line-value-description {
+            .flex-start;
+            .flex-shorthand(2, 0, 0%);
+          }
         }
       }
     }
@@ -40,23 +89,22 @@
 @media(min-width: @screen-md-min) {
   .tic-client-view {
     .tic-client-view-card {
-      background-color: @m-white;
+      .flex-wrap;
+      .flex-row;
 
-      .tic-profile-overview {
+      .tic-client-view-card-overview {
         .align-items(stretch);
 
         background-color: @darkenBgColor;
-        width: 220px;
+        padding: 15px;
+        width: 250px;
+      }
 
-        .tic-profile-pic {
-          img {
-            border-radius: 2px 2px 0 0;
-          }
-        }
+      .tic-client-view-card-details {
+        .flex-column;
 
-        .tic-profile-info {
-          background: @accentColor;
-        }
+        padding: 30px;
+        width: calc(~'100% - 250px');
       }
     }
   }

@@ -1,9 +1,21 @@
-.tic-client-address
-  .tic-client-address-label
-    | {{ 'Address' | translate }}
-  .tic-client-address-content
-    p {{ ::ctrl.address.extended_address }}
-    p {{ ::ctrl.address.post_box }}
-    p {{ ::ctrl.address.street }}
-    p {{ ::ctrl.address.zip }} {{ ctrl.address.city }}
-    p {{ ::ctrl.address.country }}
+.tic-client-address-content
+  .tic-client-address-line(ng-if= "ctrl.address.street || ctrl.address.extended_address")
+    .tic-client-address-line-key
+      | {{ 'Street' | translate }}:
+    .tic-client-address-line-value
+      | {{ ::ctrl.address.street }}, {{ ::ctrl.address.extended_address }}
+  .tic-client-address-line(ng-if= "ctrl.address.post_box")
+    .tic-client-address-line-key
+      | {{ 'Post box' | translate }}:
+    .tic-client-address-line-value
+      | {{ ::ctrl.address.post_box }}
+  .tic-client-address-line(ng-if= "ctrl.address.zip || ctrl.address.city")
+    .tic-client-address-line-key
+      | {{ 'City' | translate }}:
+    .tic-client-address-line-value
+      | {{ ::ctrl.address.zip }}, {{ ::ctrl.address.city }}
+  .tic-client-address-line(ng-if= "ctrl.address.country")
+    .tic-client-address-line-key
+      | {{ 'Country' | translate }}:
+    .tic-client-address-line-value
+      | {{ ::ctrl.address.country }}

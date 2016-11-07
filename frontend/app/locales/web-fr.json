@@ -27,5 +27,11 @@
   "Street": "Rue",
   "Success": "Succès",
   "Update Logo": "Mettre à jour le Logo",
-  "Zip": "Code Postal"
+  "Zip": "Code Postal",
+  "Post box": "Boîte postale",
+  "Client": "Client",
+  "Client Information": "Information sur le client",
+  "Status": "Statut",
+  "Acronym": "Sigle",
+  "Priviliged contact": "Contact priviligié"
 }
