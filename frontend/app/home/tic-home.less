@@ -8,8 +8,6 @@
   height: 70vh;
 
   .tic-main {
-    margin-top: 15px;
-
     .tic-main-content {
       .flex-shorthand(1);
 
@@ -43,4 +41,10 @@
 
   font-size: 1.2em;
   color: @m-white;
+}
+
+@media(min-width: @screen-md-min) {
+  .tic-home > .tic-main {
+    margin-top: 15px;
+  }
 }
