@@ -24,6 +24,7 @@ describe('The linagora.esn.ticketing db client model', function() {
     expect(clientDBModule.models.client).to.exist;
     expect(new clientDBModule.models.client({
       name: 'name',
+      acronym: 'NAME',
       address: {
         street: '12 people street',
         state: 'NY',
@@ -31,6 +32,8 @@ describe('The linagora.esn.ticketing db client model', function() {
         city: 'NY',
         country: 'USA'
       },
+      preferred_contact: 'Bob',
+      is_active: true,
       access_code: '123',
       access_code_hint: '456',
       groups: []

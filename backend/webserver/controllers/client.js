@@ -8,7 +8,10 @@ module.exports = function(dependencies, lib) {
   function getClientFromReq(req) {
     const client = {
       name: req.body.name,
+      acronym: req.body.acronym,
+      preferred_contact: req.body.preferred_contact,
       address: req.body.address,
+      is_active: req.body.is_active,
       access_code: req.body.access_code,
       access_code_hint: req.body.access_code_hint,
       logo: req.body.logo
