@@ -8,7 +8,10 @@ describe('The client API', function() {
   const password = 'secret';
   const client = {
     name: 'Linagora',
-    address: 'Tunisia',
+    acronym: 'LIN',
+    preferred_contact: 'linagora',
+    address: {country: 'Tunisia'},
+    is_active: true,
     access_code: '123',
     access_code_hint: 'hint'
   };

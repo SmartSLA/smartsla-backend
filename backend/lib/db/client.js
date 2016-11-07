@@ -9,8 +9,20 @@ module.exports = function(dependencies) {
       type: String,
       required: true
     },
+    acronym: {
+      type: String,
+      required: true
+    },
+    preferred_contact: {
+      type: String,
+      required: true
+    },
     address: {
       type: dependencies('db').mongo.schemas.address,
+      required: true
+    },
+    is_active: {
+      type: Boolean,
       required: true
     },
     access_code: {
