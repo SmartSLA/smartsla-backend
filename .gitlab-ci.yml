@@ -18,19 +18,11 @@ prepare:
    - npm i
    - npm prune
    - bower prune
-  only:
-   - branches
-  except:
-   - master
 
 test:
   stage: test
   script:
    - grunt
-  only:
-   - branches
-  except:
-   - master
 
 deploy:
   stage: deploy

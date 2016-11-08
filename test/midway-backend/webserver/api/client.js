@@ -238,7 +238,10 @@ describe('The client API', function() {
       self.helpers.modules.current.lib.lib.group.create(group).then(function(mongoResult) {
         client = {
           name: 'linagora',
-          address: 'Tolosa',
+          acronym: 'Tolosa',
+          preferred_contact: 'linagora',
+          address: {country: 'Tunisia'},
+          is_active: true,
           access_code: '123',
           access_code_hint: 'anotherhint',
           groups: [mongoResult._id]
