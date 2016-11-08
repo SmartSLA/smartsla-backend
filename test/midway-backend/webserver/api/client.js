@@ -227,31 +227,51 @@ describe('The client API', function() {
 
   describe('DELETE /api/clients/:clientId', function() {
     let clientInMongo;
-    const group = {
-      name: 'Ticketing'
-    };
 
     beforeEach(function(done) {
       const self = this;
-      let client;
+      const lib = self.helpers.modules.current.lib.lib;
+      let client = {
+        name: 'linagora',
+        acronym: 'Tolosa',
+        preferred_contact: 'linagora',
+        address: {country: 'Tunisia'},
+        is_active: true,
+        access_code: '123',
+        access_code_hint: 'anotherhint',
+        groups: []
+      };
+      let group;
 
-      self.helpers.modules.current.lib.lib.group.create(group).then(function(mongoResult) {
-        client = {
-          name: 'linagora',
-          acronym: 'Tolosa',
-          preferred_contact: 'linagora',
-          address: {country: 'Tunisia'},
+      lib.client.create(client).then(function(mongoResult) {
+        client = mongoResult;
+        group = {
+          name: 'datGroup',
+          client: mongoResult._id,
+          address: mongoResult.address,
           is_active: true,
-          access_code: '123',
-          access_code_hint: 'anotherhint',
-          groups: [mongoResult._id]
+          preferred_contact: 'Anduin',
+          members: []
         };
 
-        self.helpers.modules.current.lib.lib.client.create(client).then(function(mongoResult) {
-          clientInMongo = mongoResult;
+        lib.group.create(group).then(function(mongoResult) {
+          const updatedClient = {
+            name: 'linagora',
+            acronym: 'Tolosa',
+            preferred_contact: 'linagora',
+            address: {country: 'Tunisia'},
+            is_active: true,
+            access_code: '123',
+            access_code_hint: 'anotherhint',
+            groups: [mongoResult._id]
+          };
 
-          done();
-        }, done);
+          lib.client.update(client._id, updatedClient).then(function(mongoResult) {
+            clientInMongo = mongoResult;
+
+            done();
+          }, done);
+        });
       });
     });
 
