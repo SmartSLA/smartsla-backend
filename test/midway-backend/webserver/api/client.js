@@ -204,7 +204,10 @@ describe('The client API', function() {
     it('should update the client', function(done) {
       const newClient = {
         name: 'Linagora',
-        address: 'Tolosa',
+        acronym: 'LIN',
+        preferred_contact: 'linagora',
+        address: {country: 'Tunisia'},
+        is_active: true,
         access_code: '123',
         access_code_hint: 'anotherhint'
       };

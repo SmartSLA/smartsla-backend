@@ -1,90 +1,9 @@
 .tic-client-add {
-  .tic-client-add-form {
-    width: 100%;
-    background: @m-white;
-    box-shadow: 0 1px 1px @m-black-fade-15;
-
-    .form-group {
-      margin-bottom:0;
-    }
-
-    .tic-create-client-fields {
-      width: 100%;
-      padding-top: 15px;
-    }
-
-    .tic-client-logo {
-      .align-self(center);
-
-      display: inline-block;
-      position: relative;
-
-      &:hover > .tic-client-logo-edit {
-        background: @m-black-fade-80;
-      }
-
-      img {
-        .clickable;
-
-        margin-top: 20px;
-        width: 300px;
-        height: 300px;
-        border-radius: 3px;
-      }
-
-      .tic-client-logo-edit {
-        .clickable;
-
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: @m-black-fade-20;
-        text-align: center;
-        border-radius: 0 0 3px 3px;
-        padding: 10px 10px 11px;
-        margin-top: 20px;
-
-        &:hover {
-          background: @m-black-fade-80;
-        }
-
-        i {
-          font-size: 18px;
-          vertical-align: middle;
-          margin-top: -3px;
-        }
-
-      }
-    }
-  }
 }
 
 @media (min-width: @screen-sm-min) {
   .tic-client-add {
     margin-top: 15px;
     padding-top: 10px;
-
-    .tic-client-add-form {
-      .flex-row;
-      .flex-wrap;
-
-      padding: 15px;
-
-      .tic-create-client-fields {
-        width: 50%;
-      }
-
-      .tic-client-logo {
-        max-height: 512px;
-        max-width: 512px;
-        margin: 0 15px 0 50px;
-
-        img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
   }
 }

@@ -4,25 +4,23 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController($scope, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
-    this.createClient = createClient;
-    this.getClientLogo = ticClientLogoService.getClientLogo;
-    $scope.client = {};
+  function ticClientAddController($state, ticNotificationFactory, ticClientApiService) {
+    var self = this;
+
+    self.createClient = createClient;
+    // Early initialization to make logo picker work.
+    self.client = {};
 
     ////////////
 
-    function createClient(form) {
-      if (form.$invalid) {
-        return;
-      }
-
-      if ($scope.client.avatarUploader) {
-        $scope.client.avatarUploader.start();
-        $scope.client.avatarUploader.await(
+    function createClient() {
+      if (self.client.avatarUploader) {
+        self.client.avatarUploader.start();
+        self.client.avatarUploader.await(
           function(result) {
-            $scope.client.logo = result[0].response.data._id;
-            delete $scope.client.avatarUploader;
-            delete $scope.client.logoAsBase64;
+            self.client.logo = result[0].response.data._id;
+            delete self.client.avatarUploader;
+            delete self.client.logoAsBase64;
 
             _createClientAndNotify();
           }, function(error) {
@@ -34,7 +32,7 @@
     }
 
     function _createClientAndNotify() {
-      return ticClientApiService.createClient($scope.client)
+      return ticClientApiService.createClient(self.client)
         .then(function() {
           ticNotificationFactory.weakInfo('Success', 'Client Created');
           $state.go('ticketing.home');

@@ -15,6 +15,13 @@
           | {{ 'Acronym' | translate }}
         .tic-client-view-card-line-value-description
           | {{ ::ctrl.client.acronym }}
+  .tic-client-view-card-line-value(ng-if= "ctrl.client.is_active")
+    .tic-client-view-card-line-value-title
+      i.mdi.mdi-information
+      | {{ 'Active' | translate }}
+    .tic-client-view-card-line-value-description.checkbox
+      input(type="checkbox", ng-model="ctrl.client.is_active", name="Active")
+      i.input-helper
       .tic-client-view-card-line-value(ng-if= "ctrl.client.address")
         .tic-client-view-card-line-value-title
           i.mdi.mdi-map-marker
@@ -31,15 +38,9 @@
           | {{ 'Access Code' | translate }}
         .tic-client-view-card-line-value-description
           | {{ ::ctrl.client.access_code }}
-      .tic-client-view-card-line-value(ng-if= "ctrl.client.is_active")
-        .tic-client-view-card-line-value-title
-          i.mdi.mdi-information
-          | {{ 'Status' | translate }}
-        .tic-client-view-card-line-value-description
-          | {{ ::ctrl.client.is_active }}
       .tic-client-view-card-line-value(ng-if= "ctrl.client.preferred_contact")
         .tic-client-view-card-line-value-title
           i.mdi.mdi-account
-          | {{ 'Priviliged contact' | translate }}
+          | {{ 'Preferred contact' | translate }}
         .tic-client-view-card-line-value-description
           | {{ ::ctrl.client.preferred_contact }}
