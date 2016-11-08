@@ -23,6 +23,15 @@ describe('The linagora.esn.ticketing db group model', function() {
     expect(groupDBModule.models.group).to.exist;
     expect(new groupDBModule.models.group({
       name: 'datGroup',
+      address: {
+        street: 'datStreet',
+        state: 'datState',
+        zip_code: '2074',
+        city: 'city of God',
+        country: 'Konoha'
+      },
+      is_active: true,
+      preferred_contact: 'Arthas',
       members: [{password: 'secret', accounts: 'accounts'}]
     })).to.be.an.instanceof(this.moduleHelpers.dependencies('db').mongo.mongoose.Model);
   });

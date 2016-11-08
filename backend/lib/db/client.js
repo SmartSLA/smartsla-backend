@@ -3,6 +3,7 @@
 module.exports = function(dependencies) {
 
   const mongoose = dependencies('db').mongo.mongoose;
+  const address = dependencies('db').mongo.schemas.address;
   const ObjectId = mongoose.Schema.ObjectId;
   const ClientSchema = new mongoose.Schema({
     name: {
@@ -18,7 +19,7 @@ module.exports = function(dependencies) {
       required: true
     },
     address: {
-      type: dependencies('db').mongo.schemas.address,
+      type: address,
       required: true
     },
     is_active: {
