@@ -3,7 +3,8 @@
     .tic-client-address-line-key
       | {{ 'Street' | translate }}:
     .tic-client-address-line-value
-      | {{ ::ctrl.address.street }}, {{ ::ctrl.address.extended_address }}
+      | {{ ::ctrl.address.street }}
+      span(ng-if="ctrl.address.extended_address") , {{ ::ctrl.address.extended_address }}
   .tic-client-address-line(ng-if= "ctrl.address.post_box")
     .tic-client-address-line-key
       | {{ 'Post box' | translate }}:
