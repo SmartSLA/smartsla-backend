@@ -1,5 +1,6 @@
 'use strict';
 
+angular.module('esn.form.helper', []);
 angular.module('pascalprecht.translate', [])
   .provider('$translate', function() {
     return {
