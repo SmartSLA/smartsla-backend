@@ -5,6 +5,7 @@
     'ui.router',
     'op.dynamicDirective',
     'restangular',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'esn.form.helper'
   ]);
 })();
