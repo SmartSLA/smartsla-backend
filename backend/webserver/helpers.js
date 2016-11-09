@@ -6,8 +6,8 @@ module.exports = {
     return {
       error: {
         code: 500,
-        message: 'Server Error',
-        details: errDetail || error.message
+        message: errDetail || 'Server Error',
+        details: error.message
       }
     };
   }

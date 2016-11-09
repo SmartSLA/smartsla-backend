@@ -115,7 +115,7 @@ describe('the ticClientAddController', function() {
       ctrl.createClient({$invalid: false});
 
       expect(ticNotificationFactory.weakInfo).to.not.have.been.called;
-      expect(ticNotificationFactory.weakError).to.have.been.calledWith('Error', 'Error ' + errorMsg);
+      expect(ticNotificationFactory.weakError).to.have.been.calledWith('Error', errorMsg);
       expect(ticClientApiService.createClient).to.not.have.been.called;
     });
   });

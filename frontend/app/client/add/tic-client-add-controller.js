@@ -26,7 +26,7 @@
 
             _createClientAndNotify();
           }, function(error) {
-            ticNotificationFactory.weakError('Error', 'Error ' + error.message);
+            ticNotificationFactory.weakError('Error', error.message);
           });
       } else {
         _createClientAndNotify();
@@ -38,8 +38,10 @@
         .then(function() {
           ticNotificationFactory.weakInfo('Success', 'Client Created');
           $state.go('ticketing.home');
-        }, function(error) {
-          ticNotificationFactory.weakError('Error', 'Error ' + error.message);
+        }, function(response) {
+          var error = response.data.error;
+
+          ticNotificationFactory.weakError('Error', error.message);
         });
     }
   }
