@@ -49,28 +49,23 @@ describe('the ticClientAddController', function() {
   });
 
   function initController() {
-    var controller = $controller('ticClientAddController', {
-      $scope: $scope
-    });
+    var controller = $controller('ticClientAddController');
 
-    $scope.client = {};
     $scope.$digest();
 
     return controller;
   }
 
   describe('the createClient method', function() {
-    it('should do nothing if form is invalid', function() {
-      initController().createClient({$invalid: true});
-
-      expect(ticClientApiService.createClient).to.not.have.been.called;
-    });
-
     it('should save client without logo', function() {
-      initController().createClient({$invalid: false});
+      var ctrl = initController();
+
+      ctrl.client = { name: 'Test' };
+
+      ctrl.createClient();
       $rootScope.$digest();
 
-      expect(ticClientApiService.createClient).to.have.been.calledWith($scope.client);
+      expect(ticClientApiService.createClient).to.have.been.calledWith(ctrl.client);
       expect($state.go).to.have.been.calledWith('ticketing.home');
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');
     });
@@ -85,16 +80,17 @@ describe('the ticClientAddController', function() {
         })
       };
 
-      $scope.client.avatarUploader = avatarUploader;
+      ctrl.client = {name: 'Test'};
+      ctrl.client.avatarUploader = avatarUploader;
 
-      ctrl.createClient({$invalid: false});
+      ctrl.createClient();
       $rootScope.$digest();
 
       expect(avatarUploader.start).to.have.been.calledWith;
       expect(avatarUploader.await).to.have.been.called;
-      expect($scope.client.avatarUploader).to.be.undefined;
-      expect(ticClientApiService.createClient).to.be.calledWith({ logo: 'test' });
-      expect($scope.client.logo).to.equals('test');
+      expect(ctrl.client.avatarUploader).to.be.undefined;
+      expect(ticClientApiService.createClient).to.be.calledWith({ name: 'Test', logo: 'test' });
+      expect(ctrl.client.logo).to.equals('test');
       expect($state.go).to.have.been.calledWith('ticketing.home');
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');
     });
@@ -109,10 +105,10 @@ describe('the ticClientAddController', function() {
         })
       };
 
-      $scope.client.avatarUploader = avatarUploader;
+      ctrl.client.avatarUploader = avatarUploader;
       $rootScope.$digest();
 
-      ctrl.createClient({$invalid: false});
+      ctrl.createClient();
 
       expect(ticNotificationFactory.weakInfo).to.not.have.been.called;
       expect(ticNotificationFactory.weakError).to.have.been.calledWith('Error', errorMsg);
