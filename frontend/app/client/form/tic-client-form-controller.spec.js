@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientFormController', function() {
 
-  var $rootscope, $scope, $q, $controller, ticClientLogoService;
+  var $rootscope, $scope, $q, $controller, $timeout, ticClientLogoService;
 
   beforeEach(function() {
     ticClientLogoService = {
@@ -20,11 +20,12 @@ describe('the ticClientFormController', function() {
       $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$timeout_, _ticClientLogoService_) {
       $rootscope = _$rootScope_;
       $scope = $rootscope.$new();
       $controller = _$controller_;
       $q = _$q_;
+      $timeout = _$timeout_;
       ticClientLogoService = _ticClientLogoService_;
     });
   });
@@ -58,6 +59,22 @@ describe('the ticClientFormController', function() {
       ctrl = initController(bindings);
 
       expect(ctrl.formName).to.equal('form');
+    });
+
+    it('should expose $scope.form to the ctrl.form after rendering', function() {
+      var bindings = {
+          formName: 'formName'
+        },
+        value = 'value';
+
+      $scope[bindings.formName] = value;
+      var ctrl = initController(bindings);
+
+      expect(ctrl.form).to.be.undefined;
+
+      $timeout.flush();
+
+      expect(ctrl.form).to.equal(value);
     });
   });
 

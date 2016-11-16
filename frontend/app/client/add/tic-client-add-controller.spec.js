@@ -7,11 +7,15 @@ var expect = chai.expect;
 
 describe('the ticClientAddController', function() {
 
-  var $rootScope, $scope, $controller, $q, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService;
+  var $rootScope, $scope, $controller, $q, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService, form;
 
   beforeEach(function() {
     $state = {
       go: sinon.spy()
+    };
+
+    form = {
+      $invalid: false
     };
 
     ticClientApiService = {
@@ -49,7 +53,14 @@ describe('the ticClientAddController', function() {
   });
 
   function initController() {
-    var controller = $controller('ticClientAddController');
+    var bindings = {
+        form: form
+      },
+      controller = $controller('ticClientAddController',
+        {
+          $scope: $scope
+        },
+        bindings);
 
     $scope.$digest();
 
@@ -57,6 +68,15 @@ describe('the ticClientAddController', function() {
   }
 
   describe('the createClient method', function() {
+    it('should notify user when the form is invalid', function() {
+      form.$invalid = true;
+      var ctrl = initController();
+
+      ctrl.createClient();
+
+      expect(ticNotificationFactory.weakError).to.have.been.calledWith('Error', 'Client is not valid');
+    });
+
     it('should save client without logo', function() {
       var ctrl = initController();
 
