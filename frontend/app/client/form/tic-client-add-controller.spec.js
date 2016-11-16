@@ -30,7 +30,7 @@ describe('the ticClientFormController', function() {
   });
 
   function initController() {
-    var controller = $controller('ticClientAddEditFormController', {
+    var controller = $controller('ticClientFormController', {
         $scope: $scope
       },
       {

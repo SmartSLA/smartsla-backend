@@ -2,9 +2,9 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .controller('ticClientAddEditFormController', ticClientAddEditFormController);
+    .controller('ticClientFormController', ticClientFormController);
 
-  function ticClientAddEditFormController($scope, ticClientLogoService) {
+  function ticClientFormController($scope, ticClientLogoService) {
     var self = this;
 
     $scope.client = self.client;
