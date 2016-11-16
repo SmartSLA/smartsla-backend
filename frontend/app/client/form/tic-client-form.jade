@@ -1,4 +1,4 @@
-form.tic-client-form(name='clientForm')
+form.tic-client-form(name= "{{ ctrl.formName }}")
   .tic-client-form-overview
     .tic-client-form-logo(modal-launcher, template="/linagora.esn.ticketing/app/client/add/tic-client-add-logo-modal", ng-click="showModal()")
       a
@@ -18,42 +18,42 @@ form.tic-client-form(name='clientForm')
             i.input-helper
             | {{ "Active" | translate }}
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Name" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Name" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.name', required)
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Acronym" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Acronym" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.acronym', required)
     .tic-client-form-line
       .tic-client-form-line-key
         i.mdi.mdi-map-marker
         h4.tic-client-form-line-key-title {{ 'Address' | translate }}
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Street" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Street" | translate }}')
           input.form-control(type='text' ng-model='ctrl.client.address.street', required)
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Extended address" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Extended address" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.address.extended_address')
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Post box" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Post box" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.address.post_box')
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Zip" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Zip" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.address.zip', required)
-        esn-form-group(form='clientForm', label='{{ "City" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "City" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.address.city', required)
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Country" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Country" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.address.country', required)
     .tic-client-form-line
       .tic-client-form-line-key
         i.mdi.mdi-monitor
         h4.tic-client-form-line-key-title {{ 'Client Information' | translate }}
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Access Code" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Access Code" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.access_code', required)
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Access Code Hint" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Access Code Hint" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.access_code_hint', required)
       .tic-client-form-line-value
-        esn-form-group(form='clientForm', label='{{ "Preferred Contact" | translate }}')
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Preferred Contact" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.preferred_contact', required)

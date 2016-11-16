@@ -8,6 +8,7 @@
     var self = this;
 
     $scope.client = self.client;
+    self.formName = self.formName || 'form';
     self.getClientLogo = ticClientLogoService.getClientLogo;
  }
 })();

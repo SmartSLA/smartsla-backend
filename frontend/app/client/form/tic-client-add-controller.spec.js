@@ -29,13 +29,15 @@ describe('the ticClientFormController', function() {
     });
   });
 
-  function initController() {
-    var controller = $controller('ticClientFormController', {
-        $scope: $scope
-      },
-      {
-        client: {name: 'Test'}
-      });
+  function initController(bindings) {
+    bindings = bindings || {
+        client: { name: 'Test' },
+        formName: 'formName'
+    };
+    var controller = $controller('ticClientFormController',
+      { $scope: $scope },
+      bindings
+    );
 
     $scope.$digest();
 
@@ -47,6 +49,15 @@ describe('the ticClientFormController', function() {
       var ctrl = initController();
 
       expect($scope.client).to.equal(ctrl.client);
+    });
+
+    it('should set formName to "form" when not defined', function() {
+      var bindings = {
+        client: { name: 'Test' }
+      },
+      ctrl = initController(bindings);
+
+      expect(ctrl.formName).to.equal('form');
     });
   });
 

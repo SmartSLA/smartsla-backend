@@ -7,6 +7,7 @@ angular.module('linagora.esn.ticketing')
     controller: 'ticClientFormController',
     controllerAs: 'ctrl',
     bindings: {
-      client: '='
+      client: '=',
+      formName: '@'
     }
   });
