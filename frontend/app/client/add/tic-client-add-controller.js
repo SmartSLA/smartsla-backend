@@ -14,6 +14,10 @@
     ////////////
 
     function createClient() {
+      if (self.form && self.form.$invalid) {
+        return ticNotificationFactory.weakError('Error', 'Client is not valid');
+      }
+
       if (self.client.avatarUploader) {
         self.client.avatarUploader.start();
         self.client.avatarUploader.await(

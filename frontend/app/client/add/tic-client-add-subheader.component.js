@@ -9,8 +9,7 @@
       templateUrl: '/linagora.esn.ticketing/app/client/add/tic-client-add-subheader',
       controllerAs: 'ctrl',
       bindings: {
-        createClient: '&',
-        cancel: '&'
+        createClient: '&'
       }
     };
 
