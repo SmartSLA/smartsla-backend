@@ -4,16 +4,16 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController($state, ticNotificationFactory, ticClientApiService) {
+  function ticClientAddController(esnPreviousState, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
     var self = this;
 
     self.createClient = createClient;
-    // Early initialization to make logo picker work.
     initClient();
 
     ////////////
 
     function initClient() {
+      // self.client must be initialized to make logo picker work.
       self.client = {
         is_active: true
       };
@@ -24,28 +24,12 @@
         return ticNotificationFactory.weakError('Error', 'Client is not valid');
       }
 
-      if (self.client.avatarUploader) {
-        self.client.avatarUploader.start();
-        self.client.avatarUploader.await(
-          function(result) {
-            self.client.logo = result[0].response.data._id;
-            delete self.client.avatarUploader;
-            delete self.client.logoAsBase64;
-
-            _createClientAndNotify();
-          }, function(error) {
-            ticNotificationFactory.weakError('Error', error.message);
-          });
-      } else {
-        _createClientAndNotify();
-      }
-    }
-
-    function _createClientAndNotify() {
-      return ticClientApiService.createClient(self.client)
+      ticClientLogoService.handleLogoUpload(self.client)
+        .then(ticClientApiService.createClient)
         .then(function() {
+          esnPreviousState.go();
+
           ticNotificationFactory.weakInfo('Success', 'Client Created');
-          $state.go('ticketing.home');
         }, function(response) {
           var error = response.data.error;
 

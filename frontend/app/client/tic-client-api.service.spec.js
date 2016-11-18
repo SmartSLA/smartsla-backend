@@ -16,6 +16,7 @@ describe('The ticClientApi service', function() {
     it('should send a request to /linagora.esn.ticketing/api/clients', function() {
       $httpBackend.expectGET('/linagora.esn.ticketing/api/clients').respond(200, []);
       ticClientApiService.getClients();
+
       $httpBackend.flush();
     });
   });
@@ -32,6 +33,26 @@ describe('The ticClientApi service', function() {
     it('should send a request to /linagora.esn.ticketing/api/clients', function() {
       $httpBackend.expectPOST('/linagora.esn.ticketing/api/clients', client).respond(200, []);
       ticClientApiService.createClient(client);
+
+      $httpBackend.flush();
+    });
+  });
+
+  describe('the updateClient function', function() {
+    var client;
+    var clientId = '123';
+
+    beforeEach(function() {
+      client = {
+        _id: clientId,
+        name: 'Test'
+      };
+    });
+
+    it('should send a request to /linagora.esn.ticketing/api/clients', function() {
+      $httpBackend.expectPUT('/linagora.esn.ticketing/api/clients/' + clientId, client).respond(200, []);
+      ticClientApiService.updateClient(clientId, client);
+
       $httpBackend.flush();
     });
   });
@@ -42,6 +63,7 @@ describe('The ticClientApi service', function() {
 
       $httpBackend.expectGET('/linagora.esn.ticketing/api/clients/' + clientId).respond(200, {});
       ticClientApiService.getClient(clientId);
+
       $httpBackend.flush();
     });
   });
@@ -52,6 +74,7 @@ describe('The ticClientApi service', function() {
 
       $httpBackend.expectDELETE('/linagora.esn.ticketing/api/clients/' + clientId).respond(204, {});
       ticClientApiService.deleteClient(clientId);
+
       $httpBackend.flush();
     });
   });

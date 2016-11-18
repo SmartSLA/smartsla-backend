@@ -1,0 +1,7 @@
+extends /modules/subheader/responsive-subheader
+
+block left
+  tic-subheader-button(esn-back-button, tic-icon-class="mdi-close", tic-icon-text="Cancel")
+
+block right
+  tic-subheader-button(tic-click="ctrl.updateClient()", tic-disabled="ctrl.form.$invalid", tic-icon-class="mdi-check", tic-icon-text="Save", tic-icon-position="right")

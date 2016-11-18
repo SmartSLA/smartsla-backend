@@ -8,6 +8,7 @@
     return {
       getClients: getClients,
       createClient: createClient,
+      updateClient: updateClient,
       getClient: getClient,
       deleteClient: deleteClient
     };
@@ -20,6 +21,10 @@
 
     function createClient(client) {
       return ticRestangular.all('clients').post(client);
+    }
+
+    function updateClient(clientId, client) {
+      return ticRestangular.all('clients').one(clientId).customPUT(client);
     }
 
     function getClient(clientId) {
