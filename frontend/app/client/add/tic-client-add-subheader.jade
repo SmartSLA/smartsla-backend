@@ -1,7 +1,7 @@
 extends /modules/subheader/responsive-subheader
 
 block left
-  tic-create-button(ng-click='ctrl.createClient()')
+  tic-create-button(tic-click='ctrl.createClient()', tic-disabled='ctrl.form.$invalid')
 
 block right
   tic-close-button(ui-sref='ticketing.home')
