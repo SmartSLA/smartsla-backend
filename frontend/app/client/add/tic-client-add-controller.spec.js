@@ -68,6 +68,14 @@ describe('the ticClientAddController', function() {
   }
 
   describe('the createClient method', function() {
+    it('should set client.is_active on init', function() {
+      var ctrl = initController();
+
+      ctrl.createClient();
+
+      expect(ctrl.client.is_active).to.be.true;
+    });
+
     it('should notify user when the form is invalid', function() {
       form.$invalid = true;
       var ctrl = initController();

@@ -1,7 +1,7 @@
 extends /modules/subheader/responsive-subheader
 
 block left
-  tic-back-button(ui-sref="ticketing.clients-list")
+  tic-subheader-button(ui-sref= "ticketing.clients-list", tic-icon-class= "mdi-reply", tic-icon-text= "Back")
 
 block right
-  tic-edit-button(ui-sref="ticketing.client-edit({ client: ctrl.client, clientId: ctrl.client._id })")
+  tic-subheader-button(ui-sref= "ticketing.client-edit({ client: ctrl.client, clientId: ctrl.client._id })", tic-icon-class= "mdi-pencil", tic-icon-text= "Edit", tic-icon-position= "right")

@@ -9,9 +9,15 @@
 
     self.createClient = createClient;
     // Early initialization to make logo picker work.
-    self.client = {};
+    initClient();
 
     ////////////
+
+    function initClient() {
+      self.client = {
+        is_active: true
+      };
+    }
 
     function createClient() {
       if (self.form && self.form.$invalid) {
