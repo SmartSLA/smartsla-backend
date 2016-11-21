@@ -1,7 +1,7 @@
 extends /modules/subheader/responsive-subheader
 
 block left
-  tic-create-button(tic-click='ctrl.createClient()', tic-disabled='ctrl.form.$invalid')
+  tic-subheader-button(ui-sref= "ticketing.home", tic-icon-class= "mdi-close", tic-icon-text= "Cancel")
 
 block right
-  tic-close-button(ui-sref='ticketing.home')
+  tic-subheader-button(tic-click= "ctrl.createClient()", tic-disabled= "ctrl.form.$invalid", tic-icon-class= "mdi-check", tic-icon-text= "Create", tic-icon-position= "right")

@@ -5,9 +5,9 @@
         button.close(type="button", ng-click="$toggle()")
         h4.modal-title {{ 'Delete a client' | translate }}
       .modal-body
-        {{ 'Are you sure you want to delete this client?' | translate }}
+        | {{ 'Are you sure you want to delete this client?' | translate }}
         .tic-client-delete-modal.tic-client-name
-          {{ client.name }}
+          | {{ client.name }}
       .modal-footer
         button.btn.btn-default(type="button", ng-click="ctrl.deleteClient(client._id); $toggle()") {{ 'Confirm' | translate }}
         button.btn.btn-default(type="button", ng-click="$toggle()") {{ 'Cancel' | translate }}
