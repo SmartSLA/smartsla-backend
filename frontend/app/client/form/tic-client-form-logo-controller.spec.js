@@ -5,7 +5,7 @@
 
 var expect = chai.expect;
 
-describe('the ticClientAddLogoController', function() {
+describe('the ticClientFormLogoController', function() {
 
   var $rootscope, $scope, $q, $controller, $window, selectionService, fileUploadService, ticClientLogoService, addFileSpy;
 
@@ -53,7 +53,7 @@ describe('the ticClientAddLogoController', function() {
   });
 
   function initController() {
-    var controller = $controller('ticClientAddLogoController', {
+    var controller = $controller('ticClientFormLogoController', {
       $scope: $scope
     });
 

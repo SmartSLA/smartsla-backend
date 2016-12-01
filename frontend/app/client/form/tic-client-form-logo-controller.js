@@ -2,9 +2,9 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .controller('ticClientAddLogoController', ticClientAddLogoController);
+    .controller('ticClientFormLogoController', ticClientFormLogoController);
 
-  function ticClientAddLogoController($scope, selectionService, ticClientLogoService, fileUploadService) {
+  function ticClientFormLogoController($scope, selectionService, ticClientLogoService, fileUploadService) {
     var self = this;
 
     self.imageSelected = imageSelected;
@@ -25,8 +25,8 @@
 
           reader.onloadend = function() {
             $scope.client.logoAsBase64 = reader.result;
-            $scope.client.avatarUploader = fileUploadService.get();
-            $scope.client.avatarUploader.addFile(blob);
+            $scope.client.logoUploader = fileUploadService.get();
+            $scope.client.logoUploader.addFile(blob);
             selectionService.clear();
             self.loading = false;
             $scope.modal.hide();
