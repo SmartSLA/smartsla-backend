@@ -1,0 +1,11 @@
+.tic-view-card-details
+  .tic-view-card-line
+    .tic-view-card-line-key
+      i.mdi.mdi-account-multiple
+      h4.tic-view-card-line-key-title {{ 'Groups' | translate }}
+      .tic-group-add-button(ng-if="ctrl.showAddGroupButton")
+        span.mdi.mdi-plus-circle(ui-sref= "ticketing.group-add({ client: ctrl.client })")
+          | {{ "Add group" | translate }}
+    .tic-view-card-line-value-title(ng-repeat='group in ctrl.groups')
+      i.mdi.mdi-information
+      | {{ group.name }}

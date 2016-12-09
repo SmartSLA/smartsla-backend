@@ -23,7 +23,9 @@ module.exports = function(dependencies, lib) {
   }
 
   function listGroups(req, res) {
-    lib.group.list({}).then(
+    const option = req.query.option ? JSON.parse(req.query.option) : {};
+
+    lib.group.list(option).then(
       result => res.status(200).json(result),
       err => res.status(500).json(helpers.createErrorMessage(err, 'Error while listing groups'))
     );

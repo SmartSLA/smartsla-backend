@@ -3,22 +3,22 @@
 const request = require('supertest');
 const expect = require('chai').expect;
 const q = require('q');
+const _ = require('lodash');
 
 describe('The group API', function() {
-  let user, app, lib, group;
-  const password = 'secret';
+  let user, app, lib, group, password;
+  const jsonnify = _.flow(JSON.stringify, JSON.parse);
 
   beforeEach(function(done) {
     const self = this;
 
-    lib = self.helpers.modules.current.lib.lib;
     this.helpers.modules.initMidway('linagora.esn.ticketing', function(err) {
       if (err) {
         return done(err);
       }
 
       const ticketApp = require(self.testEnv.backendPath + '/webserver/application')(self.helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(self.helpers.modules.current.deps, lib);
+      const api = require(self.testEnv.backendPath + '/webserver/api')(self.helpers.modules.current.deps, self.helpers.modules.current.lib.lib);
 
       ticketApp.use(require('body-parser').json());
       ticketApp.use('/api', api);
@@ -31,16 +31,22 @@ describe('The group API', function() {
         }
 
         user = models.users[0];
-        group = {
-          name: 'linagora',
-          preferred_contact: 'aymen',
-          address: {country: 'Tunisia'},
-          is_active: true,
-          members: []
-        };
+
         done();
       });
     });
+  });
+
+  beforeEach(function() {
+    lib = this.helpers.modules.current.lib.lib;
+    group = {
+      name: 'linagora',
+      preferred_contact: 'aymen',
+      address: {country: 'Tunisia'},
+      is_active: true,
+      members: []
+    };
+    password = 'secret';
   });
 
   afterEach(function(done) {
@@ -48,11 +54,33 @@ describe('The group API', function() {
   });
 
   describe('GET /api/groups', function() {
+    let firstGroup, secondGroup;
+
+    beforeEach(function(done) {
+      const otherGroup = {
+        name: 'lintunsi',
+        preferred_contact: 'aymen',
+        address: 'tunis',
+        is_active: false,
+        members: []
+      };
+
+      q.all([
+        lib.group.create(group),
+        lib.group.create(otherGroup)
+      ]).spread(function(_firstGroup, _secondGroup) {
+        firstGroup = _firstGroup;
+        secondGroup = _secondGroup;
+
+        done();
+      }, done);
+    });
+
     it('should return 401 if not logged in', function(done) {
       this.helpers.api.requireLogin(app, 'get', '/api/groups', done);
     });
 
-    it('should return a list of groups', function(done) {
+    it('should return the list of all groups when req.query.option does not exist', function(done) {
       const self = this;
 
       lib.group.list({}).then(function(groups) {
@@ -65,7 +93,38 @@ describe('The group API', function() {
 
           req.expect(200).end(function(err, res) {
             expect(err).to.not.exist;
-            expect(res.body).to.deep.equal(groups);
+            expect(res.body).to.deep.equal([jsonnify(firstGroup), jsonnify(secondGroup)]);
+            expect(res.body).to.deep.equal(jsonnify(groups));
+
+            done();
+          });
+        });
+      }, done);
+    });
+
+    it('should return a subset of groups when req.query.option exists', function(done) {
+      const self = this;
+      const option = {
+        _id: {
+          $in: [firstGroup._id]
+        }
+      };
+
+      function _encodeURIJSONStringify(json) {
+        return encodeURIComponent(JSON.stringify(json));
+      }
+
+      lib.group.list(option).then(function() {
+        self.helpers.api.loginAsUser(app, user.emails[0], password, function(err, requestAsMember) {
+          if (err) {
+            return done(err);
+          }
+
+          const req = requestAsMember(request(app).get('/api/groups?option=' + _encodeURIJSONStringify(option)));
+
+          req.expect(200).end(function(err, res) {
+            expect(err).to.not.exist;
+            expect(res.body).to.deep.equal([jsonnify(firstGroup)]);
 
             done();
           });
@@ -305,7 +364,7 @@ describe('The group API', function() {
     let groupInMongo;
 
     beforeEach(function(done) {
-      this.helpers.modules.current.lib.lib.group.create(group).then(function(mongoResult) {
+      lib.group.create(group).then(function(mongoResult) {
         groupInMongo = mongoResult;
 
         done();

@@ -68,6 +68,17 @@
               template: '<tic-client-edit />'
             }
           }
-        });
+        })
+        .state('ticketing.group-add', {
+          url: '/groups/add',
+          params: {
+            client: null
+          },
+          views: {
+            'main@ticketing': {
+              template: '<tic-group-add />'
+            }
+          }
       });
+    });
 })();

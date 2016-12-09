@@ -1,0 +1,40 @@
+ng-form.tic-form(name= "{{ ctrl.formName }}")
+  .tic-form-details
+    .tic-form-line
+      .tic-form-line-value
+        .checkbox
+          label
+            input(type="checkbox", ng-model="ctrl.group.is_active", name="Active")
+            i.input-helper
+            | {{ "Active" | translate }}
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Name" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.name', name='ctrl.group.name' required)
+    .tic-form-line
+      .tic-form-line-key
+        i.mdi.mdi-map-marker
+        h4.tic-form-line-key-title {{ 'Address' | translate }}
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Street" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.street', name='ctrl.group.address.street' required)
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Extended address" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.extended_address', name='ctrl.group.address.extended_address')
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Post box" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.post_box', name='ctrl.group.address.post_box')
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Zip" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.zip', name='ctrl.group.address.zip' required)
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "City" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.city', name='ctrl.group.address.city' required)
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Country" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.address.country', name='ctrl.group.address.country' required)
+    .tic-form-line
+      .tic-form-line-key
+        i.mdi.mdi-monitor
+        h4.tic-form-line-key-title {{ 'Group information' | translate }}
+      .tic-form-line-value
+        esn-form-group(form= "{{ ctrl.formName }}", label='{{ "Preferred Contact" | translate }}')
+          input.form-control(type='text', ng-model='ctrl.group.preferred_contact', name='ctrl.group.preferred_contact' required)
