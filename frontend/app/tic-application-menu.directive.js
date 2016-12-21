@@ -7,7 +7,7 @@
   function ticApplicationMenu(applicationMenuTemplateBuilder) {
     var directive = {
       restrict: 'E',
-      template: applicationMenuTemplateBuilder('/#/ticketing', 'mdi-library-books', 'Ticketing'),
+      template: applicationMenuTemplateBuilder('/#/ticketing', 'ticketing', 'Ticketing'),
       replace: true
     };
 
