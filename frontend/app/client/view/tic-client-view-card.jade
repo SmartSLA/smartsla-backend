@@ -3,7 +3,7 @@
     .tic-client-view-card-pic
         img(ng-src="{{ ctrl.getClientLogo(ctrl.client) }}", alt='{{ "Logo" | translate }}')
     .tic-client-view-card-info
-      .tic-client-name {{ ::ctrl.client.name }}
+      .tic-client-name(ng-attr-title="{{ ::ctrl.client.name }}") {{ ::ctrl.client.name }}
   .tic-client-view-card-details
     .tic-client-view-card-line
       .tic-client-view-card-line-key
