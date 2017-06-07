@@ -1,5 +1,5 @@
 before_script:
-  - ~/.nvm/nvm.sh & nvm use 6
+  - . ~/.nvm/nvm.sh && nvm use 6
 
 stages:
   - prepare
