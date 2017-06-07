@@ -14,6 +14,11 @@ cache:
 
 prepare:
   stage: prepare
+  tags:
+    - shell
+    - mongo
+    - elasticsearch
+    - redis
   script:
    - npm i
    - npm prune
@@ -21,6 +26,11 @@ prepare:
 
 test:
   stage: test
+  tags:
+    - shell
+    - mongo
+    - elasticsearch
+    - redis
   script:
    - grunt
 
