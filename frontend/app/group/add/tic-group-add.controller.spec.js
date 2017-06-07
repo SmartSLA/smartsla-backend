@@ -7,10 +7,10 @@ var expect = chai.expect;
 
 describe('the ticGroupFormController', function() {
 
-  var $rootScope, $scope, $controller, $q, $stateParams, esnPreviousState, ticNotificationFactory, ticGroupApiService, form;
+  var $rootScope, $scope, $controller, $q, $stateParams, $state, ticNotificationFactory, ticGroupApiService, form;
 
   beforeEach(function() {
-    esnPreviousState = {
+    $state = {
       go: sinon.spy()
     };
 
@@ -43,15 +43,15 @@ describe('the ticGroupFormController', function() {
       $provide.value('$stateParams', $stateParams);
       $provide.value('ticGroupApiService', ticGroupApiService);
       $provide.value('ticNotificationFactory', ticNotificationFactory);
-      $provide.value('esnPreviousState', esnPreviousState);
+      $provide.value('$state', $state);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _esnPreviousState_, _ticGroupApiService_, _ticNotificationFactory_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _$state_, _ticGroupApiService_, _ticNotificationFactory_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
       $controller = _$controller_;
-      esnPreviousState = _esnPreviousState_;
+      $state = _$state_;
       $stateParams = _$stateParams_;
       ticGroupApiService = _ticGroupApiService_;
       ticNotificationFactory = _ticNotificationFactory_;
@@ -108,7 +108,7 @@ describe('the ticGroupFormController', function() {
       $rootScope.$digest();
 
       expect(ticGroupApiService.createGroup).to.be.calledWith({ name: 'linagora' });
-      expect(esnPreviousState.go).to.have.been.calledWith;
+      expect($state.go).to.have.been.calledWith;
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Group created');
     });
   });

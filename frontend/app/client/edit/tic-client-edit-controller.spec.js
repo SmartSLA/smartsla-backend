@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientEditController', function() {
 
-  var $rootScope, $scope, $controller, $q, $stateParams, esnPreviousState, ticNotificationFactory, ticClientApiService, ticClientLogoService, form, clientData;
+  var $rootScope, $scope, $controller, $q, $stateParams, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService, form, clientData;
 
   beforeEach(function() {
     $stateParams = {
@@ -24,7 +24,7 @@ describe('the ticClientEditController', function() {
 
     clientData = { data: { name: 'TestGetClient' } };
 
-    esnPreviousState = {
+    $state = {
       go: sinon.spy()
     };
 
@@ -51,19 +51,19 @@ describe('the ticClientEditController', function() {
 
     angular.mock.module('linagora.esn.ticketing', function($provide) {
       $provide.value('$stateParams', $stateParams);
-      $provide.value('esnPreviousState', esnPreviousState);
+      $provide.value('$state', $state);
       $provide.value('ticClientApiService', ticClientApiService);
       $provide.value('ticNotificationFactory', ticNotificationFactory);
       $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _esnPreviousState_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _$state_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
       $controller = _$controller_;
       $stateParams = _$stateParams_;
-      esnPreviousState = _esnPreviousState_;
+      $state = _$state_;
       ticClientApiService = _ticClientApiService_;
       ticNotificationFactory = _ticNotificationFactory_;
       ticClientLogoService = _ticClientLogoService_;
@@ -121,7 +121,7 @@ describe('the ticClientEditController', function() {
       expect(ticClientLogoService.handleLogoUpload).to.have.been.calledWith(ctrl.client);
       expect(ticClientApiService.updateClient).to.have.been.calledWith(ctrl.client._id, ctrl.client);
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Updated');
-      expect(esnPreviousState.go).to.have.been.calledWith;
+      expect($state.go).to.have.been.calledWith;
     });
 
     it('should update client and update logo', function() {
@@ -145,7 +145,7 @@ describe('the ticClientEditController', function() {
         }
       );
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Updated');
-      expect(esnPreviousState.go).to.have.been.calledWith;
+      expect($state.go).to.have.been.calledWith;
     });
 
     it('should fire notification when ticClientLogoService.handleLogoUpload reject', function() {
