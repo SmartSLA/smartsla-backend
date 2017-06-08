@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientEditController', function() {
 
-  var $rootScope, $scope, $controller, $q, $stateParams, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService, form, clientData;
+  var $rootScope, $scope, $controller, $q, $stateParams, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService, form, clientData;
 
   beforeEach(function() {
     $stateParams = {
@@ -37,6 +37,12 @@ describe('the ticClientEditController', function() {
       })
     };
 
+    ticGroupApiService = {
+      createGroups: sinon.spy(function() {
+        return $q.when($stateParams.client);
+      })
+    };
+
     ticNotificationFactory = {
       weakError: sinon.spy(),
       weakInfo: sinon.spy()
@@ -53,11 +59,12 @@ describe('the ticClientEditController', function() {
       $provide.value('$stateParams', $stateParams);
       $provide.value('$state', $state);
       $provide.value('ticClientApiService', ticClientApiService);
+      $provide.value('ticGroupApiService', ticGroupApiService);
       $provide.value('ticNotificationFactory', ticNotificationFactory);
       $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _$state_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$stateParams_, _$state_, _ticClientApiService_, _ticGroupApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
@@ -65,6 +72,7 @@ describe('the ticClientEditController', function() {
       $stateParams = _$stateParams_;
       $state = _$state_;
       ticClientApiService = _ticClientApiService_;
+      ticGroupApiService = _ticGroupApiService_;
       ticNotificationFactory = _ticNotificationFactory_;
       ticClientLogoService = _ticClientLogoService_;
     });
@@ -119,7 +127,7 @@ describe('the ticClientEditController', function() {
       $rootScope.$digest();
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.calledWith(ctrl.client);
-      expect(ticClientApiService.updateClient).to.have.been.calledWith(ctrl.client._id, ctrl.client);
+      expect(ticClientApiService.updateClient).to.have.been.calledWith(ctrl.client);
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Updated');
       expect($state.go).to.have.been.calledWith;
     });
@@ -138,7 +146,7 @@ describe('the ticClientEditController', function() {
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.called;
       expect(ticClientApiService.updateClient).to.have.been.calledWith(
-        '123', {
+        {
           _id: '123',
           name: 'Test',
           logo: 'testLogo'

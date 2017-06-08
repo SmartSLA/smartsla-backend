@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientAddController', function() {
 
-  var $rootScope, $scope, $controller, $q, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService, form;
+  var $rootScope, $scope, $controller, $q, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService, form;
 
   beforeEach(function() {
     form = {
@@ -19,8 +19,18 @@ describe('the ticClientAddController', function() {
     };
 
     ticClientApiService = {
-      createClient: sinon.spy(function() {
-        return $q.when();
+      createClient: sinon.spy(function(client) {
+        var res = {};
+
+        res.data = client;
+
+        return $q.when(res);
+      })
+    };
+
+    ticGroupApiService = {
+      createGroups: sinon.spy(function(client) {
+        return $q.when(client);
       })
     };
 
@@ -39,17 +49,19 @@ describe('the ticClientAddController', function() {
     angular.mock.module('linagora.esn.ticketing', function($provide) {
       $provide.value('$state', $state);
       $provide.value('ticClientApiService', ticClientApiService);
+      $provide.value('ticGroupApiService', ticGroupApiService);
       $provide.value('ticNotificationFactory', ticNotificationFactory);
       $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$state_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$state_, _ticClientApiService_, _ticGroupApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
       $controller = _$controller_;
       $state = _$state_;
       ticClientApiService = _ticClientApiService_;
+      ticGroupApiService = _ticGroupApiService_;
       ticNotificationFactory = _ticNotificationFactory_;
       ticClientLogoService = _ticClientLogoService_;
     });
@@ -97,6 +109,7 @@ describe('the ticClientAddController', function() {
       $rootScope.$digest();
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.calledWith(ctrl.client);
+      expect(ticGroupApiService.createGroups).to.have.been.calledWith(ctrl.client);
       expect(ticClientApiService.createClient).to.have.been.calledWith(ctrl.client);
       expect($state.go).to.have.been.calledWith;
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');
@@ -110,12 +123,13 @@ describe('the ticClientAddController', function() {
       });
       var ctrl = initController();
 
-      ctrl.client = {name: 'Test'};
+      ctrl.client = { name: 'Test' };
 
       ctrl.createClient();
       $rootScope.$digest();
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.called;
+      expect(ticGroupApiService.createGroups).to.have.been.calledWith({ name: 'Test', logo: 'testLogoId' });
       expect(ticClientApiService.createClient).to.be.calledWith({ name: 'Test', logo: 'testLogoId' });
       expect($state.go).to.have.been.calledWith;
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');

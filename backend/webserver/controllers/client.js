@@ -15,6 +15,7 @@ module.exports = function(dependencies, lib) {
       is_active: req.body.is_active,
       access_code: req.body.access_code,
       access_code_hint: req.body.access_code_hint,
+      groups: req.body.groups,
       logo: req.body.logo
     };
 

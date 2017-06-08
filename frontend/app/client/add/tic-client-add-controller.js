@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController($state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
+  function ticClientAddController($stateParams, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService) {
     var self = this;
 
     self.createClient = createClient;
@@ -15,8 +15,13 @@
     function initClient() {
       // self.client must be initialized to make logo picker work.
       self.client = {
-        is_active: true
+        is_active: true,
+        groups: []
       };
+
+      if ($stateParams.client) {
+        self.client = $stateParams.client;
+      }
     }
 
     function createClient() {
@@ -25,9 +30,10 @@
       }
 
       ticClientLogoService.handleLogoUpload(self.client)
+        .then(ticGroupApiService.createGroups)
         .then(ticClientApiService.createClient)
-        .then(function() {
-          $state.go('ticketing.client-view', {clientId: self.client._id, client: self.client});
+        .then(function(client) {
+          $state.go('ticketing.client-view', {clientId: client.data._id, client: client.data});
 
           ticNotificationFactory.weakInfo('Success', 'Client Created');
         }, function(response) {
