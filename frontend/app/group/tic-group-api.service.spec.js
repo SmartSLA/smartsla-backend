@@ -1,5 +1,10 @@
 'use strict';
 
+/* global chai: false */
+/* global sinon: false */
+
+var expect = chai.expect;
+
 describe('The ticGroupApi service', function() {
   var $httpBackend, ticGroupApiService, $window;
 
@@ -77,6 +82,28 @@ describe('The ticGroupApi service', function() {
       ticGroupApiService.createGroup(group);
 
       $httpBackend.flush();
+    });
+  });
+
+  describe('the createGroups function', function() {
+    var client = {};
+
+    beforeEach(function() {
+      client = {
+        groups: [{ _id: '123', name: 'Test' }, { _id: '456', name: 'Test1' }]
+      };
+
+      ticGroupApiService.createGroup = sinon.spy(function() {
+        return $q.when();
+      });
+
+    });
+
+    it('should create groups with createGroup function', function() {
+      ticGroupApiService.createGroups(client).then(function(_client) {
+        expect(_client.groups).to.be.deep.equal(['123', '456']);
+        expect(ticGroupApiService.createGroup).to.be.called;
+      });
     });
   });
 });
