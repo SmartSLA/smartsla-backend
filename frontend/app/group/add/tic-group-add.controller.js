@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticGroupAddController', ticGroupAddController);
 
-  function ticGroupAddController($stateParams, esnPreviousState, ticNotificationFactory, ticGroupApiService) {
+  function ticGroupAddController($stateParams, $state, ticNotificationFactory, ticGroupApiService) {
     var self = this;
 
     self.createGroup = createGroup;
@@ -31,7 +31,7 @@
 
       return ticGroupApiService.createGroup(self.group)
         .then(function() {
-          esnPreviousState.go();
+          $state.go('ticketing.client-edit', {clientId: $stateParams.client._id, client: $stateParams.client});
 
           ticNotificationFactory.weakInfo('Success', 'Group created');
         }, function(response) {

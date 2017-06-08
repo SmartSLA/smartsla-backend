@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientAddController', ticClientAddController);
 
-  function ticClientAddController(esnPreviousState, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
+  function ticClientAddController($state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
     var self = this;
 
     self.createClient = createClient;
@@ -27,7 +27,7 @@
       ticClientLogoService.handleLogoUpload(self.client)
         .then(ticClientApiService.createClient)
         .then(function() {
-          esnPreviousState.go();
+          $state.go('ticketing.client-view', {clientId: self.client._id, client: self.client});
 
           ticNotificationFactory.weakInfo('Success', 'Client Created');
         }, function(response) {

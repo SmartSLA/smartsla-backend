@@ -33,6 +33,9 @@
         })
         .state('ticketing.client-add', {
           url: '/clients/add',
+          params: {
+            client: null
+          },
           views: {
             'main@ticketing': {
                 template: '<tic-client-add />'

@@ -7,14 +7,14 @@ var expect = chai.expect;
 
 describe('the ticClientAddController', function() {
 
-  var $rootScope, $scope, $controller, $q, esnPreviousState, ticNotificationFactory, ticClientApiService, ticClientLogoService, form;
+  var $rootScope, $scope, $controller, $q, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService, form;
 
   beforeEach(function() {
     form = {
       $invalid: false
     };
 
-    esnPreviousState = {
+    $state = {
       go: sinon.spy()
     };
 
@@ -37,18 +37,18 @@ describe('the ticClientAddController', function() {
     };
 
     angular.mock.module('linagora.esn.ticketing', function($provide) {
-      $provide.value('esnPreviousState', esnPreviousState);
+      $provide.value('$state', $state);
       $provide.value('ticClientApiService', ticClientApiService);
       $provide.value('ticNotificationFactory', ticNotificationFactory);
       $provide.value('ticClientLogoService', ticClientLogoService);
     });
 
-    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _esnPreviousState_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
+    angular.mock.inject(function(_$rootScope_, _$controller_, _$q_, _$state_, _ticClientApiService_, _ticNotificationFactory_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $q = _$q_;
       $controller = _$controller_;
-      esnPreviousState = _esnPreviousState_;
+      $state = _$state_;
       ticClientApiService = _ticClientApiService_;
       ticNotificationFactory = _ticNotificationFactory_;
       ticClientLogoService = _ticClientLogoService_;
@@ -98,7 +98,7 @@ describe('the ticClientAddController', function() {
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.calledWith(ctrl.client);
       expect(ticClientApiService.createClient).to.have.been.calledWith(ctrl.client);
-      expect(esnPreviousState.go).to.have.been.calledWith;
+      expect($state.go).to.have.been.calledWith;
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');
     });
 
@@ -117,7 +117,7 @@ describe('the ticClientAddController', function() {
 
       expect(ticClientLogoService.handleLogoUpload).to.have.been.called;
       expect(ticClientApiService.createClient).to.be.calledWith({ name: 'Test', logo: 'testLogoId' });
-      expect(esnPreviousState.go).to.have.been.calledWith;
+      expect($state.go).to.have.been.calledWith;
       expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Client Created');
     });
 
