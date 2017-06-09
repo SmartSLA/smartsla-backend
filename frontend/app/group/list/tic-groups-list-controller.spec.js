@@ -9,7 +9,7 @@ describe('the groupsListController', function() {
   var $rootScope, $controller, $q, $stateParams, ticGroupApiService, ticClientApiService, clientData, groupsData;
 
   beforeEach(function() {
-    groupsData = { data: {} };
+    groupsData = { data: { groups: [] } };
 
     ticGroupApiService = {
       getClientGroups: sinon.spy(function() {
@@ -64,12 +64,13 @@ describe('the groupsListController', function() {
     });
 
     it('should not call ticClientApiService.getClient() when $stateParams.client exists', function() {
+      delete $stateParams.clientId;
+
       initController();
 
       $rootScope.$digest();
 
       expect(ticClientApiService.getClient).to.not.have.been.called;
-      expect(ticGroupApiService.getClientGroups).to.have.been.calledWith($stateParams.client.groups);
     });
 
     it('should not call ticGroupApiService.getClientGroups() if client does not exist', function() {
@@ -84,8 +85,7 @@ describe('the groupsListController', function() {
 
       $rootScope.$digest();
 
-      expect(ticGroupApiService.getClientGroups).to.have.been.calledWith($stateParams.client.groups);
-      expect(ctrl.groups).to.equal(groupsData.data);
+      expect(ctrl.groups).to.deep.equal(groupsData.data.groups);
     });
   });
 });

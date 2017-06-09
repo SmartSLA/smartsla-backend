@@ -80,7 +80,7 @@ describe('the ticGroupFormController', function() {
       expect(ctrl.group.is_active).to.be.true;
     });
 
-    it('should set group.address, group.preferred_contact and group.client with the correspending client attributes', function() {
+    it('should set group.address, group.preferred_contact and group.client with the corresponding client attributes', function() {
       var ctrl = initController();
 
       expect(ctrl.group.client).to.equals($stateParams.client._id);
@@ -99,17 +99,18 @@ describe('the ticGroupFormController', function() {
       expect(ticNotificationFactory.weakError).to.have.been.calledWith('Error', 'Group is not valid');
     });
 
-    it('should save the group', function() {
+    it('should save the group in the client', function() {
       var ctrl = initController();
 
+      ctrl.client = { groups: [] };
       ctrl.group = { name: 'linagora' };
 
       ctrl.createGroup();
       $rootScope.$digest();
 
-      expect(ticGroupApiService.createGroup).to.be.calledWith({ name: 'linagora' });
+      expect(ctrl.client.groups).to.be.deep.equals([{ name: 'linagora' }]);
       expect($state.go).to.have.been.calledWith;
-      expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Group created');
+      expect(ticNotificationFactory.weakInfo).to.have.been.calledWith('Success', 'Group added');
     });
   });
 });

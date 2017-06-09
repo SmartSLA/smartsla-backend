@@ -50,8 +50,8 @@ describe('The ticClientApi service', function() {
     });
 
     it('should send a request to /linagora.esn.ticketing/api/clients', function() {
-      $httpBackend.expectPUT('/linagora.esn.ticketing/api/clients/' + clientId, client).respond(200, []);
-      ticClientApiService.updateClient(clientId, client);
+      $httpBackend.expectPUT('/linagora.esn.ticketing/api/clients/' + client._id, client).respond(200, []);
+      ticClientApiService.updateClient(client);
 
       $httpBackend.flush();
     });

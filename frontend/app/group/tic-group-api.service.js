@@ -4,10 +4,11 @@
   angular.module('linagora.esn.ticketing')
     .factory('ticGroupApiService', ticGroupApiService);
 
-  function ticGroupApiService(ticRestangular) {
+  function ticGroupApiService($q, ticRestangular) {
     return {
       getClientGroups: getClientGroups,
-      createGroup: createGroup
+      createGroup: createGroup,
+      createGroups: createGroups
     };
 
     ////////////
@@ -26,6 +27,26 @@
 
     function createGroup(group) {
       return ticRestangular.all('groups').post(group);
+    }
+
+    function createGroups(client) {
+      var groupIds = [];
+
+      return $q.all(client.groups.map(function(group) {
+        if (!group._id) {
+          return createGroup(group);
+        }
+
+        return group;
+      }))
+      .then(function(results) {
+        results.map(function(_group) {
+          _group.data ? groupIds.push(_group.data._id) : groupIds.push(_group._id);
+        });
+        client.groups = groupIds;
+
+        return client;
+      });
     }
   }
 })();

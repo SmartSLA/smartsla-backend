@@ -4,11 +4,15 @@
     angular.module('linagora.esn.ticketing')
       .controller('ticGroupsListController', ticGroupsListController);
 
-    function ticGroupsListController($stateParams, $q, ticGroupApiService, ticClientApiService) {
+    function ticGroupsListController($stateParams, $q, ticClientApiService) {
       var self = this;
 
       _initClient()
-        .then(_fetchGroups);
+        .then(function(client) {
+          if (client && client.groups) {
+            self.groups = client.groups;
+          }
+        });
 
       ////////////
 
@@ -22,14 +26,6 @@
         }
 
         return $q.when();
-      }
-
-      function _fetchGroups(client) {
-        if (client && client.groups) {
-          return ticGroupApiService.getClientGroups(client.groups).then(function(result) {
-            self.groups = result.data;
-          });
-        }
       }
     }
   })();

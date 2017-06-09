@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('ticClientEditController', ticClientEditController);
 
-  function ticClientEditController($stateParams, $state, ticNotificationFactory, ticClientApiService, ticClientLogoService) {
+  function ticClientEditController($stateParams, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService) {
     var self = this;
 
     self.updateClient = updateClient;
@@ -31,7 +31,8 @@
       }
 
       ticClientLogoService.handleLogoUpload(self.client)
-        .then(_updateClient)
+        .then(ticGroupApiService.createGroups)
+        .then(ticClientApiService.updateClient)
         .then(function() {
           $state.go('ticketing.client-view', {clientId: self.client._id, client: self.client});
 
@@ -41,10 +42,6 @@
 
           ticNotificationFactory.weakError('Error', error.message);
         });
-    }
-
-    function _updateClient(client) {
-      return ticClientApiService.updateClient(client._id, client);
     }
   }
 })();

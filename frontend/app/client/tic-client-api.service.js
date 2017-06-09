@@ -23,8 +23,8 @@
       return ticRestangular.all('clients').post(client);
     }
 
-    function updateClient(clientId, client) {
-      return ticRestangular.all('clients').one(clientId).customPUT(client);
+    function updateClient(client) {
+      return ticRestangular.all('clients').one(client._id).customPUT(client);
     }
 
     function getClient(clientId) {
