@@ -16,6 +16,7 @@ module.exports = function(config) {
       'frontend/components/lodash/dist/lodash.min.js',
       'frontend/components/sinon-chai/lib/sinon-chai.js',
       'frontend/components/sinon-1.15.4/index.js',
+      'node_modules/linagora-rse/frontend/js/modules/lodash-wrapper.js',
       'test/config/mocks.js',
       'frontend/app/tic.app.js',
       'frontend/app/**/*.js',
