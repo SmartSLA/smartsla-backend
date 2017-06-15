@@ -45,4 +45,4 @@
           | {{ 'Preferred Contact' | translate }}
         .tic-client-view-card-line-value-description
           | {{ ::ctrl.client.preferred_contact }}
-    tic-groups-list(client="ctrl.client", show-add-group-button="false")
+    tic-groups-list(ng-if= "ctrl.client.groups.length > 0", client="ctrl.client", show-add-group-button="false", show-delete-group-button="false")

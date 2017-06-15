@@ -57,4 +57,4 @@ ng-form.tic-form(name= "{{ ctrl.formName }}")
       .tic-form-line-value
         esn-form-group(form="{{ ctrl.formName }}", label='{{ "Preferred Contact" | translate }}')
           input.form-control(type='text', ng-model='ctrl.client.preferred_contact', name='ctrl.client.preferred_contact', required)
-    tic-groups-list(client="ctrl.client", show-add-group-button="true")
+    tic-groups-list(client="ctrl.client", show-add-group-button="true", show-delete-group-button="true")
