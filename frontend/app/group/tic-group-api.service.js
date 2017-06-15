@@ -8,7 +8,8 @@
     return {
       getClientGroups: getClientGroups,
       createGroup: createGroup,
-      createGroups: createGroups
+      createGroups: createGroups,
+      deleteGroup: deleteGroup
     };
 
     ////////////
@@ -47,6 +48,10 @@
 
         return client;
       });
+    }
+
+    function deleteGroup(groupId) {
+      return ticRestangular.all('groups').one(groupId).remove();
     }
   }
 })();
