@@ -7,5 +7,8 @@
         span.mdi.mdi-plus-circle(ui-sref= "ticketing.group-add({ client: ctrl.client })")
           | {{ "Add group" | translate }}
     .tic-view-card-line-value-title(ng-repeat='group in ctrl.groups')
-      i.mdi.mdi-information
-      | {{ group.name }}
+      .tic-information
+        i.mdi.mdi-information
+        | {{ group.name }}
+      .tic-delete-icon(ng-if="ctrl.showDeleteGroupButton", modal-launcher, template="/linagora.esn.ticketing/app/group/delete/tic-group-delete-modal", ng-click="showModal()")
+        i.mdi.mdi-delete
