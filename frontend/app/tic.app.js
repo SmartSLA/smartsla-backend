@@ -6,6 +6,7 @@
     'op.dynamicDirective',
     'restangular',
     'pascalprecht.translate',
-    'esn.form.helper'
+    'esn.form.helper',
+    'esn.lodash-wrapper'
   ]);
 })();

@@ -11,7 +11,8 @@
       controllerAs: 'ctrl',
       bindings: {
         client: '<',
-        showAddGroupButton: '<'
+        showAddGroupButton: '<',
+        showDeleteGroupButton: '<'
       }
     };
 
