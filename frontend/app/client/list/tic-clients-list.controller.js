@@ -7,13 +7,13 @@
    function ticClientsListController(ticClientApiService, ticClientLogoService) {
      var self = this;
 
-     self.getClientLogo = ticClientLogoService.getClientLogo;
+     self.$onInit = $onInit;
 
-     exposeClientsToScope();
+     self.getClientLogo = ticClientLogoService.getClientLogo;
 
      /////////////////
 
-     function exposeClientsToScope() {
+     function $onInit() {
       ticClientApiService.getClients().then(function(result) {
         self.clients = result.data;
       });

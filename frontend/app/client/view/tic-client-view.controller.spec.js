@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('the ticClientViewController', function() {
 
-  var $rootScope, $controller, $stateParams, $q, ticClientLogoService, ticClientApiService;
+  var $rootScope, $scope, $controller, $stateParams, $q, ticClientLogoService, ticClientApiService;
 
   beforeEach(function() {
 
@@ -35,6 +35,7 @@ describe('the ticClientViewController', function() {
 
     angular.mock.inject(function(_$rootScope_, _$controller_, _$stateParams_, _$q_, _ticClientApiService_, _ticClientLogoService_) {
       $rootScope = _$rootScope_;
+      $scope = $rootScope.$new();
       $q = _$q_;
       $controller = _$controller_;
       $stateParams = _$stateParams_;
@@ -43,9 +44,19 @@ describe('the ticClientViewController', function() {
     });
   });
 
+  function initController() {
+    var controller = $controller('ticClientViewController', {
+      $scope: $scope
+    });
+
+    controller.$onInit();
+
+    return controller;
+  }
+
   describe('the getClientLogo method', function() {
     it('should expose ticClientLogoService.getClientLogo method', function() {
-      var ctrl = $controller('ticClientViewController');
+      var ctrl = initController();
       var client = {
           name: 'Linagora',
           address: 'Ghazela'
@@ -60,7 +71,7 @@ describe('the ticClientViewController', function() {
   describe('the initialization', function() {
     it('should init ctrl.client from stateParams.client if it exists', function() {
       $stateParams.client = { _id: 'id' };
-      var ctrl = $controller('ticClientViewController');
+       var ctrl = initController();
 
       expect(ctrl.client).to.equal($stateParams.client);
     });
@@ -74,7 +85,7 @@ describe('the ticClientViewController', function() {
         return $q.when(result);
       });
 
-      var ctrl = $controller('ticClientViewController');
+      var ctrl = initController();
 
       $rootScope.$digest();
       expect(ticClientApiService.getClient).to.have.been.calledWith($stateParams.clientId);

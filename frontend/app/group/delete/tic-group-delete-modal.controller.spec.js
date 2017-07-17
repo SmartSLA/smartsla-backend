@@ -67,6 +67,9 @@ describe('the ticGroupDeleteModalController', function() {
     });
 
     $scope.group = { _id: '123' };
+
+    controller.$onInit();
+
     $scope.$digest();
 
     return controller;
@@ -85,6 +88,7 @@ describe('the ticGroupDeleteModalController', function() {
       delete $stateParams.clientId;
 
       initController();
+
       $rootScope.$digest();
 
       expect(ticClientApiService.getClient).to.not.have.been.called;

@@ -7,25 +7,18 @@
     function ticGroupsListController($stateParams, $q, ticClientApiService) {
       var self = this;
 
-      _initClient()
-        .then(function(client) {
-          if (client && client.groups) {
-            self.groups = client.groups;
-          }
-        });
+      self.$onInit = $onInit;
 
       ////////////
 
-      function _initClient() {
+      function $onInit() {
         if ($stateParams.client) {
-          return $q.when($stateParams.client);
+          self.groups = $stateParams.client.groups;
         } else if ($stateParams.clientId) {
           return ticClientApiService.getClient($stateParams.clientId).then(function(result) {
-            return result.data;
+            self.groups = result.data.groups;
           });
         }
-
-        return $q.when();
       }
     }
   })();

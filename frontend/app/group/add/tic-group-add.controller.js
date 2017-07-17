@@ -7,12 +7,13 @@
   function ticGroupAddController($stateParams, $state, ticNotificationFactory) {
     var self = this;
 
+    self.$onInit = $onInit;
+
     self.createGroup = createGroup;
-    initGroup();
 
     ////////////
 
-    function initGroup() {
+    function $onInit() {
       self.group = {
         is_active: true
       };

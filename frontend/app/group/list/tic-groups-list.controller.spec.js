@@ -50,7 +50,11 @@ describe('the groupsListController', function() {
   });
 
   function initController() {
-    return $controller('ticGroupsListController');
+    var controller = $controller('ticGroupsListController');
+
+    controller.$onInit();
+
+    return controller;
   }
 
   describe('the initialization function', function() {

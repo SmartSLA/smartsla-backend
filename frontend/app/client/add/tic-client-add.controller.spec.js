@@ -77,6 +77,8 @@ describe('the ticClientAddController', function() {
         },
         bindings);
 
+    controller.$onInit();
+
     $scope.$digest();
 
     return controller;

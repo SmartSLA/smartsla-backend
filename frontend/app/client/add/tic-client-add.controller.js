@@ -7,12 +7,13 @@
   function ticClientAddController($stateParams, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService) {
     var self = this;
 
+    self.$onInit = $onInit;
+
     self.createClient = createClient;
-    initClient();
 
     ////////////
 
-    function initClient() {
+    function $onInit() {
       // self.client must be initialized to make logo picker work.
       self.client = {
         is_active: true,
