@@ -41,6 +41,8 @@ describe('the ticClientsListController', function() {
       $scope: $scope
     });
 
+    controller.$onInit();
+
     return controller;
   }
 

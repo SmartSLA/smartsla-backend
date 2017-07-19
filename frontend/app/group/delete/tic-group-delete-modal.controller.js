@@ -7,11 +7,12 @@
   function ticGroupDeleteModalController($stateParams, $state, ticGroupApiService, ticClientApiService, ticNotificationFactory, _) {
     var self = this;
 
+    self.$onInit = $onInit;
+
     self.deleteGroup = deleteGroup;
-    initClient();
     ////////////
 
-    function initClient() {
+    function $onInit() {
       if ($stateParams.client) {
         self.client = $stateParams.client;
       } else if ($stateParams.clientId) {

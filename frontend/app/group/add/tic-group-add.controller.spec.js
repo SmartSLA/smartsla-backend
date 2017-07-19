@@ -68,6 +68,8 @@ describe('the ticGroupFormController', function() {
         },
         bindings);
 
+    controller.$onInit();
+
     $scope.$digest();
 
     return controller;

@@ -88,6 +88,8 @@ describe('the ticClientEditController', function() {
         },
         bindings);
 
+    controller.$onInit();
+
     $scope.$digest();
 
     return controller;

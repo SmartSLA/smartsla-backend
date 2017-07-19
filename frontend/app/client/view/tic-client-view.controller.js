@@ -7,13 +7,13 @@
    function ticClientViewController($stateParams, ticClientLogoService, ticClientApiService) {
      var self = this;
 
-     this.getClientLogo = ticClientLogoService.getClientLogo;
+     self.$onInit = $onInit;
 
-     getClient();
+     this.getClientLogo = ticClientLogoService.getClientLogo;
 
      /////////////////
 
-     function getClient() {
+      function $onInit() {
        if ($stateParams.client) {
          self.client = $stateParams.client;
 

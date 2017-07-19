@@ -7,13 +7,13 @@
   function ticClientEditController($stateParams, $state, ticNotificationFactory, ticClientApiService, ticGroupApiService, ticClientLogoService) {
     var self = this;
 
-    self.updateClient = updateClient;
+    self.$onInit = $onInit;
 
-    initClient();
+    self.updateClient = updateClient;
 
     /////////////////
 
-    function initClient() {
+    function $onInit() {
       if ($stateParams.client) {
         self.client = $stateParams.client;
 
