@@ -1,5 +1,5 @@
 before_script:
-  - . ~/.nvm/nvm.sh && nvm use 6
+  - . ~/.nvm/nvm.sh && nvm use 8
 
 stages:
   - prepare
@@ -21,6 +21,7 @@ prepare:
     - redis
   script:
    - npm i
+   - npm update
    - npm prune
    - bower prune
 
