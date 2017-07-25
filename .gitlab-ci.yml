@@ -2,28 +2,7 @@ before_script:
   - . ~/.nvm/nvm.sh && nvm use 8
 
 stages:
-  - prepare
   - test
-  - deploy
-
-cache:
-  key: "$CI_PROJECT_NAME/dependencies"
-  paths:
-  - node_modules
-  - frontend/components
-
-prepare:
-  stage: prepare
-  tags:
-    - shell
-    - mongo
-    - elasticsearch
-    - redis
-  script:
-   - npm i
-   - npm update
-   - npm prune
-   - bower prune
 
 test:
   stage: test
@@ -33,11 +12,9 @@ test:
     - elasticsearch
     - redis
   script:
-   - grunt
-
-#deploy:
-#  stage: deploy
-#  script:
-#   - ssh jenkins@openpaas-rse.linagora.dc1 "/home/jenkins/bin/update-ticketing-dev.sh 2>&1"
-#  only:
-#   - master
+    - npm i
+    - bower i
+    - npm update
+    - npm prune
+    - bower prune
+    - grunt
