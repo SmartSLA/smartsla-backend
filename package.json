@@ -22,7 +22,7 @@
     "grunt-lint-pattern": "0.1.4",
     "grunt-mocha-cli": "2.1.0",
     "grunt-run": "0.6.0",
-    "grunt-run-grunt": "git+https://ci.open-paas.org/stash/scm/or/grunt-run-grunt.git",
+    "grunt-run-grunt": "linagora/grunt-run-grunt",
     "grunt-shell": "1.3.1",
     "grunt-shell-spawn": "0.3.10",
     "grunt-wait-server": "0.3.0",
@@ -31,10 +31,10 @@
     "karma-coverage": "1.1.1",
     "karma-firefox-launcher": "1.0.0",
     "karma-mocha": "1.1.1",
-    "karma-ng-jade2module-preprocessor": "git+https://ci.open-paas.org/stash/scm/or/karma-ng-jade2module-preprocessor.git#v0.1.0",
+    "karma-ng-jade2module-preprocessor": "linagora/karma-ng-jade2module-preprocessor#7ccc8a3253e",
     "karma-phantomjs-launcher": "1.0.2",
     "karma-spec-reporter": "0.0.26",
-    "linagora-rse": "git+https://ci.open-paas.org/stash/scm/or/rse.git",
+    "linagora-rse": "linagora/openpaas-esn#master",
     "mocha": "3.0.2",
     "mockery": "1.7.0",
     "mongoose": "4.4.11",
@@ -57,8 +57,8 @@
   },
   "author": "Linagora R&D",
   "license": "AGPL-3.0",
-  "engines" : {
-    "node" : ">=6.5.0"
+  "engines": {
+    "node": ">=6.5.0"
   },
   "dependencies": {
     "awesome-module": "1.0.0",
