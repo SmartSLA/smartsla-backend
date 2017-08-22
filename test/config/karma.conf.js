@@ -20,7 +20,7 @@ module.exports = function(config) {
       'test/config/mocks.js',
       'frontend/app/tic.app.js',
       'frontend/app/**/*.js',
-      'frontend/app/**/*.jade',
+      'frontend/app/**/*.pug',
       'frontend/app/*.js'
     ],
     frameworks: ['mocha'],
@@ -31,7 +31,7 @@ module.exports = function(config) {
     reporters: ['coverage', 'spec'],
     preprocessors: {
       'frontend/app/**/*.js': ['coverage'],
-      '**/*.jade': ['ng-jade2module']
+      '**/*.pug': ['ng-jade2module']
     },
 
     plugins: [
@@ -51,6 +51,11 @@ module.exports = function(config) {
       prependPrefix: '/linagora.esn.ticketing',
       // setting this option will create only a single module that contains templates
       // from all the files, so you can load them all with module('templates')
+      cacheIdFromPath: function(filepath) {
+        var cacheId = filepath.replace(/.pug$/, '.html').replace(/^frontend/, '/ticketing');
+
+        return cacheId;
+      },
       jadeRenderOptions: {
         basedir: require('path').resolve(__dirname, '../../node_modules/linagora-rse/frontend/views')
       },
