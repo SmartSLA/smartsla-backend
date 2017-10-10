@@ -1,5 +1,7 @@
 'use strict';
 
+const MODULE_DIR_NAME = '/linagora.esn.ticketing';
+
 module.exports = function(config) {
   config.set({
     basePath: '../../',
@@ -16,12 +18,10 @@ module.exports = function(config) {
       'frontend/components/lodash/dist/lodash.min.js',
       'frontend/components/sinon-chai/lib/sinon-chai.js',
       'frontend/components/sinon-1.15.4/index.js',
-      'node_modules/linagora-rse/frontend/js/modules/lodash-wrapper.js',
       'test/config/mocks.js',
-      'frontend/app/tic.app.js',
+      'frontend/app/**/*.module.js',
       'frontend/app/**/*.js',
-      'frontend/app/**/*.pug',
-      'frontend/app/*.js'
+      'frontend/app/**/*.pug'
     ],
     frameworks: ['mocha'],
     colors: true,
@@ -44,18 +44,18 @@ module.exports = function(config) {
       'karma-ng-jade2module-preprocessor'
     ],
 
-    coverageReporter: {type: 'text', dir: '/tmp'},
+    coverageReporter: { type: 'text', dir: '/tmp' },
 
     ngJade2ModulePreprocessor: {
       stripPrefix: 'frontend',
-      prependPrefix: '/linagora.esn.ticketing',
-      // setting this option will create only a single module that contains templates
-      // from all the files, so you can load them all with module('templates')
+      prependPrefix: MODULE_DIR_NAME,
       cacheIdFromPath: function(filepath) {
-        var cacheId = filepath.replace(/.pug$/, '.html').replace(/^frontend/, '/ticketing');
+        var cacheId = filepath.replace(/.pug$/, '.html').replace(/^frontend/, '/group');
 
         return cacheId;
       },
+      // setting this option will create only a single module that contains templates
+      // from all the files, so you can load them all with module('templates')
       jadeRenderOptions: {
         basedir: require('path').resolve(__dirname, '../../node_modules/linagora-rse/frontend/views')
       },

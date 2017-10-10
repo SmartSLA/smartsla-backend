@@ -1,8 +1,0 @@
-button.btn.btn-link.tic-button(ng-click= "ctrl.ticClick()", ng-disabled= "ctrl.ticDisabled", ng-switch = "ctrl.ticIconPosition")
-  .tic-button-icon-and-text(ng-switch-when= "right")
-    span {{ ctrl.ticIconText | translate }}
-    i.mdi(ng-class= "ctrl.ticIconClass")
-
-  .tic-button-icon-and-text(ng-switch-default)
-    i.mdi(ng-class= "ctrl.ticIconClass")
-    span {{ ctrl.ticIconText | translate }}

@@ -1,12 +1,11 @@
 'use strict';
 
-module.exports = function(dependencies) {
+// arguments: dependencies
+module.exports = function() {
 
-  const client = require('./client')(dependencies);
-  const group = require('./group')(dependencies);
+  // const model = require('./YOUR_MODEL')(dependencies);
 
   return {
-    client,
-    group
+    // model
   };
 };

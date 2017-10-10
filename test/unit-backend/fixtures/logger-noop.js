@@ -1,6 +1,6 @@
 'use strict';
 
-var noop = function() {};
+const noop = function() {};
 
 /**
  *

@@ -4,57 +4,63 @@ const AwesomeModule = require('awesome-module');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
 const path = require('path');
 const glob = require('glob-all');
-const linagoraEsnTicketing = 'linagora.esn.ticketing';
-const FRONTEND_JS_PATH = __dirname + '/frontend/app/';
 
-const myAwesomeModule = new AwesomeModule(linagoraEsnTicketing, {
+const FRONTEND_JS_PATH = __dirname + '/frontend/app/';
+const MODULE_NAME = 'ticketing';
+const AWESOME_MODULE_NAME = 'linagora.esn.' + MODULE_NAME;
+
+const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
   dependencies: [
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.logger', 'logger'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.wrapper', 'webserver-wrapper'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.db', 'db'),
-    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.middleware.authorization', 'authorizationMW')
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.middleware.authorization', 'authorizationMW'),
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.i18n', 'i18n')
   ],
 
   states: {
     lib: function(dependencies, callback) {
-      const ticketinglib = require('./backend/lib')(dependencies);
-      const ticketing = require('./backend/webserver/api')(dependencies, ticketinglib);
+      const moduleLib = require('./backend/lib')(dependencies);
+      const module = require('./backend/webserver/api')(dependencies, moduleLib);
 
       const lib = {
         api: {
-          ticketing: ticketing
+          module: module
         },
-        lib: ticketinglib
+        lib: moduleLib
       };
 
       return callback(null, lib);
     },
 
     deploy: function(dependencies, callback) {
+      const webserverWrapper = dependencies('webserver-wrapper');
+
       // Register the webapp
       const app = require('./backend/webserver/application')(dependencies, this);
-      // Register every exposed endpoints
-      app.use('/api', this.api.ticketing);
 
-      const webserverWrapper = dependencies('webserver-wrapper');
+      // Register every exposed endpoints
+      app.use('/api', this.api.module);
+
       // Register every exposed frontend scripts
-      const jsFiles = glob.sync([
-        FRONTEND_JS_PATH + 'tic.app.js',
-        FRONTEND_JS_PATH + '*.js',
-        FRONTEND_JS_PATH + '*/!(*spec).js',
-        FRONTEND_JS_PATH + '**/*/!(*spec).js'
-      ]).map(function(filepath) {
+      const frontendJsFilesFullPath = glob.sync([
+        FRONTEND_JS_PATH + '**/*.module.js',
+        FRONTEND_JS_PATH + '**/!(*spec).js'
+      ]);
+
+      const frontendJsFilesUri = frontendJsFilesFullPath.map(function(filepath) {
         return filepath.replace(FRONTEND_JS_PATH, '');
       });
-      webserverWrapper.injectAngularAppModules(linagoraEsnTicketing, jsFiles, [linagoraEsnTicketing], ['esn']);
-      const lessFile = path.resolve(__dirname, './frontend/app/tic.styles.less');
-      webserverWrapper.injectLess(linagoraEsnTicketing, [lessFile], 'esn');
-      const jsResourceFiles = [
-        "../components/angular-translate/angular-translate.min.js",
-        "../components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"
-      ];
-      webserverWrapper.injectJS(linagoraEsnTicketing, jsResourceFiles, 'esn');
-      webserverWrapper.addApp(linagoraEsnTicketing, app);
+
+      webserverWrapper.injectAngularAppModules(MODULE_NAME, frontendJsFilesUri, AWESOME_MODULE_NAME, ['esn'], {
+        localJsFiles: frontendJsFilesFullPath
+      });
+
+      const lessFile = path.join(FRONTEND_JS_PATH, 'app.less');
+
+      webserverWrapper.injectLess(MODULE_NAME, [lessFile], 'esn');
+
+      webserverWrapper.addApp(MODULE_NAME, app);
 
       return callback();
     }
