@@ -5,13 +5,10 @@ module.exports = function(grunt) {
     const done = this.async();
     const spawn = require('child_process').spawn;
     const revision = grunt.option('r');
-    let gitopts;
+    const gitopts = revision ?
+      ['diff-tree', '--no-commit-id', '--name-only', '-r', revision] :
+      ['status', '--short', '--porcelain', '--untracked-files=no'];
 
-    if (revision) {
-      gitopts = ['diff-tree', '--no-commit-id', '--name-only', '-r', revision];
-    } else {
-      gitopts = ['status', '--short', '--porcelain', '--untracked-files=no'];
-    }
     const child = spawn('git', gitopts);
     let output = '';
 

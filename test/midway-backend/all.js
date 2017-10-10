@@ -10,6 +10,7 @@ const basePath = path.resolve(__dirname + '/../../node_modules/linagora-rse');
 const tmpPath = path.resolve(__dirname + '/../..', testConfig.tmp);
 const backendPath = path.normalize(__dirname + '/../../backend');
 const host = testConfig.host;
+const MODULE_NAME = 'linagora.esn.ticketing';
 let rse;
 
 before(function(done) {
@@ -55,7 +56,7 @@ before(function(done) {
   const loader = manager.loaders.code(require('../../index.js'), true);
 
   manager.appendLoader(loader);
-  loader.load('linagora.esn.ticketing', done);
+  loader.load(MODULE_NAME, done);
 });
 
 // https://github.com/mfncooper/mockery/issues/34

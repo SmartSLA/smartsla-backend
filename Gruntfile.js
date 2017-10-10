@@ -78,7 +78,36 @@ module.exports = function(grunt) {
           'frontend/**/*.pug'
         ]
       }
+    },
+
+    i18n_checker: {
+      all: {
+        options: {
+          baseDir: __dirname,
+          dirs: [{
+            localeDir: 'backend/lib/i18n/locales',
+            templateSrc: [
+              'frontend/app/**/*.pug'
+            ],
+            core: true
+          }],
+          verifyOptions: {
+            defaultLocale: 'en',
+            locales: ['en', 'fr', 'vi'],
+            rules: [
+              'all-keys-translated',
+              'all-locales-present',
+              'default-locale-translate',
+              'key-trimmed',
+              'no-duplicate-among-modules',
+              'no-duplicate-with-core',
+              'valid-json-file'
+            ]
+          }
+        }
+      }
     }
+
   });
 
   grunt.loadTasks('tasks');
@@ -97,9 +126,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-wait-server');
   grunt.loadNpmTasks('grunt-puglint');
+  grunt.loadNpmTasks('grunt-i18n-checker');
 
   grunt.registerTask('pug-linter', 'Check the pug/jade files', ['puglint:all']);
-  grunt.registerTask('linters', 'Check code for lint', ['eslint:all', 'lint_pattern:all', 'lint_pattern:css', 'pug-linter']);
+  grunt.registerTask('linters', 'Check code for lint', ['eslint:all', 'lint_pattern:all', 'lint_pattern:css', 'pug-linter', 'i18n']);
+  grunt.registerTask('i18n', 'Check the translation files', ['i18n_checker']);
   grunt.registerTask('linters-dev', 'Check changed files for lint', ['prepare-quick-lint', 'eslint:quick', 'lint_pattern:quick']);
   grunt.registerTask('spawn-servers', 'spawn servers', ['shell:mongo', 'shell:redis']);
   grunt.registerTask('kill-servers', 'kill servers', ['shell:mongo:kill', 'shell:redis:kill']);

@@ -13,8 +13,6 @@ test:
     - redis
   script:
     - npm i
-    - bower i
     - npm update
-    - npm prune
-    - bower prune
-    - grunt
+    - bower i
+    - grunt --chunk=1 --ci

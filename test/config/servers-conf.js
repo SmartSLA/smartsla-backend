@@ -11,11 +11,11 @@ const dbName = 'tests';
 const mongoPort = process.env.PORT_MONGODB || DEFAULT_PORTS.mongo;
 
 module.exports = {
-  tmp: tmp,
+  tmp,
 
   default_ports: DEFAULT_PORTS,
 
-  host: host,
+  host,
 
   express: {
     port: process.env.PORT_EXPRESS || DEFAULT_PORTS.express
