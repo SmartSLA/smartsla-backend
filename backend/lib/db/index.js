@@ -1,11 +1,10 @@
 'use strict';
 
-// arguments: dependencies
-module.exports = function() {
+module.exports = dependencies => {
 
-  // const model = require('./YOUR_MODEL')(dependencies);
+  const Organization = require('./organization')(dependencies);
 
   return {
-    // model
+    Organization
   };
 };
