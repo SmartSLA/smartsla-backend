@@ -1,0 +1,110 @@
+'use strict';
+
+const chai = require('chai');
+const expect = chai.expect;
+
+describe('The order model', function() {
+  let Order, ObjectId;
+
+  beforeEach(function(done) {
+    this.mongoose = require('mongoose');
+    ObjectId = this.mongoose.Types.ObjectId;
+
+    require(this.testEnv.backendPath + '/lib/db/order')(this.moduleHelpers.dependencies);
+    this.testEnv.writeDBConfigFile();
+    Order = this.mongoose.model('Order');
+
+    this.connectMongoose(this.mongoose, done);
+  });
+
+  afterEach(function(done) {
+    this.helpers.mongo.dropDatabase(done);
+  });
+
+  function saveOrder(orderJson, callback) {
+    const order = new Order(orderJson);
+
+    return order.save(callback);
+  }
+
+  describe('The number field', function() {
+    it('should be set to 1 if there is no order in database', function(done) {
+      const orderJson = {
+        title: 'test',
+        startDate: new Date(),
+        terminationDate: new Date()
+      };
+
+      saveOrder(orderJson, (err, savedOrder) => {
+        if (err) {
+          done(err);
+        }
+
+        expect(savedOrder.number).to.equal(1);
+        done();
+      });
+    });
+
+    it('should increase automatically', function(done) {
+      const orderJson = {
+        title: 'test',
+        startDate: new Date(),
+        terminationDate: new Date()
+      };
+
+      saveOrder(orderJson, err => {
+        if (err) {
+          done(err);
+        }
+
+        saveOrder(orderJson, (err, savedOrder) => {
+          if (err) {
+            done(err);
+          }
+
+          expect(savedOrder.number).to.equal(2);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('The permissions field', function() {
+    it('should not store the order which has invalid permissions', function(done) {
+      const orderJson = {
+        title: 'test',
+        startDate: new Date(),
+        terminationDate: new Date(),
+        permissions: {
+          actor: new ObjectId(),
+          right: 'wrong value'
+        }
+      };
+
+      saveOrder(orderJson, err => {
+        expect(err).to.exist;
+        expect(err.errors['permissions.0.right'].message).to.equal('Invalid order right');
+        done();
+      });
+    });
+
+    it('should store the order which has valid permissions', function(done) {
+      const right = 'submit';
+      const orderJson = {
+        title: 'test',
+        startDate: new Date(),
+        terminationDate: new Date(),
+        permissions: {
+          actor: new ObjectId(),
+          right
+        }
+      };
+
+      saveOrder(orderJson, (err, savedOrder) => {
+        expect(err).to.not.exist;
+        expect(savedOrder.permissions[0].right).to.equal(right);
+        done();
+      });
+    });
+  });
+});

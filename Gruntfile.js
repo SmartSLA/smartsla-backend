@@ -61,7 +61,8 @@ module.exports = function(grunt) {
     run_grunt: {
       midway_backend: runGrunt.newProcess(['test-midway-backend']),
       unit_backend: runGrunt.newProcess(['test-unit-backend']),
-      unit_frontend: runGrunt.newProcess(['test-frontend'])
+      unit_frontend: runGrunt.newProcess(['test-frontend']),
+      unit_storage: runGrunt.newProcess(['test-unit-storage'])
     },
 
     puglint: {
@@ -137,9 +138,10 @@ module.exports = function(grunt) {
   grunt.registerTask('setup-environment', 'create temp folders and files for tests', gruntfileUtils.setupEnvironment());
   grunt.registerTask('clean-environment', 'remove temp folder for tests', gruntfileUtils.cleanEnvironment());
   grunt.registerTask('setup-servers', ['spawn-servers', 'continue:on']);
+  grunt.registerTask('test-unit-storage', ['setup-environment', 'setup-servers', 'run_grunt:unit_storage', 'kill-servers', 'clean-environment']);
   grunt.registerTask('test-midway-backend', ['setup-environment', 'setup-servers', 'run_grunt:midway_backend', 'kill-servers', 'clean-environment']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['run_grunt:unit_backend']);
   grunt.registerTask('test-unit-frontend', 'Test frontend code', ['run_grunt:unit_frontend']);
-  grunt.registerTask('test', ['linters', 'test-unit-frontend', 'test-unit-backend', 'test-midway-backend']);
+  grunt.registerTask('test', ['linters', 'test-unit-frontend', 'test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
   grunt.registerTask('default', ['test']);
 };
