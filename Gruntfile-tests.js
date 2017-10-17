@@ -58,6 +58,11 @@ module.exports = function(grunt) {
         options: {
           files: ['test/midway-backend/all.js', grunt.option('test') || 'test/midway-backend/**/*.js']
         }
+      },
+      storage: {
+        options: {
+          files: ['test/unit-storage/all.js', grunt.option('test') || 'test/unit-storage/**/*.js']
+        }
       }
     },
 
@@ -83,11 +88,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test-unit-backend', 'run the backend unit tests (to be used with .only)', ['splitfiles:backend']);
   grunt.registerTask('test-midway-backend', 'run midway tests (to be used with .only)', ['splitfiles:midway']);
-  grunt.registerTask('test-backend', 'run both the unit & midway tests', ['test-unit-backend', 'test-midway-backend']);
+  grunt.registerTask('test-unit-storage', 'run storage tests (to be used with .only)', ['mochacli:storage']);
+  grunt.registerTask('test-backend', 'run both the unit & midway tests', ['test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
 
   grunt.registerTask('test-frontend', 'run the FrontEnd tests', ['karma:unit']);
   grunt.registerTask('test-frontend-all', 'run the FrontEnd tests on all possible browsers', ['karma:all']);
 
-  grunt.registerTask('test', ['linters', 'test-backend', 'test-midway-backend']);
+  grunt.registerTask('test', ['linters', 'test-backend', 'test-unit-storage', 'test-midway-backend']);
   grunt.registerTask('default', ['test']);
 };
