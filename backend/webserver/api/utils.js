@@ -5,6 +5,7 @@ module.exports = dependencies => {
 
   return {
     send500Error,
+    send404Error,
     send403Error,
     send400Error
   };
@@ -16,6 +17,16 @@ module.exports = dependencies => {
       error: {
         code: 500,
         message: 'Server Error',
+        details
+      }
+    });
+  }
+
+  function send404Error(details, res) {
+    return res.status(404).json({
+      error: {
+        code: 404,
+        message: 'Not Found',
         details
       }
     });
