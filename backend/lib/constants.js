@@ -8,5 +8,9 @@ module.exports = {
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
     USER: 'user'
+  },
+  DEFAULT_LIST_OPTIONS: {
+    OFFSET: 0,
+    LIMIT: 50
   }
 };

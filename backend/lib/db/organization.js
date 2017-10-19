@@ -14,7 +14,8 @@ module.exports = dependencies => {
     contract: { type: Schema.ObjectId, ref: 'Contract' },
     orders: [{ type: Schema.ObjectId, ref: 'Order' }],
     users: [{ type: Schema.ObjectId, ref: 'User' }],
-    schemaVersion: {type: Number, default: 1}
+    schemaVersion: {type: Number, default: 1},
+    creation: { type: Date, default: Date.now }
   });
 
   return mongoose.model('Organization', OrganizationSchema);
