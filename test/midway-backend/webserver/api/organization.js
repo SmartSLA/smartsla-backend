@@ -4,9 +4,10 @@ const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
+const mongoose = require('mongoose');
 
 describe('The organization API', function() {
-  let app, lib, helpers;
+  let app, lib, helpers, ObjectId;
   let user1, user2, organization;
   const password = 'secret';
 
@@ -14,6 +15,7 @@ describe('The organization API', function() {
     const self = this;
 
     helpers = self.helpers;
+    ObjectId = mongoose.Types.ObjectId;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -242,6 +244,24 @@ describe('The organization API', function() {
     it('should respond 404 if organization id is not an ObjectId', function(done) {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const req = requestAsMember(request(app).put('/api/organizations/abc'));
+        const newOrganization = {
+          shortName: 'new'
+        };
+
+        req.send(newOrganization);
+        req.expect(404)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            expect(res.body).to.deep.equal({
+              error: { code: 404, message: 'Not Found', details: 'Organization not found' }
+            });
+            done();
+          }));
+      }));
+    });
+
+    it('should respond 404 if organization not found', function(done) {
+      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        const req = requestAsMember(request(app).put(`/api/organizations/${new ObjectId()}`));
         const newOrganization = {
           shortName: 'new'
         };
