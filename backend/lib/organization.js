@@ -47,7 +47,7 @@ module.exports = dependencies => {
    * @param {Promise}                 - Resolve on success
    */
   function updateById(organizationId, modified) {
-    return Organization.findByIdAndUpdate(organizationId, { $set: modified }).exec();
+    return Organization.update({ _id: organizationId }, { $set: modified }).exec();
   }
 
   /**

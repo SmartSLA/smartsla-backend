@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
-  const { send500Error } = require('../utils')(dependencies);
+  const { send404Error, send500Error } = require('../utils')(dependencies);
 
   return {
     create,
@@ -49,7 +49,16 @@ module.exports = function(dependencies, lib) {
    */
   function update(req, res) {
     return lib.organization.updateById(req.params.id, req.body)
-      .then(() => res.status(204).end())
+      .then(updatedResult => {
+        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
+        // updatedResult.n: The number of documents selected for update
+        // http://mongoosejs.com/docs/api.html#model_Model.update
+        if (updatedResult.n) {
+          return res.status(204).end();
+        }
+
+        return send404Error('Organization not found', res);
+      })
       .catch(err => send500Error('Failed to update organization', err, res));
   }
 };
