@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('../helpers');
+const { validateOrderType, validateRight } = require('../helpers');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -9,18 +9,18 @@ module.exports = dependencies => {
   const OrderSchema = new mongoose.Schema({
     active: { type: Boolean, default: true },
     number: { type: Number, unique: true },
-    contract: { type: Schema.ObjectId, ref: 'Contract' },
+    contract: { type: Schema.ObjectId, ref: 'Contract', required: true },
     title: { type: String, required: true },
     address: { type: String },
     administrator: { type: Schema.ObjectId, ref: 'User' },
     defaultSupportManager: { type: Schema.ObjectId, ref: 'User' },
     startDate: { type: Date, required: true },
     terminationDate: { type: Date, required: true },
-    type: { type: String, enum: ['USP', 'USPL', 'USL'] },
+    type: { type: String, validate: [validateOrderType, 'Invalid order type'], required: true },
     description: { type: String },
     permissions: [{
       actor: { type: Schema.ObjectId },
-      right: { type: String, validate: [helpers.validateRight, 'Invalid order right'] }
+      right: { type: String, validate: [validateRight, 'Invalid order right'] }
     }],
     creation: { type: Date, default: Date.now },
     schemaVersion: {type: Number, default: 1}

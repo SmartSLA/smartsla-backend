@@ -12,8 +12,12 @@ module.exports = (dependencies, lib) => {
     canCreateContract,
     canListContract,
     canUpdateContract,
+    canCreateOrder,
+    canListOrder,
+    canUpdateOrder,
     validateContractPayload,
-    validateContractUpdate
+    validateContractUpdate,
+    validateOrderPayload
   };
 
   function canCreateContract(req, res, next) {
@@ -92,5 +96,64 @@ module.exports = (dependencies, lib) => {
     }
 
     return validateContractPayload(req, res, next);
+  }
+
+  function canCreateOrder(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canListOrder(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canUpdateOrder(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function validateOrderPayload(req, res, next) {
+    const {
+      administrator,
+      defaultSupportManager,
+      permissions,
+      startDate,
+      terminationDate,
+      title,
+      type
+    } = req.body;
+
+    if (administrator && !validateObjectIds(administrator)) {
+      return send400Error('administrator is invalid', res);
+    }
+
+    if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
+      return send400Error('defaultSupportManager is invalid', res);
+    }
+
+    if (permissions) {
+      const actors = permissions.map(permission => permission.actor);
+      const rights = permissions.map(permission => permission.right);
+
+      if (!validateObjectIds(actors) || !validateRights(rights)) {
+        return send400Error('permissions is invalid', res);
+      }
+    }
+
+    if (!startDate) {
+      return send400Error('startDate is required', res);
+    }
+
+    if (!terminationDate) {
+      return send400Error('terminationDate is required', res);
+    }
+
+    if (!title) {
+      return send400Error('title is required', res);
+    }
+
+    if (!type) {
+      return send400Error('type is required', res);
+    }
+
+    next();
   }
 };

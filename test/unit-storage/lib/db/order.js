@@ -31,8 +31,10 @@ describe('The order model', function() {
     it('should be set to 1 if there is no order in database', function(done) {
       const orderJson = {
         title: 'test',
+        contract: new ObjectId(),
         startDate: new Date(),
-        terminationDate: new Date()
+        terminationDate: new Date(),
+        type: 'USP'
       };
 
       saveOrder(orderJson, (err, savedOrder) => {
@@ -48,8 +50,10 @@ describe('The order model', function() {
     it('should increase automatically', function(done) {
       const orderJson = {
         title: 'test',
+        contract: new ObjectId(),
         startDate: new Date(),
-        terminationDate: new Date()
+        terminationDate: new Date(),
+        type: 'USP'
       };
 
       saveOrder(orderJson, err => {
@@ -73,8 +77,10 @@ describe('The order model', function() {
     it('should not store the order which has invalid permissions', function(done) {
       const orderJson = {
         title: 'test',
+        contract: new ObjectId(),
         startDate: new Date(),
         terminationDate: new Date(),
+        type: 'USP',
         permissions: {
           actor: new ObjectId(),
           right: 'wrong value'
@@ -92,8 +98,10 @@ describe('The order model', function() {
       const right = 'submit';
       const orderJson = {
         title: 'test',
+        contract: new ObjectId(),
         startDate: new Date(),
         terminationDate: new Date(),
+        type: 'USP',
         permissions: {
           actor: new ObjectId(),
           right
@@ -104,6 +112,50 @@ describe('The order model', function() {
         expect(err).to.not.exist;
         expect(savedOrder.permissions[0].right).to.equal(right);
         done();
+      });
+    });
+  });
+
+  describe('The type field', function() {
+    it('should not store the order which has invalid type', function(done) {
+      const orderJson = {
+        title: 'test',
+        contract: new ObjectId(),
+        startDate: new Date(),
+        terminationDate: new Date(),
+        type: 'invalid type'
+      };
+
+      saveOrder(orderJson, err => {
+        expect(err).to.exist;
+        expect(err.errors.type.message).to.equal('Invalid order type');
+        done();
+      });
+    });
+
+    it('should store the order which has valid type', function(done) {
+      const type = 'USP';
+      const orderJson = {
+        title: 'test',
+        contract: new ObjectId(),
+        startDate: new Date(),
+        terminationDate: new Date(),
+        type
+      };
+
+      saveOrder(orderJson, err => {
+        if (err) {
+          done(err);
+        }
+
+        saveOrder(orderJson, (err, savedOrder) => {
+          if (err) {
+            done(err);
+          }
+
+          expect(savedOrder.type).to.equal(type);
+          done();
+        });
       });
     });
   });

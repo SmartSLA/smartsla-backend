@@ -7,6 +7,7 @@ module.exports = dependencies => {
   const Contract = mongoose.model('Contract');
 
   return {
+    addOrder,
     create,
     getById,
     list,
@@ -48,6 +49,16 @@ module.exports = dependencies => {
    */
   function updateById(contractId, modified) {
     return Contract.update({ _id: contractId }, { $set: modified }).exec();
+  }
+
+  /**
+   * Add a order into a contract
+   * @param {String}   contractId - The contract ID
+   * @param {Object}   orderId    - The order ID
+   * @param {Promise}             - Resolve on success
+   */
+  function addOrder(contractId, orderId) {
+    return Contract.update({ _id: contractId }, { $push: { orders: orderId }}).exec();
   }
 
   /**
