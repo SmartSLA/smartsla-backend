@@ -8,8 +8,12 @@ module.exports = function(dependencies, lib, router) {
     canCreateContract,
     canListContract,
     canUpdateContract,
+    canCreateOrder,
+    canListOrder,
+    canUpdateOrder,
     validateContractPayload,
-    validateContractUpdate
+    validateContractUpdate,
+    validateOrderPayload
   } = require('./middleware')(dependencies, lib);
 
   router.get('/contracts',
@@ -31,5 +35,29 @@ module.exports = function(dependencies, lib, router) {
     checkIdInParams('id', 'Contract'),
     validateContractUpdate,
     controller.update
+  );
+
+  router.get('/contracts/:id/orders',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    canListOrder,
+    controller.listOrders
+  );
+
+  router.post('/contracts/:id/orders',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    canCreateOrder,
+    validateOrderPayload,
+    controller.createOrder
+  );
+
+  router.put('/contracts/:id/orders/:orderId',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    canUpdateOrder,
+    checkIdInParams('orderId', 'Order'),
+    validateOrderPayload,
+    controller.updateOrder
   );
 };

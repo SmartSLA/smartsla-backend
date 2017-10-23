@@ -17,18 +17,49 @@ beforeEach(function() {
     logger: require('./fixtures/logger-noop'),
     errors: require('./fixtures/errors')
   };
-  const dependencies = function(name) {
-    return depsStore[name];
+  const dependencies = name => depsStore[name];
+
+  const addDep = (name, dep) => {
+    depsStore[name] = dep;
   };
 
-  const addDep = function(name, dep) {
-    depsStore[name] = dep;
+  const mockModels = mockedModels => {
+    const types = {
+      ObjectId: function(id) {
+        return {id: id};
+      },
+      Mixed: ''
+    };
+
+    const schema = function() {};
+
+    schema.Types = types;
+
+    const mongooseMock = {
+      Types: types,
+      Schema: schema,
+      model: function(model) {
+        return mockedModels[model];
+      },
+      __replaceObjectId: function(newObjectId) {
+        types.ObjectId = newObjectId;
+      }
+    };
+
+    mockery.registerMock('mongoose', mongooseMock);
+
+    return this.moduleHelpers.addDep('db', {
+      mongo: {
+        mongoose: require('mongoose')
+      }
+    });
   };
 
   this.moduleHelpers = {
     backendPath: path.normalize(__dirname + '/../../backend'),
-    addDep: addDep,
-    dependencies: dependencies
+    addDep,
+    dependencies,
+    mockModels
   };
 });
 

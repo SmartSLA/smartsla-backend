@@ -12,5 +12,6 @@ module.exports = {
   DEFAULT_LIST_OPTIONS: {
     OFFSET: 0,
     LIMIT: 50
-  }
+  },
+  ORDER_TYPES: ['USP', 'USPL', 'USL']
 };

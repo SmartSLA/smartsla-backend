@@ -5,8 +5,11 @@ module.exports = function(dependencies, lib) {
 
   return {
     create,
+    createOrder,
     list,
-    update
+    listOrders,
+    update,
+    updateOrder
   };
 
   /**
@@ -60,5 +63,62 @@ module.exports = function(dependencies, lib) {
         return send404Error('Contract not found', res);
       })
       .catch(err => send500Error('Failed to update contract', err, res));
+  }
+
+  /**
+   * Create an order
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function createOrder(req, res) {
+    const order = req.body;
+
+    order.contract = req.params.id;
+
+    return lib.order.create(order)
+      .then(createdOrder => res.status(201).json(createdOrder))
+      .catch(err => send500Error('Failed to create order', err, res));
+  }
+
+  /**
+   * List the orders
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function listOrders(req, res) {
+    const options = {
+      limit: +req.query.limit,
+      offset: +req.query.offset
+    };
+
+    return lib.order.list(options)
+      .then(orders => {
+        res.header('X-ESN-Items-Count', orders.length);
+        res.status(200).json(orders);
+      })
+      .catch(err => send500Error('Failed to list order', err, res));
+  }
+
+  /**
+   * Update an order
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function updateOrder(req, res) {
+    return lib.order.updateById(req.params.orderId, req.body)
+      .then(updatedResult => {
+        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
+        // updatedResult.n: The number of documents selected for update
+        // http://mongoosejs.com/docs/api.html#model_Model.update
+        if (updatedResult.n) {
+          return res.status(204).end();
+        }
+
+        return send404Error('Order not found', res);
+      })
+      .catch(err => send500Error('Failed to update order', err, res));
   }
 };
