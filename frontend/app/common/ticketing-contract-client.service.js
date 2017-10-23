@@ -7,8 +7,11 @@
   function ticketingContractClient(ticketingRestangular) {
     return {
       create: create,
+      createOrder: createOrder,
       list: list,
-      update: update
+      listOrders: listOrders,
+      update: update,
+      updateOrder: updateOrder
     };
 
     /**
@@ -37,6 +40,41 @@
      */
     function update(contractId, updateData) {
       return ticketingRestangular.one('contracts', contractId).customPUT(updateData);
+    }
+
+    /**
+     * List orders
+     * @param  {Object} options - Query option, possible attributes are limit and offset
+     * @return {Promise}        - Resolve response with list of orders
+     */
+    function listOrders(contractId, options) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .all('orders').getList(options);
+    }
+
+    /**
+     * Create a new order
+     * @param  {Object} order - The order object
+     * @return {Promise}      - Resolve response with created order
+     */
+    function createOrder(contractId, order) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .all('orders').post(order);
+      }
+
+    /**
+     * Update a order
+     * @param  {String} orderId     - The order ID
+     * @param  {Object} updateData  - The update object
+     * @return {Promise}            - Resolve response with updated order
+     */
+    function updateOrder(contractId, orderId, updateData) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .one('orders', orderId)
+        .customPUT(updateData);
     }
   }
 })(angular);
