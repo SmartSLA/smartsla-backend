@@ -59,12 +59,6 @@ before(function(done) {
   loader.load(MODULE_NAME, done);
 });
 
-// https://github.com/mfncooper/mockery/issues/34
-before(function() {
-  require('canvas');
-  require('ursa');
-});
-
 after(function() {
   try {
     fs.unlinkSync(this.testEnv.tmp + '/default.json');
@@ -78,6 +72,10 @@ after(function() {
 beforeEach(function() {
   mockery.enable({warnOnReplace: false, warnOnUnregistered: false, useCleanCache: true});
   this.testEnv.writeDBConfigFile();
+
+  // workaround mockery issue: https://github.com/mfncooper/mockery/issues/34
+  mockery.registerMock('canvas', {});
+  mockery.registerMock('ursa', {});
 });
 
 afterEach(function() {
