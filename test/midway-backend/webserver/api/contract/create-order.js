@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 describe('POST /api/contracts/:id/orders', function() {
   let app, lib, helpers, ObjectId;
-  let user1, user2, contractId;
+  let user1, user2, contract;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -60,7 +60,7 @@ describe('POST /api/contracts/:id/orders', function() {
         .then(() => {
           lib.contract.create(contractJSON)
             .then(createdContract => {
-              contractId = createdContract._id;
+              contract = createdContract;
               done();
             });
         })
@@ -73,9 +73,17 @@ describe('POST /api/contracts/:id/orders', function() {
     helpers.mongo.dropDatabase(done);
   });
 
+  const caculateDate = (seed, diff) => {
+    const result = new Date();
+
+    result.setDate(seed.getDate() + diff);
+
+    return result;
+  };
+
   it('should respond 400 if there is no title in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         startDate: new Date(),
         terminationDate: new Date(),
@@ -95,7 +103,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is no startDate in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         terminationDate: new Date(),
@@ -115,7 +123,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is no terminationDate in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         startDate: new Date(),
@@ -135,7 +143,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is invalid administrator in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         startDate: new Date(),
@@ -157,7 +165,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is invalid defaultSupportManager in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         startDate: new Date(),
@@ -179,7 +187,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is invalid permission actors in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         startDate: new Date(),
@@ -203,7 +211,7 @@ describe('POST /api/contracts/:id/orders', function() {
 
   it('should respond 400 if there is invalid permission right in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
         title: 'order2',
         startDate: new Date(),
@@ -225,13 +233,76 @@ describe('POST /api/contracts/:id/orders', function() {
     }));
   });
 
+  it('should respond 400 if there is startDate of order less than contract startDate', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
+      const newOrder = {
+        title: 'order2',
+        startDate: caculateDate(contract.startDate, -1),
+        terminationDate: new Date(),
+        type: 'USP'
+      };
+
+      req.send(newOrder);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: `startDate must not be less than ${contract.startDate}` }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if there is terminationDate of order less than contract endDate', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
+      const newOrder = {
+        title: 'order2',
+        startDate: new Date(),
+        terminationDate: caculateDate(contract.endDate, 1),
+        type: 'USP'
+      };
+
+      req.send(newOrder);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: `terminationDate must not be bigger than ${contract.endDate}` }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if there is startDate bigger than terminationDate', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
+      const newOrder = {
+        title: 'order2',
+        startDate: caculateDate(contract.endDate, 1),
+        terminationDate: caculateDate(contract.endDate, -3),
+        type: 'USP'
+      };
+
+      req.send(newOrder);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'startDate must not be bigger than terminationDate' }
+          });
+          done();
+        }));
+    }));
+  });
+
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'post', `/api/contracts/${contractId}/orders`, done);
+    helpers.api.requireLogin(app, 'post', `/api/contracts/${contract._id}/orders`, done);
   });
 
   it('should respond 403 if user is not an administrator', function(done) {
       helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-        const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+        const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
 
         req.expect(403)
           .end(helpers.callbacks.noErrorAnd(res => {
@@ -268,18 +339,18 @@ describe('POST /api/contracts/:id/orders', function() {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const newOrder = {
         title: 'order2',
-        startDate: new Date(),
-        terminationDate: new Date(),
+        startDate: contract.startDate,
+        terminationDate: contract.endDate,
         type: 'USP'
       };
-      const req = requestAsMember(request(app).post(`/api/contracts/${contractId}/orders`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
 
       req.send(newOrder);
       req.expect(201)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body.title).to.equal(newOrder.title);
 
-          lib.contract.getById(contractId)
+          lib.contract.getById(contract._id)
             .then(contract => {
               expect(contract.orders).to.include(res.body._id);
               done();

@@ -154,6 +154,25 @@ module.exports = (dependencies, lib) => {
       return send400Error('type is required', res);
     }
 
-    next();
+    return _validateOrderDurationDate(req, res, next);
+  }
+
+  function _validateOrderDurationDate(req, res, next) {
+    lib.contract.getById(req.params.id)
+      .then(contract => {
+        if (new Date(req.body.startDate) < contract.startDate) {
+          return send400Error(`startDate must not be less than ${contract.startDate}`, res);
+        }
+
+        if (new Date(req.body.terminationDate) > contract.endDate) {
+          return send400Error(`terminationDate must not be bigger than ${contract.endDate}`, res);
+        }
+
+        if (new Date(req.body.startDate) > new Date(req.body.terminationDate)) {
+          return send400Error('startDate must not be bigger than terminationDate', res);
+        }
+
+        next();
+      });
   }
 };

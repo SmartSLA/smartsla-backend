@@ -1,6 +1,7 @@
 'use strict';
 
 const DEFAULT_PORTS = {
+  elasticsearch: 23459,
   express: 23455,
   mongo: 23456,
   redis: 23457
@@ -39,5 +40,17 @@ module.exports = {
     dbname: dbName,
     dbpath: tmp + '/mongo/',
     logpath: ''
+  },
+
+  elasticsearch: {
+    cmd: process.env.CMD_ELASTICSEARCH || 'elasticsearch',
+    port: process.env.PORT_ELASTICSEARCH || DEFAULT_PORTS.elasticsearch,
+    communication_port: process.env.COMMUNICATION_PORT_ELASTICSEARCH || 23460,
+    interval_index: process.env.ELASTICSEARCH_INTERVAL_INDEX || 1000,
+    tries_index: process.env.ELASTICSEARCH_TRIES_INDEX || 20,
+    cluster_name: 'elasticsearch',
+    data_path: tmp + '/elasticsearch/data',
+    work_path: tmp + '/elasticsearch/work',
+    logs_path: tmp + '/elasticsearch/logs'
   }
 };
