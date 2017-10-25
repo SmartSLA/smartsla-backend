@@ -8,7 +8,8 @@ module.exports = dependencies => {
 
   return {
     create,
-    userIsAdministrator
+    userIsAdministrator,
+    getByUser
   };
 
   /**
@@ -32,5 +33,14 @@ module.exports = dependencies => {
     ticketingUserRole = ticketingUserRole instanceof TicketingUserRole ? ticketingUserRole : new TicketingUserRole(ticketingUserRole);
 
     return TicketingUserRole.create(ticketingUserRole);
+  }
+
+  /**
+   * Get TicketingUserRole by user.
+   * @param  {String} user - ID of user object
+   * @return {Promise}     - Resolve on success
+   */
+  function getByUser(user) {
+    return TicketingUserRole.findOne({ user: user });
   }
 };

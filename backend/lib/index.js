@@ -3,6 +3,7 @@
 module.exports = function(dependencies) {
 
   const models = require('./db')(dependencies);
+  const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
   const contract = require('./contract')(dependencies);
@@ -15,6 +16,7 @@ module.exports = function(dependencies) {
     models,
     order,
     organization,
+    user,
     ticketingUserRole
   };
 };
