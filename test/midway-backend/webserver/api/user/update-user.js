@@ -5,9 +5,9 @@ const path = require('path');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
-const API_PATH = '/api/userrole';
+const API_PATH = '/api/users';
 
-describe('The update Ticketing user API: PUT /api/userrole/:id', function() {
+describe('The update Ticketing user API: PUT /api/users/:id', function() {
   let app, lib, helpers, ObjectId;
   let coreUser;
   let user1, user2;

@@ -4,9 +4,9 @@ const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
-const API_PATH = '/api/userrole';
+const API_PATH = '/api/users';
 
-describe('The create Ticketing user API: POST /api/userrole', function() {
+describe('The create Ticketing user API: POST /api/users', function() {
   let app, lib, helpers;
   let user1, user2;
   const password = 'secret';

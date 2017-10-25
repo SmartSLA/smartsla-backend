@@ -6,14 +6,14 @@ module.exports = (dependencies, lib, router) => {
   const middleware = require('./middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
 
-  router.post('/userrole',
+  router.post('/users',
     authorizationMW.requiresAPILogin,
     middleware.canCreate,
     middleware.validateUserCreatePayload,
     controller.create
   );
 
-  router.put('/userrole/:id',
+  router.put('/users/:id',
     authorizationMW.requiresAPILogin,
     middleware.canUpdate,
     checkIdInParams('id', 'User'),

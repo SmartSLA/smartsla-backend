@@ -8,7 +8,7 @@ module.exports = (dependencies, lib) => {
 
   require('./contract')(dependencies, lib, router);
   require('./organization')(dependencies, lib, router);
-  require('./user-role')(dependencies, lib, router);
+  require('./user')(dependencies, lib, router);
 
   return router;
 };
