@@ -2,13 +2,15 @@
 
 module.exports = (dependencies, lib) => {
   const {
+    send403Error,
     send404Error,
     send500Error
   } = require('../utils')(dependencies);
 
   return {
     create,
-    update
+    update,
+    userIsAdministrator
   };
 
   /**
@@ -42,5 +44,23 @@ module.exports = (dependencies, lib) => {
         res.status(204).end();
       })
       .catch(err => send500Error('Failed to update Ticketing user', err, res));
-  }
+    }
+
+  /**
+   * Check a user is administrator
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function userIsAdministrator(req, res) {
+    return lib.ticketingUserRole.getByUser(req.params.id)
+      .then(result => {
+        if (!result) {
+          return send403Error('User does not have permission to access Ticketing', res);
+        }
+
+        return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
+      })
+      .catch(err => send500Error('Failed to get role', err, res));
+    }
 };
