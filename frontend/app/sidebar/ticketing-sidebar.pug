@@ -1,0 +1,9 @@
+.ticketing-sidebar
+  .ticketing-sidebar-close.visible-md
+    a(href='', ng-click='$hide();close()')
+  ul.nav.nav-pills.nav-stacked
+    .listview
+      .lv-body
+        a.lv-item.menu-item(href="", ui-sref="ticketingAdminCenter.example", ui-sref-active="selected")
+          i.mdi.mdi-coffee
+          .menu-title #{__('Example')}
