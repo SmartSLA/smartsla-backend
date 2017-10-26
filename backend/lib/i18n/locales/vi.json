@@ -1,3 +1,6 @@
 {
-  "Ticketing" : "Ticketing"
+  "Organization": "Tổ chức",
+  "No organization": "Không có tổ chức",
+  "Name": "Tên",
+  "Manager": "Người quản lý"
 }

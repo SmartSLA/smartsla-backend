@@ -8,7 +8,7 @@ const EVENTS = {
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
-  const coreUser = dependencies('user');
+  const coreUser = dependencies('coreUser');
   const pubsub = dependencies('pubsub').local;
   const User = mongoose.model('User');
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
