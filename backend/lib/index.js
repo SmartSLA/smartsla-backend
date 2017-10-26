@@ -9,8 +9,10 @@ module.exports = function(dependencies) {
   const contract = require('./contract')(dependencies);
   const order = require('./order')(dependencies);
   const helpers = require('./helpers');
+  const constants = require('./constants');
 
   return {
+    constants,
     contract,
     helpers,
     models,
