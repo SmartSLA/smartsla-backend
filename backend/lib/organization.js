@@ -33,7 +33,8 @@ module.exports = dependencies => {
     options = options || {};
 
     return Organization
-      .find()
+      .find({ parent: { $exists: false } })
+      .populate('administrator')
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-creation')

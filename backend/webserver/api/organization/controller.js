@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
+  const coreUser = dependencies('coreUser');
 
   return {
     create,
@@ -36,7 +37,14 @@ module.exports = function(dependencies, lib) {
     return lib.organization.list(options)
       .then(organizations => {
         res.header('X-ESN-Items-Count', organizations.length);
-        res.status(200).json(organizations);
+
+        const denormalizer = organization => {
+          organization.administrator = coreUser.denormalize.denormalize(organization.administrator, true);
+
+          return organization;
+        };
+
+        res.status(200).json(organizations.map(organization => denormalizer(organization)));
       })
       .catch(err => send500Error('Failed to list organization', err, res));
   }
