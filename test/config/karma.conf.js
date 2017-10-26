@@ -18,7 +18,7 @@ module.exports = function(config) {
       'frontend/components/lodash/dist/lodash.min.js',
       'frontend/components/sinon-chai/lib/sinon-chai.js',
       'frontend/components/sinon-1.15.4/index.js',
-      'test/config/mocks.js',
+      'test/config/mocks/**/*.js',
       'frontend/app/**/*.module.js',
       'frontend/app/**/*.js',
       'frontend/app/**/*.pug'
@@ -50,7 +50,7 @@ module.exports = function(config) {
       stripPrefix: 'frontend',
       prependPrefix: MODULE_DIR_NAME,
       cacheIdFromPath: function(filepath) {
-        var cacheId = filepath.replace(/.pug$/, '.html').replace(/^frontend/, '/group');
+        var cacheId = filepath.replace(/.pug$/, '.html').replace(/^frontend/, '/ticketing');
 
         return cacheId;
       },
