@@ -1,3 +1,6 @@
 {
-  "Ticketing" : "Ticketing"
+  "Organization": "Organization",
+  "No organization": "No organization",
+  "Name": "Name",
+  "Manager": "Manager"
 }

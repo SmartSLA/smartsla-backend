@@ -1,0 +1,24 @@
+.flex-horizontal-centered
+  .col-md-10.col-xs-12
+    .card
+      .card-body
+        infinite-list(load-more-elements='$ctrl.loadMoreElements()', scroll-inside-container="$ctrl.scrollInsideContainer")
+          .listview.lv-bordered.lv-lg(ng-if="$ctrl.elements.length > 0")
+            .lv-header
+              .lv-item.p-0
+                .row
+                  .col-md-6.col-xs-6.lv-title
+                    span #{__('Name')}
+                  .col-md-6.col-xs-6.lv-title
+                    span #{__('Manager')}
+            .lv-body
+              .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item.id")
+                ticketing-organization-list-item(organization="item")
+    div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
+      ticketing-empty-message(
+        icon="mdi-city",
+        message=__('No organization'))
+    ul.nav.nav-pills.nav-stacked(ng-if='$ctrl.infiniteScrollDisabled')
+      li.text-center(openpaas-logo-spinner, spinner-start-active='1', spinner-size='0.5')
+
+    fab(icon="plus")

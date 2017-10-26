@@ -39,7 +39,7 @@
           url: '/ticketing/admin',
           templateUrl: '/ticketing/app/admin/ticketing-admin.html',
           deepStateRedirect: {
-            default: 'ticketing.example',
+            default: 'ticketingAdminCenter.organization',
             params: true,
             fn: function() {
               return true;
@@ -58,11 +58,11 @@
             }
           }
         })
-        .state('ticketingAdminCenter.example', {
-          url: '/example',
+        .state('ticketingAdminCenter.organization', {
+          url: '/organization',
           views: {
             'admin-root@ticketingAdminCenter': {
-              template: '<ticketing-example />'
+              template: '<ticketing-organization />'
             }
           }
         });
