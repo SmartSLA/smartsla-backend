@@ -151,7 +151,7 @@ describe('The organization API', function() {
   });
 
   describe('POST /api/organizations', function() {
-    it('should respond 400 if organization payload is invalid', function(done) {
+    it('should respond 400 if there is no shortName in payload', function(done) {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const req = requestAsMember(request(app).post('/api/organizations'));
         const newOrganization = {
@@ -163,6 +163,43 @@ describe('The organization API', function() {
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body).to.deep.equal({
               error: { code: 400, message: 'Bad Request', details: 'shortName is required' }
+            });
+            done();
+          }));
+      }));
+    });
+
+    it('should respond 400 if administrator is invalid', function(done) {
+      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        const req = requestAsMember(request(app).post('/api/organizations'));
+        const newOrganization = {
+          shortName: 'baz',
+          administrator: 'wrong_objectId'
+        };
+
+        req.send(newOrganization);
+        req.expect(400)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            expect(res.body).to.deep.equal({
+              error: { code: 400, message: 'Bad Request', details: 'administrator is invalid' }
+            });
+            done();
+          }));
+      }));
+    });
+
+    it('should respond 400 if shortName is taken', function(done) {
+      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        const req = requestAsMember(request(app).post('/api/organizations'));
+        const newOrganization = {
+          shortName: organization.shortName
+        };
+
+        req.send(newOrganization);
+        req.expect(400)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            expect(res.body).to.deep.equal({
+              error: { code: 400, message: 'Bad Request', details: 'shortName is taken' }
             });
             done();
           }));

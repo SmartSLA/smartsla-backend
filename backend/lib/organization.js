@@ -9,6 +9,7 @@ module.exports = dependencies => {
   return {
     create,
     getById,
+    getByShortName,
     list,
     updateById
   };
@@ -58,5 +59,14 @@ module.exports = dependencies => {
    */
   function getById(organizationId) {
     return Organization.findById(organizationId).exec();
+  }
+
+  /**
+   * Get an organization by shortName
+   * @param {String}   shortName - The organization shortName
+   * @param {Promise}            - Resolve on success
+   */
+  function getByShortName(shortName) {
+    return Organization.findOne({ shortName });
   }
 };
