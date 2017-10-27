@@ -6,7 +6,7 @@ module.exports = dependencies => {
 
   const OrganizationSchema = new mongoose.Schema({
     parent: { type: Schema.ObjectId, ref: 'Organization' },
-    shortName: { type: String, required: true },
+    shortName: { type: String, required: true, unique: true },
     fullName: { type: String },
     type: { type: String },
     address: { type: String },
