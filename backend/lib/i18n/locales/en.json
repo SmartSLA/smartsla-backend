@@ -11,5 +11,7 @@
   "Only allows one manager": "Only allows one manager",
   "Description": "Description",
   "Create": "Create",
-  "Cancel": "Cancel"
+  "Cancel": "Cancel",
+  "Entity": "Entity",
+  "User management": "User management"
 }

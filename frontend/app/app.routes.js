@@ -65,6 +65,14 @@
               template: '<ticketing-organization />'
             }
           }
+        })
+        .state('ticketingAdminCenter.users', {
+          url: '/users',
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-user />'
+            }
+          }
         });
     });
 })();

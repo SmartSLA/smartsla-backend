@@ -11,5 +11,7 @@
   "Only allows one manager": "N'autoriser qu'un seul manager",
   "Description": "Description",
   "Create": "Créer",
-  "Cancel": "Annuler"
+  "Cancel": "Annuler",
+  "Entity": "Entité",
+  "User management": "Gestion des utilisateurs"
 }
