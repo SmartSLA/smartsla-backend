@@ -1,7 +1,10 @@
 'use strict';
 
 module.exports = (dependencies, lib) => {
-  const { requireAdministrator } = require('../helpers')(dependencies, lib);
+  const {
+    requireAdministrator,
+    validateObjectIds
+  } = require('../helpers')(dependencies, lib);
   const { send400Error } = require('../utils')(dependencies);
 
   return {
@@ -24,12 +27,23 @@ module.exports = (dependencies, lib) => {
   }
 
   function validateOrganizationPayload(req, res, next) {
-    const { shortName } = req.body;
+    const { shortName, administrator } = req.body;
 
     if (!shortName) {
       return send400Error('shortName is required', res);
     }
 
-    next();
+    if (administrator && !validateObjectIds(administrator)) {
+      return send400Error('administrator is invalid', res);
+    }
+
+    lib.organization.getByShortName(shortName)
+      .then(organization => {
+        if (organization) {
+          return send400Error('shortName is taken', res);
+        }
+
+        next();
+      });
   }
 };

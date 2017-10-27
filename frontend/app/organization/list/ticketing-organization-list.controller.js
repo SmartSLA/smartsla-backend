@@ -2,7 +2,13 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingOrganizationListController', TicketingOrganizationListController);
 
-  function TicketingOrganizationListController(infiniteScrollHelper, ticketingOrganizationClient) {
+  function TicketingOrganizationListController(
+    $scope,
+    $modal,
+    infiniteScrollHelper,
+    ticketingOrganizationClient,
+    TICKETING_ORGANIZATION_EVENTS
+  ) {
     var self = this;
     var DEFAULT_LIMIT = 20;
     var options = {
@@ -14,6 +20,21 @@
 
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
+      self.onCreateBtnClick = onCreateBtnClick;
+
+      $scope.$on(TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED, function(event, organization) {
+        _onOrganizationCreated(organization);
+      });
+    }
+
+    function onCreateBtnClick() {
+      $modal({
+        templateUrl: '/ticketing/app/organization/create/ticketing-organization-create.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingOrganizationCreateController'
+      });
     }
 
     function _loadNextItems() {
@@ -23,6 +44,14 @@
         .then(function(response) {
           return response.data;
         });
+    }
+
+    function _onOrganizationCreated(organization) {
+      if (!organization) {
+        return;
+      }
+
+      self.elements.unshift(organization);
     }
   }
 })(angular);
