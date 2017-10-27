@@ -1,6 +1,6 @@
 'use strict';
 
-const { TICKETING_USER_ROLES } = require('./constants');
+const { TICKETING_USER_ROLES, DEFAULT_LIST_OPTIONS } = require('./constants');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -8,6 +8,7 @@ module.exports = dependencies => {
 
   return {
     create,
+    list,
     userIsAdministrator,
     getByUser
   };
@@ -33,6 +34,23 @@ module.exports = dependencies => {
     ticketingUserRole = ticketingUserRole instanceof TicketingUserRole ? ticketingUserRole : new TicketingUserRole(ticketingUserRole);
 
     return TicketingUserRole.create(ticketingUserRole);
+  }
+
+  /**
+   * List TicketingUserRole.
+   * @param {Object}   options  - The options object, may contain offset and limit
+   * @param {Promise}           - Resolve on success
+   */
+  function list(options) {
+    options = options || {};
+
+    return TicketingUserRole
+      .find()
+      .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+      .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+      .populate('user')
+      .sort('-timestamps.creation')
+      .exec();
   }
 
   /**

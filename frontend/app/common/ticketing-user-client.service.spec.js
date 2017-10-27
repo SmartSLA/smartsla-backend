@@ -24,13 +24,25 @@ describe('The ticketingUserClient service', function() {
   });
 
   describe('The update function', function() {
-    it('should POST to right endpoint to udpate user', function() {
+    it('should PUT to right endpoint to udpate user', function() {
       var userId = '123';
       var updateData = { firstname: 'foo', lastname: 'bar', email: 'foo@tic.org', main_phone: '888' };
 
       $httpBackend.expectPUT(API_PATH + '/' + userId, updateData).respond(204);
 
       ticketingUserClient.update(userId, updateData);
+
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The list function', function() {
+    it('should GET to right endpoint to list users', function() {
+      var options = {};
+
+      $httpBackend.expectGET(API_PATH).respond(200, []);
+
+      ticketingUserClient.list(options);
 
       $httpBackend.flush();
     });

@@ -10,6 +10,7 @@ module.exports = (dependencies, lib) => {
   return {
     create,
     update,
+    list,
     userIsAdministrator
   };
 
@@ -44,7 +45,27 @@ module.exports = (dependencies, lib) => {
         res.status(204).end();
       })
       .catch(err => send500Error('Failed to update Ticketing user', err, res));
-    }
+  }
+
+  /**
+   * List users.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function list(req, res) {
+    const options = {
+      limit: +req.query.limit,
+      offset: +req.query.offset
+    };
+
+    return lib.user.list(options)
+      .then(users => {
+        res.header('X-ESN-Items-Count', users.length);
+        res.status(200).json(users);
+      })
+      .catch(err => send500Error('Failed to list users', err, res));
+  }
 
   /**
    * Check a user is administrator
@@ -62,5 +83,5 @@ module.exports = (dependencies, lib) => {
         return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
       })
       .catch(err => send500Error('Failed to get role', err, res));
-    }
+  }
 };
