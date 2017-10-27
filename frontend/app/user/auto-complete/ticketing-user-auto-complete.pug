@@ -1,0 +1,8 @@
+.form-group
+  .input-group.flex-vertical-centered
+    span.input-group-addon
+      i.mdi.mdi-account-plus(ng-if="$ctrl.maxTags===1")
+      i.mdi.mdi-account-multiple-plus(ng-if="$ctrl.maxTags>1")
+    .fg-line
+      tags-input.form-control(ng-model='$ctrl.newUsers', max-tags="{{::$ctrl.maxTags}}", placeholder=__("Type a name or email..."), display-property='displayName', key-property='id', replace-spaces-with-dashes='false', on-tag-adding="$ctrl.onTagAdding($tag)", on-tag-added="$ctrl.onTagAdded($tag)", add-from-autocomplete-only="true")
+        auto-complete(source='$ctrl.search($query)', min-length='1', debounce-delay='200', max-results-to-show= '20', template="/views/modules/auto-complete/attendees.html")
