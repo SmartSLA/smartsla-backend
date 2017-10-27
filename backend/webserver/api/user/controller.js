@@ -10,6 +10,7 @@ module.exports = (dependencies, lib) => {
   return {
     create,
     update,
+    list,
     userIsAdministrator
   };
 
@@ -29,22 +30,42 @@ module.exports = (dependencies, lib) => {
    * @param  {Object} req
    * @param  {Object} res
    */
-  function update(req, res) {
+   function update(req, res) {
     const modifiedUser = {
       main_phone: req.body.main_phone,
       description: req.body.description
     };
 
     lib.user.updateById(req.params.id, modifiedUser)
-      .then(updatedResult => {
-        if (!updatedResult) {
-          return send404Error('User not found', res);
-        }
+    .then(updatedResult => {
+      if (!updatedResult) {
+        return send404Error('User not found', res);
+      }
 
-        res.status(204).end();
+      res.status(204).end();
+    })
+    .catch(err => send500Error('Failed to update Ticketing user', err, res));
+  }
+
+  /**
+   * List users.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function list(req, res) {
+    const options = {
+      limit: +req.query.limit,
+      offset: +req.query.offset
+    };
+
+    return lib.user.list(options)
+      .then(users => {
+        res.header('X-ESN-Items-Count', users.length);
+        res.status(200).json(users);
       })
-      .catch(err => send500Error('Failed to update Ticketing user', err, res));
-    }
+      .catch(err => send500Error('Failed to list users', err, res));
+  }
 
   /**
    * Check a user is administrator
@@ -52,15 +73,15 @@ module.exports = (dependencies, lib) => {
    * @param {Request} req
    * @param {Response} res
    */
-  function userIsAdministrator(req, res) {
+   function userIsAdministrator(req, res) {
     return lib.ticketingUserRole.getByUser(req.params.id)
-      .then(result => {
-        if (!result) {
-          return send403Error('User does not have permission to access Ticketing', res);
-        }
+    .then(result => {
+      if (!result) {
+        return send403Error('User does not have permission to access Ticketing', res);
+      }
 
-        return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
-      })
-      .catch(err => send500Error('Failed to get role', err, res));
-    }
+      return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
+    })
+    .catch(err => send500Error('Failed to get role', err, res));
+  }
 };

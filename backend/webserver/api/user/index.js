@@ -6,6 +6,12 @@ module.exports = (dependencies, lib, router) => {
   const middleware = require('./middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
 
+  router.get('/users',
+    authorizationMW.requiresAPILogin,
+    middleware.canList,
+    controller.list
+  );
+
   router.get('/users/:id/isadministrator',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'User'),

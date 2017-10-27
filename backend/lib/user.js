@@ -15,7 +15,8 @@ module.exports = dependencies => {
 
   return {
     create,
-    updateById
+    updateById,
+    list
   };
 
   function create(user) {
@@ -54,6 +55,18 @@ module.exports = dependencies => {
    */
   function updateById(userId, modifiedUser) {
     return Q.ninvoke(coreUser, 'updateProfile', userId, modifiedUser);
+  }
+
+  /**
+   * List Ticketing users.
+   * @param {Object}   options - The options object, may contain offset and limit
+   * @param {Promise}          - Resolve on success
+   */
+  function list(options) {
+    options = options || {};
+
+    return ticketingUserRole.list(options)
+      .then(userRoles => userRoles.map(userRole => userRole.user));
   }
 
   function _deleteById(userId) {
