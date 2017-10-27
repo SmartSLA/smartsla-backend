@@ -30,21 +30,21 @@ module.exports = (dependencies, lib) => {
    * @param  {Object} req
    * @param  {Object} res
    */
-   function update(req, res) {
+  function update(req, res) {
     const modifiedUser = {
       main_phone: req.body.main_phone,
       description: req.body.description
     };
 
     lib.user.updateById(req.params.id, modifiedUser)
-    .then(updatedResult => {
-      if (!updatedResult) {
-        return send404Error('User not found', res);
-      }
+      .then(updatedResult => {
+        if (!updatedResult) {
+          return send404Error('User not found', res);
+        }
 
-      res.status(204).end();
-    })
-    .catch(err => send500Error('Failed to update Ticketing user', err, res));
+        res.status(204).end();
+      })
+      .catch(err => send500Error('Failed to update Ticketing user', err, res));
   }
 
   /**
@@ -73,15 +73,15 @@ module.exports = (dependencies, lib) => {
    * @param {Request} req
    * @param {Response} res
    */
-   function userIsAdministrator(req, res) {
+  function userIsAdministrator(req, res) {
     return lib.ticketingUserRole.getByUser(req.params.id)
-    .then(result => {
-      if (!result) {
-        return send403Error('User does not have permission to access Ticketing', res);
-      }
+      .then(result => {
+        if (!result) {
+          return send403Error('User does not have permission to access Ticketing', res);
+        }
 
-      return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
-    })
-    .catch(err => send500Error('Failed to get role', err, res));
+        return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
+      })
+      .catch(err => send500Error('Failed to get role', err, res));
   }
 };
