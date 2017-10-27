@@ -7,6 +7,10 @@
     'esn.http',
     'esn.router',
     'op.dynamicDirective',
-    'restangular'
+    'restangular',
+    'esn.async-action',
+    'esn.scroll',
+    'esn.attendee',
+    'esn.core'
   ]);
 })();

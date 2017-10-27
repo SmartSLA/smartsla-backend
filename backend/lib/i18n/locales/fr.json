@@ -2,5 +2,14 @@
   "Organization": "Organisation",
   "No organization": "Aucune organisation",
   "Name": "Nom",
-  "Manager": "Manager"
+  "Manager": "Manager",
+  "Creating organization...": "Création de l'organisation...",
+  "Organization created": "Organisation créée",
+  "Failed to create organization": "Impossible de créer l'organisation",
+  "Short name": "Nom court",
+  "Full name": "Nom complet",
+  "Only allows one manager": "N'autoriser qu'un seul manager",
+  "Description": "Description",
+  "Create": "Créer",
+  "Cancel": "Annuler"
 }

@@ -2,5 +2,14 @@
   "Organization": "Organization",
   "No organization": "No organization",
   "Name": "Name",
-  "Manager": "Manager"
+  "Manager": "Manager",
+  "Creating organization...": "Creating organization...",
+  "Organization created": "Organization created",
+  "Failed to create organization": "Failed to create organization",
+  "Short name": "Short name",
+  "Full name": "Full name",
+  "Only allows one manager": "Only allows one manager",
+  "Description": "Description",
+  "Create": "Create",
+  "Cancel": "Cancel"
 }

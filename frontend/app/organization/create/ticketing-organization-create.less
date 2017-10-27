@@ -1,0 +1,23 @@
+.ticketing-organization-create {
+  .body {
+    padding: 30px 20px 0 20px;
+  }
+}
+
+
+@media(max-width: @screen-md-min) {
+  .ticketing-organization-create {
+    .modal-dialog {
+      height: 100%;
+      width: 100% !important; // override bootstrap css
+
+      .modal-content {
+        height: 100%;
+
+        .body {
+          padding: 20px 20px 0 20px;
+        }
+      }
+    }
+  }
+}

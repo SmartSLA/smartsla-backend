@@ -1,0 +1,16 @@
+ng-form(name="form")
+  .row
+    .col-md-6
+      esn-form-group(label=__('Short name'))
+        input.form-control(type="text", ng-model="$ctrl.organization.shortName", name="organizationShortName", required)
+    .col-md-6
+      esn-form-group(label=__('Full name'))
+        input.form-control(type="text", ng-model="$ctrl.organization.fullName", name="organizationFullName")
+    .col-md-12
+      h5 #{__('Manager')}
+      small.c-red(ng-if="$ctrl.newAdministrators.length > 1")
+        | #{__('Only allows one manager')}
+      ticketing-user-auto-complete(new-users="$ctrl.newAdministrators", max-tags="1")
+    .col-md-12
+      esn-form-group(label=__('Description'))
+        textarea.form-control(type="text", rows="4", ng-model="$ctrl.organization.description", name="organizationDescription")

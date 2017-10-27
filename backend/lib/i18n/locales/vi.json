@@ -2,5 +2,14 @@
   "Organization": "Tổ chức",
   "No organization": "Không có tổ chức",
   "Name": "Tên",
-  "Manager": "Người quản lý"
+  "Manager": "Người quản lý",
+  "Creating organization...": "Đang tạo tổ chức...",
+  "Organization created": "Đã tạo tổ chức",
+  "Failed to create organization": "Tạo tổ chức thất bại",
+  "Short name": "Tên viết tắt",
+  "Full name": "Tên đầy đủ",
+  "Only allows one manager": "Chỉ cho phép một người quản lý",
+  "Description": "Mô tả",
+  "Create": "Tạo",
+  "Cancel": "Hủy"
 }
