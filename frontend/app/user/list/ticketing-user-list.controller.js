@@ -23,6 +23,7 @@
 
       return ticketingUserClient.list(options)
         .then(function(response) {
+          console.log('aa: ', response.data);
           return response.data;
         });
     }

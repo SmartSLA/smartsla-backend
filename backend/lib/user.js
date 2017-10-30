@@ -80,7 +80,7 @@ module.exports = dependencies => {
         let user;
 
         if (org) {
-          user = userRole.user.toObject();
+          user = userRole.user;//.toObject();
           user.organization = org;
         }
 

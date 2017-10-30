@@ -1,0 +1,22 @@
+ng-form(name="form")
+  .row
+    .col-md-6
+      esn-form-group(label=__('First name'))
+        input.form-control(type="text", ng-model="$ctrl.user.firstname", required)
+    .col-md-6
+      esn-form-group(label=__('Last name'))
+        input.form-control(type="text", ng-model="$ctrl.user.lastname", required)
+  .row
+    .col-md-6
+      esn-form-group(label=__('Email'))
+        input.form-control(type="email", ng-model="$ctrl.user.email", autocomplete="off", required, name="email")
+    .col-md-6
+      esn-form-group(label=__('Password'))
+        input.form-control(type="password", ng-model="$ctrl.user.password", autocomplete="new-password", required, name="password")
+  .row
+    .col-md-6
+      esn-form-group(label=__('Main phone'))
+        input.form-control(type="text", ng-model="$ctrl.user.main_phone", required)
+    .col-md-6
+      esn-form-group(label=__('Description'))
+        textarea.form-control(ng-model="$ctrl.user.description")
