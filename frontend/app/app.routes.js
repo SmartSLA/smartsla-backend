@@ -59,7 +59,7 @@
           }
         })
         .state('ticketingAdminCenter.organization', {
-          url: '/organization',
+          url: '/organizations',
           views: {
             'admin-root@ticketingAdminCenter': {
               template: '<ticketing-organization />'
@@ -71,6 +71,14 @@
           views: {
             'admin-root@ticketingAdminCenter': {
               template: '<ticketing-user />'
+            }
+          }
+        })
+        .state('ticketingAdminCenter.organization.detail', {
+          url: '/:organizationId',
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-organization-detail />'
             }
           }
         });

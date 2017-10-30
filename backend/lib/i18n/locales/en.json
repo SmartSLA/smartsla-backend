@@ -1,5 +1,5 @@
 {
-  "Organization": "Organization",
+  "Organizations": "Organizations",
   "No organization": "No organization",
   "Name": "Name",
   "Manager": "Manager",
@@ -13,5 +13,19 @@
   "Create": "Create",
   "Cancel": "Cancel",
   "Entity": "Entity",
-  "User management": "User management"
+  "User management": "User management",
+  "Updating organization...": "Updating organization...",
+  "Organization updated": "Organization updated",
+  "Failed to update organization": "Failed to update organization",
+  "Back": "Back",
+  "Main": "Main",
+  "Contracts": "Contracts",
+  "Entities": "Entities",
+  "Save": "Save",
+  "New organization": "New organization",
+  "Users": "Users",
+  "Type a name or email...": "Type a name or email...",
+  "Organization": "Organization",
+  "Email": "Email",
+  "Phone": "Phone"
 }

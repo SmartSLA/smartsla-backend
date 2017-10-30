@@ -10,7 +10,7 @@
     self.create = create;
 
     function create() {
-      var administrator = self.newAdministrators ? self.newAdministrators[0] : null;
+      var administrator = self.newManagers ? self.newManagers[0] : null;
 
       return TicketingOrganizationService.create(self.organization, administrator);
     }

@@ -38,18 +38,18 @@ describe('The TicketingOrganizationCreateController', function() {
       TicketingOrganizationService.create = sinon.spy();
 
       var organization = { shortName: 'abc', fullName: 'abc organization' };
-      var newAdministrators = [
+      var newManagers = [
         { _id: 'user1Id' }
       ];
 
       var controller = initController();
 
       controller.organization = organization;
-      controller.newAdministrators = newAdministrators;
+      controller.newManagers = newManagers;
       controller.create();
       $rootScope.$digest();
 
-      expect(TicketingOrganizationService.create).to.have.been.calledWith(organization, newAdministrators[0]);
+      expect(TicketingOrganizationService.create).to.have.been.calledWith(organization, newManagers[0]);
     });
   });
 });
