@@ -11,5 +11,7 @@
   "Only allows one manager": "Chỉ cho phép một người quản lý",
   "Description": "Mô tả",
   "Create": "Tạo",
-  "Cancel": "Hủy"
+  "Cancel": "Hủy",
+  "Entity": "Tổ chức con",
+  "User management": "Quản lý người dùng"
 }

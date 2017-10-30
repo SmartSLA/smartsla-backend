@@ -11,7 +11,8 @@ module.exports = dependencies => {
     getById,
     getByShortName,
     list,
-    updateById
+    updateById,
+    getSubOrganizationByUserId
   };
 
   /**
@@ -68,5 +69,14 @@ module.exports = dependencies => {
    */
   function getByShortName(shortName) {
     return Organization.findOne({ shortName });
+  }
+
+  /**
+   * Get sub organization by user ID.
+   * @param {String}  userID - The user ID
+   * @param {Promise}        - Resolve on success
+   */
+  function getSubOrganizationByUserId(userId) {
+    return Organization.findOne({ users: userId, parent: { $exists: true } }).populate('parent').exec();
   }
 };
