@@ -22,7 +22,7 @@ module.exports = (dependencies, lib) => {
    */
   function create(req, res) {
     lib.user.create(req.body)
-      .then(createdUser => res.status(201).json(createdUser))
+      .then(createdUser => res.status(201).json(coreUser.denormalize.denormalize(createdUser)))
       .catch(err => send500Error('Failed to create Ticketing user', err, res));
   }
 
