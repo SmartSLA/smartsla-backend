@@ -11,6 +11,7 @@
     var USER_SEARCH_LIMIT = 20;
 
     return {
+      buildDisplayName: buildDisplayName,
       searchUserCandidates: searchUserCandidates
     };
 
@@ -24,6 +25,10 @@
             return candidate;
           });
         });
+    }
+
+    function buildDisplayName(user) {
+      return user.firstname + ' ' + user.lastname;
     }
   }
 })(angular);

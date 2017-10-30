@@ -36,7 +36,7 @@ module.exports = dependencies => {
 
     return Organization
       .find({ parent: { $exists: false } })
-      .populate('administrator')
+      .populate('manager')
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-creation')
@@ -59,7 +59,10 @@ module.exports = dependencies => {
    * @param {Promise}                 - Resolve on success
    */
   function getById(organizationId) {
-    return Organization.findById(organizationId).exec();
+    return Organization
+      .findById(organizationId)
+      .populate('manager')
+      .exec();
   }
 
   /**

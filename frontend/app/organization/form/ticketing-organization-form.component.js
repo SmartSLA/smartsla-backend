@@ -6,7 +6,10 @@
       templateUrl: '/ticketing/app/organization/form/ticketing-organization-form.html',
       bindings: {
         organization: '=',
-        newAdministrators: '='
+        newManagers: '=',
+        updateMode: '<',
+        onCancelBtnClick: '&',
+        onSaveBtnClick: '&'
       }
     });
 })(angular);

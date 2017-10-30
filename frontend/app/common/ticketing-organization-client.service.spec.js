@@ -46,4 +46,16 @@ describe('The ticketingOrganizationClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The get function', function() {
+    it('should GET to right endpoint to get organization', function() {
+      var organizationId = '123';
+
+      $httpBackend.expectGET('/ticketing/api/organizations/' + organizationId).respond(200, {});
+
+      ticketingOrganizationClient.get(organizationId);
+
+      $httpBackend.flush();
+    });
+  });
 });

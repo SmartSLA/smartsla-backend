@@ -6,9 +6,11 @@ module.exports = function(dependencies, lib, router) {
   const controller = require('./controller')(dependencies, lib);
   const {
     canCreateOrganization,
+    canReadOrganization,
     canListOrganization,
     canUpdateOrganization,
-    validateOrganizationPayload
+    validateOrganizationCreatePayload,
+    validateOrganizationUpdatePayload
   } = require('./middleware')(dependencies, lib);
 
   router.get('/organizations',
@@ -17,10 +19,17 @@ module.exports = function(dependencies, lib, router) {
     controller.list
   );
 
+  router.get('/organizations/:id',
+    authorizationMW.requiresAPILogin,
+    canReadOrganization,
+    checkIdInParams('id', 'Organization'),
+    controller.get
+  );
+
   router.post('/organizations',
     authorizationMW.requiresAPILogin,
     canCreateOrganization,
-    validateOrganizationPayload,
+    validateOrganizationCreatePayload,
     controller.create
   );
 
@@ -28,7 +37,7 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canUpdateOrganization,
     checkIdInParams('id', 'Organization'),
-    validateOrganizationPayload,
+    validateOrganizationUpdatePayload,
     controller.update
   );
 };

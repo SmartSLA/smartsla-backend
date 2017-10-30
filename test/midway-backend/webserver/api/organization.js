@@ -169,19 +169,19 @@ describe('The organization API', function() {
       }));
     });
 
-    it('should respond 400 if administrator is invalid', function(done) {
+    it('should respond 400 if manager is invalid', function(done) {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const req = requestAsMember(request(app).post('/api/organizations'));
         const newOrganization = {
           shortName: 'baz',
-          administrator: 'wrong_objectId'
+          manager: 'wrong_objectId'
         };
 
         req.send(newOrganization);
         req.expect(400)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body).to.deep.equal({
-              error: { code: 400, message: 'Bad Request', details: 'administrator is invalid' }
+              error: { code: 400, message: 'Bad Request', details: 'manager is invalid' }
             });
             done();
           }));
@@ -257,6 +257,49 @@ describe('The organization API', function() {
             });
             done();
           }));
+      }));
+    });
+
+    it('should respond 400 if manager is invalid', function(done) {
+      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+        const newOrganization = {
+          shortName: 'baz',
+          manager: 'wrong_objectId'
+        };
+
+        req.send(newOrganization);
+        req.expect(400)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            expect(res.body).to.deep.equal({
+              error: { code: 400, message: 'Bad Request', details: 'manager is invalid' }
+            });
+            done();
+          }));
+      }));
+    });
+
+    it('should respond 400 if shortName is taken', function(done) {
+      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+
+        lib.organization.create({
+          shortName: 'organization2'
+        })
+        .then(createdOrganization => {
+          const newOrganization = {
+            shortName: createdOrganization.shortName
+          };
+
+          req.send(newOrganization);
+          req.expect(400)
+            .end(helpers.callbacks.noErrorAnd(res => {
+              expect(res.body).to.deep.equal({
+                error: { code: 400, message: 'Bad Request', details: 'shortName is taken' }
+              });
+              done();
+            }));
+        });
       }));
     });
 

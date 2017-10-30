@@ -1,5 +1,5 @@
 {
-  "Organization": "Tổ chức",
+  "Organizations": "Tổ chức",
   "No organization": "Không có tổ chức",
   "Name": "Tên",
   "Manager": "Người quản lý",
@@ -13,5 +13,19 @@
   "Create": "Tạo",
   "Cancel": "Hủy",
   "Entity": "Tổ chức con",
-  "User management": "Quản lý người dùng"
+  "User management": "Quản lý người dùng",
+  "Updating organization...": "Đang cập nhật tổ chức...",
+  "Organization updated": "Đã cập nhật tổ chức",
+  "Failed to update organization": "Cập nhật tổ chức thất bại",
+  "Back": "Quay lại",
+  "Main": "Chính",
+  "Contracts": "Hợp đồng",
+  "Entities": "Tổ chức con",
+  "Save": "Lưu",
+  "New organization": "Thêm tổ chức",
+  "Users": "Người dùng",
+  "Type a name or email...": "Nhập tên người dùng hoặc email...",
+  "Organization": "Tổ chức",
+  "Email": "Thư điện tử",
+  "Phone": "Điện thoại"
 }

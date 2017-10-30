@@ -10,11 +10,12 @@ module.exports = dependencies => {
     fullName: { type: String },
     type: { type: String },
     address: { type: String },
-    administrator: { type: Schema.ObjectId, ref: 'User' },
+    manager: { type: Schema.ObjectId, ref: 'User' },
     contract: { type: Schema.ObjectId, ref: 'Contract' },
     orders: [{ type: Schema.ObjectId, ref: 'Order' }],
     users: [{ type: Schema.ObjectId, ref: 'User' }],
     schemaVersion: {type: Number, default: 1},
+    description: { type: String },
     creation: { type: Date, default: Date.now }
   });
 

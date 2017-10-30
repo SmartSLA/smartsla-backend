@@ -1,5 +1,5 @@
 {
-  "Organization": "Organisation",
+  "Organizations": "Organisations",
   "No organization": "Aucune organisation",
   "Name": "Nom",
   "Manager": "Manager",
@@ -13,5 +13,19 @@
   "Create": "Créer",
   "Cancel": "Annuler",
   "Entity": "Entité",
-  "User management": "Gestion des utilisateurs"
+  "User management": "Gestion des utilisateurs",
+  "Updating organization...": "Mettre à jour de l'organisation...",
+  "Organization updated": "Organisation mis à jour",
+  "Failed to update organization": "Impossible de mettre à jour l'organisation",
+  "Back": "Retour",
+  "Main": "Principale",
+  "Contracts": "Contrats",
+  "Entities": "Entités",
+  "Save": "Enregistrer",
+  "New organization": "New organization",
+  "Users": "Utilisateurs",
+  "Type a name or email...": "Entrer un nom ou email...",
+  "Organization": "Organisation",
+  "Email": "Email",
+  "Phone": "Téléphone"
 }

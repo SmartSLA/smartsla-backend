@@ -1,0 +1,19 @@
+sub-header
+  ticketing-organization-detail-subheader
+
+.card
+  ticketing-organization-tabs(selected-tab = "$ctrl.selectedTab")
+  .card-body
+    form(ng-submit='$ctrl.submit()')
+      ticketing-organization-tabs-main(
+        ng-if="$ctrl.organization",
+        ng-show='$ctrl.selectedTab === "main"',
+        organization = "$ctrl.organization"
+      )
+      ticketing-organization-tabs-contract(
+        ng-show='$ctrl.selectedTab === "contract"'
+      )
+      ticketing-organization-tabs-entity(
+        ng-show='$ctrl.selectedTab === "entity"'
+      )
+    

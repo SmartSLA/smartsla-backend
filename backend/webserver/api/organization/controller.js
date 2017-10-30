@@ -6,6 +6,7 @@ module.exports = function(dependencies, lib) {
 
   return {
     create,
+    get,
     list,
     update
   };
@@ -20,6 +21,22 @@ module.exports = function(dependencies, lib) {
     return lib.organization.create(req.body)
       .then(createdOrganization => res.status(201).json(createdOrganization))
       .catch(err => send500Error('Failed to create organization', err, res));
+  }
+
+  /**
+   * Get an organization by Id
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function get(req, res) {
+    return lib.organization.getById(req.params.id)
+      .then(organization => {
+        organization.manager = coreUser.denormalize.denormalize(organization.manager, true);
+
+        return res.status(201).json(organization);
+      })
+      .catch(err => send500Error('Failed to get organization', err, res));
   }
 
   /**
@@ -39,7 +56,7 @@ module.exports = function(dependencies, lib) {
         res.header('X-ESN-Items-Count', organizations.length);
 
         const denormalizer = organization => {
-          organization.administrator = coreUser.denormalize.denormalize(organization.administrator, true);
+          organization.manager = coreUser.denormalize.denormalize(organization.manager, true);
 
           return organization;
         };

@@ -4,6 +4,7 @@
 
   function TicketingOrganizationListController(
     $scope,
+    $state,
     $modal,
     infiniteScrollHelper,
     ticketingOrganizationClient,
@@ -21,6 +22,7 @@
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
+      self.onItemClick = onItemClick;
 
       $scope.$on(TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED, function(event, organization) {
         _onOrganizationCreated(organization);
@@ -35,6 +37,10 @@
         controllerAs: '$ctrl',
         controller: 'TicketingOrganizationCreateController'
       });
+    }
+
+    function onItemClick(organizationId) {
+      $state.go('ticketingAdminCenter.organization.detail', { organizationId: organizationId });
     }
 
     function _loadNextItems() {

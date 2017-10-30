@@ -7,6 +7,7 @@
   function ticketingOrganizationClient(ticketingRestangular) {
     return {
       create: create,
+      get: get,
       list: list,
       update: update
     };
@@ -37,6 +38,15 @@
      */
     function update(organizationId, updateData) {
       return ticketingRestangular.one('organizations', organizationId).customPUT(updateData);
+    }
+
+    /**
+     * Get an organization by Id
+     * @param  {String} organizationId - The organization Id
+     * @return {Promise}               - Resolve response with an organization
+     */
+    function get(organizationId) {
+      return ticketingRestangular.one('organizations', organizationId).get();
     }
   }
 })(angular);
