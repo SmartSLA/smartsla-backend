@@ -15,6 +15,7 @@ module.exports = dependencies => {
     orders: [{ type: Schema.ObjectId, ref: 'Order' }],
     users: [{ type: Schema.ObjectId, ref: 'User' }],
     schemaVersion: {type: Number, default: 1},
+    description: { type: String },
     creation: { type: Date, default: Date.now }
   });
 
