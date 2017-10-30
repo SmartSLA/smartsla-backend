@@ -35,5 +35,10 @@
   "Entity informations": "Informations de l'entité",
   "Orders": "Ordres",
   "New Entity": "Nouveau entité",
-  "Edit entity": "Éditer l'entité"
+  "Edit entity": "Éditer l'entité",
+  "New user": "Nouveau utilisateur",
+  "First name": "Prénom",
+  "Last name": "Nom",
+  "Main phone": "Téléphone principal",
+  "Password": "Mot de Passe"
 }

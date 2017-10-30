@@ -21,4 +21,4 @@
 ul.nav.nav-pills.nav-stacked(ng-if='$ctrl.infiniteScrollDisabled')
   li.text-center(openpaas-logo-spinner, spinner-start-active='1', spinner-size='0.5')
 
-fab(icon="plus")
+fab(icon="plus", ng-click="$ctrl.onCreateBtnClick()")

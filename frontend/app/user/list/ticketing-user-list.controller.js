@@ -4,7 +4,13 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingUserListController', TicketingUserListController);
 
-  function TicketingUserListController(infiniteScrollHelper, ticketingUserClient) {
+  function TicketingUserListController(
+    $scope,
+    $modal,
+    infiniteScrollHelper,
+    ticketingUserClient,
+    TICKETING_USER_EVENTS
+  ) {
     var self = this;
     var DEFAULT_LIMIT = 20;
     var options = {
@@ -15,7 +21,12 @@
     self.$onInit = $onInit;
 
     function $onInit() {
+      self.onCreateBtnClick = onCreateBtnClick;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
+
+      $scope.$on(TICKETING_USER_EVENTS.USER_CREATED, function(event, user) {
+        _onUserCreated(user);
+      });
     }
 
     function _loadNextItems() {
@@ -23,9 +34,26 @@
 
       return ticketingUserClient.list(options)
         .then(function(response) {
-          console.log('aa: ', response.data);
           return response.data;
         });
+    }
+
+    function onCreateBtnClick() {
+      $modal({
+        templateUrl: '/ticketing/app/user/create/ticketing-user-create.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingUserCreateController'
+      });
+    }
+
+    function _onUserCreated(user) {
+      if (!user) {
+        return;
+      }
+
+      self.elements.unshift(user);
     }
   }
 })(angular);

@@ -35,5 +35,10 @@
   "Entity informations": "Thông tin của tổ chức",
   "Orders": "Đơn hàng",
   "New Entity": "Thêm tổ chức con",
-  "Edit entity": "Chỉnh sửa tổ chức con"
+  "Edit entity": "Chỉnh sửa tổ chức con",
+  "New user": "Thêm người dùng",
+  "First name": "Tên",
+  "Last name": "Họ",
+  "Main phone": "Số điện thoại",
+  "Password": "Mật khẩu"
 }

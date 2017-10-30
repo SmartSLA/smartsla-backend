@@ -35,5 +35,10 @@
   "Entity informations": "Entity informations",
   "Orders": "Orders",
   "New Entity": "New Entity",
-  "Edit entity": "Edit entity"
+  "Edit entity": "Edit entity",
+  "New user": "New user",
+  "First name": "First name",
+  "Last name": "Last name",
+  "Main phone": "Main phone",
+  "Password": "Password"
 }
