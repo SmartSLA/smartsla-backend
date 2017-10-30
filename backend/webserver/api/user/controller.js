@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = (dependencies, lib) => {
+  const coreUser = dependencies('coreUser');
   const {
     send403Error,
     send404Error,
@@ -48,7 +49,7 @@ module.exports = (dependencies, lib) => {
   }
 
   /**
-   * List users.
+   * List users with organization info.
    *
    * @param {Request} req
    * @param {Response} res
@@ -61,8 +62,17 @@ module.exports = (dependencies, lib) => {
 
     return lib.user.list(options)
       .then(users => {
-        res.header('X-ESN-Items-Count', users.length);
-        res.status(200).json(users);
+        const denormalizedUsers = users.map(user => {
+          const denormalizedUser = coreUser.denormalize.denormalize(user);
+
+          // organization info
+          denormalizedUser.organization = user.organization;
+
+          return denormalizedUser;
+        });
+
+        res.header('X-ESN-Items-Count', denormalizedUsers.length);
+        res.status(200).json(denormalizedUsers);
       })
       .catch(err => send500Error('Failed to list users', err, res));
   }

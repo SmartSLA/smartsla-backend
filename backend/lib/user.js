@@ -12,6 +12,7 @@ module.exports = dependencies => {
   const pubsub = dependencies('pubsub').local;
   const User = mongoose.model('User');
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
+  const organization = require('./organization')(dependencies);
 
   return {
     create,
@@ -51,14 +52,14 @@ module.exports = dependencies => {
    * Update user by ID.
    * @param  {String} userId       - ID of user
    * @param  {Object} modifiedUser - Modified information
-   * @return {[type]}              [description]
+   * @return {Promise}             - Resolve on success
    */
   function updateById(userId, modifiedUser) {
     return Q.ninvoke(coreUser, 'updateProfile', userId, modifiedUser);
   }
 
   /**
-   * List Ticketing users.
+   * List Ticketing users with organization info.
    * @param {Object}   options - The options object, may contain offset and limit
    * @param {Promise}          - Resolve on success
    */
@@ -66,7 +67,25 @@ module.exports = dependencies => {
     options = options || {};
 
     return ticketingUserRole.list(options)
-      .then(userRoles => userRoles.map(userRole => userRole.user));
+      .then(userRoles => {
+        const usersPromises = userRoles.map(userRole => _buildUserFromUserRole(userRole));
+
+        return Q.all(usersPromises);
+      });
+  }
+
+  function _buildUserFromUserRole(userRole) {
+    return organization.getSubOrganizationByUserId(userRole.user._id)
+      .then(org => {
+        let user;
+
+        if (org) {
+          user = userRole.user.toObject();
+          user.organization = org;
+        }
+
+        return user || userRole.user;
+      });
   }
 
   function _deleteById(userId) {
