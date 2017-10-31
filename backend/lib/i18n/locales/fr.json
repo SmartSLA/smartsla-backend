@@ -27,5 +27,11 @@
   "Type a name or email...": "Entrer un nom ou email...",
   "Organization": "Organisation",
   "Email": "Email",
-  "Phone": "Téléphone"
+  "Phone": "Téléphone",
+  "Edit organization": "Éditer l'organisation",
+  "Edit": "Éditer",
+  "Organization:": "Organisations:",
+  "Organization informations": "Informations de l'organisation",
+  "Entity informations": "Informations de l'entité",
+  "Orders": "Ordres"
 }

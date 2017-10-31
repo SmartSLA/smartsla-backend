@@ -23,6 +23,9 @@
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
       self.onItemClick = onItemClick;
+      if (self.isEntityMode) {
+        options.parent = self.parent;
+      }
 
       $scope.$on(TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED, function(event, organization) {
         _onOrganizationCreated(organization);

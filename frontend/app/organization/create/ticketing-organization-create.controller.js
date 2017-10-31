@@ -10,9 +10,7 @@
     self.create = create;
 
     function create() {
-      var administrator = self.newManagers ? self.newManagers[0] : null;
-
-      return TicketingOrganizationService.create(self.organization, administrator);
+      return TicketingOrganizationService.create(self.organization);
     }
   }
 })(angular);

@@ -3,6 +3,9 @@
 
   angular.module('linagora.esn.ticketing')
     .component('ticketingOrganizationTabsEntity', {
-      templateUrl: '/ticketing/app/organization/tabs/entity/ticketing-organization-tabs-entity.html'
+      templateUrl: '/ticketing/app/organization/tabs/entity/ticketing-organization-tabs-entity.html',
+      bindings: {
+        parent: '<'
+      }
     });
 })(angular);

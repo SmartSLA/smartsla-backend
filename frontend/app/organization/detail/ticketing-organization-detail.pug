@@ -1,19 +1,29 @@
 sub-header
-  ticketing-organization-detail-subheader
+  ticketing-organization-detail-subheader(
+    is-edit-mode="$ctrl.isEditMode",
+    on-cancel-btn-click="$ctrl.onCancelBtnClick()",
+    on-edit-btn-click="$ctrl.onEditBtnClick()",
+    on-save-btn-click="$ctrl.onSaveBtnClick()",
+    form="form",
+    selected-tab="$ctrl.selectedTab"
+  )
 
 .card
-  ticketing-organization-tabs(selected-tab = "$ctrl.selectedTab")
-  .card-body
-    form(ng-submit='$ctrl.submit()')
-      ticketing-organization-tabs-main(
-        ng-if="$ctrl.organization",
-        ng-show='$ctrl.selectedTab === "main"',
-        organization = "$ctrl.organization"
-      )
-      ticketing-organization-tabs-contract(
-        ng-show='$ctrl.selectedTab === "contract"'
-      )
-      ticketing-organization-tabs-entity(
-        ng-show='$ctrl.selectedTab === "entity"'
-      )
-    
+  ticketing-organization-tabs(
+    selected-tab = "$ctrl.selectedTab",
+    is-entity-mode = "!!$ctrl.organization.parent"
+  )
+form(name="form")
+  ticketing-organization-tabs-main(
+    ng-if="$ctrl.organization",
+    ng-show='$ctrl.selectedTab === "main"',
+    organization = "$ctrl.organization",
+    is-edit-mode="$ctrl.isEditMode"
+  )
+ticketing-organization-tabs-contract(
+  ng-show='$ctrl.selectedTab === "contract"'
+)
+ticketing-organization-tabs-entity(
+  parent="$ctrl.organizationId",
+  ng-show='$ctrl.selectedTab === "entity"'
+)

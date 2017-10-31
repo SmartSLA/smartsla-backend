@@ -5,7 +5,8 @@
     .component('ticketingOrganizationTabs', {
       templateUrl: '/ticketing/app/organization/tabs/ticketing-organization-tabs.html',
       bindings: {
-        selectedTab: '='
+        selectedTab: '=',
+        isEntityMode: '<'
       }
     });
 })(angular);
