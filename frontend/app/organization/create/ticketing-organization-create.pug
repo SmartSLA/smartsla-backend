@@ -5,17 +5,19 @@
         .modal-header.hidden-xs
           button.close(type="button", data-dismiss="modal", aria-label="Close", ng-click="$hide()")
             span(aria-hidden="true") &times;
-          h4.modal-title #{__('New organization')}
+          h4.modal-title(ng-if="!$ctrl.organization.parent") #{__('New organization')}
+          h4.modal-title(ng-if="$ctrl.organization.parent") #{__('New Entity')}
         .modal-header.flex-vertical-centered.hidden-md
           .flex-grow.flex.flex-vertical-centered.flex-space-between
-            button.close(type="button", data-dismiss="modal", aria-label="Close", ng-click="$hide()")
+            button.btn.btn-link(type="button", data-dismiss="modal", aria-label="Close", ng-click="$hide()")
               span(aria-hidden="true") &times;
-            h4.modal-title #{__('New organization')}
+            h4.modal-title.eclipsis(ng-if="!$ctrl.organization.parent") #{__('New organization')}
+            h4.modal-title.eclipsis(ng-if="$ctrl.organization.parent") #{__('New Entity')}
           .flex-grow.flex-end
-            button.close(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
+            button.btn.btn-link(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
               | #{__('Create')}
         .body
-          ticketing-organization-form(organization="$ctrl.organization", new-managers="$ctrl.newManagers")
+          ticketing-organization-form(organization="$ctrl.organization")
         .modal-footer.flex.hidden-xs
           .flex-vertical-centered.flex-end
             button.btn.btn-link(type="button", ng-click="$hide()")

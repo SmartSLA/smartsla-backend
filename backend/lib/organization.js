@@ -34,8 +34,10 @@ module.exports = dependencies => {
   function list(options) {
     options = options || {};
 
+    const findOptions = options.parent ? { parent: mongoose.Types.ObjectId(options.parent) } : { parent: { $exists: false } };
+
     return Organization
-      .find({ parent: { $exists: false } })
+      .find(findOptions)
       .populate('manager')
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
@@ -62,6 +64,7 @@ module.exports = dependencies => {
     return Organization
       .findById(organizationId)
       .populate('manager')
+      .populate('parent')
       .exec();
   }
 

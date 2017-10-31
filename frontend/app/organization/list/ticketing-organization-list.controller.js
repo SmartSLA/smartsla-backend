@@ -8,6 +8,7 @@
     $modal,
     infiniteScrollHelper,
     ticketingOrganizationClient,
+    TicketingOrganizationService,
     TICKETING_ORGANIZATION_EVENTS
   ) {
     var self = this;
@@ -16,6 +17,7 @@
       offset: 0,
       limit: DEFAULT_LIMIT
     };
+    var parentObject;
 
     self.$onInit = $onInit;
 
@@ -23,6 +25,14 @@
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
       self.onItemClick = onItemClick;
+      if (self.parent) {
+        options.parent = self.parent;
+      }
+
+      TicketingOrganizationService.get(self.parent)
+        .then(function(organizationParent) {
+          parentObject = organizationParent;
+        });
 
       $scope.$on(TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED, function(event, organization) {
         _onOrganizationCreated(organization);
@@ -35,7 +45,10 @@
         backdrop: 'static',
         placement: 'center',
         controllerAs: '$ctrl',
-        controller: 'TicketingOrganizationCreateController'
+        controller: 'TicketingOrganizationCreateController',
+        locals: {
+          parent: parentObject
+        }
       });
     }
 

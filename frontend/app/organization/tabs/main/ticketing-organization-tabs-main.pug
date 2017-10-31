@@ -1,8 +1,45 @@
-form(name="form")
-  ticketing-organization-form(
-    organization="$ctrl.organization",
-    update-mode="true",
-    new-managers="$ctrl.newManagers",
-    on-cancel-btn-click="$ctrl.onCancelBtnClick()",
-    on-save-btn-click="$ctrl.onSaveBtnClick()",
-    max-tags="1")
+.card.p-20.p-t-25
+  .pmb-block(ng-if="!$ctrl.isEditMode")
+    .pmbb-header.p-b-10
+      h4(ng-if="!$ctrl.organization.parent")
+        i.mdi.mdi-city.m-r-5
+        | #{__('Organization informations')}
+      h4(ng-if="$ctrl.organization.parent")
+        i.mdi.mdi-city.m-r-5
+        | #{__('Entity informations')}
+    .pmbb-body.p-l-30
+      .pmbb-view
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-chevron-right.m-r-5
+            | #{__('Short name')}
+          dd
+            | {{::$ctrl.organization.shortName}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-chevron-right.m-r-5
+            | #{__('Full name')}
+          dd
+            | {{::$ctrl.organization.fullName}}
+        dl.dl-horizontal(ng-if="$ctrl.organization.parent")
+          dt
+            i.mdi.mdi-city.m-r-5
+            | #{__('Organization')}
+          dd
+            a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.organization.parent._id})") {{::$ctrl.organization.parent.fullName}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-account.m-r-5
+            | #{__('Manager')}
+            dd
+              | {{::$ctrl.organization.manager.displayName}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-comment-text.m-r-5
+            | #{__('Description')}
+            dd
+              | {{::$ctrl.organization.description}}
+
+  ng-form(ng-if="$ctrl.isEditMode", name="form")
+    ticketing-organization-form(
+      organization="$ctrl.organization")

@@ -4,15 +4,18 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingOrganizationCreateController', TicketingOrganizationCreateController);
 
-  function TicketingOrganizationCreateController(TicketingOrganizationService) {
+  function TicketingOrganizationCreateController(TicketingOrganizationService, parent) {
     var self = this;
 
     self.create = create;
 
-    function create() {
-      var administrator = self.newManagers ? self.newManagers[0] : null;
+    self.organization = {
+      parent: parent,
+      manager: parent.manager
+    };
 
-      return TicketingOrganizationService.create(self.organization, administrator);
+    function create() {
+      return TicketingOrganizationService.create(self.organization);
     }
   }
 })(angular);

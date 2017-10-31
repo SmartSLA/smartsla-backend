@@ -2,9 +2,15 @@ ul.esn-tab
   li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'main'}")
     a(href="", ng-click="$ctrl.selectedTab = 'main'")
       | #{__('Main')}
-  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'contract'}")
+  li.btn-wave(ng-if="!$ctrl.isEntityMode", ng-class="{'active': $ctrl.selectedTab === 'contract'}")
     a(href="", ng-click="$ctrl.selectedTab = 'contract'")
       | #{__('Contracts')}
-  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'entity'}")
+  li.btn-wave(ng-if="!$ctrl.isEntityMode", ng-class="{'active': $ctrl.selectedTab === 'entity'}")
     a(href="", ng-click="$ctrl.selectedTab = 'entity'")
       | #{__('Entities')}
+  li.btn-wave(ng-if="$ctrl.isEntityMode", ng-class="{'active': $ctrl.selectedTab === 'user'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'user'")
+      | #{__('Users')}
+  li.btn-wave(ng-if="$ctrl.isEntityMode", ng-class="{'active': $ctrl.selectedTab === 'order'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'order'")
+      | #{__('Orders')}
