@@ -21,17 +21,7 @@ module.exports = dependencies => {
   };
 
   function create(user) {
-    const coreUserJson = {
-      firstname: user.firstname,
-      lastname: user.lastname,
-      accounts: [{
-        type: 'email',
-        emails: [user.email]
-      }],
-      main_phone: user.main_phone
-    };
-
-    return Q.ninvoke(coreUser, 'recordUser', coreUserJson)
+    return Q.ninvoke(coreUser, 'recordUser', user)
       .then(createdUser => {
         const userRole = {
           user: createdUser._id,
@@ -77,14 +67,11 @@ module.exports = dependencies => {
   function _buildUserFromUserRole(userRole) {
     return organization.getSubOrganizationByUserId(userRole.user._id)
       .then(org => {
-        let user;
-
         if (org) {
-          user = userRole.user;//.toObject();
-          user.organization = org;
+          userRole.user.organization = org;
         }
 
-        return user || userRole.user;
+        return userRole.user;
       });
   }
 

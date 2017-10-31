@@ -7,7 +7,7 @@ const MODULE_NAME = 'linagora.esn.ticketing';
 const API_PATH = '/ticketing/api/users';
 
 describe('GET /api/users', function() {
-  let app, lib, helpers;
+  let app, lib, helpers, userDenormalize;
   let user1, user2;
   const password = 'secret';
 
@@ -24,6 +24,8 @@ describe('GET /api/users', function() {
       const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
       const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
+      userDenormalize = require(self.testEnv.basePath + '/backend/core/user/denormalize').denormalize;
+
       ticketingApp.use(require('body-parser').json());
       ticketingApp.use('/ticketing/api', api);
 
@@ -37,8 +39,8 @@ describe('GET /api/users', function() {
           return done(err);
         }
 
-        user1 = models.users[1];
-        user2 = models.users[2];
+        user1 = userDenormalize(models.users[1]);
+        user2 = userDenormalize(models.users[2]);
         lib = helpers.modules.current.lib.lib;
 
         lib.ticketingUserRole.create({
@@ -99,27 +101,19 @@ describe('GET /api/users', function() {
   });
 
   it('should respond 200 with the latest user', function(done) {
-    lib.user.create({
-      firstname: 'user3',
-      lastname: 'ln3',
-      email: 'user3@foo.bar',
-      main_phone: '333'
-    })
-    .then(createdUser => {
-      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-        const req = requestAsMember(request(app).get(API_PATH));
-        const expectResult = [getObjectFromModel(createdUser)];
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).get(API_PATH));
+      const expectResult = [getObjectFromModel(userDenormalize(user2))];
 
-        req.query({ limit: 1 });
-        req.expect(200)
-          .end(helpers.callbacks.noErrorAnd(res => {
-            expect(res.headers['x-esn-items-count']).to.exist;
-            expect(res.headers['x-esn-items-count']).to.equal(`${expectResult.length}`);
-            expect(res.body).to.shallowDeepEqual(expectResult);
-            done();
-          }));
-      }));
-    }, err => done(err || 'should resolve'));
+      req.query({ limit: 1 });
+      req.expect(200)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.headers['x-esn-items-count']).to.exist;
+          expect(res.headers['x-esn-items-count']).to.equal(`${expectResult.length}`);
+          expect(res.body).to.shallowDeepEqual(expectResult);
+          done();
+        }));
+    }));
   });
 
   it('should respond 200 with the oldest user', function(done) {
@@ -129,12 +123,12 @@ describe('GET /api/users', function() {
 
       req.query({ offset: 1 });
       req.expect(200)
-      .end(helpers.callbacks.noErrorAnd(res => {
-        expect(res.headers['x-esn-items-count']).to.exist;
-        expect(res.headers['x-esn-items-count']).to.equal(`${expectResult.length}`);
-        expect(res.body).to.shallowDeepEqual(expectResult);
-        done();
-      }));
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.headers['x-esn-items-count']).to.exist;
+          expect(res.headers['x-esn-items-count']).to.equal(`${expectResult.length}`);
+          expect(res.body).to.shallowDeepEqual(expectResult);
+          done();
+        }));
     }));
   });
 });
