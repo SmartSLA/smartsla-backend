@@ -12,7 +12,7 @@ ng-form(name="form")
       .row
         .col-md-12
           h5 #{__('Manager')}
-          small.c-red(ng-if="$ctrl.newManagers.length > 1")
+          small.c-red(ng-if="newManagers.length > 1")
             | #{__('Only allows one manager')}
           ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
       .row.m-b-20

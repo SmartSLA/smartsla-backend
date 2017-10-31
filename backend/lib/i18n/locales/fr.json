@@ -22,7 +22,7 @@
   "Contracts": "Contrats",
   "Entities": "Entités",
   "Save": "Enregistrer",
-  "New organization": "New organization",
+  "New organization": "Nouveau organisation",
   "Users": "Utilisateurs",
   "Type a name or email...": "Entrer un nom ou email...",
   "Organization": "Organisation",
@@ -33,5 +33,7 @@
   "Organization:": "Organisations:",
   "Organization informations": "Informations de l'organisation",
   "Entity informations": "Informations de l'entité",
-  "Orders": "Ordres"
+  "Orders": "Ordres",
+  "New Entity": "Nouveau entité",
+  "Edit entity": "Éditer l'entité"
 }

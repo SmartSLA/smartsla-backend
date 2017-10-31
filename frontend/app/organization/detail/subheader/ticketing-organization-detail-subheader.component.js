@@ -11,7 +11,8 @@
       onCancelBtnClick: '&',
       onSaveBtnClick: '&',
       form: '<',
-      selectedTab: '<'
+      selectedTab: '<',
+      isEntityMode: '<'
     }
   });
 })(angular);

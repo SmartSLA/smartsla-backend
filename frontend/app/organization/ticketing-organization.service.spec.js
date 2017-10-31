@@ -39,28 +39,28 @@ describe('The TicketingOrganizationService', function() {
     });
 
     it('should call ticketingOrganizationClient.create to create new organization', function(done) {
-      var organization = { shortName: 'baz' };
-      var administrator = { _id: 'userId' };
+      var manager = { _id: 'userId' };
+      var organization = { shortName: 'baz', manager: manager };
 
       ticketingOrganizationClient.create = sinon.stub().returns($q.when({
         data: {
           shortName: organization.shortName,
-          administrator: administrator._id
+          manager: manager._id
         }
       }));
       $rootScope.$broadcast = sinon.spy();
 
-      TicketingOrganizationService.create(organization, administrator)
+      TicketingOrganizationService.create(organization)
         .then(function() {
           expect(ticketingOrganizationClient.create).to.have.been.calledWith({
             shortName: organization.shortName,
-            administrator: administrator._id
+            manager: manager._id
           });
           expect($rootScope.$broadcast).to.have.been.calledWith(
             TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED,
             {
               shortName: organization.shortName,
-              administrator: administrator
+              manager: manager
             });
           done();
         })

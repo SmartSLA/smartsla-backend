@@ -8,6 +8,7 @@ var expect = chai.expect;
 describe('The TicketingOrganizationListController', function() {
   var $rootScope, $controller, $scope;
   var $modalMock, infiniteScrollHelperMock;
+  var TicketingOrganizationService;
   var organizations;
   var TICKETING_ORGANIZATION_EVENTS;
 
@@ -28,12 +29,16 @@ describe('The TicketingOrganizationListController', function() {
     inject(function(
       _$rootScope_,
       _$controller_,
+      _TicketingOrganizationService_,
       _TICKETING_ORGANIZATION_EVENTS_
     ) {
       $rootScope = _$rootScope_;
       $controller = _$controller_;
+      TicketingOrganizationService = _TicketingOrganizationService_;
       TICKETING_ORGANIZATION_EVENTS = _TICKETING_ORGANIZATION_EVENTS_;
     });
+
+    TicketingOrganizationService.get = function() { return $q.when(); };
   });
 
   function initController() {

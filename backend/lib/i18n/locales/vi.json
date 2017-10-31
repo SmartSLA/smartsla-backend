@@ -33,5 +33,7 @@
   "Organization:": "Tổ chức:",
   "Organization informations": "Thông tin của tổ chức",
   "Entity informations": "Thông tin của tổ chức",
-  "Orders": "Đơn hàng"
+  "Orders": "Đơn hàng",
+  "New Entity": "Thêm tổ chức con",
+  "Edit entity": "Chỉnh sửa tổ chức con"
 }

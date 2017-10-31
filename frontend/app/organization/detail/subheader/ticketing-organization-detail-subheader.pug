@@ -8,7 +8,8 @@ block left
     button.btn.btn-link.flex-vertical-centered(ng-click="$ctrl.onCancelBtnClick()")
       i.mdi.mdi-close
       span.hidden-xs #{__('Cancel')}
-    span.title.ellipsis #{__('Edit organization')}
+    span.title.ellipsis(ng-if="!$ctrl.isEntityMode") #{__('Edit organization')}
+    span.title.ellipsis(ng-if="$ctrl.isEntityMode") #{__('Edit entity')}
 block right
   div(ng-if="!$ctrl.isEditMode && $ctrl.selectedTab==='main'")
     button.btn.btn-link.flex-vertical-centered(ng-click="$ctrl.onEditBtnClick()")

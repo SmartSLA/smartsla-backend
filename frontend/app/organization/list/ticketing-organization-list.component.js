@@ -4,7 +4,6 @@
       templateUrl: '/ticketing/app/organization/list/ticketing-organization-list.html',
       controller: 'TicketingOrganizationListController',
       bindings: {
-        isEntityMode: '<',
         parent: '<'
       }
     });
