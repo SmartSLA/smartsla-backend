@@ -1,11 +1,12 @@
 extends /modules/subheader/responsive-subheader.pug
 
 block left
-  button.btn.btn-link.flex-vertical-centered(ng-if="!$ctrl.isEditMode", esn-back-button="home")
-    i.mdi.mdi-arrow-left
-    span.hidden-xs #{__('Back')}
-  span.title.ellipsis(ng-if="$ctrl.organization.parent") {{::$ctrl.organization.parent.shortName}} >
-  span.title.ellipsis {{::$ctrl.organization.shortName}}
+  div.flex.flex-vertical-centered(ng-if="!$ctrl.isEditMode")
+    button.btn.btn-link.flex-vertical-centered(esn-back-button="home")
+      i.mdi.mdi-arrow-left
+      span.hidden-xs #{__('Back')}
+    span.title.ellipsis(ng-if="$ctrl.organization.parent") {{::$ctrl.organization.parent.shortName}} >
+    span.title.ellipsis {{::$ctrl.organization.shortName}}
   .flex.flex-vertical-centered(ng-if="$ctrl.isEditMode")
     button.btn.btn-link.flex-vertical-centered(ng-click="$ctrl.onCancelBtnClick()")
       i.mdi.mdi-close
