@@ -38,7 +38,7 @@ module.exports = (dependencies, lib) => {
       organization,
       startDate,
       endDate,
-      administrator,
+      manager,
       defaultSupportManager,
       permissions,
       users
@@ -64,8 +64,8 @@ module.exports = (dependencies, lib) => {
       return send400Error('organization is invalid', res);
     }
 
-    if (administrator && !validateObjectIds(administrator)) {
-      return send400Error('administrator is invalid', res);
+    if (manager && !validateObjectIds(manager)) {
+      return send400Error('manager is invalid', res);
     }
 
     if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
@@ -112,7 +112,7 @@ module.exports = (dependencies, lib) => {
 
   function validateOrderPayload(req, res, next) {
     const {
-      administrator,
+      manager,
       defaultSupportManager,
       permissions,
       startDate,
@@ -121,8 +121,8 @@ module.exports = (dependencies, lib) => {
       type
     } = req.body;
 
-    if (administrator && !validateObjectIds(administrator)) {
-      return send400Error('administrator is invalid', res);
+    if (manager && !validateObjectIds(manager)) {
+      return send400Error('manager is invalid', res);
     }
 
     if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {

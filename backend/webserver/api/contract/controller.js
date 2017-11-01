@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
+  const coreUser = dependencies('coreUser');
 
   return {
     create,
@@ -38,6 +39,15 @@ module.exports = function(dependencies, lib) {
 
     return lib.contract.list(options)
       .then(contracts => {
+        const denormalizeManager = manager => coreUser.denormalize.denormalize(manager);
+
+        contracts = contracts.map(contract => {
+          if (contract.manager) {
+            contract.manager = denormalizeManager(contract.manager);
+          }
+
+          return contract;
+        });
         res.header('X-ESN-Items-Count', contracts.length);
         res.status(200).json(contracts);
       })
