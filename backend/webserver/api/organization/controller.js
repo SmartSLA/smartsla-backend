@@ -32,7 +32,14 @@ module.exports = function(dependencies, lib) {
   function get(req, res) {
     return lib.organization.getById(req.params.id)
       .then(organization => {
-        organization.manager = coreUser.denormalize.denormalize(organization.manager, true);
+        organization = organization.toObject();
+        if (organization.manager) {
+          organization.manager = coreUser.denormalize.denormalize(organization.manager);
+        }
+
+        const denormalizeUsers = users => users.map(user => coreUser.denormalize.denormalize(user));
+
+        organization.users = denormalizeUsers(organization.users);
 
         return res.status(201).json(organization);
       })

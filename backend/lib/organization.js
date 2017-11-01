@@ -65,6 +65,7 @@ module.exports = dependencies => {
       .findById(organizationId)
       .populate('manager')
       .populate('parent')
+      .populate('users')
       .exec();
   }
 
