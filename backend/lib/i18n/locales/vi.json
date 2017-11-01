@@ -41,5 +41,9 @@
   "Last name": "Họ",
   "Main phone": "Số điện thoại",
   "Password": "Mật khẩu",
-  "No user": "Không có người dùng"
+  "No user": "Không có người dùng",
+  "Title": "Tiêu đề",
+  "Start date": "Ngày bắt đầu",
+  "End date": "Ngày kết thúc",
+  "No contract": "Không có hợp đồng"
 }

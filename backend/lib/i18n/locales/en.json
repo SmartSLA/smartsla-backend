@@ -41,5 +41,9 @@
   "Last name": "Last name",
   "Main phone": "Main phone",
   "Password": "Password",
-  "No user": "No user"
+  "No user": "No user",
+  "Title": "Title",
+  "Start date": "Start date",
+  "End date": "End date",
+  "No contract": "No contract"
 }

@@ -39,7 +39,7 @@
           url: '/ticketing/admin',
           templateUrl: '/ticketing/app/admin/ticketing-admin.html',
           deepStateRedirect: {
-            default: 'ticketingAdminCenter.organization',
+            default: 'ticketingAdminCenter.contract',
             params: true,
             fn: function() {
               return true;
@@ -71,6 +71,14 @@
           views: {
             'admin-root@ticketingAdminCenter': {
               template: '<ticketing-user />'
+            }
+          }
+        })
+        .state('ticketingAdminCenter.contract', {
+          url: '/contracts',
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-contract />'
             }
           }
         })
