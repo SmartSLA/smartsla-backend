@@ -21,8 +21,21 @@ module.exports = (dependencies, lib) => {
    * @param  {Object} res
    */
   function create(req, res) {
-    lib.user.create(req.body)
-      .then(createdUser => res.status(201).json(createdUser))
+    const user = req.body;
+
+    // setup accounts field
+    user.accounts = [{
+      type: 'email',
+      emails: [user.email],
+      hosted: true
+    }];
+    // setup domains field
+    user.domains = [{
+      domain_id: req.domain._id
+    }];
+
+    lib.user.create(user)
+      .then(createdUser => res.status(201).json(coreUser.denormalize.denormalize(createdUser)))
       .catch(err => send500Error('Failed to create Ticketing user', err, res));
   }
 

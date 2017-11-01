@@ -193,13 +193,11 @@ describe('The create Ticketing user API: POST /api/users', function() {
       req.send(newUser);
       req.expect(201)
         .end(helpers.callbacks.noErrorAnd(res => {
-          newUser.accounts = [{
-            type: 'email',
-            emails: [newUser.email]
-          }];
+          newUser.emails = [newUser.email];
           delete newUser.email;
 
           expect(res.body).to.shallowDeepEqual(newUser);
+
           lib.ticketingUserRole.getByUser(res.body._id)
             .then(userRole => {
               expect(userRole).to.exist;

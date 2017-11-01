@@ -8,6 +8,10 @@ function ticketingModule() {
   return {
     domain: {
       name: 'ticketing-domain',
+      hostnames: [
+        'localhost',
+        '127.0.0.1'
+      ],
       company_name: 'linagora'
     },
     users: [
