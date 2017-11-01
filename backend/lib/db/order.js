@@ -12,7 +12,7 @@ module.exports = dependencies => {
     contract: { type: Schema.ObjectId, ref: 'Contract', required: true },
     title: { type: String, required: true },
     address: { type: String },
-    administrator: { type: Schema.ObjectId, ref: 'User' },
+    manager: { type: Schema.ObjectId, ref: 'User' },
     defaultSupportManager: { type: Schema.ObjectId, ref: 'User' },
     startDate: { type: Date, required: true },
     terminationDate: { type: Date, required: true },
