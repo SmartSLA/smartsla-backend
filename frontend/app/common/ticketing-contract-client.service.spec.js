@@ -36,6 +36,17 @@ describe('The ticketingContractClient service', function() {
     });
   });
 
+  describe('The get function', function() {
+    it('should GET to right endpoint to get a contract', function() {
+      var contractId = '123';
+
+      $httpBackend.expectGET('/ticketing/api/contracts/' + contractId).respond(200, {});
+
+      ticketingContractClient.get(contractId);
+      $httpBackend.flush();
+    });
+  });
+
   describe('The update function', function() {
     it('should POST to right endpoint to udpate', function() {
       var contractId = '123';

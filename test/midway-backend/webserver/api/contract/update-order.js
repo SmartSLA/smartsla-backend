@@ -153,7 +153,7 @@ describe('PUT /api/contracts/:id/orders/:orderId', function() {
     }));
   });
 
-  it('should respond 400 if there is invalid administrator in the payload', function(done) {
+  it('should respond 400 if there is invalid manager in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}/orders/${orderId}`));
       const newOrder = {
@@ -161,14 +161,14 @@ describe('PUT /api/contracts/:id/orders/:orderId', function() {
         startDate: new Date(),
         terminationDate: new Date(),
         type: 'USP',
-        administrator: 'invalid ObjectId'
+        manager: 'invalid ObjectId'
       };
 
       req.send(newOrder);
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'administrator is invalid' }
+            error: { code: 400, message: 'Bad Request', details: 'manager is invalid' }
           });
           done();
         }));

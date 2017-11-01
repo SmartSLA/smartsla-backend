@@ -3,6 +3,7 @@
     .controller('TicketingContractListController', TicketingContractListController);
 
   function TicketingContractListController(
+    $state,
     infiniteScrollHelper,
     ticketingContractClient
   ) {
@@ -16,6 +17,7 @@
     self.$onInit = $onInit;
 
     function $onInit() {
+      self.onItemClick = onItemClick;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
     }
 
@@ -26,6 +28,10 @@
         .then(function(response) {
           return response.data;
         });
+    }
+
+    function onItemClick(contractId) {
+      $state.go('ticketingAdminCenter.contract.detail', { contractId: contractId });
     }
   }
 })(angular);

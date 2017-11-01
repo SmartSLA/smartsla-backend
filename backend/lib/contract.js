@@ -69,6 +69,10 @@ module.exports = dependencies => {
    * @param {Promise}             - Resolve on success
    */
   function getById(contractId) {
-    return Contract.findById(contractId).exec();
+    return Contract
+      .findById(contractId)
+      .populate('manager')
+      .populate('organization')
+      .exec();
   }
 };

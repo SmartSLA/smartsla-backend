@@ -8,6 +8,7 @@
     return {
       create: create,
       createOrder: createOrder,
+      get: get,
       list: list,
       listOrders: listOrders,
       update: update,
@@ -30,6 +31,15 @@
      */
     function create(contract) {
       return ticketingRestangular.all('contracts').post(contract);
+    }
+
+    /**
+     * Get a contract by Id
+     * @param  {String} contractId - The contract Id
+     * @return {Promise}           - Resolve response with an contract
+     */
+    function get(contractId) {
+      return ticketingRestangular.one('contracts', contractId).get();
     }
 
     /**

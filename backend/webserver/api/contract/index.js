@@ -10,6 +10,7 @@ module.exports = function(dependencies, lib, router) {
     canUpdateContract,
     canCreateOrder,
     canListOrder,
+    canReadContract,
     canUpdateOrder,
     validateContractPayload,
     validateContractUpdate,
@@ -20,6 +21,13 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canListContract,
     controller.list
+  );
+
+  router.get('/contracts/:id',
+    authorizationMW.requiresAPILogin,
+    canReadContract,
+    checkIdInParams('id', 'Contract'),
+    controller.get
   );
 
   router.post('/contracts',

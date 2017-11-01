@@ -1,0 +1,7 @@
+extends /modules/subheader/responsive-subheader.pug
+
+block left
+  button.btn.btn-link.flex-vertical-centered(esn-back-button="home")
+    i.mdi.mdi-arrow-left
+    span.hidden-xs #{__('Back')}
+  span.title.ellipsis {{::$ctrl.title}}

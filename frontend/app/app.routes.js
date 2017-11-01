@@ -89,6 +89,14 @@
               template: '<ticketing-organization-detail />'
             }
           }
+        })
+        .state('ticketingAdminCenter.contract.detail', {
+          url: '/:contractId',
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-contract-detail />'
+            }
+          }
         });
     });
 })();
