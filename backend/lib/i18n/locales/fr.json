@@ -41,5 +41,9 @@
   "Last name": "Nom",
   "Main phone": "Téléphone principal",
   "Password": "Mot de Passe",
-  "No user": "Aucune utilisateur"
+  "No user": "Aucune utilisateur",
+  "Title": "Intitulé",
+  "Start date": "Date de début",
+  "End date": "Date de fin",
+  "No contract": "Aucune contrat"
 }

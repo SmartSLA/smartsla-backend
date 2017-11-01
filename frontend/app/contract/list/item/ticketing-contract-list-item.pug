@@ -1,0 +1,11 @@
+.row.flex-vertical-centered
+  .col-md-3.col-xs-4.lv-title
+    span.ellipsis(title="{{::$ctrl.contract.title}}") {{::$ctrl.contract.title}}
+  .col-md-3.col-xs-4.ellipsis
+    span.ellipsis {{::$ctrl.contract.organization.shortName}}
+  .col-md-2.col-xs-4.ellipsis
+    span.ellipsis {{::$ctrl.contract.manager.firstname}} {{::$ctrl.contract.manager.lastname}}
+  .col-md-2.col-xs-2.ellipsis.hidden-xs
+    span.ellipsis {{::$ctrl.contract.startDate | esnDatetime: 'mediumDate'}}
+  .col-md-2.col-xs-2.ellipsis.hidden-xs
+    span.ellipsis {{::$ctrl.contract.endDate | esnDatetime: 'mediumDate'}}

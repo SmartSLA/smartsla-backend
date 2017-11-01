@@ -11,7 +11,7 @@ module.exports = dependencies => {
     number: { type: String },
     title: { type: String, required: true },
     organization: { type: Schema.ObjectId, ref: 'Organization', required: true },
-    administrator: { type: Schema.ObjectId, ref: 'User' },
+    manager: { type: Schema.ObjectId, ref: 'User' },
     defaultSupportManager: { type: Schema.ObjectId, ref: 'User' },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
