@@ -14,6 +14,7 @@ module.exports = (dependencies, lib) => {
     canUpdateContract,
     canCreateOrder,
     canListOrder,
+    canReadContract,
     canUpdateOrder,
     validateContractPayload,
     validateContractUpdate,
@@ -25,6 +26,10 @@ module.exports = (dependencies, lib) => {
   }
 
   function canListContract(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canReadContract(req, res, next) {
     return requireAdministrator(req, res, next);
   }
 

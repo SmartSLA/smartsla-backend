@@ -7,6 +7,7 @@ module.exports = function(dependencies, lib) {
   return {
     create,
     createOrder,
+    get,
     list,
     listOrders,
     update,
@@ -23,6 +24,25 @@ module.exports = function(dependencies, lib) {
     return lib.contract.create(req.body)
       .then(createdContract => res.status(201).json(createdContract))
       .catch(err => send500Error('Failed to create contract', err, res));
+  }
+
+  /**
+   * Get a contract by Id
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function get(req, res) {
+    return lib.contract.getById(req.params.id)
+      .then(contract => {
+        contract = contract.toObject();
+        if (contract.manager) {
+          contract.manager = coreUser.denormalize.denormalize(contract.manager);
+        }
+
+        return res.status(201).json(contract);
+      })
+      .catch(err => send500Error('Failed to get contract', err, res));
   }
 
   /**
