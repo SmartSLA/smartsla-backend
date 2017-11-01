@@ -64,4 +64,40 @@ describe('The TicketingUserService', function() {
       $rootScope.$digest();
     });
   });
+
+  describe('The update function', function() {
+    it('should reject if user ID is not given', function(done) {
+      TicketingUserService.update()
+        .catch(function(err) {
+          expect(err).to.be.exist;
+          expect(err.message).to.equal('User ID is required');
+          done();
+        });
+
+      $rootScope.$digest();
+    });
+
+    it('should call ticketingUserClient.update to update new user', function(done) {
+      var user = {
+        _id: '123',
+        main_phone: '888',
+        description: 'user desc'
+      };
+
+      ticketingUserClient.update = sinon.stub().returns($q.when({}));
+      $rootScope.$broadcast = sinon.spy();
+
+      TicketingUserService.update(user)
+        .then(function() {
+          expect(ticketingUserClient.update).to.have.been.calledWith(user._id, user);
+          expect($rootScope.$broadcast).to.have.been.calledWith(TICKETING_USER_EVENTS.USER_UPDATED, user);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
 });

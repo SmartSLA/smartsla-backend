@@ -51,5 +51,13 @@
   "Requests": "Requests",
   "New contract": "New contract",
   "Default support manager": "Default support manager",
-  "Only allows one default support manager": "Only allows one default support manager"
+  "Only allows one default support manager": "Only allows one default support manager",
+  "Creating user...": "Creating user...",
+  "User created": "User created",
+  "Failed to create user": "Failed to create user",
+  "Updating user...": "Updating user...",
+  "User updated": "User updated",
+  "Failed to update user": "Failed to update user",
+  "Edit user": "Edit user",
+  "User informations": "User informations"
 }

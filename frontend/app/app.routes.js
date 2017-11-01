@@ -74,6 +74,15 @@
             }
           }
         })
+        .state('ticketingAdminCenter.users.detail', {
+          url: '/:userId',
+          params: { user: null },
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-user-detail />'
+            }
+          }
+        })
         .state('ticketingAdminCenter.contract', {
           url: '/contracts',
           views: {

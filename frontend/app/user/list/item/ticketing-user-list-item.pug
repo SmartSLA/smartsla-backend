@@ -9,8 +9,8 @@
     a(ng-href="mailto:{{::$ctrl.user.preferredEmail}}")
       | {{::$ctrl.user.preferredEmail}}
   .col-md-1.hidden-xs.ellipsis
-    a(ng-href="tel:{{::$ctrl.user.main_phone}}")
-      | {{::$ctrl.user.main_phone}}
+    a(ng-href="tel:{{$ctrl.user.main_phone}}")
+      | {{$ctrl.user.main_phone}}
 .row.flex-vertical-centered(ng-if="$ctrl.isEntityMode")
   .col-md-4.col-xs-3.lv-title
     span {{::$ctrl.user.firstname}} {{::$ctrl.user.lastname}}
