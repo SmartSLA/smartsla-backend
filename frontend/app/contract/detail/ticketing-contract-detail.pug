@@ -1,0 +1,21 @@
+sub-header
+  ticketing-contract-detail-subheader(title="$ctrl.contract.title")
+
+.card
+  ticketing-contract-tabs(
+    selected-tab = "$ctrl.selectedTab"
+  )
+form(name="form")
+  ticketing-contract-tabs-main(
+    ng-show='$ctrl.contract && $ctrl.selectedTab === "main"',
+    contract="$ctrl.contract"
+  )
+ticketing-contract-tabs-order(
+  ng-show='$ctrl.selectedTab === "order"'
+)
+ticketing-contract-tabs-permission(
+  ng-show='$ctrl.selectedTab === "permission"'
+)
+ticketing-contract-tabs-request(
+  ng-show='$ctrl.selectedTab === "request"'
+)

@@ -45,5 +45,8 @@
   "Title": "Intitulé",
   "Start date": "Date de début",
   "End date": "Date de fin",
-  "No contract": "Aucune contrat"
+  "No contract": "Aucun contrat",
+  "Contract informations": "Informations de le contrat",
+  "Permissions": "Permissions",
+  "Requests": "Requêtes"
 }

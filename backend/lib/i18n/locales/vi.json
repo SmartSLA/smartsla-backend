@@ -45,5 +45,8 @@
   "Title": "Tiêu đề",
   "Start date": "Ngày bắt đầu",
   "End date": "Ngày kết thúc",
-  "No contract": "Không có hợp đồng"
+  "No contract": "Không có hợp đồng",
+  "Contract informations": "Thông tin của hợp đồng",
+  "Permissions": "Quyền",
+  "Requests": "Yêu cầu"
 }
