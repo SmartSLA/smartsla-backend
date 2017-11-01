@@ -5,7 +5,8 @@
     .component('ticketingUserListItem', {
       templateUrl: '/ticketing/app/user/list/item/ticketing-user-list-item.html',
       bindings: {
-        user: '<'
+        user: '<',
+        isEntityMode: '<'
       }
     });
 })(angular);

@@ -12,7 +12,7 @@
       onSaveBtnClick: '&',
       form: '<',
       selectedTab: '<',
-      isEntityMode: '<'
+      organization: '<'
     }
   });
 })(angular);

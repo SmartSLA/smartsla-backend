@@ -6,7 +6,7 @@ sub-header
     on-save-btn-click="$ctrl.onSaveBtnClick()",
     form="form",
     selected-tab="$ctrl.selectedTab",
-    is-entity-mode="!!$ctrl.organization.parent"
+    organization="$ctrl.organization"
   )
 
 .card
@@ -27,4 +27,8 @@ ticketing-organization-tabs-contract(
 ticketing-organization-tabs-entity(
   parent="$ctrl.organizationId",
   ng-show='$ctrl.selectedTab === "entity"'
+)
+ticketing-organization-tabs-user(
+  users="$ctrl.organization.users",
+  ng-show='$ctrl.selectedTab === "user"'
 )
