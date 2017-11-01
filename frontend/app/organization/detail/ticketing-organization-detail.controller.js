@@ -6,9 +6,12 @@
 
   function TicketingOrganizationDetailController(
     $stateParams,
+    $scope,
     TicketingOrganizationService
   ) {
     var self = this;
+    var originOrganization;
+    var DEFAULT_TAB = 'main';
 
     self.$onInit = $onInit;
 
@@ -19,13 +22,20 @@
       self.onSaveBtnClick = onSaveBtnClick;
       TicketingOrganizationService.get(self.organizationId)
         .then(function(organization) {
-          self.selectedTab = 'main';
+          self.selectedTab = DEFAULT_TAB;
           self.organization = organization;
+          originOrganization = angular.copy(organization);
+
+          $scope.$watch('$ctrl.selectedTab', function(newTab) {
+            if (newTab !== DEFAULT_TAB) {
+              _reset();
+            }
+          }, true);
         });
     }
 
     function onCancelBtnClick() {
-      self.isEditMode = false;
+      _reset();
     }
 
     function onEditBtnClick() {
@@ -36,7 +46,15 @@
       return TicketingOrganizationService.update(self.organization)
         .then(function() {
           self.isEditMode = false;
+          originOrganization = angular.copy(self.organization);
         });
+    }
+
+    function _reset() {
+      if (self.isEditMode) {
+        self.isEditMode = false;
+        self.organization = angular.copy(originOrganization);
+      }
     }
   }
 })(angular);
