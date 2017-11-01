@@ -40,5 +40,6 @@
   "First name": "Prénom",
   "Last name": "Nom",
   "Main phone": "Téléphone principal",
-  "Password": "Mot de Passe"
+  "Password": "Mot de Passe",
+  "No user": "Aucune utilisateur"
 }

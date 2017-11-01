@@ -23,7 +23,9 @@
         .then(function(response) {
           var organization = response.data;
 
-          organization.manager = _denormalizeManager(organization.manager);
+          if (organization.manager) {
+            organization.manager = _denormalizeManager(organization.manager);
+          }
 
           return organization;
         });
@@ -76,7 +78,7 @@
     }
 
     function _denormalizeManager(manager) {
-      manager.displayName = manager ? TicketingUserService.buildDisplayName(manager) : manager.email;
+      manager.displayName = TicketingUserService.buildDisplayName(manager) || manager.preferredEmail;
       manager.id = manager._id;
 
       return manager;

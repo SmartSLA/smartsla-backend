@@ -1,26 +1,22 @@
 ng-form(name="form")
+  .row.m-b-30
+    .col-md-12(ng-if="$ctrl.organization.parent")
+      span.f-700.m-r-5 #{__('Organization:')}
+      a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.organization.parent._id})") {{::$ctrl.organization.parent.fullName}}
   .row
     .col-md-6
-      .row
-        .col-md-12
-          esn-form-group(label=__('Short name'))
-            input.form-control(type="text", ng-model="$ctrl.organization.shortName", name="organizationShortName", required)
-      .row
-        .col-md-12
-          esn-form-group(label=__('Full name'))
-            input.form-control(type="text", ng-model="$ctrl.organization.fullName", name="organizationFullName")
-      .row
-        .col-md-12
-          h5 #{__('Manager')}
-          small.c-red(ng-if="newManagers.length > 1")
-            | #{__('Only allows one manager')}
-          ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
-      .row.m-b-20
-        .col-md-12(ng-if="$ctrl.organization.parent")
-          span.f-700.m-r-5 #{__('Organization:')}
-          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.organization.parent._id})") {{::$ctrl.organization.parent.fullName}}
+      esn-form-group(label=__('Short name'))
+        input.form-control(type="text", ng-model="$ctrl.organization.shortName", name="organizationShortName", required)
     .col-md-6
-      .row
-        .col-md-12
-          esn-form-group(label=__('Description'))
-            textarea.form-control(type="text", rows="5", ng-model="$ctrl.organization.description", name="organizationDescription")
+      esn-form-group(label=__('Full name'))
+        input.form-control(type="text", ng-model="$ctrl.organization.fullName", name="organizationFullName")
+  .row
+    .col-md-12
+      esn-form-group(label=__('Description'))
+        textarea.form-control(type="text", rows="3", ng-model="$ctrl.organization.description", name="organizationDescription")
+  .row
+    .col-md-12
+      h5 #{__('Manager')}
+      small.c-red(ng-if="newManagers.length > 1")
+        | #{__('Only allows one manager')}
+      ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
