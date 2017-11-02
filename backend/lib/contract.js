@@ -74,6 +74,7 @@ module.exports = dependencies => {
     return Contract
       .findById(contractId)
       .populate('manager')
+      .populate('defaultSupportManager')
       .populate('organization')
       .exec();
   }
