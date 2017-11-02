@@ -54,7 +54,8 @@ module.exports = function(dependencies, lib) {
   function list(req, res) {
     const options = {
       limit: +req.query.limit,
-      offset: +req.query.offset
+      offset: +req.query.offset,
+      organization: req.query.organization
     };
 
     return lib.contract.list(options)

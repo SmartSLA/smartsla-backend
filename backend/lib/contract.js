@@ -33,8 +33,10 @@ module.exports = dependencies => {
   function list(options) {
     options = options || {};
 
+    const findOptions = options.organization ? { organization: options.organization } : {};
+
     return Contract
-      .find()
+      .find(findOptions)
       .populate('organization')
       .populate('manager')
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
