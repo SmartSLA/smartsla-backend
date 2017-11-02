@@ -37,8 +37,7 @@ module.exports = dependencies => {
 
     return Contract
       .find(findOptions)
-      .populate('organization')
-      .populate('manager')
+      .populate(options.populations)
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-creation')
@@ -74,6 +73,7 @@ module.exports = dependencies => {
     return Contract
       .findById(contractId)
       .populate('manager')
+      .populate('defaultSupportManager')
       .populate('organization')
       .exec();
   }

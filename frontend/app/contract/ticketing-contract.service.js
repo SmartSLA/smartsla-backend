@@ -27,6 +27,10 @@
             contract.manager = _denormalizeManager(contract.manager);
           }
 
+          if (contract.defaultSupportManager) {
+            contract.defaultSupportManager = _denormalizeManager(contract.defaultSupportManager);
+          }
+
           return contract;
         });
     }
@@ -72,7 +76,7 @@
 
       contractToUpdate.manager = contractToUpdate.manager && contractToUpdate.manager._id ? contractToUpdate.manager._id : contractToUpdate.manager;
       contractToUpdate.defaultSupportManager = contractToUpdate.defaultSupportManager && contractToUpdate.defaultSupportManager._id ? contractToUpdate.defaultSupportManager._id : contractToUpdate.defaultSupportManager;
-      contract.organization = contract.organization && contract.organization._id ? contract.organization._id : contract.organization;
+      contractToUpdate.organization = contractToUpdate.organization && contractToUpdate.organization._id ? contractToUpdate.organization._id : contractToUpdate.organization;
 
       var notificationMessages = {
         progressing: 'Updating contract...',

@@ -1,11 +1,20 @@
-.row.flex-vertical-centered
+.row.flex-vertical-centered(ng-if="$ctrl.contract.organization._id")
   .col-md-3.col-xs-4.lv-title
     span.ellipsis(title="{{::$ctrl.contract.title}}") {{::$ctrl.contract.title}}
   .col-md-3.col-xs-4.ellipsis
     span.ellipsis {{::$ctrl.contract.organization.shortName}}
   .col-md-2.col-xs-4.ellipsis
     span.ellipsis {{::$ctrl.contract.manager.firstname}} {{::$ctrl.contract.manager.lastname}}
-  .col-md-2.col-xs-2.ellipsis.hidden-xs
+  .col-md-2.ellipsis.hidden-xs
     span.ellipsis {{::$ctrl.contract.startDate | esnDatetime: 'mediumDate'}}
-  .col-md-2.col-xs-2.ellipsis.hidden-xs
+  .col-md-2.ellipsis.hidden-xs
+    span.ellipsis {{::$ctrl.contract.endDate | esnDatetime: 'mediumDate'}}
+.row.flex-vertical-centered(ng-if="!$ctrl.contract.organization._id")
+  .col-md-4.col-xs-5.lv-title
+    span.ellipsis(title="{{::$ctrl.contract.title}}") {{::$ctrl.contract.title}}
+  .col-md-4.col-xs-7.ellipsis
+    span.ellipsis {{::$ctrl.contract.manager.firstname}} {{::$ctrl.contract.manager.lastname}}
+  .col-md-2.ellipsis.hidden-xs
+    span.ellipsis {{::$ctrl.contract.startDate | esnDatetime: 'mediumDate'}}
+  .col-md-2.ellipsis.hidden-xs
     span.ellipsis {{::$ctrl.contract.endDate | esnDatetime: 'mediumDate'}}

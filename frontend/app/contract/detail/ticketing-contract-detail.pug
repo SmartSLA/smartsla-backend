@@ -1,5 +1,13 @@
 sub-header
-  ticketing-contract-detail-subheader(title="$ctrl.contract.title")
+  ticketing-contract-detail-subheader(
+    title="$ctrl.contract.title",
+    is-edit-mode="$ctrl.isEditMode",
+    on-cancel-btn-click="$ctrl.onCancelBtnClick()",
+    on-edit-btn-click="$ctrl.onEditBtnClick()",
+    on-save-btn-click="$ctrl.onSaveBtnClick()",
+    form="form",
+    selected-tab="$ctrl.selectedTab"
+  )
 
 .card
   ticketing-contract-tabs(
@@ -8,7 +16,8 @@ sub-header
 form(name="form")
   ticketing-contract-tabs-main(
     ng-show='$ctrl.contract && $ctrl.selectedTab === "main"',
-    contract="$ctrl.contract"
+    contract="$ctrl.contract",
+    is-edit-mode="$ctrl.isEditMode"
   )
 ticketing-contract-tabs-order(
   ng-show='$ctrl.selectedTab === "order"'

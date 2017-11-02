@@ -5,7 +5,8 @@
     .component('ticketingContractTabsMain', {
       templateUrl: '/ticketing/app/contract/tabs/main/ticketing-contract-tabs-main.html',
       bindings: {
-        contract: '='
+        contract: '=',
+        isEditMode: '<'
       }
     });
 })(angular);
