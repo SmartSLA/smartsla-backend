@@ -76,7 +76,6 @@
         })
         .state('ticketingAdminCenter.users.detail', {
           url: '/:userId',
-          params: { user: null },
           views: {
             'admin-root@ticketingAdminCenter': {
               template: '<ticketing-user-detail />'

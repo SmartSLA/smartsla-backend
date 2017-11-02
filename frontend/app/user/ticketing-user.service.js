@@ -16,6 +16,7 @@
 
     return {
       create: create,
+      get: get,
       update: update,
       buildDisplayName: buildDisplayName,
       searchUserCandidates: searchUserCandidates
@@ -55,6 +56,13 @@
       }).then(function() {
         $rootScope.$broadcast(TICKETING_USER_EVENTS.USER_UPDATED, user);
       });
+    }
+
+    function get(userId) {
+      return ticketingUserClient.get(userId)
+        .then(function(response) {
+          return response.data;
+        });
     }
 
     function searchUserCandidates(query) {

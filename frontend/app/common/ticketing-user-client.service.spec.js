@@ -36,6 +36,18 @@ describe('The ticketingUserClient service', function() {
     });
   });
 
+  describe('The get function', function() {
+    it('should GET to right endpoint to get user', function() {
+      var userId = '123';
+
+      $httpBackend.expectGET(API_PATH + '/' + userId).respond(200, {});
+
+      ticketingUserClient.get(userId);
+
+      $httpBackend.flush();
+    });
+  });
+
   describe('The list function', function() {
     it('should GET to right endpoint to list users', function() {
       var options = {};

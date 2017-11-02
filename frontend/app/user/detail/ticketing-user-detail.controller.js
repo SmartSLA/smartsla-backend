@@ -13,19 +13,19 @@
     self.$onInit = $onInit;
 
     function $onInit() {
-      self.user = $stateParams.user;
-      self.user.email = $stateParams.user.preferredEmail;
+      self.userId = $stateParams.userId;
 
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
       self.selectedTab = 'main';
 
-      /*TicketingUserService.get(self.userId)
+      TicketingUserService.get(self.userId)
         .then(function(user) {
-          self.selectedTab = 'main';
           self.user = user;
-        });*/
+          self.user.email = user.preferredEmail;
+          self.selectedTab = 'main';
+        });
     }
 
     function onCancelBtnClick() {

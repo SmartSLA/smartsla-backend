@@ -9,6 +9,7 @@
 
     return {
       create: create,
+      get: get,
       update: update,
       list: list
     };
@@ -39,6 +40,15 @@
      */
     function list(options) {
       return ticketingRestangular.all(API_CONTEXT).getList(options);
+    }
+
+    /**
+     * Get a Ticketing user by ID.
+     * @param  {String} userId - The user ID
+     * @return {Promise}       - Resolve response with found user
+     */
+    function get(userId) {
+      return ticketingRestangular.one('users', userId).get();
     }
   }
 })(angular);
