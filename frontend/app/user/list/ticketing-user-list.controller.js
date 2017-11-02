@@ -7,6 +7,7 @@
   function TicketingUserListController(
     $scope,
     $modal,
+    _,
     infiniteScrollHelper,
     ticketingUserClient,
     TICKETING_USER_EVENTS
@@ -22,10 +23,15 @@
 
     function $onInit() {
       self.onCreateBtnClick = onCreateBtnClick;
+      self.onEditBtnClick = onEditBtnClick;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
 
       $scope.$on(TICKETING_USER_EVENTS.USER_CREATED, function(event, user) {
         _onUserCreated(user);
+      });
+
+      $scope.$on(TICKETING_USER_EVENTS.USER_UPDATED, function(event, updatedUser) {
+        _onUserUpdated(updatedUser);
       });
     }
 
@@ -48,12 +54,38 @@
       });
     }
 
+    function onEditBtnClick(user) {
+      user.email = user.preferredEmail;
+      $modal({
+        templateUrl: '/ticketing/app/user/update/ticketing-user-update.html',
+        backdrop: 'static',
+        placement: 'center',
+        controller: 'TicketingUserUpdateController',
+        controllerAs: '$ctrl',
+        locals: {
+          user: user
+        }
+      });
+    }
+
     function _onUserCreated(user) {
       if (!user) {
         return;
       }
 
       self.elements.unshift(user);
+    }
+
+    function _onUserUpdated(updatedUser) {
+      if (!updatedUser || !updatedUser._id) {
+        return;
+      }
+
+      var index = _.findIndex(self.elements, { _id: updatedUser._id });
+
+      if (index !== -1) {
+        self.elements[index] = updatedUser;
+      }
     }
   }
 })(angular);

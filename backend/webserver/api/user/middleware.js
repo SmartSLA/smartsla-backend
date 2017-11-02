@@ -8,6 +8,7 @@ module.exports = (dependencies, lib) => {
 
   return {
     canCreate,
+    canRead,
     canUpdate,
     canList,
     validateUserCreatePayload,
@@ -15,6 +16,10 @@ module.exports = (dependencies, lib) => {
   };
 
   function canCreate(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canRead(req, res, next) {
     return requireAdministrator(req, res, next);
   }
 

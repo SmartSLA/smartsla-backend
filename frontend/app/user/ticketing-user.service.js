@@ -16,6 +16,8 @@
 
     return {
       create: create,
+      get: get,
+      update: update,
       buildDisplayName: buildDisplayName,
       searchUserCandidates: searchUserCandidates
     };
@@ -28,7 +30,7 @@
       var notificationMessages = {
         progressing: 'Creating user...',
         success: 'User created',
-        failure: 'Failed to create User'
+        failure: 'Failed to create user'
       };
 
       return asyncAction(notificationMessages, function() {
@@ -36,6 +38,31 @@
       }).then(function(response) {
         $rootScope.$broadcast(TICKETING_USER_EVENTS.USER_CREATED, response.data);
       });
+    }
+
+    function update(user) {
+      if (!user || !user._id) {
+        return $q.reject(new Error('User ID is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Updating user...',
+        success: 'User updated',
+        failure: 'Failed to update user'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingUserClient.update(user._id, user);
+      }).then(function() {
+        $rootScope.$broadcast(TICKETING_USER_EVENTS.USER_UPDATED, user);
+      });
+    }
+
+    function get(userId) {
+      return ticketingUserClient.get(userId)
+        .then(function(response) {
+          return response.data;
+        });
     }
 
     function searchUserCandidates(query) {

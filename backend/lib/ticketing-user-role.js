@@ -55,10 +55,15 @@ module.exports = dependencies => {
 
   /**
    * Get TicketingUserRole by user.
-   * @param  {String} user - ID of user object
-   * @return {Promise}     - Resolve on success
+   * @param  {String}  user    - ID of user object
+   * @param  {Object}  options - The options object, may contain array of population parameters
+   * @return {Promise}         - Resolve on success
    */
-  function getByUser(user) {
+  function getByUser(user, options) {
+    if (options && options.populations) {
+      return TicketingUserRole.findOne({ user: user }).populate(options.populations);
+    }
+
     return TicketingUserRole.findOne({ user: user });
   }
 };

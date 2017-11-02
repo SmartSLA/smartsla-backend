@@ -51,5 +51,13 @@
   "Requests": "Requêtes",
   "New contract": "Nouveau contrat",
   "Default support manager": "Gestionnaire de support par défaut",
-  "Only allows one default support manager": "Ne permet qu'un seul gestionnaire de support par défaut"
+  "Only allows one default support manager": "Ne permet qu'un seul gestionnaire de support par défaut",
+  "Creating user...": "Création d'utilisateurs...",
+  "User created": "Utilisateur créé",
+  "Failed to create user": "Impossible de créer l'utilisateur",
+  "Updating user...": "Mettre à jour l'utilisateur...",
+  "User updated": "L'utilisateur est mis à jour",
+  "Failed to update user": "Impossible de mettre à jour l'utilisateur",
+  "Edit user": "Éditer l'utilisateur",
+  "User informations": "Informations de l'utilisateur"
 }

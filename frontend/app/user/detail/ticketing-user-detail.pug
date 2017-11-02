@@ -1,0 +1,24 @@
+sub-header
+  ticketing-user-detail-subheader(
+    is-edit-mode="$ctrl.isEditMode",
+    on-cancel-btn-click="$ctrl.onCancelBtnClick()",
+    on-edit-btn-click="$ctrl.onEditBtnClick()",
+    on-save-btn-click="$ctrl.onSaveBtnClick()",
+    form="form",
+    selected-tab="$ctrl.selectedTab",
+    user="$ctrl.user"
+  )
+
+.card
+  ticketing-user-tabs(
+    selected-tab = "$ctrl.selectedTab"
+  )
+form(name="form")
+  ticketing-user-tabs-main(
+    ng-show='$ctrl.user && $ctrl.selectedTab === "main"',
+    user = "$ctrl.user",
+    is-edit-mode="$ctrl.isEditMode"
+  )
+ticketing-user-tabs-permission(
+  ng-show='$ctrl.selectedTab === "permission"'
+)

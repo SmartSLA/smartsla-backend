@@ -51,5 +51,13 @@
   "Requests": "Yêu cầu",
   "New contract": "Tạo hợp đồng",
   "Default support manager": "Quản lí hỗ trợ mặc định",
-  "Only allows one default support manager": "Chỉ cho phép một quản hỗ trợ"
+  "Only allows one default support manager": "Chỉ cho phép một quản hỗ trợ",
+  "Creating user...": "Đang tạo người dùng...",
+  "User created": "Người dùng đã được tạo",
+  "Failed to create user": "Không thể tạo người dùng",
+  "Updating user...": "Đang cập nhật người dùng...",
+  "User updated": "Người dùng đã được cập nhật",
+  "Failed to update user": "Không thể cập nhật người dùng",
+  "Edit user": "Chỉnh sửa người dùng",
+  "User informations": "Thông tin người dùng"
 }

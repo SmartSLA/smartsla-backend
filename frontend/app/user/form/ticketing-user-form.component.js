@@ -5,6 +5,7 @@
     .component('ticketingUserForm', {
       templateUrl: '/ticketing/app/user/form/ticketing-user-form.html',
       bindings: {
+        updateMode: '<',
         user: '='
       }
     });

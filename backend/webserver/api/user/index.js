@@ -13,6 +13,13 @@ module.exports = (dependencies, lib, router) => {
     controller.list
   );
 
+  router.get('/users/:id',
+    authorizationMW.requiresAPILogin,
+    middleware.canRead,
+    checkIdInParams('id', 'User'),
+    controller.get
+  );
+
   router.get('/users/:id/isadministrator',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'User'),

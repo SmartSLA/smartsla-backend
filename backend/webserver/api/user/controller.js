@@ -10,6 +10,7 @@ module.exports = (dependencies, lib) => {
 
   return {
     create,
+    get,
     update,
     list,
     userIsAdministrator
@@ -37,6 +38,24 @@ module.exports = (dependencies, lib) => {
     lib.user.create(user)
       .then(createdUser => res.status(201).json(coreUser.denormalize.denormalize(createdUser)))
       .catch(err => send500Error('Failed to create Ticketing user', err, res));
+  }
+
+  /**
+   * Get a user by ID.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function get(req, res) {
+    lib.user.getById(req.params.id)
+      .then(user => {
+        const denormalizedUser = coreUser.denormalize.denormalize(user);
+
+        // organization info
+        denormalizedUser.organization = user.organization;
+        res.status(201).json(denormalizedUser);
+      })
+      .catch(err => send500Error('Failed to get user', err, res));
   }
 
   /**

@@ -16,6 +16,7 @@ module.exports = dependencies => {
 
   return {
     create,
+    getById,
     updateById,
     list
   };
@@ -36,6 +37,15 @@ module.exports = dependencies => {
               .then(() => Q.reject(err))
           );
       });
+  }
+
+  function getById(userId) {
+    const options = {
+      populations: [{ path: 'user' }]
+    };
+
+    return ticketingUserRole.getByUser(userId, options)
+      .then(userRole => _buildUserFromUserRole(userRole));
   }
 
   /**
