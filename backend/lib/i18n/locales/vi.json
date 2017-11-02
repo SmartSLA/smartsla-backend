@@ -48,5 +48,8 @@
   "No contract": "Không có hợp đồng",
   "Contract informations": "Thông tin của hợp đồng",
   "Permissions": "Quyền",
-  "Requests": "Yêu cầu"
+  "Requests": "Yêu cầu",
+  "New contract": "Tạo hợp đồng",
+  "Default support manager": "Quản lí hỗ trợ mặc định",
+  "Only allows one default support manager": "Chỉ cho phép một quản hỗ trợ"
 }

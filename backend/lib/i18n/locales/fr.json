@@ -48,5 +48,8 @@
   "No contract": "Aucun contrat",
   "Contract informations": "Informations de le contrat",
   "Permissions": "Permissions",
-  "Requests": "Requêtes"
+  "Requests": "Requêtes",
+  "New contract": "Nouveau contrat",
+  "Default support manager": "Gestionnaire de support par défaut",
+  "Only allows one default support manager": "Ne permet qu'un seul gestionnaire de support par défaut"
 }

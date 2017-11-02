@@ -48,5 +48,8 @@
   "No contract": "No contract",
   "Contract informations": "Contract informations",
   "Permissions": "Permissions",
-  "Requests": "Requests"
+  "Requests": "Requests",
+  "New contract": "New contract",
+  "Default support manager": "Default support manager",
+  "Only allows one default support manager": "Only allows one default support manager"
 }

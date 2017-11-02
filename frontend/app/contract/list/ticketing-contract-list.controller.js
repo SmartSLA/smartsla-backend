@@ -4,8 +4,10 @@
 
   function TicketingContractListController(
     $state,
+    $scope,
     infiniteScrollHelper,
-    ticketingContractClient
+    ticketingContractClient,
+    TICKETING_CONTRACT_EVENTS
   ) {
     var self = this;
     var DEFAULT_LIMIT = 20;
@@ -17,8 +19,16 @@
     self.$onInit = $onInit;
 
     function $onInit() {
+      if (self.organization) {
+        options.organization = self.organization._id;
+      }
+
       self.onItemClick = onItemClick;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
+
+      $scope.$on(TICKETING_CONTRACT_EVENTS.CONTRACT_CREATED, function(event, organization) {
+        _onContractCreated(organization);
+      });
     }
 
     function _loadNextItems() {
@@ -32,6 +42,14 @@
 
     function onItemClick(contractId) {
       $state.go('ticketingAdminCenter.contract.detail', { contractId: contractId });
+    }
+
+    function _onContractCreated(contract) {
+      if (!contract) {
+        return;
+      }
+
+      self.elements.unshift(contract);
     }
   }
 })(angular);

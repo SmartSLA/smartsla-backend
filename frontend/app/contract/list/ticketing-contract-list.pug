@@ -1,4 +1,4 @@
-sub-header(ng-if="!$ctrl.parent")
+sub-header(ng-if="!$ctrl.organization")
   ticketing-contract-list-subheader
 
 .card
@@ -27,5 +27,3 @@ div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
     message=__('No contract'))
 ul.nav.nav-pills.nav-stacked(ng-if='$ctrl.infiniteScrollDisabled')
   li.text-center(openpaas-logo-spinner, spinner-start-active='1', spinner-size='0.5')
-
-fab(icon="plus")
