@@ -59,5 +59,11 @@
   "User updated": "User updated",
   "Failed to update user": "Failed to update user",
   "Edit user": "Edit user",
-  "User informations": "User informations"
+  "User informations": "User informations",
+  "Creating contract...": "Creating contract...",
+  "Contract created": "Contract created",
+  "Failed to create contract": "Failed to create contract",
+  "Updating contract...": "Updating contract...",
+  "Contract updated": "Contract updated",
+  "Failed to update contract": "Failed to update contract"
 }

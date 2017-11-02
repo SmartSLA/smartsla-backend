@@ -59,5 +59,11 @@
   "User updated": "Người dùng đã được cập nhật",
   "Failed to update user": "Không thể cập nhật người dùng",
   "Edit user": "Chỉnh sửa người dùng",
-  "User informations": "Thông tin người dùng"
+  "User informations": "Thông tin người dùng",
+  "Creating contract...": "Đang tạo hợp đồng...",
+  "Contract created": "Hợp đồng đã tạo",
+  "Failed to create contract": "Tạo hợp đồng thất bại",
+  "Updating contract...": "Đang cập nhật hợp đồng...",
+  "Contract updated": "Hợp đồng đã cập nhật",
+  "Failed to update contract": "Cập nhật hợp đồng thất bại"
 }

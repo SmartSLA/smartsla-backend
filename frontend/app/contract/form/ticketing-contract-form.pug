@@ -12,13 +12,12 @@ ng-form(name="form")
       span.f-700.m-r-5 #{__('Organization:')}
       a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.contract.organization._id})") {{::$ctrl.contract.organization.fullName}}
   .row
-    .col-md-12
+    .col-md-6
       h5 #{__('Manager')}
       small.c-red(ng-if="newManagers.length > 1")
         | #{__('Only allows one manager')}
       ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
-  .row
-    .col-md-12
+    .col-md-6
       h5 #{__('Default support manager')}
       small.c-red(ng-if="newDefaultSupportManagers.length > 1")
         | #{__('Only allows one default support manager')}

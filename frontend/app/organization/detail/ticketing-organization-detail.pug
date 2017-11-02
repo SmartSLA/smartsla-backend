@@ -22,6 +22,7 @@ form(name="form")
     is-edit-mode="$ctrl.isEditMode"
   )
 ticketing-organization-tabs-contract(
+  ng-if="$ctrl.organization",
   ng-show='$ctrl.selectedTab === "contract"',
   organization="$ctrl.organization",
   on-create-btn-click="$ctrl.onCreateContractBtnClick()"

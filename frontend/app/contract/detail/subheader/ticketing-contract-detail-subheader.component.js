@@ -6,7 +6,13 @@
   .component('ticketingContractDetailSubheader', {
     templateUrl: '/ticketing/app/contract/detail/subheader/ticketing-contract-detail-subheader.html',
     bindings: {
-      title: '<'
+      title: '<',
+      isEditMode: '<',
+      onEditBtnClick: '&',
+      onCancelBtnClick: '&',
+      onSaveBtnClick: '&',
+      form: '<',
+      selectedTab: '<'
     }
   });
 })(angular);

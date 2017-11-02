@@ -7,16 +7,25 @@ sub-header(ng-if="!$ctrl.organization")
       .listview.lv-bordered.lv-lg(ng-if="$ctrl.elements.length > 0")
         .lv-header
           .lv-item.p-0
-            .row
+            .row(ng-if="!$ctrl.organization._id")
               .col-md-3.col-xs-4.lv-title
                 span #{__('Title')}
               .col-md-3.col-xs-4.lv-title
                 span #{__('Organization')}
               .col-md-2.col-xs-4.lv-title
                 span #{__('Manager')}
-              .col-md-2.col-xs-2.lv-title.hidden-xs
+              .col-md-2.lv-title.hidden-xs
                 span #{__('Start date')}
-              .col-md-2.col-xs-2.lv-title.hidden-xs
+              .col-md-2.lv-title.hidden-xs
+                span #{__('End date')}
+            .row(ng-if="$ctrl.organization._id")
+              .col-md-4.col-xs-5.lv-title
+                span #{__('Title')}
+              .col-md-4.col-xs-7.lv-title
+                span #{__('Manager')}
+              .col-md-2.lv-title.hidden-xs
+                span #{__('Start date')}
+              .col-md-2.lv-title.hidden-xs
                 span #{__('End date')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")

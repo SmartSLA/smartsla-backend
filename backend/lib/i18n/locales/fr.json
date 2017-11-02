@@ -59,5 +59,11 @@
   "User updated": "L'utilisateur est mis à jour",
   "Failed to update user": "Impossible de mettre à jour l'utilisateur",
   "Edit user": "Éditer l'utilisateur",
-  "User informations": "Informations de l'utilisateur"
+  "User informations": "Informations de l'utilisateur",
+  "Creating contract...": "Création de le contrat...",
+  "Contract created": "Contrat créée",
+  "Failed to create contract": "Impossible de créer le contrat",
+  "Updating contract...": "Mettre à jour de le contrat...",
+  "Contract updated": "Contrat mis à jour",
+  "Failed to update contract": "Impossible de mettre à jour le contrat"
 }
