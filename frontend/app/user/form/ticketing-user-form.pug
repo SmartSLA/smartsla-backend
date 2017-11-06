@@ -1,4 +1,14 @@
 ng-form(name="form")
+  .row.m-b-30(ng-if="$ctrl.user.organization.parent")
+    .col-md-12
+      dl.dl-horizontal
+        dt #{__('Organization')}
+        dd
+          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.organization.parent._id})") {{::$ctrl.user.organization.parent.fullName}}
+      dl.dl-horizontal
+        dt #{__('Entity')}
+        dd
+          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.organization._id})") {{::$ctrl.user.organization.fullName}}
   .row
     .col-md-6
       esn-form-group(label=__('First name'))
@@ -13,16 +23,6 @@ ng-form(name="form")
     .col-md-6(ng-if="!$ctrl.updateMode")
       esn-form-group(label=__('Password'))
         input.form-control(type="password", ng-model="$ctrl.user.password", autocomplete="new-password", name="password", required, ng-disabled="$ctrl.updateMode")
-  .row.m-b-30(ng-if="$ctrl.user.organization.parent")
-    .col-md-12
-      dl.dl-horizontal
-        dt #{__('Organization')}
-        dd
-          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.organization.parent._id})") {{::$ctrl.user.organization.parent.fullName}}
-      dl.dl-horizontal
-        dt #{__('Entity')}
-        dd
-          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.organization._id})") {{::$ctrl.user.organization.fullName}}
   .row
     .col-md-6
       esn-form-group(label=__('Main phone'))

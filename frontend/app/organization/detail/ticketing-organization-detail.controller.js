@@ -8,7 +8,8 @@
     $stateParams,
     $scope,
     $modal,
-    TicketingOrganizationService
+    TicketingOrganizationService,
+    TICKETING_USER_EVENTS
   ) {
     var self = this;
     var originOrganization;
@@ -18,10 +19,17 @@
 
     function $onInit() {
       self.organizationId = $stateParams.organizationId;
+
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
       self.onCreateContractBtnClick = onCreateContractBtnClick;
+      self.onCreateUserBtnClick = onCreateUserBtnClick;
+
+      $scope.$on(TICKETING_USER_EVENTS.USER_CREATED, function(event, user) {
+        _onUserCreated(user);
+      });
+
       TicketingOrganizationService.get(self.organizationId)
         .then(function(organization) {
           self.selectedTab = DEFAULT_TAB;
@@ -63,6 +71,27 @@
           organization: self.organization
         }
       });
+    }
+
+    function onCreateUserBtnClick() {
+      $modal({
+        templateUrl: '/ticketing/app/user/create/ticketing-user-create.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingUserCreateController',
+        locals: {
+          organization: self.organization
+        }
+      });
+    }
+
+    function _onUserCreated(user) {
+      if (!user) {
+        return;
+      }
+
+      self.organization.users.unshift(user);
     }
 
     function _reset() {

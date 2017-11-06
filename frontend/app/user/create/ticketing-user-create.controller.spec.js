@@ -12,6 +12,12 @@ describe('The TicketingUserCreateController', function() {
   beforeEach(function() {
     module('linagora.esn.ticketing');
 
+    angular.mock.module(function($provide) {
+      $provide.value('organization', {});
+    });
+  });
+
+  beforeEach(function() {
     inject(function(
       _$rootScope_,
       _$controller_,

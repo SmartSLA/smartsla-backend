@@ -21,6 +21,12 @@ module.exports = dependencies => {
     list
   };
 
+  /**
+   * Create new user and corresponding user role.
+   * Also add new user into sub-organization if need.
+   * @param  {Object} user - New user info
+   * @return {Promise}     - Resolve with created user on success
+   */
   function create(user) {
     return Q.ninvoke(coreUser, 'recordUser', user)
       .then(createdUser => {
@@ -30,7 +36,20 @@ module.exports = dependencies => {
         };
 
         return ticketingUserRole.create(userRole)
-          .then(() => createdUser)
+          .then(createdUserRole => {
+            // add user into entity
+            if (user.organization) {
+              return organization.addUsersById(user.organization._id, [createdUser._id])
+                .then(() => createdUser)
+                .catch(err =>
+                  // remove createdUserRole if failed to add user into entity
+                  ticketingUserRole.deleteById(createdUserRole._id)
+                    .then(() => Q.reject(err))
+                );
+            }
+
+            return createdUser;
+          })
           .catch(err =>
             // remove createdUser if failed to create user role
             _deleteById(createdUser._id)

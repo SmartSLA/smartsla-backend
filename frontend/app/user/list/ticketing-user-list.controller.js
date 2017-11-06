@@ -49,7 +49,10 @@
         backdrop: 'static',
         placement: 'center',
         controllerAs: '$ctrl',
-        controller: 'TicketingUserCreateController'
+        controller: 'TicketingUserCreateController',
+        locals: {
+          organization: null
+        }
       });
     }
 

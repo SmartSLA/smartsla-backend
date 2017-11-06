@@ -12,6 +12,7 @@ module.exports = dependencies => {
     getByShortName,
     list,
     updateById,
+    addUsersById,
     getSubOrganizationByUserId
   };
 
@@ -53,6 +54,16 @@ module.exports = dependencies => {
    */
   function updateById(organizationId, modified) {
     return Organization.update({ _id: organizationId }, { $set: modified }).exec();
+  }
+
+  /**
+   * Add users into sub-organization by ID.
+   * @param {String} organizationId - The sub-organization ID
+   * @param {Array}  userIds        - Array of user IDs will be added into sub-organization
+   * @param {Promise}               - Resolve on success
+   */
+  function addUsersById(organizationId, userIds) {
+    return Organization.update({ _id: organizationId }, { $addToSet: { users: { $each: userIds } } }).exec();
   }
 
   /**

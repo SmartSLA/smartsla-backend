@@ -5,7 +5,8 @@
     .component('ticketingOrganizationTabsUser', {
       templateUrl: '/ticketing/app/organization/tabs/user/ticketing-organization-tabs-user.html',
       bindings: {
-        users: '='
+        users: '=',
+        onCreateBtnClick: '&'
       }
     });
 })(angular);
