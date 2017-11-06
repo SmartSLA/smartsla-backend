@@ -23,7 +23,6 @@
 
     function $onInit() {
       self.onCreateBtnClick = onCreateBtnClick;
-      self.onEditBtnClick = onEditBtnClick;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
 
       $scope.$on(TICKETING_USER_EVENTS.USER_CREATED, function(event, user) {
@@ -50,20 +49,9 @@
         backdrop: 'static',
         placement: 'center',
         controllerAs: '$ctrl',
-        controller: 'TicketingUserCreateController'
-      });
-    }
-
-    function onEditBtnClick(user) {
-      user.email = user.preferredEmail;
-      $modal({
-        templateUrl: '/ticketing/app/user/update/ticketing-user-update.html',
-        backdrop: 'static',
-        placement: 'center',
-        controller: 'TicketingUserUpdateController',
-        controllerAs: '$ctrl',
+        controller: 'TicketingUserCreateController',
         locals: {
-          user: user
+          organization: null
         }
       });
     }

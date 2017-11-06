@@ -15,7 +15,7 @@
             button.close(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
               | #{__('Create')}
         .body
-          ticketing-user-form(user="$ctrl.user")
+          ticketing-user-form(user="$ctrl.user", organization="$ctrl.organization")
         .modal-footer.flex.hidden-xs
           .flex-vertical-centered.flex-end
             button.btn.btn-link(type="button", ng-click="$hide()")

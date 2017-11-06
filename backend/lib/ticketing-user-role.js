@@ -10,7 +10,8 @@ module.exports = dependencies => {
     create,
     list,
     userIsAdministrator,
-    getByUser
+    getByUser,
+    deleteById
   };
 
   /**
@@ -65,5 +66,14 @@ module.exports = dependencies => {
     }
 
     return TicketingUserRole.findOne({ user: user });
+  }
+
+  /**
+   * Delete TicketingUserRole by ID.
+   * @param  {String}  userRoleId - ID of user role
+   * @return {Promise}            - Resolve on success
+   */
+  function deleteById(userRoleId) {
+    return TicketingUserRole.remove({ _id: userRoleId }).exec();
   }
 };

@@ -34,6 +34,7 @@ ticketing-organization-tabs-entity(
 )
 ticketing-organization-tabs-user(
   ng-if="$ctrl.organization",
-  users="$ctrl.organization.users",
   ng-show='$ctrl.selectedTab === "user"'
+  users="$ctrl.organization.users",
+  on-create-btn-click="$ctrl.onCreateUserBtnClick()"
 )

@@ -4,18 +4,16 @@ const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
-const mongoose = require('mongoose');
 
 describe('GET /api/contracts', function() {
-  let app, lib, helpers, ObjectId;
-  let user1, user2, contract;
+  let app, lib, helpers;
+  let user1, user2, organization, contract;
   const password = 'secret';
 
   beforeEach(function(done) {
     const self = this;
 
     helpers = self.helpers;
-    ObjectId = mongoose.Types.ObjectId;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -52,15 +50,22 @@ describe('GET /api/contracts', function() {
           });
         })
         .then(() => {
-          lib.contract.create({
-            title: 'contract1',
-            organization: new ObjectId(),
-            startDate: new Date(),
-            endDate: new Date()
+          lib.organization.create({
+            shortName: 'organization'
           })
-          .then(createdContract => {
-            contract = createdContract;
-            done();
+          .then(createdOrganization => {
+            organization = createdOrganization;
+
+            lib.contract.create({
+              title: 'contract1',
+              organization: createdOrganization._id,
+              startDate: new Date(),
+              endDate: new Date()
+            })
+            .then(createdContract => {
+              contract = createdContract;
+              done();
+            });
           });
         })
         .catch(err => done(err));
@@ -72,8 +77,14 @@ describe('GET /api/contracts', function() {
     helpers.mongo.dropDatabase(done);
   });
 
-  function getObjectFromModel(document) {
-    return JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
+  function getObjectFromModel(document, includeOrganization) {
+    const contractObj = JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
+
+    if (includeOrganization) {
+      contractObj.organization = JSON.parse(JSON.stringify(organization));
+    }
+
+    return contractObj;
   }
 
   it('should respond 401 if not logged in', function(done) {
@@ -94,11 +105,27 @@ describe('GET /api/contracts', function() {
     }));
   });
 
-  it('should respond 200 if user is an administrator', function(done) {
+  it('should respond 200 with list contracts include organization object', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).get('/api/contracts'));
+      const expectResult = [getObjectFromModel(contract, true)];
+
+      req.expect(200)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.headers['x-esn-items-count']).to.exist;
+          expect(res.headers['x-esn-items-count']).to.equal(`${expectResult.length}`);
+          expect(res.body).to.shallowDeepEqual(expectResult);
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 200 with list contracts exclude organization object', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).get('/api/contracts'));
       const expectResult = [getObjectFromModel(contract)];
 
+      req.query({ organization: String(contract.organization) });
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.headers['x-esn-items-count']).to.exist;
@@ -112,14 +139,14 @@ describe('GET /api/contracts', function() {
   it('should respond 200 with the list contains only latest contract if offset=0 and limit=1', function(done) {
     lib.contract.create({
       title: 'contract2',
-      organization: new ObjectId(),
+      organization: organization._id,
       startDate: new Date(),
       endDate: new Date()
     })
     .then(createdContract => {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const req = requestAsMember(request(app).get('/api/contracts'));
-        const expectResult = [getObjectFromModel(createdContract)];
+        const expectResult = [getObjectFromModel(createdContract, true)];
 
         req.query({ offset: 0, limit: 1 });
         req.expect(200)
@@ -136,14 +163,14 @@ describe('GET /api/contracts', function() {
   it('should respond 200 with the list contains only oldest contract if offset=1', function(done) {
       lib.contract.create({
         title: 'contract2',
-        organization: new ObjectId(),
+        organization: organization._id,
         startDate: new Date(),
         endDate: new Date()
       })
       .then(() => {
         helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get('/api/contracts'));
-          const expectResult = [getObjectFromModel(contract)];
+          const expectResult = [getObjectFromModel(contract, true)];
 
           req.query({ offset: 1 });
           req.expect(200)
