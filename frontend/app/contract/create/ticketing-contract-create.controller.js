@@ -16,6 +16,8 @@
     }
 
     function create() {
+      self.contract.organization = self.contract.organization && self.contract.organization._id ? self.contract.organization._id : self.contract.organization;
+
       return TicketingContractService.create(self.contract);
     }
   }

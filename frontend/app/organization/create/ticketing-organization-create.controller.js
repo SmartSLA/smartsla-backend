@@ -9,10 +9,12 @@
 
     self.create = create;
 
-    self.organization = {
-      parent: parent,
-      manager: parent.manager
-    };
+    if (parent) {
+      self.organization = {
+        parent: parent,
+        manager: parent.manager
+      };
+    }
 
     function create() {
       return TicketingOrganizationService.create(self.organization);

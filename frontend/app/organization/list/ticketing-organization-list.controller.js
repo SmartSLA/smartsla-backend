@@ -17,22 +17,15 @@
       offset: 0,
       limit: DEFAULT_LIMIT
     };
-    var parentObject;
 
     self.$onInit = $onInit;
 
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
-      self.onItemClick = onItemClick;
       if (self.parent) {
-        options.parent = self.parent;
+        options.parent = self.parent._id;
       }
-
-      TicketingOrganizationService.get(self.parent)
-        .then(function(organizationParent) {
-          parentObject = organizationParent;
-        });
 
       $scope.$on(TICKETING_ORGANIZATION_EVENTS.ORGANIZATION_CREATED, function(event, organization) {
         _onOrganizationCreated(organization);
@@ -47,13 +40,9 @@
         controllerAs: '$ctrl',
         controller: 'TicketingOrganizationCreateController',
         locals: {
-          parent: parentObject
+          parent: self.parent
         }
       });
-    }
-
-    function onItemClick(organizationId) {
-      $state.go('ticketingAdminCenter.organization.detail', { organizationId: organizationId });
     }
 
     function _loadNextItems() {
