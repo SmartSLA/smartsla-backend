@@ -15,7 +15,8 @@ sub-header
   )
 form(name="form")
   ticketing-contract-tabs-main(
-    ng-show='$ctrl.contract && $ctrl.selectedTab === "main"',
+    ng-if="$ctrl.contract",
+    ng-show='$ctrl.selectedTab === "main"',
     contract="$ctrl.contract",
     is-edit-mode="$ctrl.isEditMode"
   )

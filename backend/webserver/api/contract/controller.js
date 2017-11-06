@@ -59,13 +59,10 @@ module.exports = function(dependencies, lib) {
     };
 
     options.populations = [{ path: 'manager' }];
-    console.log(22222, req.query.organization);
 
     if (!req.query.organization) {
       options.populations.push({ path: 'organization' });
     }
-
-    console.log(11111, options.populations);
 
     return lib.contract.list(options)
       .then(contracts => {

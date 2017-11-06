@@ -3,10 +3,6 @@ ng-form(name="form")
     .col-md-12
       esn-form-group(label=__('Title'))
         input.form-control(type="text", ng-model="$ctrl.contract.title", name="contractTitle", required)
-  .row
-    .col-md-12
-      esn-form-group(label=__('Description'))
-        textarea.form-control(type="text", rows="3", ng-model="$ctrl.contract.description", name="contractDescription")
   .row.m-b-30
     .col-md-12(ng-if="$ctrl.contract.organization")
       span.f-700.m-r-5 #{__('Organization:')}

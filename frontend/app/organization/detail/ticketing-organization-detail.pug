@@ -28,10 +28,12 @@ ticketing-organization-tabs-contract(
   on-create-btn-click="$ctrl.onCreateContractBtnClick()"
 )
 ticketing-organization-tabs-entity(
-  parent="$ctrl.organizationId",
+  ng-if="$ctrl.organization",
+  parent="$ctrl.organization",
   ng-show='$ctrl.selectedTab === "entity"'
 )
 ticketing-organization-tabs-user(
+  ng-if="$ctrl.organization",
   users="$ctrl.organization.users",
   ng-show='$ctrl.selectedTab === "user"'
 )
