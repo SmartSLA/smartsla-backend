@@ -8,7 +8,7 @@
     var self = this;
 
     self.create = create;
-
+    self.organization = {};
     if (parent) {
       self.organization = {
         parent: parent,
