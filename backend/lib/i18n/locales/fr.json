@@ -65,5 +65,10 @@
   "Failed to create contract": "Impossible de créer le contrat",
   "Updating contract...": "Mettre à jour de le contrat...",
   "Contract updated": "Contrat mis à jour",
-  "Failed to update contract": "Impossible de mettre à jour le contrat"
+  "Failed to update contract": "Impossible de mettre à jour le contrat",
+  "Active": "Actif",
+  "Number": "Nombre",
+  "No order": "Aucun ordre",
+  "yes": "oui",
+  "no": "non"
 }

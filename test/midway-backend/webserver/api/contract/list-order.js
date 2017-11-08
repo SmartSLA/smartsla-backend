@@ -139,7 +139,7 @@ describe('GET /api/contracts/:id/orders', function() {
   it('should respond 200 with the list contains only latest order if offset=0 and limit=1', function(done) {
     lib.order.create({
       title: 'order2',
-      contract: new ObjectId(),
+      contract: contractId,
       startDate: new Date(),
       terminationDate: new Date(),
       type: 'USP'
@@ -164,7 +164,7 @@ describe('GET /api/contracts/:id/orders', function() {
   it('should respond 200 with the list contains only oldest order if offset=1', function(done) {
       lib.order.create({
         title: 'order2',
-        contract: new ObjectId(),
+        contract: contractId,
         startDate: new Date(),
         terminationDate: new Date(),
         type: 'USP'

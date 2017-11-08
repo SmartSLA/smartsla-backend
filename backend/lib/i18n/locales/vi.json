@@ -65,5 +65,10 @@
   "Failed to create contract": "Tạo hợp đồng thất bại",
   "Updating contract...": "Đang cập nhật hợp đồng...",
   "Contract updated": "Hợp đồng đã cập nhật",
-  "Failed to update contract": "Cập nhật hợp đồng thất bại"
+  "Failed to update contract": "Cập nhật hợp đồng thất bại",
+  "Active": "Hiệu lực",
+  "Number": "Số",
+  "No order": "Không có yêu cầu",
+  "yes": "có",
+  "no": "không"
 }

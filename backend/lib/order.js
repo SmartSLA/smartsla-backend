@@ -31,19 +31,24 @@ module.exports = dependencies => {
   }
 
   /**
-   * List orders
-   * @param {Object}   options  - The options object, may contain offset and limit
+   * List orders.
+   * @param {Object}   options  - The options object, may contain contract ID, offset, limit and populations
    * @param {Promise}           - Resolve on success
    */
-  function list(options) {
-    options = options || {};
+  function list(options = {}) {
+    const conditions = options.contract ? { contract: mongoose.Types.ObjectId(options.contract) } : {};
 
-    return Order
-      .find()
+    const query = Order
+      .find(conditions)
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .sort('-creation')
-      .exec();
+      .sort('-number');
+
+    if (options.populations) {
+      query.populate(options.populations);
+    }
+
+    return query.exec();
   }
 
   /**
