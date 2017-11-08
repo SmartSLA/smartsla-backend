@@ -117,30 +117,17 @@ module.exports = (dependencies, lib) => {
 
   function validateOrderPayload(req, res, next) {
     const {
-      manager,
-      defaultSupportManager,
-      permissions,
+      title,
       startDate,
       terminationDate,
-      title,
-      type
+      manager,
+      defaultSupportManager,
+      defaultSupportTechnician,
+      permissions
     } = req.body;
 
-    if (manager && !validateObjectIds(manager)) {
-      return send400Error('manager is invalid', res);
-    }
-
-    if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
-      return send400Error('defaultSupportManager is invalid', res);
-    }
-
-    if (permissions) {
-      const actors = permissions.map(permission => permission.actor);
-      const rights = permissions.map(permission => permission.right);
-
-      if (!validateObjectIds(actors) || !validateRights(rights)) {
-        return send400Error('permissions is invalid', res);
-      }
+    if (!title) {
+      return send400Error('title is required', res);
     }
 
     if (!startDate) {
@@ -151,12 +138,25 @@ module.exports = (dependencies, lib) => {
       return send400Error('terminationDate is required', res);
     }
 
-    if (!title) {
-      return send400Error('title is required', res);
+    if (manager && !validateObjectIds(manager)) {
+      return send400Error('manager is invalid', res);
     }
 
-    if (!type) {
-      return send400Error('type is required', res);
+    if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
+      return send400Error('defaultSupportManager is invalid', res);
+    }
+
+    if (defaultSupportTechnician && !validateObjectIds(defaultSupportTechnician)) {
+      return send400Error('defaultSupportTechnician is invalid', res);
+    }
+
+    if (permissions) {
+      const actors = permissions.map(permission => permission.actor);
+      const rights = permissions.map(permission => permission.right);
+
+      if (!validateObjectIds(actors) || !validateRights(rights)) {
+        return send400Error('permissions is invalid', res);
+      }
     }
 
     return _validateOrderDurationDate(req, res, next);

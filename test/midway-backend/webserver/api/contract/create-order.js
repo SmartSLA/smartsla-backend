@@ -185,6 +185,28 @@ describe('POST /api/contracts/:id/orders', function() {
     }));
   });
 
+  it('should respond 400 if there is invalid defaultSupportTechnician in the payload', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
+      const newOrder = {
+        title: 'order2',
+        startDate: new Date(),
+        terminationDate: new Date(),
+        defaultSupportTechnician: 'invalid ObjectId'
+      };
+
+      req.send(newOrder);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'defaultSupportTechnician is invalid' }
+          });
+
+          done();
+        }));
+    }));
+  });
+
   it('should respond 400 if there is invalid permission actors in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));

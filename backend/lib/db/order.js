@@ -14,9 +14,10 @@ module.exports = dependencies => {
     address: { type: String },
     manager: { type: Schema.ObjectId, ref: 'User' },
     defaultSupportManager: { type: Schema.ObjectId, ref: 'User' },
+    defaultSupportTechnician: { type: Schema.ObjectId, ref: 'User' },
     startDate: { type: Date, required: true },
     terminationDate: { type: Date, required: true },
-    type: { type: String, validate: [validateOrderType, 'Invalid order type'], required: true },
+    type: { type: String, validate: [validateOrderType, 'Invalid order type'] },
     description: { type: String },
     permissions: [{
       actor: { type: Schema.ObjectId },
