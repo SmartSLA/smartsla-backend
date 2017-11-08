@@ -53,25 +53,47 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    const options = {
-      limit: +req.query.limit,
-      offset: +req.query.offset,
-      parent: req.query.parent
-    };
+    let getOrganizations;
+    let errorMessage;
 
-    return lib.organization.list(options)
-      .then(organizations => {
-        res.header('X-ESN-Items-Count', organizations.length);
+    if (req.query.search) {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        search: req.query.search
+      };
 
-        const denormalizer = organization => {
-          organization.manager = coreUser.denormalize.denormalize(organization.manager, true);
+      errorMessage = 'Error while searching organizations';
+      getOrganizations = lib.organization.search(options);
+    } else {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        parent: req.query.parent
+      };
 
-          return organization;
-        };
+      errorMessage = 'Failed to list organization';
+      getOrganizations = lib.organization.list(options)
+        .then(organizations => {
+          const denormalizer = organization => {
+            organization.manager = coreUser.denormalize.denormalize(organization.manager, true);
 
-        res.status(200).json(organizations.map(organization => denormalizer(organization)));
+            return organization;
+          };
+
+          return {
+            total_count: organizations.length,
+            list: organizations.map(organization => denormalizer(organization))
+          };
+        });
+    }
+
+    return getOrganizations
+      .then(result => {
+        res.header('X-ESN-Items-Count', result.total_count);
+        res.status(200).json(result.list);
       })
-      .catch(err => send500Error('Failed to list organization', err, res));
+      .catch(err => send500Error(errorMessage, err, res));
   }
 
   /**

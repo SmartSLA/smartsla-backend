@@ -41,7 +41,13 @@
         "shortName": {
           "type": "string",
           "analyzer": "nGram_analyzer",
-          "search_analyzer": "whitespace_analyzer"
+          "search_analyzer": "whitespace_analyzer",
+          "fields": {
+             "sort": {
+             "type": "string",
+             "index": "not_analyzed"
+             }
+           }
         },
         "fullName": {
           "type": "string",
