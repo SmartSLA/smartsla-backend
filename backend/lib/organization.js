@@ -11,6 +11,7 @@ module.exports = dependencies => {
     getById,
     getByShortName,
     list,
+    listByCursor,
     updateById,
     addUsersById,
     getSubOrganizationByUserId
@@ -96,5 +97,9 @@ module.exports = dependencies => {
    */
   function getSubOrganizationByUserId(userId) {
     return Organization.findOne({ users: userId, parent: { $exists: true } }).populate('parent').exec();
+  }
+
+  function listByCursor() {
+    return Organization.find().cursor();
   }
 };
