@@ -41,6 +41,7 @@ before(function(done) {
 
   process.env.NODE_CONFIG = this.testEnv.tmp;
   process.env.NODE_ENV = 'test';
+  process.env.ES_PORT = process.env.ES_PORT || testConfig.elasticsearch.port;
 
   fs.copySync(this.testEnv.fixtures + '/default.mongoAuth.json', this.testEnv.tmp + '/default.json');
 
