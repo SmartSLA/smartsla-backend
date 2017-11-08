@@ -7,6 +7,7 @@
   function TicketingOrganizationService(
     $rootScope,
     $q,
+    $log,
     ticketingOrganizationClient,
     TicketingUserService,
     asyncAction,
@@ -15,6 +16,7 @@
     return {
       create: create,
       get: get,
+      getSearchProvider: getSearchProvider,
       update: update
     };
 
@@ -75,6 +77,28 @@
       return asyncAction(notificationMessages, function() {
         return ticketingOrganizationClient.update(organizationToUpdate._id, organizationToUpdate);
       });
+    }
+
+    function getSearchProvider() {
+      return {
+        objectType: 'organization',
+        templateUrl: '/ticketing/app/organization/search/ticketing-organization-search.html',
+        search: function(query, limit) {
+          var searchQuery = {
+            search: query,
+            limit: limit
+          };
+
+          return ticketingOrganizationClient.list(searchQuery)
+            .then(function(response) {
+              return response.data;
+            }, function(err) {
+              $log.error('Error while searching organization:', err);
+
+              return $q.when([]);
+            });
+        }
+      };
     }
 
     function _denormalizeManager(manager) {
