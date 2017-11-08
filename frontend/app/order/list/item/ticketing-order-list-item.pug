@@ -1,0 +1,14 @@
+.row.flex-vertical-centered
+  .col-md-1.col-xs-2.lv-title
+    span(ng-if="$ctrl.order.active") #{__('yes')}
+    span(ng-if="!$ctrl.order.active") #{__('no')}
+  .col-md-2.col-xs-3.lv-title
+    span {{::$ctrl.order.number}}
+  .col-md-3.col-xs-4.lv-title
+    span {{::$ctrl.order.title}}
+  .col-md-2.col-xs-3.lv-title
+    span {{::$ctrl.order.manager.firstname}} {{::$ctrl.order.manager.lastname}}
+  .col-md-2.hidden-xs.lv-title
+    span {{::$ctrl.order.startDate | esnDatetime: 'mediumDate'}}
+  .col-md-2.hidden-xs.lv-title
+    span {{::$ctrl.order.terminationDate | esnDatetime: 'mediumDate'}}

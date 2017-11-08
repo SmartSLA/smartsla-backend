@@ -65,5 +65,10 @@
   "Failed to create contract": "Failed to create contract",
   "Updating contract...": "Updating contract...",
   "Contract updated": "Contract updated",
-  "Failed to update contract": "Failed to update contract"
+  "Failed to update contract": "Failed to update contract",
+  "Active": "Active",
+  "Number": "Number",
+  "No order": "No order",
+  "yes": "yes",
+  "no": "no"
 }

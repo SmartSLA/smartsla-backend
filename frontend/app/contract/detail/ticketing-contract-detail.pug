@@ -21,7 +21,9 @@ form(name="form")
     is-edit-mode="$ctrl.isEditMode"
   )
 ticketing-contract-tabs-order(
-  ng-show='$ctrl.selectedTab === "order"'
+  ng-if="$ctrl.contract",
+  ng-show='$ctrl.selectedTab === "order"',
+  contract="$ctrl.contract"
 )
 ticketing-contract-tabs-permission(
   ng-show='$ctrl.selectedTab === "permission"'

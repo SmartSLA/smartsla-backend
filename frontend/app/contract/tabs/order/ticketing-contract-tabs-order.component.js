@@ -3,6 +3,9 @@
 
   angular.module('linagora.esn.ticketing')
     .component('ticketingContractTabsOrder', {
-      templateUrl: '/ticketing/app/contract/tabs/order/ticketing-contract-tabs-order.html'
+      templateUrl: '/ticketing/app/contract/tabs/order/ticketing-contract-tabs-order.html',
+      bindings: {
+        contract: '<'
+      }
     });
 })(angular);
