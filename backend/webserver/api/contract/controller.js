@@ -119,7 +119,7 @@ module.exports = function(dependencies, lib) {
   }
 
   /**
-   * List the orders
+   * List orders of contract.
    *
    * @param {Request} req
    * @param {Response} res
@@ -127,11 +127,22 @@ module.exports = function(dependencies, lib) {
   function listOrders(req, res) {
     const options = {
       limit: +req.query.limit,
-      offset: +req.query.offset
+      offset: +req.query.offset,
+      contract: req.params.id
     };
+
+    // populate manager object of order
+    options.populations = [{ path: 'manager' }];
 
     return lib.order.list(options)
       .then(orders => {
+        // denormalize manager object
+        orders.forEach(order => {
+          if (order.manager) {
+            order.manager = coreUser.denormalize.denormalize(order.manager);
+          }
+        });
+
         res.header('X-ESN-Items-Count', orders.length);
         res.status(200).json(orders);
       })
