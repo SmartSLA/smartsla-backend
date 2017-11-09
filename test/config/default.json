@@ -1,0 +1,32 @@
+{
+  "webserver": {
+    "enabled": true,
+    "ip": "127.0.0.1",
+    "ipv6": "::1",
+    "port": 8081,
+    "virtualhosts": [],
+    "startupBufferTimeout": 500
+  },
+  "wsserver": {
+    "enabled": false,
+    "port": 8081
+  },
+  "log": {
+    "file": {
+      "enabled": false
+    },
+    "console": {
+      "enabled": true,
+      "level": "error"
+    }
+  },
+  "auth": {
+    "strategies": ["mongo"],
+    "apiStrategies": ["basic-mongo"]
+  },
+  "core": {
+    "config": {
+      "db": "db.json"
+    }
+  }
+}

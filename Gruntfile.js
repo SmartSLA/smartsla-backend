@@ -1,17 +1,9 @@
 'use strict';
 
-const conf_path = './test/config/';
-const servers = require(conf_path + 'servers-conf');
-const GruntfileUtils = require('./tasks/utils/Gruntfile-utils');
 const timeGrunt = require('time-grunt');
 
 module.exports = function(grunt) {
   timeGrunt(grunt);
-
-  const gruntfileUtils = new GruntfileUtils(grunt, servers);
-  const runGrunt = gruntfileUtils.runGrunt();
-  const shell = gruntfileUtils.shell();
-  const command = gruntfileUtils.command();
 
   grunt.initConfig({
     eslint: {
@@ -51,19 +43,6 @@ module.exports = function(grunt) {
       quick: {
         src: ['<%= eslint.quick.src %>']
       }
-    },
-
-    shell: {
-      mongo: shell.newShell(command.mongo(false), new RegExp('connections on port ' + servers.mongodb.port), 'MongoDB server is started.'),
-      redis: shell.newShell(command.redis, /on port/, 'Redis server is started'),
-      elasticsearch: shell.newShell(command.elasticsearch, /started/, 'Elasticsearch server is started.')
-    },
-
-    run_grunt: {
-      midway_backend: runGrunt.newProcess(['test-midway-backend']),
-      unit_backend: runGrunt.newProcess(['test-unit-backend']),
-      unit_frontend: runGrunt.newProcess(['test-frontend']),
-      unit_storage: runGrunt.newProcess(['test-unit-storage'])
     },
 
     puglint: {
@@ -109,6 +88,49 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+
+    splitfiles: {
+      options: {
+        chunk: 1
+      },
+      midway: {
+        options: {
+          common: ['test/midway-backend/all.js'],
+          target: 'mochacli:midway'
+        },
+        files: {
+          src: ['test/midway-backend/**/*.js']
+        }
+      },
+      unit_storage: {
+        options: {
+          common: ['test/unit_storage/all.js'],
+          target: 'mochacli:unit-storage'
+        },
+        files: {
+          src: ['test/unit-storage/**/*.js']
+        }
+      }
+    },
+    mochacli: {
+      options: {
+        require: ['chai', 'mockery'],
+        reporter: 'spec',
+        timeout: process.env.TEST_TIMEOUT || 5000
+      },
+      backend: {
+        options: {
+          files: ['test/unit-backend/all.js', grunt.option('test') || 'test/unit-backend/**/*.js']
+        }
+      }
+    },
+
+    karma: {
+      unit: {
+        configFile: './test/config/karma.conf.js',
+        browsers: ['PhantomJS']
+      }
     }
 
   });
@@ -122,12 +144,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-shell-spawn');
-  grunt.loadNpmTasks('grunt-continue');
-  grunt.loadNpmTasks('grunt-run-grunt');
   grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-wait-server');
   grunt.loadNpmTasks('grunt-puglint');
   grunt.loadNpmTasks('grunt-i18n-checker');
 
@@ -136,16 +153,11 @@ module.exports = function(grunt) {
   grunt.registerTask('pug-linter', 'Check the pug/jade files', ['puglint:all']);
   grunt.registerTask('linters', 'Check code for lint', ['eslint:all', 'lint_pattern:all', 'lint_pattern:css', 'i18n', 'pug-linter']);
   grunt.registerTask('linters-dev', 'Check changed files for lint', ['prepare-quick-lint', 'eslint:quick', 'lint_pattern:quick']);
-  grunt.registerTask('spawn-servers', 'spawn servers', ['shell:mongo', 'shell:elasticsearch']);
-  grunt.registerTask('kill-servers', 'kill servers', ['shell:mongo:kill', 'shell:elasticsearch:kill']);
-  grunt.registerTask('setup-environment', 'create temp folders and files for tests', gruntfileUtils.setupEnvironment());
-  grunt.registerTask('clean-environment', 'remove temp folder for tests', gruntfileUtils.cleanEnvironment());
-  grunt.registerTask('setup-elasticsearch-index', 'setup elasticsearch index', gruntfileUtils.setupElasticsearchIndex());
-  grunt.registerTask('setup-servers', ['spawn-servers', 'continue:on', 'setup-elasticsearch-index']);
-  grunt.registerTask('test-unit-storage', ['setup-environment', 'setup-servers', 'run_grunt:unit_storage', 'kill-servers', 'clean-environment']);
-  grunt.registerTask('test-midway-backend', ['setup-environment', 'setup-servers', 'run_grunt:midway_backend', 'kill-servers', 'clean-environment']);
-  grunt.registerTask('test-unit-backend', 'Test backend code', ['run_grunt:unit_backend']);
-  grunt.registerTask('test-unit-frontend', 'Test frontend code', ['run_grunt:unit_frontend']);
+  grunt.registerTask('test-midway-backend', ['splitfiles:midway']);
+  grunt.registerTask('test-unit-storage', ['splitfiles:unit_storage']);
+  grunt.registerTask('test-unit-backend', 'Test backend code', ['mochacli:backend']);
+  grunt.registerTask('test-unit-frontend', 'Test frontend code', ['karma:unit']);
+
   grunt.registerTask('test', ['linters', 'test-unit-frontend', 'test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
   grunt.registerTask('default', ['test']);
 };

@@ -69,7 +69,10 @@ describe('POST /api/contracts', function() {
   });
 
   afterEach(function(done) {
-    helpers.mongo.dropDatabase(done);
+    this.helpers.mongo.dropDatabase(err => {
+      if (err) return done(err);
+      this.testEnv.core.db.mongo.mongoose.connection.close(done);
+    });
   });
 
   it('should respond 400 if there is no title in the payload', function(done) {

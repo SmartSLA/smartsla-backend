@@ -1,3 +1,5 @@
+/*eslint-disable no-warning-comments*/
+
 'use strict';
 
 module.exports = (dependencies, lib) => {

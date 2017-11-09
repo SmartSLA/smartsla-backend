@@ -66,7 +66,10 @@ describe('The organization API', function() {
   });
 
   afterEach(function(done) {
-    helpers.mongo.dropDatabase(done);
+    this.helpers.mongo.dropDatabase(err => {
+      if (err) return done(err);
+      this.testEnv.core.db.mongo.mongoose.connection.close(done);
+    });
   });
 
   function getObjectFromModel(document) {
