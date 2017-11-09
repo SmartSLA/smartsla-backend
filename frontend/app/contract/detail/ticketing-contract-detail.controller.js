@@ -7,6 +7,7 @@
   function TicketingContractDetailController(
     $stateParams,
     $scope,
+    $modal,
     TicketingContractService
   ) {
     var self = this;
@@ -17,9 +18,12 @@
 
     function $onInit() {
       self.contractId = $stateParams.contractId;
+
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
+      self.onCreateOrderBtnClick = onCreateOrderBtnClick;
+
       TicketingContractService.get(self.contractId)
         .then(function(contract) {
           self.selectedTab = DEFAULT_TAB;
@@ -47,6 +51,19 @@
           self.isEditMode = false;
           originContract = angular.copy(self.contract);
         });
+    }
+
+    function onCreateOrderBtnClick() {
+      $modal({
+        templateUrl: '/ticketing/app/order/create/ticketing-order-create.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingOrderCreateController',
+        locals: {
+          contract: self.contract
+        }
+      });
     }
 
     function _reset() {

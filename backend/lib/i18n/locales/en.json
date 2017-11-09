@@ -70,5 +70,11 @@
   "Number": "Number",
   "No order": "No order",
   "yes": "yes",
-  "no": "no"
+  "no": "no",
+  "New order": "New order",
+  "Contract": "Contract",
+  "Support manager": "Support manager",
+  "Default support technician": "Default support technician",
+  "Only allows one Support manager": "Only allows one Support manager",
+  "Only allows one Default support technician": "Only allows one Default support technician"
 }
