@@ -1,0 +1,19 @@
+image: linagora/node-test-base:8
+
+stages:
+  - test
+
+test:
+  stage: test
+  tags:
+    - docker
+  services:
+    - mongo:3.4
+    - elasticsearch:2.4
+    - redis:3
+    - rabbitmq:3.6
+  script:
+    - npm i
+    - npm update
+    - bower i --allow-root
+    - grunt --chunk=1 --ci
