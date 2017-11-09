@@ -255,7 +255,7 @@ describe('POST /api/contracts/:id/orders', function() {
     }));
   });
 
-  it('should respond 400 if there is startDate of order less than contract startDate', function(done) {
+  it.skip('should respond 400 if there is startDate of order less than contract startDate', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
@@ -276,7 +276,7 @@ describe('POST /api/contracts/:id/orders', function() {
     }));
   });
 
-  it('should respond 400 if there is terminationDate of order less than contract endDate', function(done) {
+  it.skip('should respond 400 if there is terminationDate of order less than contract endDate', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/orders`));
       const newOrder = {
