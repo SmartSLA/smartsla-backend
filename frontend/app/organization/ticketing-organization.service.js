@@ -82,7 +82,10 @@
     function getSearchProvider() {
       return {
         objectType: 'organization',
-        templateUrl: '/ticketing/app/organization/search/ticketing-organization-search.html',
+        templateUrl: '/ticketing/app/organization/search-template/ticketing-orgainzation-search-template.html',
+        getDisplayName: function(organization) {
+          return organization.shortName;
+        },
         search: function(query, limit) {
           var searchQuery = {
             search: query,
