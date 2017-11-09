@@ -1,20 +1,22 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS } = require('./constants');
+const { DEFAULT_LIST_OPTIONS } = require('../constants');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Organization = mongoose.model('Organization');
+  const search = require('./search')(dependencies);
 
   return {
+    addUsersById,
     create,
     getById,
     getByShortName,
+    getSubOrganizationByUserId,
     list,
     listByCursor,
     updateById,
-    addUsersById,
-    getSubOrganizationByUserId
+    search
   };
 
   /**

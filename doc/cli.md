@@ -15,7 +15,7 @@ $ node ./bin/cli --help
 It will create the indexes on the elasticsearch instance defined from CLI options.
 
 ```bash
-$ node ./bin/cli elasticsearch --host localhost --port 9200 --type organizations
+$ node ./bin/cli elasticsearch setup --host localhost --port 9200 --type organizations
 ```
 
 - host: default is localhost
@@ -27,7 +27,7 @@ $ node ./bin/cli elasticsearch --host localhost --port 9200 --type organizations
 It will index or reindex data from the DB to ES.
 
 ```bash
-$ node ./bin/cli reindex --host localhost --port 9200 --type organization
+$ node ./bin/cli elasticsearch reindex --host localhost --port 9200 --type organizations
 ```
 
 - host: default is localhost

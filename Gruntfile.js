@@ -55,7 +55,8 @@ module.exports = function(grunt) {
 
     shell: {
       mongo: shell.newShell(command.mongo(false), new RegExp('connections on port ' + servers.mongodb.port), 'MongoDB server is started.'),
-      redis: shell.newShell(command.redis, /on port/, 'Redis server is started')
+      redis: shell.newShell(command.redis, /on port/, 'Redis server is started'),
+      elasticsearch: shell.newShell(command.elasticsearch, /started/, 'Elasticsearch server is started.')
     },
 
     run_grunt: {
@@ -130,15 +131,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-puglint');
   grunt.loadNpmTasks('grunt-i18n-checker');
 
+  grunt.loadTasks('tasks');
   grunt.registerTask('i18n', 'Check the translation files', ['i18n_checker']);
   grunt.registerTask('pug-linter', 'Check the pug/jade files', ['puglint:all']);
   grunt.registerTask('linters', 'Check code for lint', ['eslint:all', 'lint_pattern:all', 'lint_pattern:css', 'i18n', 'pug-linter']);
   grunt.registerTask('linters-dev', 'Check changed files for lint', ['prepare-quick-lint', 'eslint:quick', 'lint_pattern:quick']);
-  grunt.registerTask('spawn-servers', 'spawn servers', ['shell:mongo', 'shell:redis']);
-  grunt.registerTask('kill-servers', 'kill servers', ['shell:mongo:kill', 'shell:redis:kill']);
+  grunt.registerTask('spawn-servers', 'spawn servers', ['shell:mongo', 'shell:elasticsearch']);
+  grunt.registerTask('kill-servers', 'kill servers', ['shell:mongo:kill', 'shell:elasticsearch:kill']);
   grunt.registerTask('setup-environment', 'create temp folders and files for tests', gruntfileUtils.setupEnvironment());
   grunt.registerTask('clean-environment', 'remove temp folder for tests', gruntfileUtils.cleanEnvironment());
-  grunt.registerTask('setup-servers', ['spawn-servers', 'continue:on']);
+  grunt.registerTask('setup-elasticsearch-index', 'setup elasticsearch index', gruntfileUtils.setupElasticsearchIndex());
+  grunt.registerTask('setup-servers', ['spawn-servers', 'continue:on', 'setup-elasticsearch-index']);
   grunt.registerTask('test-unit-storage', ['setup-environment', 'setup-servers', 'run_grunt:unit_storage', 'kill-servers', 'clean-environment']);
   grunt.registerTask('test-midway-backend', ['setup-environment', 'setup-servers', 'run_grunt:midway_backend', 'kill-servers', 'clean-environment']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['run_grunt:unit_backend']);

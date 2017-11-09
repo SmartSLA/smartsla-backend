@@ -3,6 +3,7 @@
 const util = require('util');
 const fs = require('fs-extra');
 const path = require('path');
+const EsnConfig = require('esn-elasticsearch-configuration');
 
 function _args(grunt) {
   const opts = ['test', 'chunk', 'ci', 'reporter'];
@@ -70,6 +71,15 @@ class GruntfileUtils {
         (servers.mongodb.port ? servers.mongodb.port : '23456'),
         replset);
     };
+
+    commandObject.elasticsearch = servers.elasticsearch.cmd +
+    ' -Des.http.port=' + servers.elasticsearch.port +
+    ' -Des.transport.tcp.port=' + servers.elasticsearch.communication_port +
+    ' -Des.cluster.name=' + servers.elasticsearch.cluster_name +
+    ' -Des.path.data=' + servers.elasticsearch.data_path +
+    ' -Des.path.work=' + servers.elasticsearch.work_path +
+    ' -Des.path.logs=' + servers.elasticsearch.logs_path +
+    ' -Des.discovery.zen.ping.multicast.enabled=false';
 
     return commandObject;
   }
@@ -178,6 +188,23 @@ class GruntfileUtils {
       const done = this.async();
 
       done(true);
+    };
+  }
+
+  setupElasticsearchIndex() {
+    const grunt = this.grunt;
+    const servers = this.servers;
+    const p = path.normalize(__dirname + '/../../config/elasticsearch/');
+
+    return function() {
+      const done = this.async();
+      const esnConf = new EsnConfig({host: servers.host, port: servers.elasticsearch.port, path: p});
+
+      esnConf.createIndex('organizations.idx', 'organizations')
+        .then(function() {
+          grunt.log.write('Elasticsearch settings are successfully added');
+          done(true);
+        }, done);
     };
   }
 }
