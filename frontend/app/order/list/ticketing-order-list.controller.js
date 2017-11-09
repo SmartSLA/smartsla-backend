@@ -8,7 +8,8 @@
     $state,
     $scope,
     infiniteScrollHelper,
-    ticketingContractClient
+    ticketingContractClient,
+    TICKETING_ORDER_EVENTS
   ) {
     var self = this;
     var DEFAULT_LIMIT = 20;
@@ -21,6 +22,10 @@
 
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
+
+      $scope.$on(TICKETING_ORDER_EVENTS.ORDER_CREATED, function(event, order) {
+        _onOrderCreated(order);
+      });
     }
 
     function _loadNextItems() {
@@ -30,6 +35,14 @@
         .then(function(response) {
           return response.data;
         });
+    }
+
+    function _onOrderCreated(order) {
+      if (!order) {
+        return;
+      }
+
+      self.elements.unshift(order);
     }
   }
 })(angular);

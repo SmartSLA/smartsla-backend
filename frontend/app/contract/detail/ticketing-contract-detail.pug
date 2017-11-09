@@ -23,7 +23,8 @@ form(name="form")
 ticketing-contract-tabs-order(
   ng-if="$ctrl.contract",
   ng-show='$ctrl.selectedTab === "order"',
-  contract="$ctrl.contract"
+  contract="$ctrl.contract",
+  on-create-btn-click="$ctrl.onCreateOrderBtnClick()"
 )
 ticketing-contract-tabs-permission(
   ng-show='$ctrl.selectedTab === "permission"'

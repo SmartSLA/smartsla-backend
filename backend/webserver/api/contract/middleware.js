@@ -117,14 +117,30 @@ module.exports = (dependencies, lib) => {
 
   function validateOrderPayload(req, res, next) {
     const {
-      manager,
-      defaultSupportManager,
-      permissions,
+      title,
       startDate,
       terminationDate,
-      title,
-      type
+      manager,
+      defaultSupportManager,
+      defaultSupportTechnician,
+      permissions
     } = req.body;
+
+    if (!title) {
+      return send400Error('title is required', res);
+    }
+
+    if (!startDate) {
+      return send400Error('startDate is required', res);
+    }
+
+    if (!terminationDate) {
+      return send400Error('terminationDate is required', res);
+    }
+
+    if (new Date(startDate) > new Date(terminationDate)) {
+      return send400Error('startDate must not be bigger than terminationDate', res);
+    }
 
     if (manager && !validateObjectIds(manager)) {
       return send400Error('manager is invalid', res);
@@ -132,6 +148,10 @@ module.exports = (dependencies, lib) => {
 
     if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
       return send400Error('defaultSupportManager is invalid', res);
+    }
+
+    if (defaultSupportTechnician && !validateObjectIds(defaultSupportTechnician)) {
+      return send400Error('defaultSupportTechnician is invalid', res);
     }
 
     if (permissions) {
@@ -143,26 +163,15 @@ module.exports = (dependencies, lib) => {
       }
     }
 
-    if (!startDate) {
-      return send400Error('startDate is required', res);
-    }
-
-    if (!terminationDate) {
-      return send400Error('terminationDate is required', res);
-    }
-
-    if (!title) {
-      return send400Error('title is required', res);
-    }
-
-    if (!type) {
-      return send400Error('type is required', res);
-    }
-
-    return _validateOrderDurationDate(req, res, next);
+    // TODO: call _validateOrderDurationDate function to verify Order date with Contract date.
+    // Enable midway test
+    // return _validateOrderDurationDate(req, res, next);
+    next();
   }
 
-  function _validateOrderDurationDate(req, res, next) {
+  // TODO: call _validateOrderDurationDate function to verify Order date with Contract date
+  // Enable midway test
+  /*function _validateOrderDurationDate(req, res, next) {
     lib.contract.getById(req.params.id)
       .then(contract => {
         if (new Date(req.body.startDate) < contract.startDate) {
@@ -173,11 +182,7 @@ module.exports = (dependencies, lib) => {
           return send400Error(`terminationDate must not be bigger than ${contract.endDate}`, res);
         }
 
-        if (new Date(req.body.startDate) > new Date(req.body.terminationDate)) {
-          return send400Error('startDate must not be bigger than terminationDate', res);
-        }
-
         next();
       });
-  }
+  }*/
 };

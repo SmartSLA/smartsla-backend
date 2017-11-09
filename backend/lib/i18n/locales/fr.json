@@ -70,5 +70,11 @@
   "Number": "Nombre",
   "No order": "Aucun ordre",
   "yes": "oui",
-  "no": "non"
+  "no": "non",
+  "New order": "Nouveau ordre",
+  "Contract": "Contrat",
+  "Support manager": "Gestionnaire de support",
+  "Default support technician": "Technicien de support par défaut",
+  "Only allows one Support manager": "N'autoriser qu'un seul Gestionnaire de support",
+  "Only allows one Default support technician": "N'autoriser qu'un seul Technicien de support par défaut"
 }

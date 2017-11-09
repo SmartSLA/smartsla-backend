@@ -70,5 +70,11 @@
   "Number": "Số",
   "No order": "Không có yêu cầu",
   "yes": "có",
-  "no": "không"
+  "no": "không",
+  "New order": "Thêm yêu cầu",
+  "Contract": "Hợp đồng",
+  "Support manager": "Quản lý hỗ trợ ",
+  "Default support technician": "Hỗ trợ kỹ thuật mặc định",
+  "Only allows one Support manager": "Chỉ cho phép một Quản lý hỗ trợ",
+  "Only allows one Default support technician": "Chỉ cho phép một Hỗ trợ kỹ thuật mặc định"
 }
