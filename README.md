@@ -1,10 +1,8 @@
-# linagora.esn.ticketing
+This is OpenPaaS Module for ticketing feature
 
-> OpenPaaS Module for ticketing feature
+## Install instructions
 
-## I. Prepare
-
-## II. Install
+Make sure you have OpenPaaS installed from [here](Follow OpenPaaS installation instructions from here)
 
 ### Clone the [Git repo](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing) 
 
