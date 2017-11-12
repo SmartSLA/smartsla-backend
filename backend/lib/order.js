@@ -63,11 +63,18 @@ module.exports = dependencies => {
 
   /**
    * Get an order by ID
-   * @param {String}   orderId - The order ID
+   * @param {String}   orderId - Order ID
+   * @param {Object}   options - Options object, may contain array of population parameters
    * @param {Promise}          - Resolve on success
    */
-  function getById(orderId) {
-    return Order.findById(orderId).exec();
+  function getById(orderId, options = {}) {
+    const query = Order.findById(orderId);
+
+    if (options.populations) {
+      query.populate(options.populations);
+    }
+
+    return query.exec();
   }
 
   /**
