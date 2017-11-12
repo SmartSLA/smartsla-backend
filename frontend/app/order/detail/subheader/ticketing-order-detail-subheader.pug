@@ -1,0 +1,21 @@
+extends /modules/subheader/responsive-subheader.pug
+
+block left
+  .flex.flex-vertical-centered(ng-if="!$ctrl.isEditMode")
+    button.btn.btn-link.flex-vertical-centered(esn-back-button="home")
+      i.mdi.mdi-arrow-left
+      span.hidden-xs #{__('Back')}
+    span.title.ellipsis {{::$ctrl.title}}
+  .flex.flex-vertical-centered(ng-if="$ctrl.isEditMode")
+    button.btn.btn-link.flex-vertical-centered(ng-click="$ctrl.onCancelBtnClick()")
+      i.mdi.mdi-close
+      span.hidden-xs #{__('Cancel')}
+    span.title.ellipsis {{::$ctrl.title}}
+block right
+  div(ng-if="!$ctrl.isEditMode && $ctrl.selectedTab==='main'")
+    button.btn.btn-link.flex-vertical-centered(ng-click="$ctrl.onEditBtnClick()")
+      i.mdi.mdi-pencil.mdi-margin-right
+      span.hidden-xs #{__('Edit')}
+  div(ng-if="$ctrl.isEditMode")
+    esn-subheader-save-button(on-click="$ctrl.onSaveBtnClick()", form="$ctrl.form")
+      span.hidden-xs #{__('Save')}

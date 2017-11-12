@@ -76,5 +76,10 @@
   "Support manager": "Gestionnaire de support",
   "Default support technician": "Technicien de support par défaut",
   "Only allows one Support manager": "N'autoriser qu'un seul Gestionnaire de support",
-  "Only allows one Default support technician": "N'autoriser qu'un seul Technicien de support par défaut"
+  "Only allows one Default support technician": "N'autoriser qu'un seul Technicien de support par défaut",
+  "Order informations": "Informations de l'ordre",
+  "Software": "Logiciel",
+  "Creating order...": "Création de l'ordre...",
+  "Order created": "Ordre créée",
+  "Failed to create order": "Impossible de mettre à jour l'ordre"
 }

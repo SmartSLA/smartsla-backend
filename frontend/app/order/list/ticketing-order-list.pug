@@ -19,7 +19,7 @@
                 span #{__('End date')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
-            ticketing-order-list-item(order="item")
+            ticketing-order-list-item.clickable(order="item", ui-sref="ticketingAdminCenter.orderDetail({orderId: item._id})")
 div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
   ticketing-empty-message(
     icon="mdi-file",

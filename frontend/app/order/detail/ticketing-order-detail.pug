@@ -1,0 +1,28 @@
+sub-header
+  ticketing-order-detail-subheader(
+    title="$ctrl.order.title",
+    is-edit-mode="$ctrl.isEditMode",
+    on-cancel-btn-click="$ctrl.onCancelBtnClick()",
+    on-edit-btn-click="$ctrl.onEditBtnClick()",
+    on-save-btn-click="$ctrl.onSaveBtnClick()",
+    form="form",
+    selected-tab="$ctrl.selectedTab"
+  )
+
+.card
+  ticketing-order-tabs(
+    selected-tab = "$ctrl.selectedTab"
+  )
+form(name="form")
+  ticketing-order-tabs-main(
+    ng-if="$ctrl.order",
+    ng-show='$ctrl.selectedTab === "main"',
+    order="$ctrl.order",
+    is-edit-mode="$ctrl.isEditMode"
+  )
+ticketing-order-tabs-permission(
+  ng-show='$ctrl.selectedTab === "permission"'
+)
+ticketing-order-tabs-software(
+  ng-show='$ctrl.selectedTab === "software"'
+)

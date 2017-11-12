@@ -68,13 +68,18 @@
   "Failed to update contract": "Cập nhật hợp đồng thất bại",
   "Active": "Hiệu lực",
   "Number": "Số",
-  "No order": "Không có yêu cầu",
+  "No order": "Không có đơn hàng",
   "yes": "có",
   "no": "không",
-  "New order": "Thêm yêu cầu",
+  "New order": "Thêm đơn hàng",
   "Contract": "Hợp đồng",
   "Support manager": "Quản lý hỗ trợ ",
   "Default support technician": "Hỗ trợ kỹ thuật mặc định",
   "Only allows one Support manager": "Chỉ cho phép một Quản lý hỗ trợ",
-  "Only allows one Default support technician": "Chỉ cho phép một Hỗ trợ kỹ thuật mặc định"
+  "Only allows one Default support technician": "Chỉ cho phép một Hỗ trợ kỹ thuật mặc định",
+  "Order informations": "Thông tin yêu cầu",
+  "Software": "Phần mềm",
+  "Creating order...": "Đang tạo đơn hàng...",
+  "Order created": "Đơn hàng đã tạo",
+  "Failed to create order": "Không thể tạo đơn hàng"
 }

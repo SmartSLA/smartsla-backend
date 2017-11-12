@@ -1,0 +1,58 @@
+.card.p-20.p-t-25
+  .pmb-block(ng-if="!$ctrl.isEditMode")
+    .pmbb-header.p-b-10
+      h4
+        i.mdi.mdi-file.m-r-5
+        | #{__('Order informations')}
+    .pmbb-body.p-l-30
+      .pmbb-view
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-chevron-right.m-r-5
+            | #{__('Title')}
+          dd
+            | {{::$ctrl.order.title}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-account.m-r-5
+            | #{__('Contract')}
+          dd
+            a(ui-sref="ticketingAdminCenter.contract.detail({contractId: $ctrl.order.contract._id})") {{::$ctrl.order.contract.title}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-city.m-r-5
+            | #{__('Organization')}
+          dd
+            a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.order.contract.organization._id})") {{::$ctrl.order.contract.organization.shortName}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-account.m-r-5
+            | #{__('Manager')}
+          dd
+            a(ui-sref="ticketingAdminCenter.users.detail({userId: $ctrl.order.manager._id})") {{::$ctrl.order.manager.firstname}} {{::$ctrl.order.manager.lastname}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-account.m-r-5
+            | #{__('Support manager')}
+          dd
+            a(ui-sref="ticketingAdminCenter.users.detail({userId: $ctrl.order.defaultSupportManager._id})") {{::$ctrl.order.defaultSupportManager.firstname}} {{::$ctrl.order.defaultSupportManager.lastname}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-account.m-r-5
+            | #{__('Default support technician')}
+          dd
+            a(ui-sref="ticketingAdminCenter.users.detail({userId: $ctrl.order.defaultSupportTechnician._id})") {{::$ctrl.order.defaultSupportTechnician.firstname}} {{::$ctrl.order.defaultSupportTechnician.lastname}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-calendar.m-r-5
+            | #{__('Start date')}
+          dd
+            | {{::$ctrl.order.startDate | esnDatetime: 'mediumDate'}}
+        dl.dl-horizontal
+          dt
+            i.mdi.mdi-calendar.m-r-5
+            | #{__('End date')}
+            dd
+              | {{::$ctrl.order.terminationDate | esnDatetime: 'mediumDate'}}
+  ng-form(name="form", ng-if="$ctrl.isEditMode")
+    ticketing-order-form(order="$ctrl.order")

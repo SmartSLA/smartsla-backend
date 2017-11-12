@@ -29,7 +29,7 @@ ng-form(name="form")
       h5 #{__('Default support technician')}
       small.c-red(ng-if="newDefaultSupportTechnicians.length > 1")
         | #{__('Only allows one Default support technician')}
-      ticketing-user-auto-complete.input-technician(new-users="newDefaultSupportTechnicians", max-tags="1")
+      ticketing-user-auto-complete(new-users="newDefaultSupportTechnicians", max-tags="1")
   .row.z-1
     .col-md-12
       esn-form-group(label=__('Description'))
