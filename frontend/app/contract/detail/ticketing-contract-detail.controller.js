@@ -11,8 +11,8 @@
     TicketingContractService
   ) {
     var self = this;
-    var originContract;
     var DEFAULT_TAB = 'main';
+    var originContract;
 
     self.$onInit = $onInit;
 
@@ -28,6 +28,7 @@
         .then(function(contract) {
           self.selectedTab = DEFAULT_TAB;
           self.contract = contract;
+          originContract = angular.copy(self.contract);
 
           $scope.$watch('$ctrl.selectedTab', function(newTab) {
             if (newTab !== DEFAULT_TAB) {

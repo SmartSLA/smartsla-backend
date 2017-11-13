@@ -76,5 +76,10 @@
   "Support manager": "Support manager",
   "Default support technician": "Default support technician",
   "Only allows one Support manager": "Only allows one Support manager",
-  "Only allows one Default support technician": "Only allows one Default support technician"
+  "Only allows one Default support technician": "Only allows one Default support technician",
+  "Order informations": "Order informations",
+  "Software": "Software",
+  "Creating order...": "Creating order...",
+  "Order created": "Order created",
+  "Failed to create order": "Failed to create order"
 }

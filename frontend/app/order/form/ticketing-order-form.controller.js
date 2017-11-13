@@ -12,7 +12,7 @@
     function $onInit() {
       $scope.newManagers = self.order && self.order.manager ? [self.order.manager] : [];
       $scope.newDefaultSupportManagers = self.order && self.order.defaultSupportManager ? [self.order.defaultSupportManager] : [];
-      $scope.newDefaultSupportTechnicians = self.order && self.order.defaultSupportTechnicians ? [self.order.defaultSupportTechnicians] : [];
+      $scope.newDefaultSupportTechnicians = self.order && self.order.defaultSupportTechnician ? [self.order.defaultSupportTechnician] : [];
 
       $scope.$watch('newManagers', function() {
         if (self.order) {
