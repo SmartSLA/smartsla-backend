@@ -3,20 +3,21 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-describe.skip('The contract model', function() {
-  let Contract, ObjectId;
+describe('The contract model', function() {
+  let Contract, ObjectId, mongoose;
 
   beforeEach(function(done) {
-    this.mongoose = require('mongoose');
-    ObjectId = this.mongoose.Types.ObjectId;
+    mongoose = this.moduleHelpers.dependencies('db').mongo.mongoose;
+    ObjectId = mongoose.Types.ObjectId;
 
     require(this.testEnv.backendPath + '/lib/db/contract')(this.moduleHelpers.dependencies);
-    Contract = this.mongoose.model('Contract');
+    Contract = mongoose.model('Contract');
 
-    this.connectMongoose(this.mongoose, done);
+    this.connectMongoose(mongoose, done);
   });
 
   afterEach(function(done) {
+    delete mongoose.connection.models.Contract;
     this.helpers.mongo.dropDatabase(err => {
       if (err) return done(err);
       this.testEnv.core.db.mongo.mongoose.connection.close(done);

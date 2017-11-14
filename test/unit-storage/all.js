@@ -61,11 +61,7 @@ before(function(done) {
 beforeEach(function() {
   mockery.enable({warnOnReplace: false, warnOnUnregistered: false, useCleanCache: true});
   const depsStore = {
-    db: {
-      mongo: {
-        mongoose: require('mongoose')
-      }
-    }
+    db: require('linagora-rse/backend/core/db')
   };
   const dependencies = function(name) {
     return depsStore[name];

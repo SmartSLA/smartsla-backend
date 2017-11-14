@@ -3,20 +3,21 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-describe.skip('The TicketingUserRole model', function() {
-  let TicketingUserRole, ObjectId;
+describe('The TicketingUserRole model', function() {
+  let TicketingUserRole, ObjectId, mongoose;
 
   beforeEach(function(done) {
-    this.mongoose = require('mongoose');
-    ObjectId = this.mongoose.Types.ObjectId;
+    mongoose = this.moduleHelpers.dependencies('db').mongo.mongoose;
+    ObjectId = mongoose.Types.ObjectId;
 
     require(this.testEnv.backendPath + '/lib/db/ticketing-user-role')(this.moduleHelpers.dependencies);
-    TicketingUserRole = this.mongoose.model('TicketingUserRole');
+    TicketingUserRole = mongoose.model('TicketingUserRole');
 
-    this.connectMongoose(this.mongoose, done);
+    this.connectMongoose(mongoose, done);
   });
 
   afterEach(function(done) {
+    delete mongoose.connection.models.TicketingUserRole;
     this.helpers.mongo.dropDatabase(err => {
       if (err) return done(err);
       this.testEnv.core.db.mongo.mongoose.connection.close(done);
