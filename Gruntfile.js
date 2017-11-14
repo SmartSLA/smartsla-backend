@@ -103,10 +103,10 @@ module.exports = function(grunt) {
           src: ['test/midway-backend/**/*.js']
         }
       },
-      unit_storage: {
+      storage: {
         options: {
-          common: ['test/unit_storage/all.js'],
-          target: 'mochacli:unit-storage'
+          common: ['test/unit-storage/all.js'],
+          target: 'mochacli:storage'
         },
         files: {
           src: ['test/unit-storage/**/*.js']
@@ -122,6 +122,11 @@ module.exports = function(grunt) {
       backend: {
         options: {
           files: ['test/unit-backend/all.js', grunt.option('test') || 'test/unit-backend/**/*.js']
+        }
+      },
+      storage: {
+        options: {
+          files: ['test/unit-storage/all.js', grunt.option('test') || 'test/unit-storage/**/*.js']
         }
       }
     },
@@ -154,7 +159,7 @@ module.exports = function(grunt) {
   grunt.registerTask('linters', 'Check code for lint', ['eslint:all', 'lint_pattern:all', 'lint_pattern:css', 'i18n', 'pug-linter']);
   grunt.registerTask('linters-dev', 'Check changed files for lint', ['prepare-quick-lint', 'eslint:quick', 'lint_pattern:quick']);
   grunt.registerTask('test-midway-backend', ['splitfiles:midway']);
-  grunt.registerTask('test-unit-storage', ['splitfiles:unit_storage']);
+  grunt.registerTask('test-unit-storage', ['splitfiles:storage']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['mochacli:backend']);
   grunt.registerTask('test-unit-frontend', 'Test frontend code', ['karma:unit']);
 
