@@ -68,6 +68,10 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
       webserverWrapper.addApp(MODULE_NAME, app);
 
       return callback();
+    },
+
+    start: function(dependencies, callback) {
+      this.lib.start(callback);
     }
   }
 });

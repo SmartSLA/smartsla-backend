@@ -10,15 +10,22 @@ module.exports = function(dependencies) {
   const order = require('./order')(dependencies);
   const helpers = require('./helpers');
   const constants = require('./constants');
+  const listeners = require('./listeners')(dependencies);
 
   return {
     constants,
     contract,
     helpers,
+    start,
     models,
     order,
     organization,
     user,
     ticketingUserRole
   };
+
+  function start(callback) {
+    listeners.init();
+    callback();
+  }
 };
