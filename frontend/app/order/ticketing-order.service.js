@@ -1,3 +1,5 @@
+/*eslint-disable no-warning-comments*/
+
 (function(angular) {
   'use strict';
 
@@ -8,6 +10,7 @@
     $rootScope,
     $q,
     asyncAction,
+    TicketingService,
     ticketingContractClient,
     ticketingOrderClient,
     TICKETING_ORDER_EVENTS
@@ -25,10 +28,8 @@
 
       var manager = angular.copy(order.manager);
 
-      order.manager = order.manager && order.manager._id ? order.manager._id : order.manager;
-      order.defaultSupportManager = order.defaultSupportManager && order.defaultSupportManager._id ? order.defaultSupportManager._id : order.defaultSupportManager;
-      order.defaultSupportTechnician = order.defaultSupportTechnician && order.defaultSupportTechnician._id ? order.defaultSupportTechnician._id : order.defaultSupportTechnician;
-      order.contract = order.contract && order.contract._id ? order.contract._id : order.contract;
+      TicketingService.depopulate(order, ['manager', 'defaultSupportManager', 'defaultSupportTechnician', 'contract']);
+
       // TODO: remove if got it from creation form
       order.startDate = new Date();
       order.terminationDate = new Date();
@@ -66,9 +67,7 @@
       var contractId = orderToUpdate.contract._id;
 
       delete orderToUpdate.contract;
-      orderToUpdate.manager = orderToUpdate.manager && orderToUpdate.manager._id ? orderToUpdate.manager._id : orderToUpdate.manager;
-      orderToUpdate.defaultSupportManager = orderToUpdate.defaultSupportManager && orderToUpdate.defaultSupportManager._id ? orderToUpdate.defaultSupportManager._id : orderToUpdate.defaultSupportManager;
-      orderToUpdate.defaultSupportTechnician = orderToUpdate.defaultSupportTechnician && orderToUpdate.defaultSupportTechnician._id ? orderToUpdate.defaultSupportTechnician._id : orderToUpdate.defaultSupportTechnician;
+      TicketingService.depopulate(order, ['manager', 'defaultSupportManager', 'defaultSupportTechnician']);
 
       var notificationMessages = {
         progressing: 'Updating order...',

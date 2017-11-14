@@ -10,6 +10,7 @@
     asyncAction,
     ticketingContractClient,
     TicketingUserService,
+    TicketingService,
     TICKETING_CONTRACT_EVENTS
   ) {
     return {
@@ -43,9 +44,7 @@
       var manager = angular.copy(contract.manager);
       var organization = angular.copy(contract.organization);
 
-      contract.manager = contract.manager && contract.manager._id ? contract.manager._id : contract.manager;
-      contract.defaultSupportManager = contract.defaultSupportManager && contract.defaultSupportManager._id ? contract.defaultSupportManager._id : contract.defaultSupportManager;
-      contract.organization = contract.organization && contract.organization._id ? contract.organization._id : contract.organization;
+      TicketingService.depopulate(contract, ['manager', 'defaultSupportManager', 'organization']);
       contract.startDate = new Date();
       contract.endDate = new Date();
 
@@ -74,9 +73,7 @@
 
       var contractToUpdate = angular.copy(contract);
 
-      contractToUpdate.manager = contractToUpdate.manager && contractToUpdate.manager._id ? contractToUpdate.manager._id : contractToUpdate.manager;
-      contractToUpdate.defaultSupportManager = contractToUpdate.defaultSupportManager && contractToUpdate.defaultSupportManager._id ? contractToUpdate.defaultSupportManager._id : contractToUpdate.defaultSupportManager;
-      contractToUpdate.organization = contractToUpdate.organization && contractToUpdate.organization._id ? contractToUpdate.organization._id : contractToUpdate.organization;
+      TicketingService.depopulate(contractToUpdate, ['manager', 'defaultSupportManager', 'organization']);
 
       var notificationMessages = {
         progressing: 'Updating contract...',

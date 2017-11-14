@@ -10,6 +10,7 @@
     $log,
     ticketingOrganizationClient,
     TicketingUserService,
+    TicketingService,
     asyncAction,
     TICKETING_ORGANIZATION_EVENTS
   ) {
@@ -40,7 +41,7 @@
 
       var manager = angular.copy(organization.manager);
 
-      organization.manager = organization.manager && organization.manager._id ? organization.manager._id : organization.manager;
+      TicketingService.depopulate(organization, ['manager']);
 
       var notificationMessages = {
         progressing: 'Creating organization...',
@@ -66,7 +67,7 @@
 
       var organizationToUpdate = angular.copy(organization);
 
-      organizationToUpdate.manager = organizationToUpdate.manager && organizationToUpdate.manager._id ? organizationToUpdate.manager._id : organizationToUpdate.manager;
+      TicketingService.depopulate(organizationToUpdate, ['manager']);
 
       var notificationMessages = {
         progressing: 'Updating organization...',
