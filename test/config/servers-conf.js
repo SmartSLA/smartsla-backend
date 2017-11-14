@@ -25,7 +25,8 @@ module.exports = {
 
   elasticsearch: {
     host: 'elasticsearch',
-    port: 9200
+    port: 9200,
+    interval_index: 1000
   },
   rabbitmq: {
     host: 'rabbitmq',

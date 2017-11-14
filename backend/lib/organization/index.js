@@ -1,11 +1,15 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Organization = mongoose.model('Organization');
+  const pubsubLocal = dependencies('pubsub').local;
   const search = require('./search')(dependencies);
+
+  const organizationCreatedTopic = pubsubLocal.topic(EVENTS.ORGANIZATION.created);
+  const organizationUpdatedTopic = pubsubLocal.topic(EVENTS.ORGANIZATION.updated);
 
   return {
     addUsersById,
@@ -27,7 +31,12 @@ module.exports = dependencies => {
   function create(organization) {
     organization = organization instanceof Organization ? organization : new Organization(organization);
 
-    return Organization.create(organization);
+    return Organization.create(organization)
+      .then(createdOrganization => {
+        organizationCreatedTopic.publish(createdOrganization);
+
+        return createdOrganization;
+      });
   }
 
   /**
@@ -56,7 +65,13 @@ module.exports = dependencies => {
    * @param {Promise}                 - Resolve on success
    */
   function updateById(organizationId, modified) {
-    return Organization.update({ _id: organizationId }, { $set: modified }).exec();
+    return Organization.update({ _id: organizationId }, { $set: modified }).exec()
+      .then(result => {
+        modified._id = modified._id || organizationId;
+        organizationUpdatedTopic.publish(modified);
+
+        return result;
+      });
   }
 
   /**

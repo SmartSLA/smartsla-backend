@@ -18,6 +18,10 @@ describe('The order module', function() {
     contractId = new ObjectId();
     findByIdAndRemoveMock = sinon.spy(() => ({ exec: () => q.when() }));
 
+    moduleHelpers.addDep('pubsub', {
+      local: {}
+    });
+
     function Order(order) {
       this.title = order.title;
       this.contract = order.contract;

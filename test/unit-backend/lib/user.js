@@ -17,7 +17,9 @@ describe('The user lib', function() {
     userId = new ObjectId();
 
     moduleHelpers.addDep('pubsub', {
-      local: {}
+      local: {
+        topic: () => {}
+      }
     });
     moduleHelpers.addDep('coreUser', {
       recordUser: (user, callback) => {

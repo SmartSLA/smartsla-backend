@@ -2,10 +2,13 @@
 
 const chai = require('chai');
 const path = require('path');
+const EsnConfig = require('esn-elasticsearch-configuration');
+const Q = require('q');
 const testConfig = require('../config/servers-conf');
 const basePath = path.resolve(__dirname + '/../../node_modules/linagora-rse');
 const backendPath = path.normalize(__dirname + '/../../backend');
 const MODULE_NAME = 'linagora.esn.ticketing';
+const { INDICES } = require('../../backend/lib/constants');
 let rse;
 
 before(function(done) {
@@ -50,4 +53,27 @@ before(function(done) {
   manager.appendLoader(nodeModulesLoader);
   manager.appendLoader(loader);
   loader.load(MODULE_NAME, done);
+});
+
+beforeEach(function(done) {
+  const esConfigPath = path.normalize(`${__dirname}/../../config/elasticsearch/`);
+  const esnConf = new EsnConfig({ host: testConfig.elasticsearch.host, port: testConfig.elasticsearch.port, path: esConfigPath });
+
+  Q.all(Object.values(INDICES).map(index => esnConf.setup(index.name, index.type)))
+    .then(() => done())
+    .catch(err => {
+      console.error('Error while creating ES configuration, but launching tests...', err);
+      done();
+    });
+});
+
+afterEach(function(done) {
+  const esnConf = new EsnConfig(testConfig.elasticsearch);
+
+  Q.all(Object.values(INDICES).map(index => esnConf.deleteIndex(index.name)))
+    .then(() => done())
+    .catch(err => {
+      console.error('Error while clear ES indices', err);
+      done();
+    });
 });
