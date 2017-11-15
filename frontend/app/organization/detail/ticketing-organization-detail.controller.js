@@ -23,7 +23,6 @@
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
-      self.onCreateContractBtnClick = onCreateContractBtnClick;
       self.onCreateUserBtnClick = onCreateUserBtnClick;
 
       $scope.$on(TICKETING_USER_EVENTS.USER_CREATED, function(event, user) {
@@ -58,19 +57,6 @@
           self.isEditMode = false;
           originOrganization = angular.copy(self.organization);
         });
-    }
-
-    function onCreateContractBtnClick() {
-      $modal({
-        templateUrl: '/ticketing/app/contract/create/ticketing-contract-create.html',
-        backdrop: 'static',
-        placement: 'center',
-        controllerAs: '$ctrl',
-        controller: 'TicketingContractCreateController',
-        locals: {
-          organization: self.organization
-        }
-      });
     }
 
     function onCreateUserBtnClick() {

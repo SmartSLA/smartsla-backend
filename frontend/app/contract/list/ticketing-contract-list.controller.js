@@ -7,6 +7,7 @@
     $scope,
     infiniteScrollHelper,
     ticketingContractClient,
+    TicketingContractService,
     TICKETING_CONTRACT_EVENTS
   ) {
     var self = this;
@@ -21,13 +22,17 @@
     function $onInit() {
       if (self.organization) {
         options.organization = self.organization._id;
+        self.newContract = {
+          organization: self.organization
+        };
       }
 
       self.onItemClick = onItemClick;
+      self.create = create;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
 
-      $scope.$on(TICKETING_CONTRACT_EVENTS.CONTRACT_CREATED, function(event, organization) {
-        _onContractCreated(organization);
+      $scope.$on(TICKETING_CONTRACT_EVENTS.CONTRACT_CREATED, function(event, contract) {
+        _onContractCreated(contract);
       });
     }
 
@@ -50,6 +55,10 @@
       }
 
       self.elements.unshift(contract);
+    }
+
+    function create() {
+      return TicketingContractService.create(self.newContract);
     }
   }
 })(angular);
