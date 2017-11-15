@@ -15,6 +15,8 @@
           return $http({
             method: 'GET',
             url: '/ticketing/api/users/' + userId + '/isadministrator'
+          }).then(function(response) {
+            return response.data;
           });
         }
       };
@@ -46,12 +48,12 @@
             }
           },
           resolve: {
-            isAdministrator: function($state, session, ticketingProvider) {
+            isAdministrator: function($location, session, ticketingProvider) {
               return session.ready.then(function() {
                 return ticketingProvider.userIsAdministrator(session.user._id)
                   .then(function(isAdministrator) {
                     if (!isAdministrator) {
-                      $state.go('ticketing');
+                      $location.path('/ticketing');
                     }
                   });
               });

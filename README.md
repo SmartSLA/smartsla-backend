@@ -1,65 +1,29 @@
-This is OpenPaaS Module for ticketing feature
+# linagora.esn.ticketing
+>This is OpenPaaS Module for ticketing feature
 
-## Install instructions
+[![build status](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/badges/master/build.svg)](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/commits/master)
 
-Make sure you have OpenPaaS installed from [here](Follow OpenPaaS installation instructions from here)
+## Install
 
-### Clone the [Git repo](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing) 
-
-Clone the repo of the ticketing module in the `esn/modules` folder of OpenPaaS
-
-```
-git clone https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing
-```
+Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/esn)
 
 ### Add the module to OpenPaaS
 
 Add the line `linagora.esn.ticketing` to `esn/config/default.json` in modules section
+Add the line `"linagora.esn.ticketing": "linagora/linagora.esn.ticketing"` to `esn/packages.json` in dependencies section
 
-### Install the node packages of the ticketing module
+### Install the node packages for the ticketing module
 
-In the linagora.esn.ticketing folder do
+In the `esn` folder do
 ```
 npm install
 ```
 
-Optional :
+### Launch OpenPaaS
+
+In the `esn` folder
 ```
-npm update
-bower install
-```
-
-### Make admin@open-paas.org as the platformadmin of OpenPaaS
-
-In the ```esn``` folder do
-```
-node ./bin/cli platformadmin init --email admin@open-paas.org
-```
-
-### Make admin@open-paas.org as the admin
-
-#### admin@open-paas.org ID
-Firstly search for the ID of admin@open-paas.org. Access the MongoDB database with some GUI software (like [Robo3T](https://robomongo.org/)).
-Then look at the `users` collection. The first entry should contain `admin@open-paas.org`, copy its   `_id` field.
-
-#### TicketingUserRoles collection
-Create a collection named ```ticketinguserroles```
-Add this document into TicketingUserRoles collection :
-
-```
-{
-    "user": ObjectId("[admin@open-paas.org ID]"),
-    "role" : "administrator"
-}
-```
-
-Make sure to replace [admin@open-paas.org] with the ID you found earlier.
-
-### Launch OpenPaaS 
-
-In the esn folder
-```
-grunt dev
+npm start
 ```
 
 ### Accessing the ticketing module
@@ -67,13 +31,23 @@ grunt dev
 The ticketing module can be accessed at the adress : [Ticketing module](http://localhost:8080/#/ticketing) (/#/ticketing)
 The ticketing module admin platform can be accessed at the adress : [Admin platform](http://localhost:8080/#/ticketing/admin) (/#/ticketing/admin)
 
+### [Development document](./doc/dev.md)
+### [CLI document](./doc/cli.md)
+
 ## F.A.Q.
 
 > User autocompletion in the ticketing module is not working.
 
-You should reindex your datas in elasticsearch
-(Make sure to have changed admin@open-paas.org as the platformadmin and that the docker services (mongodb) have been launched.)
+You should reindex user data from the database to in elasticsearch. In the `esn` folder do
 
-Go to http://localhost:8080/#/admin
-On the dropdown menu next to `Administration` click on `Switch to domain mode`
-Go to the `Maintenance` section and click on reindex
+```bash
+$ node ./bin/cli reindex --es-host localhost --es-port 9200 --type users
+```
+
+> Cannot access ticketing admin center
+
+Because you does not have administrator permission. In the `esn/node_modules/linagora.esn.ticketing` folder do:
+
+```
+$ node ./bin/cli role --email your@mail.com --role administrator
+```
