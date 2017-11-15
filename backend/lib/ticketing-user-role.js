@@ -8,10 +8,11 @@ module.exports = dependencies => {
 
   return {
     create,
+    deleteById,
     list,
-    userIsAdministrator,
     getByUser,
-    deleteById
+    updateById,
+    userIsAdministrator
   };
 
   /**
@@ -42,9 +43,7 @@ module.exports = dependencies => {
    * @param {Object}   options  - The options object, may contain offset and limit
    * @param {Promise}           - Resolve on success
    */
-  function list(options) {
-    options = options || {};
-
+  function list(options = {}) {
     return TicketingUserRole
       .find()
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
@@ -60,8 +59,8 @@ module.exports = dependencies => {
    * @param  {Object}  options - The options object, may contain array of population parameters
    * @return {Promise}         - Resolve on success
    */
-  function getByUser(user, options) {
-    if (options && options.populations) {
+  function getByUser(user, options = {}) {
+    if (options.populations) {
       return TicketingUserRole.findOne({ user: user }).populate(options.populations);
     }
 
@@ -75,5 +74,15 @@ module.exports = dependencies => {
    */
   function deleteById(userRoleId) {
     return TicketingUserRole.remove({ _id: userRoleId }).exec();
+  }
+
+  /**
+   * Update a ticketingUserRole by ID
+   * @param {String}   ticketingUserRoleId - The ticketingUserRole ID
+   * @param {Object}   modified            - The modified ticketingUserRole object
+   * @param {Promise}                      - Resolve on success
+   */
+  function updateById(ticketingUserRoleId, modified) {
+    return TicketingUserRole.update({ _id: ticketingUserRoleId }, { $set: modified }).exec();
   }
 };
