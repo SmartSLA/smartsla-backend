@@ -4,33 +4,18 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingOrderFormController', TicketingOrderFormController);
 
-  function TicketingOrderFormController($scope) {
+  function TicketingOrderFormController($scope, TicketingService) {
     var self = this;
 
     self.$onInit = $onInit;
 
     function $onInit() {
-      $scope.newManagers = self.order && self.order.manager ? [self.order.manager] : [];
-      $scope.newDefaultSupportManagers = self.order && self.order.defaultSupportManager ? [self.order.defaultSupportManager] : [];
-      $scope.newDefaultSupportTechnicians = self.order && self.order.defaultSupportTechnician ? [self.order.defaultSupportTechnician] : [];
-
-      $scope.$watch('newManagers', function() {
-        if (self.order) {
-          self.order.manager = $scope.newManagers.length ? $scope.newManagers[0] : null;
-        }
-      }, true);
-
-      $scope.$watch('newDefaultSupportManagers', function() {
-        if (self.order) {
-          self.order.defaultSupportManager = $scope.newDefaultSupportManagers.length ? $scope.newDefaultSupportManagers[0] : null;
-        }
-      }, true);
-
-      $scope.$watch('newDefaultSupportTechnicians', function() {
-        if (self.order) {
-          self.order.defaultSupportTechnician = $scope.newDefaultSupportTechnicians.length ? $scope.newDefaultSupportTechnicians[0] : null;
-        }
-      }, true);
+      self.order = self.order || {};
+      TicketingService.handleAutoCompleteWithOneTag($scope, self.order, {
+        newManagers: 'manager',
+        newDefaultSupportManagers: 'defaultSupportManager',
+        newDefaultSupportTechnicians: 'defaultSupportTechnician'
+      });
     }
   }
 })(angular);
