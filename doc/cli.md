@@ -33,3 +33,15 @@ $ node ./bin/cli elasticsearch reindex --host localhost --port 9200 --type organ
 - host: default is localhost
 - port: default is 9200
 - type: the data type to reindex. Possible values: organizations
+
+
+### Role
+
+It will set role for user which user email and role are defined from CLI options.
+
+```bash
+$ node ./bin/cli role --email user@mail.com --role administrator
+```
+
+- --email, -e  user email                           
+- --role, -r   expectation role, choices: "administrator", "user"
