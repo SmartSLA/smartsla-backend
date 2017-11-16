@@ -17,7 +17,8 @@
     return {
       create: create,
       get: get,
-      getSearchProvider: getSearchProvider,
+      getEntitySearchProvider: getEntitySearchProvider,
+      getOrganizationSearchProvider: getOrganizationSearchProvider,
       update: update
     };
 
@@ -80,7 +81,7 @@
       });
     }
 
-    function getSearchProvider() {
+    function getOrganizationSearchProvider() {
       return {
         objectType: 'organization',
         templateUrl: '/ticketing/app/organization/search-template/ticketing-orgainzation-search-template.html',
@@ -98,6 +99,32 @@
               return response.data;
             }, function(err) {
               $log.error('Error while searching organization:', err);
+
+              return $q.when([]);
+            });
+        }
+      };
+    }
+
+    function getEntitySearchProvider() {
+      return {
+        objectType: 'entity',
+        templateUrl: '/ticketing/app/organization/search-template/ticketing-orgainzation-search-template.html',
+        getDisplayName: function(entity) {
+          return entity.shortName;
+        },
+        search: function(query, limit) {
+          var searchQuery = {
+            search: query,
+            limit: limit,
+            parent: true
+          };
+
+          return ticketingOrganizationClient.list(searchQuery)
+            .then(function(response) {
+              return response.data;
+            }, function(err) {
+              $log.error('Error while searching entities:', err);
 
               return $q.when([]);
             });
