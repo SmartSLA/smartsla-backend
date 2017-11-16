@@ -20,6 +20,7 @@ module.exports = dependencies => {
    * @param {object} options - Hash with:
    * - 'limit' and 'offset' for pagination
    * - 'search' for filtering terms
+   * - 'parent' for search only organizations or entities
    * Search can be a single string, an array of strings which will be joined, or a space separated string list.
    *  In the case of array or space separated string, a AND search will be performed with the input terms.
    * @return {Promise} Resolve on success with result: { total_count: number, list: [Organization1, Organization2, ...] }
@@ -49,6 +50,9 @@ module.exports = dependencies => {
         ],
         query: {
           bool: {
+            filter: {
+              bool: _getElasticsearchFilter(options.parent)
+            },
             must: {
               multi_match: {
                 query: terms,
@@ -81,5 +85,25 @@ module.exports = dependencies => {
         });
       });
     });
+  }
+
+  function _getElasticsearchFilter(parent) {
+    if (!parent) {
+      return {
+        must: [{
+          missing: {
+            field: 'parent'
+          }
+        }]
+      };
+    }
+
+    return {
+      must: [{
+        exists: {
+          field: 'parent'
+        }
+      }]
+    };
   }
 };
