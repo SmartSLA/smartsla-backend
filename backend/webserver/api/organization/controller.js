@@ -60,7 +60,8 @@ module.exports = function(dependencies, lib) {
       const options = {
         limit: +req.query.limit,
         offset: +req.query.offset,
-        search: req.query.search
+        search: req.query.search,
+        parent: req.query.parent
       };
 
       errorMessage = 'Error while searching organizations';

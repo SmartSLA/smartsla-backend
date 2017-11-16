@@ -11,7 +11,7 @@ ng-form(name="form")
       h5 #{__('Organization')}
       small.c-red(ng-if="newOrganizations.length > 1")
         | #{__('Only allows one organization')}
-      ticketing-search-auto-complete(new-tags="newOrganizations", max-tags="1")
+      ticketing-search-auto-complete(new-tags="newOrganizations", max-tags="1", object-types="organization")
   .row
     .col-md-6.input-manager
       h5 #{__('Manager')}

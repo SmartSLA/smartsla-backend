@@ -52,6 +52,19 @@ describe('The TicketingSearchAutoCompleteController', function() {
     expect(controller.maxTags).to.equal(1);
   });
 
+  it('should set objectTypes to undefined if there is no objectTypes is given', function() {
+    var controller = initController();
+
+    expect(controller.objectTypes).to.be.undefined;
+  });
+
+  it('should determine objectTypes', function() {
+    var options = { objectTypes: 'type1, type2' };
+    var controller = initController(null, options);
+
+    expect(controller.objectTypes).to.deep.equal(['type1', 'type2']);
+  });
+
   describe('The onTagAdding fn', function() {
     var newTags;
 
