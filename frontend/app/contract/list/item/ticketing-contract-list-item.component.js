@@ -6,7 +6,8 @@
   .component('ticketingContractListItem', {
     templateUrl: '/ticketing/app/contract/list/item/ticketing-contract-list-item.html',
     bindings: {
-      contract: '<'
+      contract: '<',
+      isOrganizationMode: '<'
     }
   });
 })(angular);

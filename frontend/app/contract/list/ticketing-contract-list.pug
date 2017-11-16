@@ -29,10 +29,11 @@ sub-header(ng-if="!$ctrl.organization")
                 span #{__('End date')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
-            ticketing-contract-list-item.clickable(contract="item", ng-click="$ctrl.onItemClick(item._id)")
+            ticketing-contract-list-item.clickable(contract="item", ng-click="$ctrl.onItemClick(item._id)", is-organization-mode="!!$ctrl.organization")
 div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
   ticketing-empty-message(
     icon="mdi-file",
     message=__('No contract'))
 ul.nav.nav-pills.nav-stacked(ng-if='$ctrl.infiniteScrollDisabled')
   li.text-center(openpaas-logo-spinner, spinner-start-active='1', spinner-size='0.5')
+fab(icon="plus", esn-modal-launcher="/ticketing/app/contract/create/ticketing-contract-create.html")

@@ -15,7 +15,7 @@
             button.btn.btn-link(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
               | #{__('Create')}
         .body
-          ticketing-contract-form(contract="$ctrl.contract")
+          ticketing-contract-form(contract="$ctrl.newContract")
         .modal-footer.flex.hidden-xs
           .flex-vertical-centered.flex-end
             button.btn.btn-link(type="button", ng-click="$hide()")

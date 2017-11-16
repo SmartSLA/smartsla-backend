@@ -4,16 +4,21 @@ ng-form(name="form")
       esn-form-group(label=__('Title'))
         input.form-control(type="text", ng-model="$ctrl.contract.title", name="contractTitle", required)
   .row.m-b-30
-    .col-md-12(ng-if="$ctrl.contract.organization")
+    .col-md-12(ng-if="$ctrl.organizationMode")
       span.f-700.m-r-5 #{__('Organization:')}
       a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.contract.organization._id})") {{::$ctrl.contract.organization.fullName}}
+    .col-md-12.input-organization(ng-if="!$ctrl.organizationMode")
+      h5 #{__('Organization')}
+      small.c-red(ng-if="newOrganizations.length > 1")
+        | #{__('Only allows one organization')}
+      ticketing-search-auto-complete(new-tags="newOrganizations", max-tags="1")
   .row
-    .col-md-6
+    .col-md-6.input-manager
       h5 #{__('Manager')}
       small.c-red(ng-if="newManagers.length > 1")
         | #{__('Only allows one manager')}
       ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
-    .col-md-6
+    .col-md-6.input-support-manager
       h5 #{__('Default support manager')}
       small.c-red(ng-if="newDefaultSupportManagers.length > 1")
         | #{__('Only allows one default support manager')}
