@@ -9,7 +9,8 @@
         addFromAutocompleteOnly: '<',
         placeholder: '@',
         maxTags: '<',
-        newTags: '='
+        newTags: '=',
+        objectTypes: '@'
       }
     });
 })(angular);
