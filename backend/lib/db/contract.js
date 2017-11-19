@@ -1,7 +1,5 @@
 'use strict';
 
-const helpers = require('../helpers');
-
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
@@ -17,10 +15,10 @@ module.exports = dependencies => {
     endDate: { type: Date, required: true },
     openingHours: { type: String },
     orders: [{ type: Schema.ObjectId, ref: 'Order' }],
-    permissions: [{
-      actor: { type: Schema.ObjectId },
-      right: { type: String, validate: [helpers.validateRight, 'Invalid contract right'] }
-    }],
+    // available value of permissions:
+    // 1 if all entities of contract's organization have permission
+    // array of some entities of contract's organization which have permission
+    permissions: Schema.Types.Mixed,
     users: [{ type: Schema.ObjectId, ref: 'User' }],
     creation: { type: Date, default: Date.now },
     schemaVersion: {type: Number, default: 1}

@@ -52,9 +52,22 @@ describe('The ticketingContractClient service', function() {
       var contractId = '123';
       var updateData = { foo: 'baz' };
 
-      $httpBackend.expectPUT('/ticketing/api/contracts/' + contractId, updateData).respond(200, []);
+      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId, updateData).respond(200, []);
 
       ticketingContractClient.update(contractId, updateData);
+
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The updatePermissions function', function() {
+    it('should POST to right endpoint to udpate permissions', function() {
+      var contractId = '123';
+      var updatePermissions = { permissions: ['baz'] };
+
+      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/permissions', updatePermissions).respond(204);
+
+      ticketingContractClient.updatePermissions(contractId, updatePermissions);
 
       $httpBackend.flush();
     });

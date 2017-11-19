@@ -20,7 +20,8 @@ module.exports = dependencies => {
     list,
     listByCursor,
     updateById,
-    search
+    search,
+    entitiesBelongsOrganization
   };
 
   /**
@@ -118,5 +119,16 @@ module.exports = dependencies => {
 
   function listByCursor() {
     return Organization.find().cursor();
+  }
+
+  /**
+   * Check if entities belong to an organization.
+   * @param {Array}   entityIds      - Array of entity IDs
+   * @param {String}  organizationId - Organization ID
+   * @param {Promise}                - Resolve true if entities belong to organization, false otherwise
+   */
+  function entitiesBelongsOrganization(entityIds, organizationId) {
+    return Organization.count({ _id: { $in: entityIds }, parent: organizationId }).exec()
+      .then(count => count === entityIds.length);
   }
 };

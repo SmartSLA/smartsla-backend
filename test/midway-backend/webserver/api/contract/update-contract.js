@@ -6,7 +6,7 @@ const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
-describe('PUT /api/contracts/:id', function() {
+describe('POST /api/contracts/:id', function() {
   let app, lib, helpers, ObjectId;
   let user1, user2, contract;
   const password = 'secret';
@@ -77,7 +77,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is no title in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         organization: new ObjectId(),
         startDate: new Date(),
@@ -97,7 +97,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is no organization in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         startDate: new Date(),
@@ -117,7 +117,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is no startDate in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -137,7 +137,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is no endDate in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -157,7 +157,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid organization in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: 'invalid ObjectId',
@@ -178,7 +178,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid manager in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -200,7 +200,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid defaultSupportManager in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -222,7 +222,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid users in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -244,7 +244,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid orders in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -266,7 +266,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid permission actors in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -290,7 +290,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 400 if there is invalid permission right in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -313,12 +313,12 @@ describe('PUT /api/contracts/:id', function() {
   });
 
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'put', '/api/contracts/abc', done);
+    helpers.api.requireLogin(app, 'post', '/api/contracts/abc', done);
   });
 
   it('should respond 403 if user is not an administrator', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put('/api/contracts/abc'));
+      const req = requestAsMember(request(app).post('/api/contracts/abc'));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -332,7 +332,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 404 if contract id is not an ObjectId', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put('/api/contracts/abc'));
+      const req = requestAsMember(request(app).post('/api/contracts/abc'));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -353,7 +353,7 @@ describe('PUT /api/contracts/:id', function() {
 
   it('should respond 404 if contract is not found', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/contracts/${new ObjectId()}`));
+      const req = requestAsMember(request(app).post(`/api/contracts/${new ObjectId()}`));
       const newContract = {
         title: 'new',
         organization: new ObjectId(),
@@ -380,7 +380,7 @@ describe('PUT /api/contracts/:id', function() {
           startDate: new Date(),
           endDate: new Date()
         };
-        const req = requestAsMember(request(app).put(`/api/contracts/${contract._id}`));
+        const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}`));
 
         req.send(newContract);
         req.expect(204)
