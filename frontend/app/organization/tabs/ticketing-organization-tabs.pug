@@ -1,7 +1,7 @@
 ul.esn-tab
   li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'main'}")
     a(href="", ng-click="$ctrl.selectedTab = 'main'")
-      | #{__('Main')}
+      | #{__('Properties')}
   li.btn-wave(ng-if="!$ctrl.isEntityMode", ng-class="{'active': $ctrl.selectedTab === 'contract'}")
     a(href="", ng-click="$ctrl.selectedTab = 'contract'")
       | #{__('Contracts')}

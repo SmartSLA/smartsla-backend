@@ -82,5 +82,6 @@
   "Creating order...": "Création de l'ordre...",
   "Order created": "Ordre créée",
   "Failed to create order": "Impossible de mettre à jour l'ordre",
-  "Only allows one organization": "N'autoriser qu'une seule organisation"
+  "Only allows one organization": "N'autoriser qu'une seule organisation",
+  "Properties":"Propriétés"  
 }
