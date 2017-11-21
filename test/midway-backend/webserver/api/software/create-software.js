@@ -2,8 +2,10 @@
 
 const request = require('supertest');
 const path = require('path');
+const Q = require('q');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
+const { INDICES } = require('../../../../../backend/lib/constants');
 
 describe('POST /api/software', function() {
   let app, lib, helpers;
@@ -248,12 +250,27 @@ describe('POST /api/software', function() {
         };
         const req = requestAsMember(request(app).post('/api/software'));
 
+        function checkSoftwareIndexed(software) {
+          const options = {
+            index: INDICES.SOFTWARE.name,
+            type: INDICES.SOFTWARE.type,
+            ids: software.map(sw => sw._id)
+          };
+
+          return Q.nfapply(helpers.elasticsearch.checkDocumentsIndexed, [options]);
+        }
+
+        function test(created) {
+          checkSoftwareIndexed(created).then(function() {
+            done();
+          }, done);
+        }
+
         req.send(newSoftware);
         req.expect(201)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body.name).to.equal(newSoftware.name);
-
-            done();
+            test([res.body]);
           }));
       }));
     });
