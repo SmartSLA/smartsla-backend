@@ -1,11 +1,13 @@
 'use strict';
 
+const _ = require('lodash');
 const CONSTANTS = require('./constants');
 
 module.exports = {
   validateOrderType,
   validateRight,
-  validateUserRole
+  validateUserRole,
+  uniqueRequests
 };
 
 function validateRight(right) {
@@ -18,4 +20,14 @@ function validateUserRole(role) {
 
 function validateOrderType(type) {
   return CONSTANTS.ORDER_TYPES.indexOf(type) > -1;
+}
+
+function uniqueRequests(requests) {
+  const unique = _.uniqBy(requests, request => [
+    request.requestType,
+    request.softwareType,
+    request.issueType
+  ].join());
+
+  return unique.length === requests.length;
 }
