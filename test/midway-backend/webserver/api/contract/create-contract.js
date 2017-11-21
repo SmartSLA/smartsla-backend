@@ -220,28 +220,6 @@ describe('POST /api/contracts', function() {
     }));
   });
 
-  it('should respond 400 if there is invalid users in the payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post('/api/contracts'));
-      const newContract = {
-        title: 'new',
-        organization: new ObjectId(),
-        startDate: new Date(),
-        endDate: new Date(),
-        users: ['invalid ObjectId']
-      };
-
-      req.send(newContract);
-      req.expect(400)
-        .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'users is invalid' }
-          });
-          done();
-        }));
-    }));
-  });
-
   it('should respond 400 if there is invalid permission actors in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post('/api/contracts'));

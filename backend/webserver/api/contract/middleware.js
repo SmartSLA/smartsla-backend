@@ -66,8 +66,7 @@ module.exports = (dependencies, lib) => {
       endDate,
       manager,
       defaultSupportManager,
-      permissions,
-      users
+      permissions
      } = req.body;
 
     if (!title) {
@@ -96,10 +95,6 @@ module.exports = (dependencies, lib) => {
 
     if (defaultSupportManager && !validateObjectIds(defaultSupportManager)) {
       return send400Error('defaultSupportManager is invalid', res);
-    }
-
-    if (users && !validateObjectIds(users)) {
-      return send400Error('users is invalid', res);
     }
 
     if (permissions) {

@@ -1,8 +1,22 @@
 'use strict';
 
+const { uniqueRequests } = require('../helpers');
+
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
+
+  const ContractRequestSchema = new mongoose.Schema({
+    requestType: { type: String, required: true },
+    softwareType: { type: String, required: true },
+    issueType: { type: String, required: true },
+    responseTime: { type: Number, default: 0 }, // unit: hours
+    workaroundTime: { type: Number, default: 0 }, // unit: hours
+    solvingTime: { type: Number, default: 0 }, // unit: hours
+    timestamps: {
+      creation: { type: Date, default: Date.now }
+    }
+  }, { _id: false });
 
   const ContractSchema = new mongoose.Schema({
     active: { type: Boolean, default: true },
@@ -19,10 +33,22 @@ module.exports = dependencies => {
     // 1 if all entities of contract's organization have permission
     // array of some entities of contract's organization which have permission
     permissions: Schema.Types.Mixed,
-    users: [{ type: Schema.ObjectId, ref: 'User' }],
+    requests: [ContractRequestSchema],
     creation: { type: Date, default: Date.now },
-    schemaVersion: {type: Number, default: 1}
+    schemaVersion: { type: Number, default: 1 }
   });
 
-  module.exports = mongoose.model('Contract', ContractSchema);
+  const ContractModel = mongoose.model('Contract', ContractSchema);
+
+  ContractSchema.pre('save', function(next) {
+    const self = this;
+
+    if (!uniqueRequests(self.requests)) {
+      next(new Error('Invalid contract requests'));
+    }
+
+    return next();
+  });
+
+  return ContractModel;
 };
