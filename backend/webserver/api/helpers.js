@@ -38,12 +38,6 @@ module.exports = (dependencies, lib) => {
   }
 
   function _validateObjectId(id) {
-    try {
-      new ObjectId(id);
-
-      return true;
-    } catch (err) {
-      return false;
-    }
+    return ObjectId.isValid(String(id));
   }
 };

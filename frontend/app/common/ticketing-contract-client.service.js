@@ -12,6 +12,7 @@
       list: list,
       listOrders: listOrders,
       update: update,
+      updatePermissions: updatePermissions,
       updateOrder: updateOrder
     };
 
@@ -49,7 +50,20 @@
      * @return {Promise}            - Resolve response with updated contract
      */
     function update(contractId, updateData) {
-      return ticketingRestangular.one('contracts', contractId).customPUT(updateData);
+      return ticketingRestangular.one('contracts', contractId).customPOST(updateData);
+    }
+
+    /**
+     * Update permissions of contract.
+     * @param  {String} contractId   - The contract ID
+     * @param  {Object} permissions  - The update permissions
+     * @return {Promise}             - Resolve response with updated contract
+     */
+    function updatePermissions(contractId, permissions) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .one('permissions')
+        .customPOST(permissions);
     }
 
     /**

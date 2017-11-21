@@ -8,9 +8,14 @@ module.exports = (dependencies, lib) => {
     validateRights,
     requireAdministrator
   } = require('../helpers')(dependencies, lib);
-  const { send400Error } = require('../utils')(dependencies);
+  const {
+    send400Error,
+    send404Error,
+    send500Error
+  } = require('../utils')(dependencies);
 
   return {
+    load,
     canCreateContract,
     canListContract,
     canUpdateContract,
@@ -20,8 +25,22 @@ module.exports = (dependencies, lib) => {
     canUpdateOrder,
     validateContractPayload,
     validateContractUpdate,
-    validateOrderPayload
+    validateOrderPayload,
+    validatePermissions
   };
+
+  function load(req, res, next) {
+    lib.contract.getById(req.params.id)
+      .then(contract => {
+        if (!contract) {
+          send404Error('Contract not found', res);
+        }
+
+        req.contract = contract;
+        next();
+      })
+      .catch(err => send500Error('Unable to load contract', err, res));
+  }
 
   function canCreateContract(req, res, next) {
     return requireAdministrator(req, res, next);
@@ -84,12 +103,7 @@ module.exports = (dependencies, lib) => {
     }
 
     if (permissions) {
-      const actors = permissions.map(permission => permission.actor);
-      const rights = permissions.map(permission => permission.right);
-
-      if (!validateObjectIds(actors) || !validateRights(rights)) {
-        return send400Error('permissions is invalid', res);
-      }
+      validatePermissions(req, res, next);
     }
 
     next();
@@ -103,6 +117,30 @@ module.exports = (dependencies, lib) => {
     }
 
     return validateContractPayload(req, res, next);
+  }
+
+  function validatePermissions(req, res, next) {
+    let { permissions } = req.body;
+
+    if (permissions === 1 || (Array.isArray(permissions) && permissions.length === 0)) {
+      return next();
+    }
+
+    if (Array.isArray(permissions) && validateObjectIds(permissions)) {
+      permissions = [...new Set(permissions)];
+
+      return lib.organization.entitiesBelongsOrganization(permissions, req.contract.organization._id)
+        .then(belonged => {
+          if (!belonged) {
+            return send400Error('permissions not belong to contract\'s organization', res);
+          }
+
+          next();
+        })
+        .catch(err => send500Error('Unable to check permissions', err, res));
+    }
+
+    return send400Error('permissions is invalid', res);
   }
 
   function canCreateOrder(req, res, next) {

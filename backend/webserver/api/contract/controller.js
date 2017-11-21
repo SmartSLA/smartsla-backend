@@ -11,6 +11,7 @@ module.exports = function(dependencies, lib) {
     list,
     listOrders,
     update,
+    updatePermissions,
     updateOrder
   };
 
@@ -100,6 +101,34 @@ module.exports = function(dependencies, lib) {
         return send404Error('Contract not found', res);
       })
       .catch(err => send500Error('Failed to update contract', err, res));
+  }
+
+  /**
+   * Update permissions for contract.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function updatePermissions(req, res) {
+    let { permissions } = req.body;
+
+    if (Array.isArray(permissions)) {
+      // remove duplicates
+      permissions = [...new Set(permissions)];
+    }
+
+    return lib.contract.updateById(req.params.id, { permissions })
+      .then(updatedResult => {
+        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
+        // updatedResult.n: The number of documents selected for update
+        // http://mongoosejs.com/docs/api.html#model_Model.update
+        if (updatedResult.n) {
+          return res.status(204).end();
+        }
+
+        return send404Error('Contract not found', res);
+      })
+      .catch(err => send500Error('Failed to update permissions of contract', err, res));
   }
 
   /**
