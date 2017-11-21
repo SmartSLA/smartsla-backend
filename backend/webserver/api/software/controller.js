@@ -28,17 +28,38 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    const options = {
-      limit: +req.query.limit,
-      offset: +req.query.offset
-    };
+    let getSoftware;
+    let errorMessage;
 
-    return lib.software.list(options)
-      .then(software => {
-        res.header('X-ESN-Items-Count', software.length);
-        res.status(200).json(software);
+    if (req.query.search) {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        search: req.query.search
+      };
+
+      errorMessage = 'Error while searching software';
+      getSoftware = lib.software.search(options);
+    } else {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset
+      };
+
+      errorMessage = 'Failed to list software';
+      getSoftware = lib.software.list(options)
+        .then(software => ({
+          total_count: software.length,
+          list: software
+        }));
+    }
+
+    return getSoftware
+      .then(result => {
+        res.header('X-ESN-Items-Count', result.total_count);
+        res.status(200).json(result.list);
       })
-      .catch(err => send500Error('Failed to list software', err, res));
+      .catch(err => send500Error(errorMessage, err, res));
   }
 
   /**
@@ -49,11 +70,8 @@ module.exports = function(dependencies, lib) {
    */
   function update(req, res) {
     return lib.software.updateById(req.params.id, req.body)
-      .then(updatedResult => {
-        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
-        // updatedResult.n: The number of documents selected for update
-        // http://mongoosejs.com/docs/api.html#model_Model.update
-        if (updatedResult.n) {
+      .then(numberOfUpdatedDocs => {
+        if (numberOfUpdatedDocs) {
           return res.status(204).end();
         }
 
