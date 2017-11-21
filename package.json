@@ -59,6 +59,7 @@
     "async": "2.6.0",
     "awesome-module": "1.1.0",
     "bower": "1.7.9",
+    "composable-middleware": "0.3.0",
     "email-addresses": "3.0.1",
     "esn-elasticsearch-configuration": "0.4.4",
     "express": "4.14.0",

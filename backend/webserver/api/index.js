@@ -10,6 +10,7 @@ module.exports = (dependencies, lib) => {
   require('./organization')(dependencies, lib, router);
   require('./user')(dependencies, lib, router);
   require('./order')(dependencies, lib, router);
+  require('./software')(dependencies, lib, router);
 
   return router;
 };
