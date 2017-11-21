@@ -14,8 +14,7 @@ module.exports = dependencies => {
     return {
       events: {
         add: EVENTS.ORGANIZATION.created,
-        update: EVENTS.ORGANIZATION.updated,
-        remove: EVENTS.ORGANIZATION.deleted
+        update: EVENTS.ORGANIZATION.updated
       },
       denormalize: denormalize.denormalize,
       getId: denormalize.getId,

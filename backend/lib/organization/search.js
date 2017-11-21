@@ -2,15 +2,11 @@
 
 const _ = require('lodash');
 const Q = require('q');
-const { DEFAULT_LIST_OPTIONS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, INDICES } = require('../constants');
 
 module.exports = dependencies => {
 
   const coreElasticsearch = dependencies('coreElasticsearch');
-  const INDEX = {
-    type: 'organizations',
-    name: 'organizations.idx'
-  };
 
   return search;
 
@@ -66,8 +62,8 @@ module.exports = dependencies => {
       };
 
       return elascticsearchClient.search({
-        index: INDEX.name,
-        type: INDEX.type,
+        index: INDICES.ORGANIZATION.name,
+        type: INDICES.ORGANIZATION.type,
         from: options.offset,
         size: options.limit,
         body: elasticsearchQuery

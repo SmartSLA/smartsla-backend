@@ -111,6 +111,32 @@ describe('GET /api/organizations?search=', function() {
     }));
   });
 
+  it('should respond 200 with the organizations list in alphabetic order of shortName', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const organizationA = { shortName: 'fooB' };
+      const organizationB = { shortName: 'bar' };
+      const organizationC = { shortName: 'fooA' };
+      const req = requestAsMember(request(app).get('/api/organizations?search=foo'));
+
+      Q.all([
+        lib.organization.create(organizationA),
+        lib.organization.create(organizationB),
+        lib.organization.create(organizationC)
+      ]).then(() => {
+        setTimeout(function() {
+          req.expect(200)
+            .end(helpers.callbacks.noErrorAnd(res => {
+              expect(res.headers['x-esn-items-count']).to.exist;
+              expect(res.headers['x-esn-items-count']).to.equal('2');
+              expect(res.body[0].shortName).to.shallowDeepEqual(organizationC.shortName);
+              expect(res.body[1].shortName).to.shallowDeepEqual(organizationA.shortName);
+              done();
+            }));
+          }, esIntervalIndex);
+        });
+    }));
+  });
+
   it('should respond 200 with only list of organizations if there is no parent is provided', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const organizationA = { shortName: 'foo' };
