@@ -1,10 +1,16 @@
 'use strict';
 
 const Q = require('q');
-const { commons, db, organization } = require('../../lib');
+const {
+  commons,
+  db,
+  organization,
+  software
+} = require('../../lib');
 const { AVAILABLE_INDEX_TYPES } = require('./constants');
 const HANDLERS = {
-  organizations: reindexOrganizations
+  organizations: reindexOrganizations,
+  software: reindexSoftware
 };
 
 module.exports = {
@@ -74,6 +80,31 @@ function reindexOrganizations(esConfig) {
   };
 
   commons.logInfo('Starting reindexing of organizations');
+
+  return db.connect(commons.getDBOptions())
+    .then(() => esConfig.reindexAll(options))
+    .finally(db.disconnect);
+}
+
+function reindexSoftware(esConfig) {
+  const options = {
+    type: 'software',
+    name: 'software.idx',
+    denormalize: software => {
+      software = software.toObject();
+      software.id = software._id;
+      delete software._id;
+
+      return software;
+    }
+  };
+  const cursor = software.listByCursor();
+
+  options.next = function() {
+    return cursor.next();
+  };
+
+  commons.logInfo('Starting reindexing of software');
 
   return db.connect(commons.getDBOptions())
     .then(() => esConfig.reindexAll(options))
