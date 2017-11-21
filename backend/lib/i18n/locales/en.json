@@ -82,5 +82,6 @@
   "Creating order...": "Creating order...",
   "Order created": "Order created",
   "Failed to create order": "Failed to create order",
-  "Only allows one organization": "Only allows one organization"
+  "Only allows one organization": "Only allows one organization",
+  "Properties":"Properties"
 }

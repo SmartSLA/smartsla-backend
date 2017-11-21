@@ -82,5 +82,6 @@
   "Creating order...": "Đang tạo đơn hàng...",
   "Order created": "Đơn hàng đã tạo",
   "Failed to create order": "Không thể tạo đơn hàng",
-  "Only allows one organization": "Chỉ cho phép một tổ chức"
+  "Only allows one organization": "Chỉ cho phép một tổ chức",
+  "Properties":"Thông tin"  
 }
