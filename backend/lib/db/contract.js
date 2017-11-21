@@ -33,7 +33,6 @@ module.exports = dependencies => {
     // 1 if all entities of contract's organization have permission
     // array of some entities of contract's organization which have permission
     permissions: Schema.Types.Mixed,
-    users: [{ type: Schema.ObjectId, ref: 'User' }],
     requests: [ContractRequestSchema],
     creation: { type: Date, default: Date.now },
     schemaVersion: { type: Number, default: 1 }
