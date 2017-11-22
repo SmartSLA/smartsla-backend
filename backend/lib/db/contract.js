@@ -18,6 +18,16 @@ module.exports = dependencies => {
     }
   }, { _id: false });
 
+  const ContractSoftwareSchema = new mongoose.Schema({
+    active: { type: Boolean, default: true },
+    template: { type: Schema.ObjectId, ref: 'Software', required: true, unique: true },
+    versions: [{ type: String, unique: true }],
+    type: { type: String, required: true },
+    timestamps: {
+      creation: { type: Date, default: Date.now }
+    }
+  }, { _id: false });
+
   const ContractSchema = new mongoose.Schema({
     active: { type: Boolean, default: true },
     number: { type: String },
@@ -34,6 +44,7 @@ module.exports = dependencies => {
     // array of some entities of contract's organization which have permission
     permissions: Schema.Types.Mixed,
     requests: [ContractRequestSchema],
+    software: [ContractSoftwareSchema],
     creation: { type: Date, default: Date.now },
     schemaVersion: { type: Number, default: 1 }
   });
