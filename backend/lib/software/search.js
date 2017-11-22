@@ -5,27 +5,25 @@ const Q = require('q');
 const { DEFAULT_LIST_OPTIONS, INDICES } = require('../constants');
 
 module.exports = dependencies => {
-
   const coreElasticsearch = dependencies('coreElasticsearch');
 
   return search;
 
   /**
-   * Search organization in system.
+   * Search software in system.
    *
    * @param {object} options - Hash with:
    * - 'limit' and 'offset' for pagination
    * - 'search' for filtering terms
-   * - 'parent' for search only organizations or entities
    * Search can be a single string, an array of strings which will be joined, or a space separated string list.
    *  In the case of array or space separated string, a AND search will be performed with the input terms.
-   * @return {Promise} Resolve on success with result: { total_count: number, list: [Organization1, Organization2, ...] }
+   * @return {Promise} Resolve on success with result: { total_count: number, list: [Software1, Software2, ...] }
    */
   function search(options) {
     return Q.nfcall(_search, options);
   }
 
-  function _search(options, callback) {
+  function _search(options = {}, callback) {
     options.limit = +options.limit || DEFAULT_LIST_OPTIONS.LIMIT;
     options.offset = +options.offset || DEFAULT_LIST_OPTIONS.OFFSET;
 
@@ -38,23 +36,15 @@ module.exports = dependencies => {
         return callback(err);
       }
 
-      const terms = (options.search instanceof Array) ? options.search.join(' ') : options.search;
-
       const elasticsearchQuery = {
         sort: [
-          {'shortName.sort': 'asc'}
+          {'name.sort': 'asc'}
         ],
         query: {
           bool: {
-            filter: {
-              bool: _getElasticsearchFilter(options.parent)
-            },
             must: {
-              multi_match: {
-                query: terms,
-                type: 'cross_fields',
-                fields: ['shortName', 'fullName', 'description'],
-                operator: 'and'
+              match: {
+                name: options.search
               }
             }
           }
@@ -62,8 +52,8 @@ module.exports = dependencies => {
       };
 
       return elascticsearchClient.search({
-        index: INDICES.ORGANIZATION.name,
-        type: INDICES.ORGANIZATION.type,
+        index: INDICES.SOFTWARE.name,
+        type: INDICES.SOFTWARE.type,
         from: options.offset,
         size: options.limit,
         body: elasticsearchQuery
@@ -73,33 +63,13 @@ module.exports = dependencies => {
         }
 
         const list = response.hits.hits;
-        const organizations = list.map(function(hit) { return _.extend(hit._source, { _id: hit._source.id }); });
+        const software = list.map(hit => _.extend(hit._source, { _id: hit._source.id }));
 
         return callback(null, {
           total_count: response.hits.total,
-          list: organizations
+          list: software
         });
       });
     });
-  }
-
-  function _getElasticsearchFilter(parent) {
-    if (!parent) {
-      return {
-        must: [{
-          missing: {
-            field: 'parent'
-          }
-        }]
-      };
-    }
-
-    return {
-      must: [{
-        exists: {
-          field: 'parent'
-        }
-      }]
-    };
   }
 };

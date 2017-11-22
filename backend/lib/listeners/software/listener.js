@@ -13,13 +13,13 @@ module.exports = dependencies => {
   function getOptions() {
     return {
       events: {
-        add: EVENTS.ORGANIZATION.created,
-        update: EVENTS.ORGANIZATION.updated
+        add: EVENTS.SOFTWARE.created,
+        update: EVENTS.SOFTWARE.updated
       },
       denormalize: denormalize.denormalize,
       getId: denormalize.getId,
-      type: INDICES.ORGANIZATION.type,
-      index: INDICES.ORGANIZATION.name
+      type: INDICES.SOFTWARE.type,
+      index: INDICES.SOFTWARE.name
     };
   }
 

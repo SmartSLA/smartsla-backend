@@ -18,13 +18,20 @@ module.exports = {
     ORGANIZATION: {
       name: 'organizations.idx',
       type: 'organizations'
+    },
+    SOFTWARE: {
+      name: 'software.idx',
+      type: 'software'
     }
   },
   EVENTS: {
     ORGANIZATION: {
       created: 'ticketing:organization:created',
-      updated: 'ticketing:organization:updated',
-      deleted: 'ticketing:organization:deleted'
+      updated: 'ticketing:organization:updated'
+    },
+    SOFTWARE: {
+      created: 'ticketing:software:created',
+      updated: 'ticketing:software:updated'
     }
   }
 };

@@ -13,7 +13,7 @@
 
     /**
      * List software
-     * @param  {Object} options - Query option, possible attributes are limit and offset
+     * @param  {Object} options - Query option, possible attributes are limit, offset and search
      * @return {Promise}        - Resolve response with list of softwares
      */
     function list(options) {

@@ -9,7 +9,7 @@ module.exports = dependencies => {
   };
 
   function registerListener() {
-    logger.info('Subscribing to organizations updates for indexing');
+    logger.info('Subscribing to software update for indexing');
     listener.register();
   }
 };

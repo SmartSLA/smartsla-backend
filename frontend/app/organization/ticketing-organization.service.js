@@ -84,7 +84,7 @@
     function getOrganizationSearchProvider() {
       return {
         objectType: 'organization',
-        templateUrl: '/ticketing/app/organization/search-template/ticketing-orgainzation-search-template.html',
+        templateUrl: '/ticketing/app/organization/search-template/ticketing-organization-search-template.html',
         getDisplayName: function(organization) {
           return organization.shortName;
         },
@@ -109,7 +109,7 @@
     function getEntitySearchProvider() {
       return {
         objectType: 'entity',
-        templateUrl: '/ticketing/app/organization/search-template/ticketing-orgainzation-search-template.html',
+        templateUrl: '/ticketing/app/organization/search-template/ticketing-organization-search-template.html',
         getDisplayName: function(entity) {
           return entity.shortName;
         },

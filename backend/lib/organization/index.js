@@ -63,15 +63,20 @@ module.exports = dependencies => {
    * Update an organization by ID
    * @param {String}   organizationId - The organization ID
    * @param {Object}   modified       - The modified organization object
-   * @param {Promise}                 - Resolve on success
+   * @param {Promise}                 - Resolve on success with the number of documents selected for update
    */
   function updateById(organizationId, modified) {
     return Organization.update({ _id: organizationId }, { $set: modified }).exec()
-      .then(result => {
-        modified._id = modified._id || organizationId;
-        organizationUpdatedTopic.publish(modified);
+      .then(updatedResult => {
+        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
+        // updatedResult.n: The number of documents selected for update
+        // http://mongoosejs.com/docs/api.html#model_Model.update
+        if (updatedResult.n) {
+          modified._id = modified._id || organizationId;
+          organizationUpdatedTopic.publish(modified);
+        }
 
-        return result;
+        return updatedResult.n;
       });
   }
 
