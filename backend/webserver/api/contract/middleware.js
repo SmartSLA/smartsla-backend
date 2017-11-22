@@ -2,6 +2,8 @@
 
 'use strict';
 
+const composableMw = require('composable-middleware');
+
 module.exports = (dependencies, lib) => {
   const {
     validateObjectIds,
@@ -24,9 +26,9 @@ module.exports = (dependencies, lib) => {
     canReadContract,
     canUpdateOrder,
     validateContractPayload,
-    validateContractUpdate,
     validateOrderPayload,
-    validatePermissions
+    validatePermissions,
+    validateSoftware
   };
 
   function load(req, res, next) {
@@ -59,14 +61,26 @@ module.exports = (dependencies, lib) => {
   }
 
   function validateContractPayload(req, res, next) {
+    const { permissions } = req.body;
+    const middlewares = [
+      validateBasicInfo
+    ];
+
+    if (permissions) {
+      middlewares.push(validatePermissions);
+    }
+
+    return composableMw(...middlewares)(req, res, next);
+  }
+
+  function validateBasicInfo(req, res, next) {
     const {
       title,
       organization,
       startDate,
       endDate,
       manager,
-      defaultSupportManager,
-      permissions
+      defaultSupportManager
      } = req.body;
 
     if (!title) {
@@ -97,21 +111,7 @@ module.exports = (dependencies, lib) => {
       return send400Error('defaultSupportManager is invalid', res);
     }
 
-    if (permissions) {
-      validatePermissions(req, res, next);
-    }
-
     next();
-  }
-
-  function validateContractUpdate(req, res, next) {
-    const { orders } = req.body;
-
-    if (orders && !validateObjectIds(orders)) {
-      return send400Error('orders is invalid', res);
-    }
-
-    return validateContractPayload(req, res, next);
   }
 
   function validatePermissions(req, res, next) {
@@ -124,18 +124,104 @@ module.exports = (dependencies, lib) => {
     if (Array.isArray(permissions) && validateObjectIds(permissions)) {
       permissions = [...new Set(permissions)];
 
-      return lib.organization.entitiesBelongsOrganization(permissions, req.contract.organization._id)
+      return lib.organization.entitiesBelongsOrganization(permissions, req.contract.organization)
         .then(belonged => {
           if (!belonged) {
-            return send400Error('permissions not belong to contract\'s organization', res);
+            return send400Error('entities does not belong to contract\'s organization', res);
           }
 
+          req.body.permissions = permissions;
           next();
         })
         .catch(err => send500Error('Unable to check permissions', err, res));
     }
 
     return send400Error('permissions is invalid', res);
+  }
+
+  function validateSoftware(req, res, next) {
+    const middlewares = [
+      validateSoftwareFormat,
+      checkSoftwareTypesAvailable,
+      checkDuplicatedSoftware,
+      checkSoftwareAvailable,
+      checkSoftwareVersionsAvailable
+    ];
+
+    return composableMw(...middlewares)(req, res, next);
+  }
+
+  function validateSoftwareFormat(req, res, next) {
+    const { template, type, versions } = req.body;
+
+    if (!validateObjectIds(template)) {
+      return send400Error('Software not found', res);
+    }
+
+    if (!versions) {
+      return send400Error('Software versions is required', res);
+    }
+
+    if (!Array.isArray(versions) || versions.length === 0) {
+      return send400Error('Software versions must not be empty', res);
+    }
+
+    if (!type) {
+      return send400Error('Software type is required', res);
+    }
+
+    next();
+  }
+
+  function checkDuplicatedSoftware(req, res, next) {
+    const { template } = req.body;
+    const availableSoftwareIds = req.contract.software.map(item => item.template.toString());
+
+    if (availableSoftwareIds.indexOf(template) > -1) {
+      return send400Error('Software already exists', res);
+    }
+
+    next();
+  }
+
+  function checkSoftwareAvailable(req, res, next) {
+    const { template } = req.body;
+
+    lib.software.isSoftwareAvailable(template)
+      .then(isAvailable => {
+        if (!isAvailable) {
+          return send400Error('Software is not available', res);
+        }
+
+        next();
+      })
+      .catch(err => send500Error('Unable to check software', err, res));
+  }
+
+  function checkSoftwareVersionsAvailable(req, res, next) {
+    const { template, versions } = req.body;
+
+    lib.software.isSoftwareVersionsAvailable(template, versions)
+      .then(isAvailable => {
+        if (!isAvailable) {
+          return send400Error('Software versions are unsupported', res);
+        }
+
+        next();
+      })
+      .catch(err => send500Error('Unable to check software versions', err, res));
+  }
+
+  function checkSoftwareTypesAvailable(req, res, next) {
+    const { type } = req.body;
+
+    const availableTypes = req.contract.requests.map(request => request.softwareType);
+
+    if (availableTypes.indexOf(type) === -1) {
+      return send400Error('Software type is unsupported', res);
+    }
+
+    next();
   }
 
   function canCreateOrder(req, res, next) {

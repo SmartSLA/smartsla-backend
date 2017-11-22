@@ -8,6 +8,7 @@ module.exports = dependencies => {
 
   return {
     addOrder,
+    addSoftware,
     create,
     getById,
     list,
@@ -48,10 +49,24 @@ module.exports = dependencies => {
    * Update a contract by ID
    * @param {String}   contractId - The contract ID
    * @param {Object}   modified   - The modified contract object
-   * @param {Promise}             - Resolve on success
+   * @param {Promise}             - Resolve on success with the number of documents selected for update
    */
   function updateById(contractId, modified) {
-    return Contract.update({ _id: contractId }, { $set: modified }).exec();
+    return Contract.update({ _id: contractId }, { $set: modified }).exec()
+      .then(updatedResult => updatedResult.n); // http://mongoosejs.com/docs/api.html#model_Model.update
+  }
+
+  /**
+   * Add a software for a contract
+   * @param {String}   contractId    - The contract ID
+   * @param {Object}   softwareToAdd - The an array or a object of software to add
+   * @param {Promise}                - Resolve on success with the number of documents selected for update
+   */
+  function addSoftware(contractId, softwareToAdd) {
+    softwareToAdd = Array.isArray(softwareToAdd) ? softwareToAdd : [softwareToAdd];
+
+    return Contract.update({ _id: contractId }, { $addToSet: { software: { $each: softwareToAdd } } }).exec()
+      .then(updatedResult => updatedResult.n); // http://mongoosejs.com/docs/api.html#model_Model.update
   }
 
   /**
@@ -69,12 +84,13 @@ module.exports = dependencies => {
    * @param {String}   contractId - The contract ID
    * @param {Promise}             - Resolve on success
    */
-  function getById(contractId) {
-    return Contract
-      .findById(contractId)
-      .populate('manager')
-      .populate('defaultSupportManager')
-      .populate('organization')
-      .exec();
+  function getById(contractId, options = {}) {
+    const query = Contract.findById(contractId);
+
+    if (options.populations) {
+      query.populate(options.populations);
+    }
+
+    return query.exec();
   }
 };

@@ -117,7 +117,7 @@ describe('POST /api/contracts/:id/permissions', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'permissions not belong to contract\'s organization' }
+            error: { code: 400, message: 'Bad Request', details: 'entities does not belong to contract\'s organization' }
           });
           done();
         }));

@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 module.exports = function(dependencies) {
   const mongoose = dependencies('db').mongo.mongoose;
   const pubsubLocal = dependencies('pubsub').local;
@@ -14,6 +16,8 @@ module.exports = function(dependencies) {
     create,
     getById,
     getByName,
+    isSoftwareAvailable,
+    isSoftwareVersionsAvailable,
     list,
     listByCursor,
     search,
@@ -98,5 +102,27 @@ module.exports = function(dependencies) {
    */
   function listByCursor() {
     return Software.find().cursor();
+  }
+
+  /**
+   * Check the list software is available to use
+   * @param {Promise} - Resolve on success
+   */
+  function isSoftwareAvailable(softwareId) {
+    return Software
+      .findById(softwareId)
+      .exec()
+      .then(software => !!software && software.active);
+  }
+
+  /**
+   * Check software versions is available to use
+   * @param {Promise} - Resolve on success
+   */
+  function isSoftwareVersionsAvailable(softwareId, versions = []) {
+    return Software
+      .findById(softwareId)
+      .exec()
+      .then(software => _.difference(versions, software.versions).length === 0);
   }
 };
