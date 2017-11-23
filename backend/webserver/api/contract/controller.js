@@ -29,21 +29,23 @@ module.exports = function(dependencies, lib) {
   }
 
   /**
-   * Get a contract by Id
+   * Get a contract by ID.
    *
    * @param {Request} req
    * @param {Response} res
    */
   function get(req, res) {
-    const populations = [{
-      path: 'manager'
-    },
-    {
-      path: 'defaultSupportManager'
-    },
-    {
-      path: 'organization'
-    }];
+    const populations = [
+      {
+        path: 'manager'
+      },
+      {
+        path: 'defaultSupportManager'
+      },
+      {
+        path: 'organization'
+      }
+    ];
 
     return lib.contract.getById(req.params.id, { populations })
       .then(contract => {
@@ -52,9 +54,42 @@ module.exports = function(dependencies, lib) {
           contract.manager = coreUser.denormalize.denormalize(contract.manager);
         }
 
-        return res.status(201).json(contract);
+        // get all entities of contract's organization
+        // then build permissions list
+        return lib.organization.list({ parent: contract.organization._id })
+          .then(entities => {
+            contract.permissions = _buildContractPermissions(contract, entities);
+
+            return res.status(201).json(contract);
+          });
+
       })
       .catch(err => send500Error('Failed to get contract', err, res));
+  }
+
+  /**
+   * Build permissions list of contract.
+   *
+   * @param {Object} contract - Contract object
+   * @param {Array}  entities - Entities of contract's organization
+   * @return {Array}          - List of permission objects
+   */
+  function _buildContractPermissions(contract, entities) {
+    if (contract.permissions === 1) {
+      return entities.map(entity => {
+        entity = entity.toObject();
+        entity.selected = true;
+
+        return entity;
+      });
+    }
+
+    return entities.map(entity => {
+      entity = entity.toObject();
+      entity.selected = contract.permissions.indexOf(String(entity._id)) > -1;
+
+      return entity;
+    });
   }
 
   /**
