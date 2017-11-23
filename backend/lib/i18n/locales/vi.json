@@ -87,5 +87,9 @@
   "%s/%s entity(ies) have permission": "%s/%s tổ chức con có quyền",
   "Updating permissions...": "Đang cập nhật quyền...",
   "Permissons updated": "Quyền đã cập nhật",
-  "Failed to update permissions": "Không thể cập nhật quyền"
+  "Failed to update permissions": "Không thể cập nhật quyền",
+  "Global settings": "Thiết lập chung",
+  "Category": "Danh mục",
+  "Versions": "Phiên bản",
+  "No software": "Không có phần mềm"
 }
