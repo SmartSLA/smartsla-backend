@@ -5,6 +5,7 @@ module.exports = function(dependencies, lib) {
   const coreUser = dependencies('coreUser');
 
   return {
+    addSoftware,
     create,
     createOrder,
     get,
@@ -34,7 +35,17 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function get(req, res) {
-    return lib.contract.getById(req.params.id)
+    const populations = [{
+      path: 'manager'
+    },
+    {
+      path: 'defaultSupportManager'
+    },
+    {
+      path: 'organization'
+    }];
+
+    return lib.contract.getById(req.params.id, { populations })
       .then(contract => {
         contract = contract.toObject();
         if (contract.manager) {
@@ -90,11 +101,8 @@ module.exports = function(dependencies, lib) {
    */
   function update(req, res) {
     return lib.contract.updateById(req.params.id, req.body)
-      .then(updatedResult => {
-        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
-        // updatedResult.n: The number of documents selected for update
-        // http://mongoosejs.com/docs/api.html#model_Model.update
-        if (updatedResult.n) {
+      .then(numberOfUpdatedDocs => {
+        if (numberOfUpdatedDocs) {
           return res.status(204).end();
         }
 
@@ -110,25 +118,35 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function updatePermissions(req, res) {
-    let { permissions } = req.body;
-
-    if (Array.isArray(permissions)) {
-      // remove duplicates
-      permissions = [...new Set(permissions)];
-    }
+    const { permissions } = req.body;
 
     return lib.contract.updateById(req.params.id, { permissions })
-      .then(updatedResult => {
-        // updatedResult: { "ok" : 1, "nModified" : 1, "n" : 1 }
-        // updatedResult.n: The number of documents selected for update
-        // http://mongoosejs.com/docs/api.html#model_Model.update
-        if (updatedResult.n) {
+      .then(numberOfUpdatedDocs => {
+        if (numberOfUpdatedDocs) {
           return res.status(204).end();
         }
 
         return send404Error('Contract not found', res);
       })
       .catch(err => send500Error('Failed to update permissions of contract', err, res));
+  }
+
+  /**
+   * Add a new software for a contract
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function addSoftware(req, res) {
+    return lib.contract.addSoftware(req.params.id, req.body)
+      .then(numberOfUpdatedDocs => {
+        if (numberOfUpdatedDocs) {
+          return res.status(204).end();
+        }
+
+        return send404Error('Contract not found', res);
+      })
+      .catch(err => send500Error('Failed to add software', err, res));
   }
 
   /**

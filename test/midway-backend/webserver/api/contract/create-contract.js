@@ -220,54 +220,6 @@ describe('POST /api/contracts', function() {
     }));
   });
 
-  it('should respond 400 if there is invalid permission actors in the payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post('/api/contracts'));
-      const newContract = {
-        title: 'new',
-        organization: new ObjectId(),
-        startDate: new Date(),
-        endDate: new Date(),
-        permissions: [
-          { actor: 'invalid ObjectId', right: 'submit' }
-        ]
-      };
-
-      req.send(newContract);
-      req.expect(400)
-        .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'permissions is invalid' }
-          });
-          done();
-        }));
-    }));
-  });
-
-  it('should respond 400 if there is invalid permission right in the payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post('/api/contracts'));
-      const newContract = {
-        title: 'new',
-        organization: new ObjectId(),
-        startDate: new Date(),
-        endDate: new Date(),
-        permissions: [
-          { actor: new ObjectId(), right: 'invalid right' }
-        ]
-      };
-
-      req.send(newContract);
-      req.expect(400)
-        .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'permissions is invalid' }
-          });
-          done();
-        }));
-    }));
-  });
-
   it('should respond 401 if not logged in', function(done) {
     helpers.api.requireLogin(app, 'post', '/api/contracts', done);
   });

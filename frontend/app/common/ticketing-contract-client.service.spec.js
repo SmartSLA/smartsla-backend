@@ -73,6 +73,19 @@ describe('The ticketingContractClient service', function() {
     });
   });
 
+  describe('The addSoftware function', function() {
+    it('should POST to right endpoint to add software', function() {
+      var contractId = '123';
+      var software = { foo: 'bar' };
+
+      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/software', software).respond(204);
+
+      ticketingContractClient.addSoftware(contractId, software);
+
+      $httpBackend.flush();
+    });
+  });
+
   describe('The createOrder function', function() {
     it('should POST to right endpoint to create a new order', function() {
       var order = { foo: 'baz' };

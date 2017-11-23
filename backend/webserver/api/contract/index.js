@@ -14,9 +14,9 @@ module.exports = function(dependencies, lib, router) {
     canReadContract,
     canUpdateOrder,
     validateContractPayload,
-    validateContractUpdate,
     validateOrderPayload,
-    validatePermissions
+    validatePermissions,
+    validateSoftware
   } = require('./middleware')(dependencies, lib);
 
   router.get('/contracts',
@@ -43,7 +43,7 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canUpdateContract,
     checkIdInParams('id', 'Contract'),
-    validateContractUpdate,
+    validateContractPayload,
     controller.update
   );
 
@@ -78,5 +78,14 @@ module.exports = function(dependencies, lib, router) {
     load,
     validatePermissions,
     controller.updatePermissions
+  );
+
+  router.post('/contracts/:id/software',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    canUpdateContract,
+    load,
+    validateSoftware,
+    controller.addSoftware
   );
 };

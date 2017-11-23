@@ -6,6 +6,7 @@
 
   function ticketingContractClient(ticketingRestangular) {
     return {
+      addSoftware: addSoftware,
       create: create,
       createOrder: createOrder,
       get: get,
@@ -47,7 +48,7 @@
      * Update a contract
      * @param  {String} contractId  - The contract ID
      * @param  {Object} updateData  - The update object
-     * @return {Promise}            - Resolve response with updated contract
+     * @return {Promise}            - Resolve on success
      */
     function update(contractId, updateData) {
       return ticketingRestangular.one('contracts', contractId).customPOST(updateData);
@@ -57,13 +58,26 @@
      * Update permissions of contract.
      * @param  {String} contractId   - The contract ID
      * @param  {Object} permissions  - The update permissions
-     * @return {Promise}             - Resolve response with updated contract
+     * @return {Promise}             - Resolve on success
      */
     function updatePermissions(contractId, permissions) {
       return ticketingRestangular
         .one('contracts', contractId)
         .one('permissions')
         .customPOST(permissions);
+    }
+
+    /**
+     * Add a software for a contract.
+     * @param  {String} contractId   - The contract ID
+     * @param  {Object} software     - The software object
+     * @return {Promise}             - Resolve on success
+     */
+    function addSoftware(contractId, software) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .one('software')
+        .customPOST(software);
     }
 
     /**
