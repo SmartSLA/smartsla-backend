@@ -83,5 +83,9 @@
   "Order created": "Đơn hàng đã tạo",
   "Failed to create order": "Không thể tạo đơn hàng",
   "Only allows one organization": "Chỉ cho phép một tổ chức",
-  "Properties":"Thông tin"  
+  "Properties":"Thông tin",
+  "%s/%s entity(ies) have permission": "%s/%s tổ chức con có quyền",
+  "Updating permissions...": "Đang cập nhật quyền...",
+  "Permissons updated": "Quyền đã cập nhật",
+  "Failed to update permissions": "Không thể cập nhật quyền"
 }

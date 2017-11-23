@@ -3,6 +3,10 @@
 
   angular.module('linagora.esn.ticketing')
     .component('ticketingContractTabsPermission', {
-      templateUrl: '/ticketing/app/contract/tabs/permission/ticketing-contract-tabs-permission.html'
+      templateUrl: '/ticketing/app/contract/tabs/permission/ticketing-contract-tabs-permission.html',
+      bindings: {
+        permissions: '=',
+        form: '<'
+      }
     });
 })(angular);

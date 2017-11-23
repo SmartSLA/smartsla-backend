@@ -83,5 +83,9 @@
   "Order created": "Order created",
   "Failed to create order": "Failed to create order",
   "Only allows one organization": "Only allows one organization",
-  "Properties":"Properties"
+  "Properties":"Properties",
+  "%s/%s entity(ies) have permission": "%s/%s entity(ies) have permission",
+  "Updating permissions...": "Updating permissions...",
+  "Permissons updated": "Permissons updated",
+  "Failed to update permissions": "Failed to update permissions"
 }

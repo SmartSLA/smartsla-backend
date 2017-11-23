@@ -1,13 +1,13 @@
 ul.esn-tab
-  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'main'}")
-    a(href="", ng-click="$ctrl.selectedTab = 'main'")
-      | #{__('Properties')}
-  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'order'}")
-    a(href="", ng-click="$ctrl.selectedTab = 'order'")
-      | #{__('Orders')}
   li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'permission'}")
     a(href="", ng-click="$ctrl.selectedTab = 'permission'")
       | #{__('Permissions')}
+  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'order'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'order'")
+      | #{__('Orders')}
   li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'request'}")
     a(href="", ng-click="$ctrl.selectedTab = 'request'")
       | #{__('Requests')}
+  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'main'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'main'")
+      | #{__('Properties')}
