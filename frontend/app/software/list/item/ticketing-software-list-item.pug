@@ -1,0 +1,7 @@
+.row.flex-vertical-centered
+  .col-md-4.col-xs-4.lv-title
+    span.ellipsis(title="{{::$ctrl.software.name}}") {{::$ctrl.software.name}}
+  .col-md-4.col-xs-4.ellipsis
+    span.ellipsis(title="{{::$ctrl.software.category}}") {{::$ctrl.software.category}}
+  .col-md-4.col-xs-4.ellipsis
+    span.ellipsis(title="{{::$ctrl.software.versions | ticketingJoinArray}}") {{::$ctrl.software.versions | ticketingJoinArray}}

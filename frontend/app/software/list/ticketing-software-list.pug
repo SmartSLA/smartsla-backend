@@ -1,0 +1,22 @@
+.card
+  .card-body
+    infinite-list(load-more-elements='$ctrl.loadMoreElements()', scroll-inside-container="$ctrl.scrollInsideContainer")
+      .listview.lv-bordered.lv-lg(ng-if="$ctrl.elements.length > 0")
+        .lv-header
+          .lv-item.p-0
+            .row
+              .col-md-4.col-xs-4.lv-title
+                span #{__('Software')}
+              .col-md-4.col-xs-4.lv-title
+                span #{__('Category')}
+              .col-md-4.col-xs-4.lv-title
+                span #{__('Versions')}
+        .lv-body
+          .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
+            ticketing-software-list-item(software="item")
+div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
+  ticketing-empty-message(
+    icon="mdi-wrench",
+    message=__('No software'))
+ul.nav.nav-pills.nav-stacked(ng-if='$ctrl.infiniteScrollDisabled')
+  li.text-center(openpaas-logo-spinner, spinner-start-active='1', spinner-size='0.5')
