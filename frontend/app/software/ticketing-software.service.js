@@ -4,8 +4,16 @@
 
   function TicketingSoftwareService($log, ticketingSoftwareClient) {
     return {
-      getSearchProvider: getSearchProvider
+      getSearchProvider: getSearchProvider,
+      list: list
     };
+
+    function list(options) {
+      return ticketingSoftwareClient.list(options)
+        .then(function(response) {
+          return response.data;
+        });
+    }
 
     function getSearchProvider() {
       return {

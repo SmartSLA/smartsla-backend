@@ -87,5 +87,9 @@
   "%s/%s entity(ies) have permission": "%s/%s entity(ies) have permission",
   "Updating permissions...": "Updating permissions...",
   "Permissons updated": "Permissons updated",
-  "Failed to update permissions": "Failed to update permissions"
+  "Failed to update permissions": "Failed to update permissions",
+  "Global settings": "Global settings",
+  "Category": "Category",
+  "Versions": "Versions",
+  "No software": "No software"
 }

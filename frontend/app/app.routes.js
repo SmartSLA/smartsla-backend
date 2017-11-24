@@ -60,6 +60,14 @@
             }
           }
         })
+        .state('ticketingAdminCenter.global', {
+          url: '/global',
+          views: {
+            'admin-root@ticketingAdminCenter': {
+              template: '<ticketing-global />'
+            }
+          }
+        })
         .state('ticketingAdminCenter.organization', {
           url: '/organizations',
           views: {
