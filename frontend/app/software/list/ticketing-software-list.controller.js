@@ -5,8 +5,11 @@
     .controller('TicketingSoftwareListController', TicketingSoftwareListController);
 
   function TicketingSoftwareListController(
+    $scope,
+    $modal,
     infiniteScrollHelper,
-    TicketingSoftwareService
+    TicketingSoftwareService,
+    TICKETING_SOFTWARE_EVENTS
   ) {
     var self = this;
     var DEFAULT_LIMIT = 20;
@@ -19,12 +22,35 @@
 
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
+      self.onCreateBtnClick = onCreateBtnClick;
+
+      $scope.$on(TICKETING_SOFTWARE_EVENTS.CREATED, function(event, software) {
+        _onSoftwareCreated(software);
+      });
+    }
+
+    function onCreateBtnClick() {
+      $modal({
+        templateUrl: '/ticketing/app/software/create/ticketing-software-create.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingSoftwareCreateController'
+      });
     }
 
     function _loadNextItems() {
       options.offset = self.elements.length;
 
       return TicketingSoftwareService.list(options);
+    }
+
+    function _onSoftwareCreated(software) {
+      if (!software) {
+        return;
+      }
+
+      self.elements.unshift(software);
     }
   }
 })(angular);

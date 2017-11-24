@@ -91,5 +91,11 @@
   "Global settings": "Paramètres globaux",
   "Category": "Catégorie",
   "Versions": "Versions",
-  "No software": "Aucun logiciel"
+  "No software": "Aucun logiciel",
+  "Add a version": "Ajouter une version",
+  "Creating software...": "Création du logiciel...",
+  "Software created": "Logiciel créé",
+  "Failed to create software": "Impossible de créer le logiciel",
+  "New software": "Nouveau logiciel",
+  "That software already exists": "Ce logiciel existe déjà"
 }

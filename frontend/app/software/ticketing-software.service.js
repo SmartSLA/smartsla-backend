@@ -2,8 +2,15 @@
   angular.module('linagora.esn.ticketing')
     .factory('TicketingSoftwareService', TicketingSoftwareService);
 
-  function TicketingSoftwareService($log, ticketingSoftwareClient) {
+  function TicketingSoftwareService(
+    $rootScope,
+    $log,
+    asyncAction,
+    ticketingSoftwareClient,
+    TICKETING_SOFTWARE_EVENTS
+  ) {
     return {
+      create: create,
       getSearchProvider: getSearchProvider,
       list: list
     };
@@ -38,6 +45,24 @@
             });
         }
       };
+    }
+
+    function create(software) {
+      if (!software) {
+        return $q.reject(new Error('Software is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Creating software...',
+        success: 'Software created',
+        failure: 'Failed to create software'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingSoftwareClient.create(software);
+      }).then(function(response) {
+        $rootScope.$broadcast(TICKETING_SOFTWARE_EVENTS.CREATED, response.data);
+      });
     }
   }
 })(angular);
