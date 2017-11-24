@@ -46,4 +46,16 @@ describe('The ticketingSoftwareClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The getByName function', function() {
+    it('should get to right endpoint to get software by name', function() {
+      var softwareName = 'abc';
+
+      $httpBackend.expectGET('/ticketing/api/software?name=' + softwareName).respond(200, []);
+
+      ticketingSoftwareClient.getByName(softwareName);
+
+      $httpBackend.flush();
+    });
+  });
 });

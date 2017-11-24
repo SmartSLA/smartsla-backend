@@ -7,6 +7,7 @@
   function ticketingSoftwareClient(ticketingRestangular) {
     return {
       create: create,
+      getByName: getByName,
       list: list,
       update: update
     };
@@ -37,6 +38,15 @@
      */
     function update(softwareId, updateData) {
       return ticketingRestangular.one('software', softwareId).customPUT(updateData);
+    }
+
+    /**
+     * Get software by name
+     * @param  {String} softwareName  - The software name
+     * @return {Promise}              - Resolve on success
+     */
+    function getByName(softwareName) {
+      return ticketingRestangular.all('software').getList({ name: softwareName });
     }
   }
 })(angular);
