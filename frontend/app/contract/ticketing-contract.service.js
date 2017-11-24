@@ -16,7 +16,8 @@
     return {
       create: create,
       get: get,
-      update: update
+      updateBasicInfo: updateBasicInfo,
+      updatePermissions: updatePermissions
     };
 
     function get(contractId) {
@@ -66,12 +67,16 @@
       });
     }
 
-    function update(contract) {
+    function updateBasicInfo(contract) {
       if (!contract) {
         return $q.reject(new Error('Contract is required'));
       }
 
       var contractToUpdate = angular.copy(contract);
+
+      // only update basic info
+      delete contractToUpdate.permissions;
+      delete contractToUpdate.software;
 
       TicketingService.depopulate(contractToUpdate, ['manager', 'defaultSupportManager', 'organization']);
 
@@ -83,6 +88,24 @@
 
       return asyncAction(notificationMessages, function() {
         return ticketingContractClient.update(contractToUpdate._id, contractToUpdate);
+      });
+    }
+
+    function updatePermissions(contractId, permissions) {
+      if (!contractId) {
+        return $q.reject(new Error('contractId is required'));
+      }
+
+      var modifiedPermissions = angular.copy(permissions);
+
+      var notificationMessages = {
+        progressing: 'Updating permissions...',
+        success: 'Permissons updated',
+        failure: 'Failed to update permissions'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingContractClient.updatePermissions(contractId, modifiedPermissions);
       });
     }
 

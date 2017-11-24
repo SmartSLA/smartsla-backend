@@ -1,0 +1,4 @@
+.ticketing-selectable(ng-click="toggle()")
+  label.checkbox(ng-click="$event.preventDefault()")
+    input(type='checkbox', ng-checked="item.selected")
+    i.input-helper

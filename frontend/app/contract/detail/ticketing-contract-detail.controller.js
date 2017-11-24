@@ -11,7 +11,7 @@
     TicketingContractService
   ) {
     var self = this;
-    var DEFAULT_TAB = 'main';
+    var DEFAULT_TAB = 'permission';
     var originContract;
 
     self.$onInit = $onInit;
@@ -47,11 +47,21 @@
     }
 
     function onSaveBtnClick() {
-      return TicketingContractService.update(self.contract)
-        .then(function() {
-          self.isEditMode = false;
-          originContract = angular.copy(self.contract);
-        });
+      // update permissions
+      if (self.selectedTab === DEFAULT_TAB) {
+        var permissionsToUpdate = _buildPermissionsToUpdate(self.contract.permissions);
+
+        return TicketingContractService.updatePermissions(self.contract._id, { permissions: permissionsToUpdate });
+      }
+
+      // update basic info
+      if (self.selectedTab === 'main') {
+        return TicketingContractService.updateBasicInfo(self.contract)
+          .then(function() {
+            self.isEditMode = false;
+            originContract = angular.copy(self.contract);
+          });
+      }
     }
 
     function onCreateOrderBtnClick() {
@@ -72,6 +82,20 @@
         self.isEditMode = false;
         self.contract = angular.copy(originContract);
       }
+    }
+
+    function _buildPermissionsToUpdate(permissions) {
+      var selectedPermissions = permissions.filter(function(permission) {
+        return permission.selected;
+      });
+
+      if (selectedPermissions.length === permissions.length) { // all entities have permission
+        return 1;
+      }
+
+      return selectedPermissions.map(function(permission) { // no or some entities have permission
+          return permission._id;
+        });
     }
   }
 })(angular);

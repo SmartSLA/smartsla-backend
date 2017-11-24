@@ -14,6 +14,12 @@ sub-header
     selected-tab = "$ctrl.selectedTab"
   )
 form(name="form")
+  ticketing-contract-tabs-permission(
+    ng-show='$ctrl.selectedTab === "permission"',
+    ng-if="$ctrl.contract.permissions",
+    permissions="$ctrl.contract.permissions",
+    form="form"
+  )
   ticketing-contract-tabs-main(
     ng-if="$ctrl.contract",
     ng-show='$ctrl.selectedTab === "main"',
@@ -25,9 +31,6 @@ ticketing-contract-tabs-order(
   ng-show='$ctrl.selectedTab === "order"',
   contract="$ctrl.contract",
   on-create-btn-click="$ctrl.onCreateOrderBtnClick()"
-)
-ticketing-contract-tabs-permission(
-  ng-show='$ctrl.selectedTab === "permission"'
 )
 ticketing-contract-tabs-request(
   ng-show='$ctrl.selectedTab === "request"'
