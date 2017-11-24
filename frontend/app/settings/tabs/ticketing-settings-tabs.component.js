@@ -2,8 +2,8 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .component('ticketingGlobalTabs', {
-      templateUrl: '/ticketing/app/global/tabs/ticketing-global-tabs.html',
+    .component('ticketingSettingsTabs', {
+      templateUrl: '/ticketing/app/settings/tabs/ticketing-settings-tabs.html',
       bindings: {
         selectedTab: '='
       }
