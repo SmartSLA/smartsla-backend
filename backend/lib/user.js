@@ -23,7 +23,7 @@ module.exports = dependencies => {
 
   /**
    * Create new user and corresponding user role.
-   * Also add new user into sub-organization if need.
+   * Also add new user into entity if need.
    * @param  {Object} user - New user info
    * @return {Promise}     - Resolve with created user on success
    */
@@ -38,8 +38,17 @@ module.exports = dependencies => {
         return ticketingUserRole.create(userRole)
           .then(createdUserRole => {
             // add user into entity
-            if (user.organization) {
-              return organization.addUsersById(user.organization._id, [createdUser._id])
+            if (user.entity) {
+              return organization.addUsersById(user.entity._id, [createdUser._id])
+                .then(() => {
+                  createdUser = createdUser.toObject();
+
+                  return organization.getById(user.entity.parent)
+                    .then(organization => {
+                      user.entity.parent = organization;
+                      createdUser.entity = user.entity;
+                    });
+                })
                 .then(() => createdUser)
                 .catch(err =>
                   // remove createdUserRole if failed to add user into entity
@@ -78,7 +87,7 @@ module.exports = dependencies => {
   }
 
   /**
-   * List Ticketing users with organization info.
+   * List Ticketing users with entity info.
    * @param {Object}   options - The options object, may contain offset and limit
    * @param {Promise}          - Resolve on success
    */
@@ -94,10 +103,10 @@ module.exports = dependencies => {
   }
 
   function _buildUserFromUserRole(userRole) {
-    return organization.getSubOrganizationByUserId(userRole.user._id)
-      .then(org => {
-        if (org) {
-          userRole.user.organization = org;
+    return organization.getEntityByUserId(userRole.user._id)
+      .then(entity => {
+        if (entity) {
+          userRole.user.entity = entity;
         }
 
         return userRole.user;

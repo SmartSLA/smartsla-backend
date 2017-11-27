@@ -30,7 +30,19 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function get(req, res) {
-    return lib.organization.getById(req.params.id)
+    const populations = [
+      {
+        path: 'manager'
+      },
+      {
+        path: 'parent'
+      },
+      {
+        path: 'users'
+      }
+    ];
+
+    return lib.organization.getById(req.params.id, { populations })
       .then(organization => {
         organization = organization.toObject();
         if (organization.manager) {

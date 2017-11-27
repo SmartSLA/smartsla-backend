@@ -32,7 +32,7 @@ describe('The TicketingUserCreateController', function() {
   function initController(scope) {
     scope = scope || $rootScope.$new();
 
-    var controller = $controller('TicketingUserCreateController', { scope: scope });
+    var controller = $controller('TicketingUserCreateController', { scope: scope, entity: {} });
 
     scope.$digest();
 

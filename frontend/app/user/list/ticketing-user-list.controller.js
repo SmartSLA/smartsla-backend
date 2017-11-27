@@ -51,7 +51,7 @@
         controllerAs: '$ctrl',
         controller: 'TicketingUserCreateController',
         locals: {
-          organization: null
+          entity: null
         }
       });
     }

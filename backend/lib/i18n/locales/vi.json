@@ -97,5 +97,6 @@
   "Software created": "Đã tạo phần mềm",
   "Failed to create software": "Tạo phần mềm thất bại",
   "New software": "Thêm phần mềm",
-  "That software already exists": "Phần mềm đã tồn tại"
+  "That software already exists": "Phần mềm đã tồn tại",
+  "Only allows one entity": "Chỉ cho phép một tổ chức con"
 }
