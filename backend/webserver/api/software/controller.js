@@ -5,7 +5,7 @@ module.exports = function(dependencies, lib) {
 
   return {
     create,
-    list,
+    get,
     update
   };
 
@@ -22,12 +22,12 @@ module.exports = function(dependencies, lib) {
   }
 
   /**
-   * List software
+   * Get software
    *
    * @param {Request} req
    * @param {Response} res
    */
-  function list(req, res) {
+  function get(req, res) {
     let getSoftware;
     let errorMessage;
 
@@ -40,6 +40,17 @@ module.exports = function(dependencies, lib) {
 
       errorMessage = 'Error while searching software';
       getSoftware = lib.software.search(options);
+    } else if (req.query.name) {
+      errorMessage = `Failed to get software ${req.query.name}`;
+      getSoftware = lib.software.getByName(req.query.name)
+        .then(software => {
+          const list = software ? [software] : [];
+
+          return {
+            total_count: list.length,
+            list
+          };
+        });
     } else {
       const options = {
         limit: +req.query.limit,

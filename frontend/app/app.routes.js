@@ -60,11 +60,11 @@
             }
           }
         })
-        .state('ticketingAdminCenter.global', {
-          url: '/global',
+        .state('ticketingAdminCenter.settings', {
+          url: '/settings',
           views: {
             'admin-root@ticketingAdminCenter': {
-              template: '<ticketing-global />'
+              template: '<ticketing-settings />'
             }
           }
         })

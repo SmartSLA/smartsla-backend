@@ -91,5 +91,11 @@
   "Global settings": "Global settings",
   "Category": "Category",
   "Versions": "Versions",
-  "No software": "No software"
+  "No software": "No software",
+  "Add a version": "Add a version",
+  "Creating software...": "Creating software...",
+  "Software created": "Software created",
+  "Failed to create software": "Failed to create software",
+  "New software": "New software",
+  "That software already exists": "That software already exists"
 }

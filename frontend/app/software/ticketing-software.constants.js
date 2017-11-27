@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .component('ticketingGlobal', {
-      templateUrl: '/ticketing/app/global/ticketing-global.html'
+    .constant('TICKETING_SOFTWARE_EVENTS', {
+      CREATED: 'ticketing:software:created'
     });
 })(angular);

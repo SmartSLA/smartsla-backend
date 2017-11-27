@@ -91,5 +91,11 @@
   "Global settings": "Thiết lập chung",
   "Category": "Danh mục",
   "Versions": "Phiên bản",
-  "No software": "Không có phần mềm"
+  "No software": "Không có phần mềm",
+  "Add a version": "Thêm phiên bản",
+  "Creating software...": "Đang tạo phần mềm...",
+  "Software created": "Đã tạo phần mềm",
+  "Failed to create software": "Tạo phần mềm thất bại",
+  "New software": "Thêm phần mềm",
+  "That software already exists": "Phần mềm đã tồn tại"
 }
