@@ -50,6 +50,13 @@
         return arrays.reduce(function(resultArray, currentArray) {
           return resultArray.concat(currentArray);
         }, []);
+      })
+      .then(function(array) {
+        return array.map(function(item) {
+          item._id = item.id; // consistent _id of searched documents with data in mongo
+
+          return item;
+        });
       });
     }
 
