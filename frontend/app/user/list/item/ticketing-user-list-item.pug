@@ -2,9 +2,9 @@
   .col-md-2.col-xs-4.lv-title
     span {{::$ctrl.user.firstname}} {{::$ctrl.user.lastname}}
   .col-md-3.col-xs-4.lv-title
-    span {{::$ctrl.user.organization.parent.fullName}}
+    span {{::$ctrl.user.entity.parent.fullName}}
   .col-md-3.hidden-xs.lv-title
-    span {{::$ctrl.user.organization.fullName}}
+    span {{::$ctrl.user.entity.fullName}}
   .col-md-3.col-xs-4.ellipsis
     a(ng-href="mailto:{{::$ctrl.user.preferredEmail}}")
       | {{::$ctrl.user.preferredEmail}}

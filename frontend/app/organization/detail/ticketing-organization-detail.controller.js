@@ -67,7 +67,7 @@
         controllerAs: '$ctrl',
         controller: 'TicketingUserCreateController',
         locals: {
-          organization: self.organization
+          entity: self.organization
         }
       });
     }

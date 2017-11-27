@@ -97,5 +97,6 @@
   "Software created": "Logiciel créé",
   "Failed to create software": "Impossible de créer le logiciel",
   "New software": "Nouveau logiciel",
-  "That software already exists": "Ce logiciel existe déjà"
+  "That software already exists": "Ce logiciel existe déjà",
+  "Only allows one entity": "N'autoriser qu'une seule entité"
 }

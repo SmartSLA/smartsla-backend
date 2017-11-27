@@ -97,5 +97,6 @@
   "Software created": "Software created",
   "Failed to create software": "Failed to create software",
   "New software": "New software",
-  "That software already exists": "That software already exists"
+  "That software already exists": "That software already exists",
+  "Only allows one entity": "Only allows one entity"
 }

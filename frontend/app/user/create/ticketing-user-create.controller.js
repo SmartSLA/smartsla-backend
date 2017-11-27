@@ -4,12 +4,12 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingUserCreateController', TicketingUserCreateController);
 
-  function TicketingUserCreateController(TicketingUserService, organization) {
+  function TicketingUserCreateController(TicketingUserService, entity) {
     var self = this;
 
     self.user = {};
-    if (organization) {
-      self.user.organization = organization;
+    if (entity) {
+      self.user.entity = entity;
     }
 
     self.create = create;
