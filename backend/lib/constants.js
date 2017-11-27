@@ -14,6 +14,7 @@ module.exports = {
     LIMIT: 50
   },
   ORDER_TYPES: ['USP', 'USPL', 'USL'],
+  GLOSSARY_CATEGORIES: ['DemandType', 'SoftwareType', 'IssueType'],
   INDICES: {
     ORGANIZATION: {
       name: 'organizations.idx',

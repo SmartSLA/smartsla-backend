@@ -11,6 +11,7 @@ module.exports = (dependencies, lib) => {
   require('./user')(dependencies, lib, router);
   require('./order')(dependencies, lib, router);
   require('./software')(dependencies, lib, router);
+  require('./glossary')(dependencies, lib, router);
 
   return router;
 };
