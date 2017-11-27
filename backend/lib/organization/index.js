@@ -16,7 +16,7 @@ module.exports = dependencies => {
     create,
     getById,
     getByShortName,
-    getSubOrganizationByUserId,
+    getEntityByUserId,
     list,
     listByCursor,
     updateById,
@@ -95,13 +95,14 @@ module.exports = dependencies => {
    * @param {String}   organizationId - The organization ID
    * @param {Promise}                 - Resolve on success
    */
-  function getById(organizationId) {
-    return Organization
-      .findById(organizationId)
-      .populate('manager')
-      .populate('parent')
-      .populate('users')
-      .exec();
+  function getById(organizationId, options = {}) {
+    const query = Organization.findById(organizationId);
+
+    if (options.populations) {
+      query.populate(options.populations);
+    }
+
+    return query.exec();
   }
 
   /**
@@ -114,11 +115,11 @@ module.exports = dependencies => {
   }
 
   /**
-   * Get sub organization by user ID.
+   * Get entity by user ID.
    * @param {String}  userID - The user ID
    * @param {Promise}        - Resolve on success
    */
-  function getSubOrganizationByUserId(userId) {
+  function getEntityByUserId(userId) {
     return Organization.findOne({ users: userId, parent: { $exists: true } }).populate('parent').exec();
   }
 

@@ -209,4 +209,58 @@ describe('The create Ticketing user API: POST /api/users', function() {
         }));
     }));
   });
+
+  it('should respond 201 if success to create user which belong to an entity', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(API_PATH));
+      let organization, entity, entityJson;
+
+      lib.organization.create({
+        shortName: 'organization'
+      }).then(createdOrganization => {
+        organization = createdOrganization;
+        entityJson = {
+          parent: createdOrganization._id,
+          shortName: 'entity'
+        };
+
+        return lib.organization.create(entityJson).then(createdEntity => {
+          entity = createdEntity;
+        });
+      }).then(() => {
+        const newUser = {
+          firstname: 'foo',
+          lastname: 'bar',
+          email: 'bar@tic.org',
+          main_phone: '888',
+          entity
+        };
+
+        req.send(newUser);
+        req.expect(201)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            newUser.emails = [newUser.email];
+            delete newUser.email;
+
+            expect(res.body).to.shallowDeepEqual({
+              firstname: newUser.firstname,
+              lastname: newUser.lastname,
+              main_phone: newUser.main_phone,
+              entity: {
+                parent: {
+                  shortName: organization.shortName
+                },
+                shortName: entity.shortName
+              }
+            });
+
+            lib.ticketingUserRole.getByUser(res.body._id)
+              .then(userRole => {
+                expect(userRole).to.exist;
+                done();
+              });
+          }));
+      });
+    }));
+  });
 });

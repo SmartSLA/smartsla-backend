@@ -35,8 +35,16 @@ module.exports = (dependencies, lib) => {
       domain_id: req.domain._id
     }];
 
+    const denormalizeCreatedUser = createdUser => {
+      const denormalizedUser = coreUser.denormalize.denormalize(createdUser);
+
+      denormalizedUser.entity = createdUser.entity;
+
+      return denormalizedUser;
+    };
+
     lib.user.create(user)
-      .then(createdUser => res.status(201).json(coreUser.denormalize.denormalize(createdUser)))
+      .then(createdUser => res.status(201).json(denormalizeCreatedUser(createdUser)))
       .catch(err => send500Error('Failed to create Ticketing user', err, res));
   }
 
@@ -51,8 +59,8 @@ module.exports = (dependencies, lib) => {
       .then(user => {
         const denormalizedUser = coreUser.denormalize.denormalize(user);
 
-        // organization info
-        denormalizedUser.organization = user.organization;
+        // entity info
+        denormalizedUser.entity = user.entity;
         res.status(201).json(denormalizedUser);
       })
       .catch(err => send500Error('Failed to get user', err, res));
@@ -81,7 +89,7 @@ module.exports = (dependencies, lib) => {
   }
 
   /**
-   * List users with organization info.
+   * List users with entity info.
    *
    * @param {Request} req
    * @param {Response} res
@@ -97,8 +105,8 @@ module.exports = (dependencies, lib) => {
         const denormalizedUsers = users.map(user => {
           const denormalizedUser = coreUser.denormalize.denormalize(user);
 
-          // organization info
-          denormalizedUser.organization = user.organization;
+          // entity info
+          denormalizedUser.entity = user.entity;
 
           return denormalizedUser;
         });
