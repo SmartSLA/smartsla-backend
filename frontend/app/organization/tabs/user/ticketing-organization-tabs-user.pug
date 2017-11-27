@@ -12,7 +12,11 @@
               span #{__('Phone')}
       .lv-body
         .lv-item.p-0(ng-repeat="user in $ctrl.users track by user._id")
-          ticketing-user-list-item(user="user", is-entity-mode="true")
+          ticketing-user-list-item.clickable(
+            user="user",
+            is-entity-mode="true",
+            ui-sref="ticketingAdminCenter.users.detail({ userId: user._id })"
+          )
 div(ng-if="!$ctrl.users.length")
   ticketing-empty-message(
     icon="mdi-account",
