@@ -7,6 +7,7 @@ module.exports = {
   validateOrderType,
   validateRight,
   validateUserRole,
+  validateGlossaryCategory,
   uniqueRequests
 };
 
@@ -20,6 +21,10 @@ function validateUserRole(role) {
 
 function validateOrderType(type) {
   return CONSTANTS.ORDER_TYPES.indexOf(type) > -1;
+}
+
+function validateGlossaryCategory(category) {
+  return CONSTANTS.GLOSSARY_CATEGORIES.indexOf(category) > -1;
 }
 
 function uniqueRequests(requests) {
