@@ -65,6 +65,13 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
 
       webserverWrapper.injectLess(MODULE_NAME, [lessFile], 'esn');
 
+      const jsResourceFiles = [
+        '../components/angular-ui-select/dist/select.js',
+        '../components/angular-sanitize/angular-sanitize.min.js'
+      ];
+
+      webserverWrapper.injectJS(MODULE_NAME, jsResourceFiles, 'esn');
+
       webserverWrapper.addApp(MODULE_NAME, app);
 
       return callback();

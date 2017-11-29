@@ -33,3 +33,11 @@ angular.module('esn.attendee', [])
   });
 angular.module('esn.core', [])
   .constant('_', _);
+angular.module('ui.select', {});
+angular.module('ngSanitize', {});
+angular.module('ngTagsInput', [])
+  .provider('tagsInputConfig', function() {
+    this.setDefaults = function() {};
+    this.$get = function() {};
+    this.setActiveInterpolation = function() {};
+  });

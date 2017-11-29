@@ -9,8 +9,10 @@
         addFromAutocompleteOnly: '<',
         placeholder: '@',
         maxTags: '<',
+        minTags: '<',
         newTags: '=',
-        objectTypes: '@'
+        objectTypes: '@',
+        exceptionListIds: '<'
       }
     });
 })(angular);
