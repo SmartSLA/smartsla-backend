@@ -44,6 +44,9 @@ module.exports = function(dependencies, lib) {
       },
       {
         path: 'organization'
+      },
+      {
+        path: 'software.template'
       }
     ];
 
@@ -60,7 +63,7 @@ module.exports = function(dependencies, lib) {
           .then(entities => {
             contract.permissions = _buildContractPermissions(contract, entities);
 
-            return res.status(201).json(contract);
+            return res.status(200).json(contract);
           });
 
       })
