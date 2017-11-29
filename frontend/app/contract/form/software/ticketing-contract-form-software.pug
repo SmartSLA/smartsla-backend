@@ -1,0 +1,31 @@
+ng-form(name="form")
+  .row.flex-vertical-centered
+    .col-md-3.col-xs-3
+      ticketing-search-auto-complete(
+        new-tags="newSoftware",
+        max-tags="1",
+        min-tags="1",
+        object-types="software",
+        exception-list-ids="$ctrl.softwareIdsExist",
+        placeholder=__('Type a software name'))
+    .col-md-3.col-xs-3
+      input.form-control(ng-model="$ctrl.softwareTemplate.category", placeholder=__('Category'), disabled)
+    .col-md-3.col-xs-3
+      ui-select(
+        multiple,
+        ng-model="$ctrl.software.versions",
+        close-on-select="false",
+        required
+      )
+        ui-select-match(placeholder=__('Select versions')) {{$item}}
+        ui-select-choices(repeat="item in ($ctrl.softwareTemplate.versions | filter: $select.search) track by item")
+          span(ng-bind="item")
+    .col-md-2.col-xs-2
+      ui-select.form-control(ng-model="$ctrl.software.type", required)
+        ui-select-match(placeholder=__('Select type'))
+          span(ng-bind="$select.selected")
+        ui-select-choices(repeat="item in ($ctrl.softwareAvailableTypes | filter: $select.search) track by item")
+          span(ng-bind="item")
+    .col-md-1
+      button.btn.btn-primary(esn-submit="$ctrl.onAddBtnClick(form)", ng-disabled="form.$invalid")
+        | #{__('Add')}
