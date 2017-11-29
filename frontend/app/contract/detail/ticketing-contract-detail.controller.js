@@ -8,7 +8,8 @@
     $stateParams,
     $scope,
     $modal,
-    TicketingContractService
+    TicketingContractService,
+    TICKETING_CONTRACT_EVENTS
   ) {
     var self = this;
     var DEFAULT_TAB = 'permission';
@@ -36,6 +37,10 @@
             }
           }, true);
         });
+
+      $scope.$on(TICKETING_CONTRACT_EVENTS.SOFTWARE_ADDED, function(event, software) {
+        _onSoftwareAdded(software);
+      });
     }
 
     function onCancelBtnClick() {
@@ -96,6 +101,10 @@
       return selectedPermissions.map(function(permission) { // no or some entities have permission
           return permission._id;
         });
+    }
+
+    function _onSoftwareAdded(software) {
+      self.contract.software.unshift(software);
     }
   }
 })(angular);

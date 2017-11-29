@@ -1,0 +1,24 @@
+.card.p-20
+  .row.m-b-10
+    .col-md-12
+      h4 #{__('Add software')}
+  .row
+    ticketing-contract-form-software.xs-col-12.hidden-xs(contract="$ctrl.contract")
+
+.card
+  .card-body
+    .listview.lv-bordered.lv-lg
+      .lv-header
+        .lv-item.p-0
+          .row.hidden-xs
+            .col-md-3.col-xs-3.lv-title
+              span #{__('Software')}
+            .col-md-3.col-xs-3.lv-title
+              span #{__('Category')}
+            .col-md-3.col-xs-3.lv-title
+              span #{__('Versions')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Software type')}
+      .lv-body
+        .lv-item.p-0(ng-repeat="item in $ctrl.contract.software track by item.template.name")
+          ticketing-contract-tabs-software-item(software="item")
