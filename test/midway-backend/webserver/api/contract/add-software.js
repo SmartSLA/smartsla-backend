@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 describe('The POST /api/contracts/:id/software', function() {
   let app, lib, helpers, ObjectId, apiURL;
-  let user1, user2, software1, software2, software3, request1, request2, contract;
+  let user1, user2, software1, software2, software3, demand1, demand2, contract;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -45,12 +45,11 @@ describe('The POST /api/contracts/:id/software', function() {
           user: user1._id,
           role: 'administrator'
         })
-        .then(() => {
+        .then(() =>
           lib.ticketingUserRole.create({
             user: user2._id,
             role: 'user'
-          });
-        })
+          }))
         .then(() => done())
         .catch(err => done(err));
       });
@@ -81,14 +80,13 @@ describe('The POST /api/contracts/:id/software', function() {
       .then(createdSoftware1 => {
         software1 = createdSoftware1;
 
-        lib.software.create(software2Json)
+        return lib.software.create(software2Json)
           .then(createdSoftware2 => {
             software2 = createdSoftware2;
 
-            lib.software.create(software3Json)
+            return lib.software.create(software3Json)
               .then(createdSoftware3 => {
                 software3 = createdSoftware3;
-
                 done();
               });
           });
@@ -97,14 +95,14 @@ describe('The POST /api/contracts/:id/software', function() {
   });
 
   beforeEach(function(done) {
-    request1 = {
-      requestType: 'requestType1',
+    demand1 = {
+      demandType: 'demandType1',
       softwareType: 'softwareType1',
       issueType: 'issueType1'
     };
 
-    request2 = {
-      requestType: 'requestType2',
+    demand2 = {
+      demandType: 'demandType2',
       softwareType: 'softwareType2',
       issueType: 'issueType2'
     };
@@ -114,13 +112,13 @@ describe('The POST /api/contracts/:id/software', function() {
       organization: new ObjectId(),
       startDate: new Date(),
       endDate: new Date(),
-      requests: [
-        request1,
-        request2
+      demands: [
+        demand1,
+        demand2
       ],
       software: [{
         template: software1._id,
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: software1.versions
       }]
     })
@@ -163,7 +161,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: 'wrong ObjectId()',
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: software1.versions
       });
       req.expect(400)
@@ -182,7 +180,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: new ObjectId(),
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: software1.versions
       });
       req.expect(400)
@@ -201,7 +199,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: software3._id,
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: software1.versions
       });
       req.expect(400)
@@ -220,7 +218,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: software1._id,
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: software1.versions
       });
       req.expect(400)
@@ -276,7 +274,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: software2._id,
-        type: request1.softwareType
+        type: demand1.softwareType
       });
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -294,7 +292,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: software2._id,
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: ['9', '10']
       });
       req.expect(400)
@@ -313,7 +311,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
       req.send({
         template: software2._id,
-        type: request1.softwareType,
+        type: demand1.softwareType,
         versions: [software2.versions[0]]
       });
       req.expect(204)

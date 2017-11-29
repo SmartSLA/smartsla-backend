@@ -8,7 +8,7 @@ module.exports = {
   validateRight,
   validateUserRole,
   validateGlossaryCategory,
-  uniqueRequests
+  uniqueDemands
 };
 
 function validateRight(right) {
@@ -27,12 +27,12 @@ function validateGlossaryCategory(category) {
   return CONSTANTS.GLOSSARY_CATEGORIES.indexOf(category) > -1;
 }
 
-function uniqueRequests(requests) {
-  const unique = _.uniqBy(requests, request => [
-    request.requestType,
-    request.softwareType,
-    request.issueType
+function uniqueDemands(demands) {
+  const unique = _.uniqBy(demands, demand => [
+    demand.demandType,
+    demand.softwareType,
+    demand.issueType
   ].join());
 
-  return unique.length === requests.length;
+  return unique.length === demands.length;
 }
