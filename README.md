@@ -5,7 +5,7 @@
 
 ## Install
 
-Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/esn)
+Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/wikis/installation)
 
 ### Add the module to OpenPaaS
 
