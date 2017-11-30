@@ -19,8 +19,8 @@
         provider.objectType = provider.objectType || DEFAULT_OBJECT_TYPE;
         provider.getDisplayName = provider.getDisplayName || _getDisplayName;
 
-        provider.searchCandidates = function(query, limit) {
-          return provider.search(query, limit)
+        provider.searchCandidates = function(options) {
+          return provider.search(options)
             .then(function(list) {
               return list.map(function(item) {
                 return angular.extend(item, {
@@ -36,15 +36,25 @@
       }
     }
 
-    function search(query, limit, objectTypes) {
-      objectTypes = objectTypes || [DEFAULT_OBJECT_TYPE];
-
+    /**
+     * Search candidates
+     * @param  {Object} options The options object contains:
+     *                          - search: for filtering terms
+     *                          - limit: limit the number of candidates
+     *                          - objectTypes (optional): The candidate types which be searched
+     *                          - excludedIds (optional): The list of excluded ids
+     * @return {Promise} resolve on success with an array of candidates
+     */
+    function search(options) {
+      options.objectTypes = options.objectTypes || [DEFAULT_OBJECT_TYPE];
       var matchingProviders = _.filter(providers, function(provider) {
-        return _.contains(objectTypes, provider.objectType);
+        return _.contains(options.objectTypes, provider.objectType);
       });
 
+      delete options.objectTypes;
+
       return $q.all(matchingProviders.map(function(provider) {
-        return provider.searchCandidates(query, limit);
+        return provider.searchCandidates(options);
       }))
       .then(function(arrays) {
         return arrays.reduce(function(resultArray, currentArray) {

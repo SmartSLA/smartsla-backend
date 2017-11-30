@@ -15,7 +15,7 @@
 
     function $onInit() {
       self.onAddBtnClick = onAddBtnClick;
-      self.softwareIdsExist = _getSoftwareIdsExist(self.contract);
+      self.existingSoftwareIds = _getExistingSoftwareIds(self.contract);
       self.softwareAvailableTypes = _getSoftwareAvailableTypes();
 
       $scope.newSoftware = self.softwareTemplate || [];
@@ -33,13 +33,13 @@
       return TicketingContractService.addSoftware(self.contract._id, self.software)
         .then(function() {
           form.$setUntouched(); // reset form to untouched state
-          self.exceptionSoftwareIds = _getSoftwareIdsExist(self.contract);
+          self.existingSoftwareIds = _getExistingSoftwareIds(self.contract);
           $scope.newSoftware = [];
           self.software = {};
         });
     }
 
-    function _getSoftwareIdsExist(contract) {
+    function _getExistingSoftwareIds(contract) {
       return _.map(contract.software, function(item) {
         return item.template._id;
       });

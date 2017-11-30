@@ -6,7 +6,7 @@ ng-form(name="form")
         max-tags="1",
         min-tags="1",
         object-types="software",
-        exception-list-ids="$ctrl.softwareIdsExist",
+        excluded-ids="$ctrl.existingSoftwareIds",
         placeholder=__('Type a software name'))
     .col-md-3.col-xs-3
       input.form-control(ng-model="$ctrl.softwareTemplate.category", placeholder=__('Category'), disabled)

@@ -47,7 +47,7 @@ describe('The TicketingContractFormSoftwareController', function() {
     expect(controller.softwareAvailableTypes).to.deep.equal(['type1', 'type2']);
   });
 
-  it('should get the list of exist software ids from contract', function() {
+  it('should get the list of existing software ids from contract', function() {
     var contract = {
       software: [
         { template: { _id: 'software1' } },
@@ -56,8 +56,8 @@ describe('The TicketingContractFormSoftwareController', function() {
     };
     var controller = initController(null, { contract: contract });
 
-    expect(controller.softwareIdsExist.length).to.equal(contract.software.length);
-    expect(controller.softwareIdsExist).to.deep.equal(['software1', 'software2']);
+    expect(controller.existingSoftwareIds.length).to.equal(contract.software.length);
+    expect(controller.existingSoftwareIds).to.deep.equal(['software1', 'software2']);
   });
 
   describe('The onAddBtnClick function', function() {

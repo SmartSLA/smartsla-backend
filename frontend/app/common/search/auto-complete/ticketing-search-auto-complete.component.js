@@ -12,7 +12,7 @@
         minTags: '<',
         newTags: '=',
         objectTypes: '@',
-        exceptionListIds: '<'
+        excludedIds: '<'
       }
     });
 })(angular);
