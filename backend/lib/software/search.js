@@ -15,6 +15,7 @@ module.exports = dependencies => {
    * @param {object} options - Hash with:
    * - 'limit' and 'offset' for pagination
    * - 'search' for filtering terms
+   * - 'excludedIds' for excluded document ids
    * Search can be a single string, an array of strings which will be joined, or a space separated string list.
    *  In the case of array or space separated string, a AND search will be performed with the input terms.
    * @return {Promise} Resolve on success with result: { total_count: number, list: [Software1, Software2, ...] }
@@ -42,6 +43,9 @@ module.exports = dependencies => {
         ],
         query: {
           bool: {
+            filter: {
+              bool: _getElasticsearchFilter(options)
+            },
             must: {
               match: {
                 name: options.search
@@ -71,5 +75,19 @@ module.exports = dependencies => {
         });
       });
     });
+
+    function _getElasticsearchFilter(options) {
+      const filter = {};
+
+      if (options.excludedIds) {
+        filter.must_not = [{
+            ids: {
+              values: options.excludedIds
+            }
+          }];
+      }
+
+      return filter;
+    }
   }
 };
