@@ -1,15 +1,15 @@
 'use strict';
 
-const { uniqueRequests } = require('../helpers');
+const { uniqueDemands } = require('../helpers');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
 
-  const ContractRequestSchema = new mongoose.Schema({
-    requestType: { type: String, required: true },
-    softwareType: { type: String, required: true },
-    issueType: { type: String, required: true },
+  const ContractDemandSchema = new Schema({
+    demandType: { type: String, required: true },
+    softwareType: { type: String },
+    issueType: { type: String },
     responseTime: { type: Number, default: 0 }, // unit: hours
     workaroundTime: { type: Number, default: 0 }, // unit: hours
     solvingTime: { type: Number, default: 0 }, // unit: hours
@@ -18,7 +18,7 @@ module.exports = dependencies => {
     }
   }, { _id: false });
 
-  const ContractSoftwareSchema = new mongoose.Schema({
+  const ContractSoftwareSchema = new Schema({
     active: { type: Boolean, default: true },
     template: { type: Schema.ObjectId, ref: 'Software', required: true, unique: true },
     versions: [{ type: String, unique: true }],
@@ -28,7 +28,7 @@ module.exports = dependencies => {
     }
   }, { _id: false });
 
-  const ContractSchema = new mongoose.Schema({
+  const ContractSchema = new Schema({
     active: { type: Boolean, default: true },
     number: { type: String },
     title: { type: String, required: true },
@@ -43,7 +43,7 @@ module.exports = dependencies => {
     // 1 if all entities of contract's organization have permission
     // array of some entities of contract's organization which have permission
     permissions: { type: Schema.Types.Mixed, default: [] },
-    requests: [ContractRequestSchema],
+    demands: [ContractDemandSchema],
     software: [ContractSoftwareSchema],
     creation: { type: Date, default: Date.now },
     schemaVersion: { type: Number, default: 1 }
@@ -52,10 +52,8 @@ module.exports = dependencies => {
   const ContractModel = mongoose.model('Contract', ContractSchema);
 
   ContractSchema.pre('save', function(next) {
-    const self = this;
-
-    if (!uniqueRequests(self.requests)) {
-      next(new Error('Invalid contract requests'));
+    if (!uniqueDemands(this.demands)) {
+      next(new Error('Invalid contract demands'));
     }
 
     return next();

@@ -98,5 +98,14 @@
   "Failed to create software": "Impossible de créer le logiciel",
   "New software": "Nouveau logiciel",
   "That software already exists": "Ce logiciel existe déjà",
-  "Only allows one entity": "N'autoriser qu'une seule entité"
+  "Only allows one entity": "N'autoriser qu'une seule entité",
+  "Select versions": "Sélectionner des versions",
+  "Select type": "Sélectionner un type",
+  "Add": "Ajouter",
+  "Software type": "Type de logiciel",
+  "Type a software name": "Entrer un logiciel nom",
+  "Adding software...": "Ajouter un logiciel...",
+  "Software added": "Logiciel ajouté",
+  "Failed to add software": "Impossible d'ajouter le logiciel",
+  "Add software": "Ajouter logiciel"
 }

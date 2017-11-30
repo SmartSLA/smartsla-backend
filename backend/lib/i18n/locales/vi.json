@@ -98,5 +98,14 @@
   "Failed to create software": "Tạo phần mềm thất bại",
   "New software": "Thêm phần mềm",
   "That software already exists": "Phần mềm đã tồn tại",
-  "Only allows one entity": "Chỉ cho phép một tổ chức con"
+  "Only allows one entity": "Chỉ cho phép một tổ chức con",
+  "Select versions": "Chọn phiên bản",
+  "Select type": "Chọn loại",
+  "Add": "Thêm",
+  "Software type": "Loại phần mềm",
+  "Type a software name": "Nhập tên phần mềm",
+  "Adding software...": "Đang thêm phần mềm...",
+  "Software added": "Đã thêm phần mềm",
+  "Failed to add software": "Thêm phần mềm thất bại",
+  "Add software": "Thêm phần mềm"
 }

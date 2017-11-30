@@ -98,5 +98,14 @@
   "Failed to create software": "Failed to create software",
   "New software": "New software",
   "That software already exists": "That software already exists",
-  "Only allows one entity": "Only allows one entity"
+  "Only allows one entity": "Only allows one entity",
+  "Select versions": "Select versions",
+  "Select type": "Select type",
+  "Add": "Add",
+  "Software type": "Software type",
+  "Type a software name": "Type a software name",
+  "Adding software...": "Adding software...",
+  "Software added": "Software added",
+  "Failed to add software": "Failed to add software",
+  "Add software": "Add software"
 }

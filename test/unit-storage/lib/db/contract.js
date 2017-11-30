@@ -30,10 +30,10 @@ describe('The contract model', function() {
     return contract.save(callback);
   }
 
-  describe('The requests field', function() {
-    it('should not store the contract which has invalid requests', function(done) {
-      const request = {
-        requestType: 'r',
+  describe('The demands field', function() {
+    it('should not store the contract which has invalid demands', function(done) {
+      const demand = {
+        demandType: 'r',
         softwareType: 's',
         issueType: 'i'
       };
@@ -42,33 +42,33 @@ describe('The contract model', function() {
         organization: new ObjectId(),
         startDate: new Date(),
         endDate: new Date(),
-        requests: [
-          request,
-          request
+        demands: [
+          demand,
+          demand
         ]
       };
 
       saveContract(contractJson, err => {
         expect(err).to.exist;
-        expect(err.message).to.equal('Invalid contract requests');
+        expect(err.message).to.equal('Invalid contract demands');
         done();
       });
     });
 
-    it('should store the contract which has valid requests', function(done) {
+    it('should store the contract which has valid demands', function(done) {
       const contractJson = {
         title: 'test',
         organization: new ObjectId(),
         startDate: new Date(),
         endDate: new Date(),
-        requests: [
+        demands: [
           {
-            requestType: 'foo',
+            demandType: 'foo',
             softwareType: 's',
             issueType: 'i'
           },
           {
-            requestType: 'bar',
+            demandType: 'bar',
             softwareType: 's',
             issueType: 'i'
           }
@@ -77,8 +77,8 @@ describe('The contract model', function() {
 
       saveContract(contractJson, (err, savedContract) => {
         expect(err).to.not.exist;
-        expect(savedContract.requests[0].requestType).to.equal('foo');
-        expect(savedContract.requests[1].requestType).to.equal('bar');
+        expect(savedContract.demands[0].demandType).to.equal('foo');
+        expect(savedContract.demands[1].demandType).to.equal('bar');
         done();
       });
     });

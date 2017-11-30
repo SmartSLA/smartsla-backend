@@ -215,7 +215,7 @@ module.exports = (dependencies, lib) => {
   function checkSoftwareTypesAvailable(req, res, next) {
     const { type } = req.body;
 
-    const availableTypes = req.contract.requests.map(request => request.softwareType);
+    const availableTypes = req.contract.demands.map(demand => demand.softwareType);
 
     if (availableTypes.indexOf(type) === -1) {
       return send400Error('Software type is unsupported', res);

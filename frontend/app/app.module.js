@@ -11,6 +11,9 @@
     'esn.async-action',
     'esn.scroll',
     'esn.attendee',
-    'esn.core'
+    'esn.core',
+    'ui.select',
+    'ngSanitize',
+    'ngTagsInput'
   ]);
 })();

@@ -6,7 +6,8 @@
       tags-input.form-control(
         ng-model='$ctrl.newTags',
         max-tags="{{::$ctrl.maxTags}}",
-        placeholder="{{::$ctrl.placeholder}}",
+        min-tags="{{::$ctrl.minTags}}",
+        placeholder="{{$ctrl.maxTags ===  $ctrl.newTags.length ? '' : $ctrl.placeholder}}",
         display-property='displayName',
         key-property='id',
         replace-spaces-with-dashes='false',

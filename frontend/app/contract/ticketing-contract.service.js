@@ -14,6 +14,7 @@
     TICKETING_CONTRACT_EVENTS
   ) {
     return {
+      addSoftware: addSoftware,
       create: create,
       get: get,
       updateBasicInfo: updateBasicInfo,
@@ -96,6 +97,10 @@
         return $q.reject(new Error('contractId is required'));
       }
 
+      if (!permissions) {
+        return $q.reject(new Error('permissions is required'));
+      }
+
       var modifiedPermissions = angular.copy(permissions);
 
       var notificationMessages = {
@@ -106,6 +111,33 @@
 
       return asyncAction(notificationMessages, function() {
         return ticketingContractClient.updatePermissions(contractId, modifiedPermissions);
+      });
+    }
+
+    function addSoftware(contractId, software) {
+      if (!contractId) {
+        return $q.reject(new Error('contractId is required'));
+      }
+
+      if (!software) {
+        return $q.reject(new Error('software is required'));
+      }
+
+      var softwareTemplate = software.template ? software.template._id : null;
+      var softwareToAdd = angular.copy(software);
+
+      softwareToAdd.template = softwareTemplate;
+
+      var notificationMessages = {
+        progressing: 'Adding software...',
+        success: 'Software added',
+        failure: 'Failed to add software'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingContractClient.addSoftware(contractId, softwareToAdd);
+      }).then(function() {
+        $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.SOFTWARE_ADDED, software);
       });
     }
 

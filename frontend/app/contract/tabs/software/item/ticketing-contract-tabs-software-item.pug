@@ -1,0 +1,9 @@
+.row.flex-vertical-centered
+  .col-md-3.col-xs-3
+    span.ellipsis(title="{{::$ctrl.software.template.name}}") {{::$ctrl.software.template.name}}
+  .col-md-3.col-xs-3
+    span.ellipsis(title="{{::$ctrl.software.template.category}}") {{::$ctrl.software.template.category}}
+  .col-md-3.col-xs-3
+    span.ellipsis(title="{{::$ctrl.software.versions | ticketingJoinArray}}") {{::$ctrl.software.versions | ticketingJoinArray}}
+  .col-md-3.col-xs-3
+    span.ellipsis(title="{{::$ctrl.software.type}}") {{::$ctrl.software.type}}

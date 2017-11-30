@@ -5,6 +5,7 @@
     .controller('TicketingSearchAutoCompleteController', TicketingSearchAutoCompleteController);
 
   function TicketingSearchAutoCompleteController(
+    $scope,
     $element,
     elementScrollService,
     TicketingSearchService,
@@ -17,6 +18,7 @@
 
     function $onInit() {
       self.maxTags = self.maxTags === '' || !self.maxTags ? 'MAX_SAFE_INTEGER' : self.maxTags; // http://mbenford.github.io/ngTagsInput/documentation/api
+      self.minTags = self.minTags === '' || !self.minTags ? 0 : self.minTags;
       self.addFromAutocompleteOnly = self.addFromAutocompleteOnly || true;
       self.objectTypes = _determineObjectTypes(self.objectTypes);
       self.onTagAdding = onTagAdding;
@@ -28,7 +30,16 @@
       var limit = DEFAULT_SEARCH_LIMIT;
       var objectType = self.objectTypes;
 
-      return TicketingSearchService.search(query, limit, objectType);
+      return TicketingSearchService.search(query, limit, objectType)
+        .then(function(result) {
+          if (self.exceptionListIds) {
+            return _.map(result, function(item) {
+              if (self.exceptionListIds.indexOf(item._id) === -1) {
+                return item;
+              }
+            }).filter(Boolean);
+          }
+        });
     }
 
     function onTagAdding($tag) {
