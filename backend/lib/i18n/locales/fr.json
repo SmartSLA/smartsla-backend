@@ -125,5 +125,9 @@
   "Failed to add software type": "Impossible d'ajouter le type de logiciel",
   "Adding issue type...": "Ajouter un type de problème...",
   "Issue type added": "Type de problème ajouté",
-  "Failed to add issue type": "Impossible d'ajouter le type de problème"
+  "Failed to add issue type": "Impossible d'ajouter le type de problème",
+  "Response time": "Temps de réponse",
+  "Workaround time": "Temps de contournement",
+  "Solving time": "Temps de résolution",
+  "No demand": "Aucun demandé"
 }

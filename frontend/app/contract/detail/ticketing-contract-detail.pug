@@ -31,6 +31,8 @@ ticketing-contract-tabs-software(
   ng-show='$ctrl.selectedTab === "software"',
   contract="$ctrl.contract"
 )
-ticketing-contract-tabs-request(
-  ng-show='$ctrl.selectedTab === "request"'
+ticketing-contract-tabs-demand(
+  ng-if="$ctrl.contract",
+  ng-show='$ctrl.selectedTab === "demand"',
+  contract="$ctrl.contract"
 )
