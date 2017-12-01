@@ -1,0 +1,8 @@
+form(name="form", esn-autocomplete-off)
+  .row.m-0.p-t-25
+    .col-md-10
+      esn-form-group(ng-if="$ctrl.category", label="{{$ctrl.category | esnI18n}}")
+        input.form-control(type="text", ng-model="$ctrl.glossary.word", required)
+    .col-md-2
+      button.btn.btn-primary(type="submit", esn-submit="$ctrl.save(form)", ng-disabled="form.$pristine")
+        | #{__('Add')}

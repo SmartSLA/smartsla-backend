@@ -62,17 +62,17 @@ describe('The POST /api/contracts/:id/demands', function() {
   beforeEach(function(done) {
     demandGlossary = {
       word: 'information',
-      category: 'DemandType'
+      category: 'Demand type'
     };
 
     softwareGlossary = {
       word: 'browser',
-      category: 'SoftwareType'
+      category: 'Software type'
     };
 
     issueGlossary = {
       word: 'Non blocking',
-      category: 'IssueType'
+      category: 'Issue type'
     };
 
     Q.all([
@@ -155,7 +155,7 @@ describe('The POST /api/contracts/:id/demands', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'DemandType is unavailable' }
+            error: { code: 400, message: 'Bad Request', details: 'Demand type is unavailable' }
           });
           done();
         }));
@@ -173,7 +173,7 @@ describe('The POST /api/contracts/:id/demands', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'SoftwareType is unavailable' }
+            error: { code: 400, message: 'Bad Request', details: 'Software type is unavailable' }
           });
           done();
         }));
@@ -191,7 +191,7 @@ describe('The POST /api/contracts/:id/demands', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'IssueType is unavailable' }
+            error: { code: 400, message: 'Bad Request', details: 'Issue type is unavailable' }
           });
           done();
         }));
@@ -210,7 +210,7 @@ describe('The POST /api/contracts/:id/demands', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'SoftwareType, IssueType are unavailable' }
+            error: { code: 400, message: 'Bad Request', details: 'Software type, Issue type are unavailable' }
           });
           done();
         }));

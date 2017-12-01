@@ -73,7 +73,7 @@ describe('POST /api/glossaries', function() {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(API_PATH));
       const newGlossary = {
-        category: 'DemandType'
+        category: 'Demand type'
       };
 
       req.send(newGlossary);
@@ -130,7 +130,7 @@ describe('POST /api/glossaries', function() {
 
       lib.glossary.create({
         word: 'foo',
-        category: 'DemandType'
+        category: 'Demand type'
       })
         .then(createdGlossary => {
           const newGlossary = {
@@ -172,7 +172,7 @@ describe('POST /api/glossaries', function() {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const newGlossary = {
         word: 'foo',
-        category: 'DemandType'
+        category: 'Demand type'
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
