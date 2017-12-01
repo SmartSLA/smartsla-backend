@@ -11,9 +11,9 @@ module.exports = {
   },
   ORDER_TYPES: ['USP', 'USPL', 'USL'],
   GLOSSARY_CATEGORIES: {
-    demandType: 'DemandType',
-    softwareType: 'SoftwareType',
-    issueType: 'IssueType'
+    DEMAND_TYPE: 'Demand type',
+    SOFTWARE_TYPE: 'Software type',
+    ISSUE_TYPE: 'Issue type'
   },
   INDICES: {
     ORGANIZATION: {

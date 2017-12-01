@@ -53,7 +53,7 @@ describe('GET /api/glossaries', function() {
         .then(() =>
           lib.glossary.create({
             word: 'foo',
-            category: 'DemandType'
+            category: 'Demand type'
           })
           .then(createdGlossary => {
             glossary = createdGlossary;
@@ -114,14 +114,14 @@ describe('GET /api/glossaries', function() {
   it('should respond 200 with the list glossaries of given category', function(done) {
     lib.glossary.create({
       word: 'zfoo',
-      category: 'SoftwareType'
+      category: 'Software type'
     })
     .then(createdRequest => {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const req = requestAsMember(request(app).get(API_PATH));
         const expectResult = [getObjectFromModel(createdRequest)];
 
-        req.query({ category: 'SoftwareType' });
+        req.query({ category: 'Software type' });
         req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.headers['x-esn-items-count']).to.exist;
@@ -136,7 +136,7 @@ describe('GET /api/glossaries', function() {
   it('should respond 200 with the list glossaries in alphabetic order of word', function(done) {
     lib.glossary.create({
       word: 'zfoo',
-      category: 'SoftwareType'
+      category: 'Software type'
     })
     .then(createdRequest => {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {

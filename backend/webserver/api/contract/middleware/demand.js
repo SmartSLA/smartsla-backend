@@ -38,20 +38,20 @@ module.exports = (dependencies, lib) => {
 
     const glossaries = [{
       word: demandType,
-      category: GLOSSARY_CATEGORIES.demandType
+      category: GLOSSARY_CATEGORIES.DEMAND_TYPE
     }];
 
     if (softwareType) {
       glossaries.push({
         word: softwareType,
-        category: GLOSSARY_CATEGORIES.softwareType
+        category: GLOSSARY_CATEGORIES.SOFTWARE_TYPE
       });
     }
 
     if (issueType) {
       glossaries.push({
         word: issueType,
-        category: GLOSSARY_CATEGORIES.issueType
+        category: GLOSSARY_CATEGORIES.ISSUE_TYPE
       });
     }
 
