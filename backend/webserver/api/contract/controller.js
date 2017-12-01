@@ -5,6 +5,7 @@ module.exports = function(dependencies, lib) {
   const coreUser = dependencies('coreUser');
 
   return {
+    addDemand,
     addSoftware,
     create,
     createOrder,
@@ -185,6 +186,24 @@ module.exports = function(dependencies, lib) {
         return send404Error('Contract not found', res);
       })
       .catch(err => send500Error('Failed to add software', err, res));
+  }
+
+  /**
+   * Add a new demand for a contract
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function addDemand(req, res) {
+    return lib.contract.addDemands(req.params.id, [req.body])
+      .then(numberOfUpdatedDocs => {
+        if (numberOfUpdatedDocs) {
+          return res.status(204).end();
+        }
+
+        return send404Error('Contract not found', res);
+      })
+      .catch(err => send500Error('Failed to add demand', err, res));
   }
 
   /**

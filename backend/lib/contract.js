@@ -7,6 +7,7 @@ module.exports = dependencies => {
   const Contract = mongoose.model('Contract');
 
   return {
+    addDemands,
     addOrder,
     addSoftware,
     create,
@@ -66,6 +67,17 @@ module.exports = dependencies => {
     softwareToAdd = Array.isArray(softwareToAdd) ? softwareToAdd : [softwareToAdd];
 
     return Contract.update({ _id: contractId }, { $addToSet: { software: { $each: softwareToAdd } } }).exec()
+      .then(updatedResult => updatedResult.n); // http://mongoosejs.com/docs/api.html#model_Model.update
+  }
+
+  /**
+   * Add demands for a contract
+   * @param {String}   contractId  - The contract ID
+   * @param {Object}   demands     - The array of demands to add
+   * @param {Promise}              - Resolve on success with the number of documents selected for update
+   */
+  function addDemands(contractId, demands) {
+    return Contract.update({ _id: contractId }, { $addToSet: { demands: { $each: demands } } }).exec()
       .then(updatedResult => updatedResult.n); // http://mongoosejs.com/docs/api.html#model_Model.update
   }
 

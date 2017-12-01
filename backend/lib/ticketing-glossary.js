@@ -6,6 +6,7 @@ module.exports = dependencies => {
 
   return {
     create,
+    findByGlossaries,
     list,
     glossaryExists
   };
@@ -43,5 +44,14 @@ module.exports = dependencies => {
   function glossaryExists(glossary) {
     return TicketingGlossary.count(glossary).exec()
       .then(count => count > 0);
+  }
+
+  /**
+   * Find by glossaries
+   * @param  {Array} glossaries - The list of glossary objects, each item has format: { word: 'word', category: 'category' }
+   * @return {Promise} Resolve on success with the list of found glossaries
+   */
+  function findByGlossaries(glossaries) {
+    return TicketingGlossary.find({ $or: glossaries }).exec();
   }
 };

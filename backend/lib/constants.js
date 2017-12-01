@@ -1,10 +1,6 @@
 'use strict';
 
 module.exports = {
-  ORDER_RIGHTS: {
-    VIEW: 'view',
-    SUBMIT: 'submit'
-  },
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
     USER: 'user'
@@ -14,7 +10,11 @@ module.exports = {
     LIMIT: 50
   },
   ORDER_TYPES: ['USP', 'USPL', 'USL'],
-  GLOSSARY_CATEGORIES: ['DemandType', 'SoftwareType', 'IssueType'],
+  GLOSSARY_CATEGORIES: {
+    demandType: 'DemandType',
+    softwareType: 'SoftwareType',
+    issueType: 'IssueType'
+  },
   INDICES: {
     ORGANIZATION: {
       name: 'organizations.idx',
