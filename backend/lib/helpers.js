@@ -24,7 +24,7 @@ function validateOrderType(type) {
 }
 
 function validateGlossaryCategory(category) {
-  return CONSTANTS.GLOSSARY_CATEGORIES.indexOf(category) > -1;
+  return Object.values(CONSTANTS.GLOSSARY_CATEGORIES).indexOf(category) > -1;
 }
 
 function uniqueDemands(demands) {

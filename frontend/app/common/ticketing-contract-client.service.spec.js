@@ -86,6 +86,19 @@ describe('The ticketingContractClient service', function() {
     });
   });
 
+  describe('The addDemand function', function() {
+    it('should POST to right endpoint to add demand', function() {
+      var contractId = '123';
+      var demand = { foo: 'bar' };
+
+      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/demands', demand).respond(204);
+
+      ticketingContractClient.addDemand(contractId, demand);
+
+      $httpBackend.flush();
+    });
+  });
+
   describe('The createOrder function', function() {
     it('should POST to right endpoint to create a new order', function() {
       var order = { foo: 'baz' };

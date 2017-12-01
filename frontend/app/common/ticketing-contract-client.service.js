@@ -6,6 +6,7 @@
 
   function ticketingContractClient(ticketingRestangular) {
     return {
+      addDemand: addDemand,
       addSoftware: addSoftware,
       create: create,
       createOrder: createOrder,
@@ -78,6 +79,19 @@
         .one('contracts', contractId)
         .one('software')
         .customPOST(software);
+    }
+
+    /**
+     * Add a demand for a contract.
+     * @param  {String} contractId - The contract ID
+     * @param  {Object} demand     - The demand object
+     * @return {Promise}           - Resolve on success
+     */
+    function addDemand(contractId, demand) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .one('demands')
+        .customPOST(demand);
     }
 
     /**

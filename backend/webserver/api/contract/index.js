@@ -9,12 +9,9 @@ module.exports = function(dependencies, lib, router) {
     canCreateContract,
     canListContract,
     canUpdateContract,
-    canCreateOrder,
-    canListOrder,
     canReadContract,
-    canUpdateOrder,
     validateContractPayload,
-    validateOrderPayload,
+    validateDemand,
     validatePermissions,
     validateSoftware
   } = require('./middleware')(dependencies, lib);
@@ -47,30 +44,6 @@ module.exports = function(dependencies, lib, router) {
     controller.update
   );
 
-  router.get('/contracts/:id/orders',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canListOrder,
-    controller.listOrders
-  );
-
-  router.post('/contracts/:id/orders',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canCreateOrder,
-    validateOrderPayload,
-    controller.createOrder
-  );
-
-  router.put('/contracts/:id/orders/:orderId',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canUpdateOrder,
-    checkIdInParams('orderId', 'Order'),
-    validateOrderPayload,
-    controller.updateOrder
-  );
-
   router.post('/contracts/:id/permissions',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'Contract'),
@@ -87,5 +60,14 @@ module.exports = function(dependencies, lib, router) {
     load,
     validateSoftware,
     controller.addSoftware
+  );
+
+  router.post('/contracts/:id/demands',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    canUpdateContract,
+    load,
+    validateDemand,
+    controller.addDemand
   );
 };
