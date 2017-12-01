@@ -35,7 +35,8 @@ module.exports = function(dependencies, lib) {
       const options = {
         limit: +req.query.limit,
         offset: +req.query.offset,
-        search: req.query.search
+        search: req.query.search,
+        excludedIds: req.query.excludedIds
       };
 
       errorMessage = 'Error while searching software';

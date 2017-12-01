@@ -66,7 +66,7 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
       webserverWrapper.injectLess(MODULE_NAME, [lessFile], 'esn');
 
       const jsResourceFiles = [
-        '../components/angular-ui-select/dist/select.js',
+        '../components/angular-ui-select/dist/select.min.js',
         '../components/angular-sanitize/angular-sanitize.min.js'
       ];
 

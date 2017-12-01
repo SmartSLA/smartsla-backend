@@ -29,13 +29,8 @@
         getDisplayName: function(software) {
           return software.name;
         },
-        search: function(query, limit) {
-          var searchQuery = {
-            search: query,
-            limit: limit
-          };
-
-          return ticketingSoftwareClient.list(searchQuery)
+        search: function(options) {
+          return ticketingSoftwareClient.list(options)
             .then(function(response) {
               return response.data;
             }, function(err) {

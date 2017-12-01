@@ -88,13 +88,8 @@
         getDisplayName: function(organization) {
           return organization.shortName;
         },
-        search: function(query, limit) {
-          var searchQuery = {
-            search: query,
-            limit: limit
-          };
-
-          return ticketingOrganizationClient.list(searchQuery)
+        search: function(options) {
+          return ticketingOrganizationClient.list(options)
             .then(function(response) {
               return response.data;
             }, function(err) {
@@ -113,14 +108,10 @@
         getDisplayName: function(entity) {
           return entity.shortName;
         },
-        search: function(query, limit) {
-          var searchQuery = {
-            search: query,
-            limit: limit,
-            parent: true
-          };
+        search: function(options) {
+          options.parent = true;
 
-          return ticketingOrganizationClient.list(searchQuery)
+          return ticketingOrganizationClient.list(options)
             .then(function(response) {
               return response.data;
             }, function(err) {

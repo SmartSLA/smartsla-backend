@@ -7,43 +7,51 @@
   function TicketingSearchAutoCompleteController(
     $scope,
     $element,
+    $q,
     elementScrollService,
     TicketingSearchService,
     _
   ) {
     var self = this;
     var DEFAULT_SEARCH_LIMIT = 20;
+    var DEFAULT_MAX_TAGS = 1000;
+    var objectTypes;
 
     self.$onInit = $onInit;
 
     function $onInit() {
-      self.maxTags = self.maxTags === '' || !self.maxTags ? 'MAX_SAFE_INTEGER' : self.maxTags; // http://mbenford.github.io/ngTagsInput/documentation/api
+      self.maxTags = self.maxTags === '' || !self.maxTags ? DEFAULT_MAX_TAGS : self.maxTags; // http://mbenford.github.io/ngTagsInput/documentation/api
       self.minTags = self.minTags === '' || !self.minTags ? 0 : self.minTags;
       self.addFromAutocompleteOnly = self.addFromAutocompleteOnly || true;
-      self.objectTypes = _determineObjectTypes(self.objectTypes);
+      objectTypes = _determineObjectTypes(self.objectTypes);
       self.onTagAdding = onTagAdding;
       self.onTagAdded = onTagAdded;
       self.search = search;
     }
 
     function search(query) {
-      var limit = DEFAULT_SEARCH_LIMIT;
-      var objectType = self.objectTypes;
+      if (self.newTags.length === self.maxTags) {
+        return $q.when([]);
+      }
 
-      return TicketingSearchService.search(query, limit, objectType)
-        .then(function(result) {
-          if (self.exceptionListIds) {
-            return _.map(result, function(item) {
-              if (self.exceptionListIds.indexOf(item._id) === -1) {
-                return item;
-              }
-            }).filter(Boolean);
-          }
-        });
+      var options = {
+        search: query,
+        limit: DEFAULT_SEARCH_LIMIT
+      };
+
+      if (objectTypes) {
+        options.objectTypes = objectTypes;
+      }
+
+      if (self.excludedIds) {
+        options['excludedIds[]'] = self.excludedIds;
+      }
+
+      return TicketingSearchService.search(options);
     }
 
     function onTagAdding($tag) {
-      return !_isDuplicatedTag($tag, self.newTags);
+      return (self.newTags.length < self.maxTags) && !_isDuplicatedTag($tag, self.newTags);
     }
 
     function onTagAdded() {

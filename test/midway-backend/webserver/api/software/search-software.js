@@ -136,4 +136,32 @@ describe('GET /api/software?search=', function() {
         });
     }));
   });
+
+  it('should respond 200 with the software list which does not include excluded software ids', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const softwareJsonA = { name: 'fooA', category: 'test' };
+      const softwareJsonB = { name: 'fooB', category: 'test' };
+      let softwareA;
+
+      lib.software.create(softwareJsonA)
+        .then(createdSoftware => {
+          softwareA = createdSoftware;
+
+          return lib.software.create(softwareJsonB);
+        })
+        .then(() => {
+          const req = requestAsMember(request(app).get(`/api/software?search=foo&&excludedIds[]=${softwareA.id}`));
+
+          setTimeout(function() {
+            req.expect(200)
+              .end(helpers.callbacks.noErrorAnd(res => {
+                expect(res.headers['x-esn-items-count']).to.exist;
+                expect(res.headers['x-esn-items-count']).to.equal('1');
+                expect(res.body[0].name).to.shallowDeepEqual(softwareJsonB.name);
+                done();
+              }));
+            }, esIntervalIndex);
+        });
+    }));
+  });
 });
