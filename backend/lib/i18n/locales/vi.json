@@ -125,5 +125,9 @@
   "Failed to add software type": "Không thể thêm loại phần mềm",
   "Adding issue type...": "Đang thêm loại vấn đề...",
   "Issue type added": "Loại vấn đề đã được thêm",
-  "Failed to add issue type": "Không thể thêm loại vấn đề"
+  "Failed to add issue type": "Không thể thêm loại vấn đề",
+  "Response time": "Thời gian phản hồi",
+  "Workaround time": "Thời gian giải quyết tạm thời",
+  "Solving time": "Thời gian giải quyết",
+  "No demand": "Không có yêu cầu"
 }

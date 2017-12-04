@@ -125,5 +125,9 @@
   "Failed to add software type": "Failed to add software type",
   "Adding issue type...": "Adding issue type...",
   "Issue type added": "Issue type added",
-  "Failed to add issue type": "Failed to add issue type"
+  "Failed to add issue type": "Failed to add issue type",
+  "Response time": "Response time",
+  "Workaround time": "Workaround time",
+  "Solving time": "Solving time",
+  "No demand": "No demand"
 }

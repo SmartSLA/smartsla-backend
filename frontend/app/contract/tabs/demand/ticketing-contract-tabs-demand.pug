@@ -1,0 +1,23 @@
+.card(ng-if="$ctrl.contract.demands.length")
+  .card-body
+    .listview.lv-bordered.lv-lg
+      .lv-header
+        .lv-item.p-0
+          .row.hidden-xs
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Demand type')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Software type')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Issue type')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Response time')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Workaround time')}
+            .col-md-2.col-xs-2.lv-title
+              span #{__('Solving time')}
+      .lv-body
+        .lv-item.p-0(ng-repeat="item in $ctrl.contract.demands track by item.demandType+item.softwareType+item.issueType")
+          ticketing-contract-tabs-demand-item(demand="item")
+div(ng-if="!$ctrl.contract.demands.length")
+  ticketing-empty-message(message=__('No demand'))

@@ -1,0 +1,13 @@
+.row.flex-vertical-centered
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.demandType}}") {{::$ctrl.demand.demandType}}
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.softwareType}}") {{::$ctrl.demand.softwareType}}
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.issueType}}") {{::$ctrl.demand.issueType}}
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.responseTime | ticketingDemandTime}}") {{::$ctrl.demand.responseTime | ticketingDemandTime}}
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.workaroundTime | ticketingDemandTime}}") {{::$ctrl.demand.workaroundTime | ticketingDemandTime}}
+  .col-md-2.col-xs-2
+    span.ellipsis(title="{{::$ctrl.demand.solvingTime | ticketingDemandTime}}") {{::$ctrl.demand.solvingTime | ticketingDemandTime}}
