@@ -12,7 +12,6 @@ module.exports = dependencies => {
     address: { type: String },
     manager: { type: Schema.ObjectId, ref: 'User' },
     contract: { type: Schema.ObjectId, ref: 'Contract' },
-    orders: [{ type: Schema.ObjectId, ref: 'Order' }],
     users: [{ type: Schema.ObjectId, ref: 'User' }],
     schemaVersion: {type: Number, default: 1},
     description: { type: String },
