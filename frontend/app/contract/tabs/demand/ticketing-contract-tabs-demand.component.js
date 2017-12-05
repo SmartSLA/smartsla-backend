@@ -5,7 +5,9 @@
     .component('ticketingContractTabsDemand', {
       templateUrl: '/ticketing/app/contract/tabs/demand/ticketing-contract-tabs-demand.html',
       bindings: {
-        contract: '<'
+        contract: '<',
+        newDemand: '=',
+        onAddBtnClick: '&'
       }
     });
 })(angular);

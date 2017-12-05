@@ -1,3 +1,15 @@
+ng-form(name="form")
+  .card.p-20
+    .card-header
+      span #{__('Add demand')}
+    .card-body
+      .row
+        .col-md-11
+          ticketing-demand-form(demand="$ctrl.newDemand", on-add-btn-click="$ctrl.onAddBtnClick()")
+        .col-md-1
+          button.btn.btn-primary(esn-submit="$ctrl.onAddBtnClick()", ng-disabled="form.$invalid")
+            | #{__('Add')}
+
 .card(ng-if="$ctrl.contract.demands.length")
   .card-body
     .listview.lv-bordered.lv-lg
@@ -17,7 +29,7 @@
             .col-md-2.col-xs-2.lv-title
               span #{__('Solving time')}
       .lv-body
-        .lv-item.p-0(ng-repeat="item in $ctrl.contract.demands track by item.demandType+item.softwareType+item.issueType")
+        .lv-item.p-0(ng-repeat="item in $ctrl.contract.demands track by item.demandType+';'+item.softwareType+';'+item.issueType")
           ticketing-contract-tabs-demand-item(demand="item")
 div(ng-if="!$ctrl.contract.demands.length")
   ticketing-empty-message(message=__('No demand'))

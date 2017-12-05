@@ -122,5 +122,13 @@
   "Response time": "Temps de réponse",
   "Workaround time": "Temps de contournement",
   "Solving time": "Temps de résolution",
-  "No demand": "Aucun demandé"
+  "No demand": "Aucune demande",
+  "Adding demand...": "Ajouter une demande...",
+  "Demand added": "Demande ajoutée",
+  "Failed to add demand": "Impossible d'ajouter une demande",
+  "Select demand type": "Sélectionner le type de demande",
+  "Select software type": "Sélectionner le type de logiciel",
+  "Select issue type": "Sélectionner le type de problème",
+  "Demand already exists": "La demande existe déjà",
+  "Add demand": "Ajouter une demande"
 }

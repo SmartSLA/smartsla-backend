@@ -24,7 +24,7 @@ ng-form(name="form")
       ui-select.form-control(ng-model="$ctrl.software.type", required)
         ui-select-match(placeholder=__('Select type'))
           span(ng-bind="$select.selected")
-        ui-select-choices(repeat="item in ($ctrl.softwareAvailableTypes | filter: $select.search) track by item")
+        ui-select-choices(repeat="item in ($ctrl.softwareAvailableTypes | orderBy: item | filter: $select.search) track by item")
           span(ng-bind="item")
     .col-md-1
       button.btn.btn-primary(esn-submit="$ctrl.onAddBtnClick(form)", ng-disabled="form.$invalid")

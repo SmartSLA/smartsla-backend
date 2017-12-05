@@ -14,6 +14,8 @@
     'esn.core',
     'ui.select',
     'ngSanitize',
-    'ngTagsInput'
+    'ngTagsInput',
+    'esn.i18n',
+    'esn.notification'
   ]);
 })();

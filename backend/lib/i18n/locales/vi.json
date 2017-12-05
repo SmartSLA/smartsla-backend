@@ -122,5 +122,13 @@
   "Response time": "Thời gian phản hồi",
   "Workaround time": "Thời gian giải quyết tạm thời",
   "Solving time": "Thời gian giải quyết",
-  "No demand": "Không có yêu cầu"
+  "No demand": "Không có yêu cầu",
+  "Adding demand...": "Đang thêm yêu cầu...",
+  "Demand added": "Đã thêm yêu cầu",
+  "Failed to add demand": "Thêm yêu cầu thất bại",
+  "Select demand type": "Chọn loại yêu cầu",
+  "Select software type": "Chọn loại phần mềm",
+  "Select issue type": "Chọn loại vấn đề",
+  "Demand already exists": "Yêu cầu đã tồn tại",
+  "Add demand": "Thêm yêu cầu"
 }
