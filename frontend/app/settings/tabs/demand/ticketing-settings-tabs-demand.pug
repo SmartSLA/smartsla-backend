@@ -1,1 +1,7 @@
-ticketing-glossary-list-group(ng-repeat="glossary in $ctrl.glossaries track by glossary.category", glossary="glossary", is-collapsed="true")
+.row
+  .col-md-4
+    ticketing-glossary-group(group="$ctrl.demandType")
+  .col-md-4
+    ticketing-glossary-group(group="$ctrl.softwareType")
+  .col-md-4
+    ticketing-glossary-group(group="$ctrl.issueType")

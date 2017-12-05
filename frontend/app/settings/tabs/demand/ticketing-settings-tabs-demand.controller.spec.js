@@ -57,11 +57,11 @@ describe('The TicketingSettingsTabsDemandController', function() {
     $rootScope.$broadcast(TICKETING_GLOSSARY_EVENTS.CREATED, newSoftwareType);
     $rootScope.$broadcast(TICKETING_GLOSSARY_EVENTS.CREATED, newIssueType);
 
-    expect(controller.glossaries[0].group.length).to.equal(1);
-    expect(controller.glossaries[0].group[0]).to.deep.equal(newDemandType);
-    expect(controller.glossaries[1].group.length).to.equal(1);
-    expect(controller.glossaries[1].group[0]).to.deep.equal(newSoftwareType);
-    expect(controller.glossaries[2].group.length).to.equal(1);
-    expect(controller.glossaries[2].group[0]).to.deep.equal(newIssueType);
+    expect(controller.demandType.glossaries.length).to.equal(1);
+    expect(controller.demandType.glossaries[0]).to.deep.equal(newDemandType);
+    expect(controller.softwareType.glossaries.length).to.equal(1);
+    expect(controller.softwareType.glossaries[0]).to.deep.equal(newSoftwareType);
+    expect(controller.issueType.glossaries.length).to.equal(1);
+    expect(controller.issueType.glossaries[0]).to.deep.equal(newIssueType);
   });
 });
