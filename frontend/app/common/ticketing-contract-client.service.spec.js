@@ -3,14 +3,12 @@
 describe('The ticketingContractClient service', function() {
   var $httpBackend;
   var ticketingContractClient;
-  var contractId;
 
   beforeEach(module('linagora.esn.ticketing'));
 
   beforeEach(inject(function(_$httpBackend_, _ticketingContractClient_) {
     $httpBackend = _$httpBackend_;
     ticketingContractClient = _ticketingContractClient_;
-    contractId = 'contractId';
   }));
 
   describe('The create function', function() {
@@ -94,42 +92,6 @@ describe('The ticketingContractClient service', function() {
       $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/demands', demand).respond(204);
 
       ticketingContractClient.addDemand(contractId, demand);
-
-      $httpBackend.flush();
-    });
-  });
-
-  describe('The createOrder function', function() {
-    it('should POST to right endpoint to create a new order', function() {
-      var order = { foo: 'baz' };
-
-      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/orders', order).respond(200, {});
-
-      ticketingContractClient.createOrder(contractId, order);
-      $httpBackend.flush();
-    });
-  });
-
-  describe('The listOrders function', function() {
-    it('should get to right endpoint to list orders', function() {
-      var options = {};
-
-      $httpBackend.expectGET('/ticketing/api/contracts/' + contractId + '/orders').respond(200, []);
-
-      ticketingContractClient.listOrders(contractId, options);
-
-      $httpBackend.flush();
-    });
-  });
-
-  describe('The updateOrder function', function() {
-    it('should POST to right endpoint to udpate', function() {
-      var orderId = '123';
-      var updateData = { foo: 'baz' };
-
-      $httpBackend.expectPUT('/ticketing/api/contracts/' + contractId + '/orders/' + orderId, updateData).respond(200, []);
-
-      ticketingContractClient.updateOrder(contractId, orderId, updateData);
 
       $httpBackend.flush();
     });
