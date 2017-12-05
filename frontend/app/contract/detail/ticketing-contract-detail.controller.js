@@ -23,6 +23,7 @@
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
+      self.onAddDemandBtnClick = onAddDemandBtnClick;
 
       TicketingContractService.get(self.contractId)
         .then(function(contract) {
@@ -39,6 +40,10 @@
 
       $scope.$on(TICKETING_CONTRACT_EVENTS.SOFTWARE_ADDED, function(event, software) {
         _onSoftwareAdded(software);
+      });
+
+      $scope.$on(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, function(event, demand) {
+        _onDemandAdded(demand);
       });
     }
 
@@ -68,6 +73,14 @@
       }
     }
 
+    function onAddDemandBtnClick(demandForm) {
+      return TicketingContractService.addDemand(self.contract, self.newDemand)
+        .then(function() {
+          demandForm.$setUntouched();
+          self.newDemand = {};
+        });
+    }
+
     function _reset() {
       if (self.isEditMode) {
         self.isEditMode = false;
@@ -91,6 +104,10 @@
 
     function _onSoftwareAdded(software) {
       self.contract.software.unshift(software);
+    }
+
+    function _onDemandAdded(demand) {
+      self.contract.demands.unshift(demand);
     }
   }
 })(angular);

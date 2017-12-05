@@ -8,12 +8,16 @@
     $rootScope,
     $q,
     asyncAction,
+    notificationFactory,
+    esnI18nService,
     ticketingContractClient,
     TicketingUserService,
     TicketingService,
+    _,
     TICKETING_CONTRACT_EVENTS
   ) {
     return {
+      addDemand: addDemand,
       addSoftware: addSoftware,
       create: create,
       get: get,
@@ -138,6 +142,40 @@
         return ticketingContractClient.addSoftware(contractId, softwareToAdd);
       }).then(function() {
         $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.SOFTWARE_ADDED, software);
+      });
+    }
+
+    function addDemand(contract, demand) {
+      if (!contract) {
+        return $q.reject(new Error('Contract is required'));
+      }
+
+      if (!demand) {
+        return $q.reject(new Error('Demand is required'));
+      }
+
+      if (_.find(contract.demands, {
+        demandType: demand.demandType,
+        softwareType: demand.softwareType,
+        issueType: demand.issueType
+      })) {
+        var message = esnI18nService.translate('Demand already exists').toString();
+
+        notificationFactory.weakError('Error', message);
+
+        return $q.reject(new Error(message));
+      }
+
+      var notificationMessages = {
+        progressing: 'Adding demand...',
+        success: 'Demand added',
+        failure: 'Failed to add demand'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingContractClient.addDemand(contract._id, demand);
+      }).then(function() {
+        $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, demand);
       });
     }
 

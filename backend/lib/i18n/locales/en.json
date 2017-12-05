@@ -122,5 +122,13 @@
   "Response time": "Response time",
   "Workaround time": "Workaround time",
   "Solving time": "Solving time",
-  "No demand": "No demand"
+  "No demand": "No demand",
+  "Adding demand...": "Adding demand...",
+  "Demand added": "Demand added",
+  "Failed to add demand": "Failed to add demand",
+  "Select demand type": "Select demand type",
+  "Select software type": "Select software type",
+  "Select issue type": "Select issue type",
+  "Demand already exists": "Demand already exists",
+  "Add demand": "Add demand"
 }

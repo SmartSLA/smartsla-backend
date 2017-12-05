@@ -41,3 +41,24 @@ angular.module('ngTagsInput', [])
     this.$get = function() {};
     this.setActiveInterpolation = function() {};
   });
+angular.module('esn.i18n', [])
+  .filter('esnI18n', function() {
+    return function(input) { return input; };
+  })
+  .factory('esnI18nService', function() {
+    return {
+      translate: function(input) {
+        return {
+          toString: function() {
+            return input;
+          }
+        };
+      }
+    };
+  });
+angular.module('esn.notification', [])
+  .factory('notificationFactory', function() {
+    return {
+      weakError: function() {}
+    };
+  });

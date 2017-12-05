@@ -31,8 +31,11 @@ ticketing-contract-tabs-software(
   ng-show='$ctrl.selectedTab === "software"',
   contract="$ctrl.contract"
 )
-ticketing-contract-tabs-demand(
-  ng-if="$ctrl.contract",
-  ng-show='$ctrl.selectedTab === "demand"',
-  contract="$ctrl.contract"
-)
+form(name="demandForm")
+  ticketing-contract-tabs-demand(
+    ng-if="$ctrl.contract",
+    ng-show='$ctrl.selectedTab === "demand"',
+    contract="$ctrl.contract",
+    new-demand="$ctrl.newDemand",
+    on-add-btn-click="$ctrl.onAddDemandBtnClick(demandForm)"
+  )

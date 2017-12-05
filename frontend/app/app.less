@@ -6,5 +6,18 @@
 @import './contract/ticketing-contract';
 @import './software/ticketing-software';
 @import './glossary/ticketing-glossary';
+@import './demand/ticketing-demand';
 
 @normalBorderColor: #ccc;
+
+.ui-select-container:not(.ng-touched).ng-invalid {
+  .ui-select-match .form-control {
+    border-bottom-color: @normalBorderColor;
+  }
+}
+
+.ui-select-container.ng-invalid {
+  .ui-select-match .form-control {
+    border-bottom-color: @errorColor;
+  }
+}

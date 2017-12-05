@@ -50,10 +50,9 @@
         return demand.softwareType;
       });
 
-      availableTypes.filter(function(value, index) {
+      availableTypes = availableTypes.filter(function(value, index) {
         return availableTypes.indexOf(value) === index;
-      });
-      availableTypes.sort();
+      }).filter(Boolean);
 
       return availableTypes;
     }
