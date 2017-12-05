@@ -7,7 +7,6 @@ module.exports = function(dependencies) {
   const organization = require('./organization')(dependencies);
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
   const contract = require('./contract')(dependencies);
-  const order = require('./order')(dependencies);
   const helpers = require('./helpers');
   const constants = require('./constants');
   const listeners = require('./listeners')(dependencies);
@@ -19,7 +18,6 @@ module.exports = function(dependencies) {
     contract,
     helpers,
     models,
-    order,
     organization,
     software,
     glossary,

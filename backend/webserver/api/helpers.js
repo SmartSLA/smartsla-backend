@@ -7,7 +7,6 @@ module.exports = (dependencies, lib) => {
 
   return {
     validateObjectIds,
-    validateRights,
     requireAdministrator
   };
 
@@ -31,10 +30,6 @@ module.exports = (dependencies, lib) => {
     ids = Array.isArray(ids) ? ids : [ids];
 
     return !ids.some(id => !_validateObjectId(id));
-  }
-
-  function validateRights(rights) {
-    return !rights.some(right => !lib.helpers.validateRight(right));
   }
 
   function _validateObjectId(id) {

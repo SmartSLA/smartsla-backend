@@ -38,7 +38,6 @@ module.exports = dependencies => {
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     openingHours: { type: String },
-    orders: [{ type: Schema.ObjectId, ref: 'Order' }],
     // available value of permissions:
     // 1 if all entities of contract's organization have permission
     // array of some entities of contract's organization which have permission

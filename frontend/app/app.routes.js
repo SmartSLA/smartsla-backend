@@ -122,14 +122,6 @@
               template: '<ticketing-contract-detail />'
             }
           }
-        })
-        .state('ticketingAdminCenter.orderDetail', {
-          url: '/orders/:orderId',
-          views: {
-            'admin-root@ticketingAdminCenter': {
-              template: '<ticketing-order-detail />'
-            }
-          }
         });
     });
 })();

@@ -23,7 +23,6 @@
       self.onCancelBtnClick = onCancelBtnClick;
       self.onEditBtnClick = onEditBtnClick;
       self.onSaveBtnClick = onSaveBtnClick;
-      self.onCreateOrderBtnClick = onCreateOrderBtnClick;
 
       TicketingContractService.get(self.contractId)
         .then(function(contract) {
@@ -67,19 +66,6 @@
             originContract = angular.copy(self.contract);
           });
       }
-    }
-
-    function onCreateOrderBtnClick() {
-      $modal({
-        templateUrl: '/ticketing/app/order/create/ticketing-order-create.html',
-        backdrop: 'static',
-        placement: 'center',
-        controllerAs: '$ctrl',
-        controller: 'TicketingOrderCreateController',
-        locals: {
-          contract: self.contract
-        }
-      });
     }
 
     function _reset() {

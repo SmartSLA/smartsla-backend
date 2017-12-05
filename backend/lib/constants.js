@@ -9,7 +9,6 @@ module.exports = {
     OFFSET: 0,
     LIMIT: 50
   },
-  ORDER_TYPES: ['USP', 'USPL', 'USL'],
   GLOSSARY_CATEGORIES: {
     DEMAND_TYPE: 'Demand type',
     SOFTWARE_TYPE: 'Software type',

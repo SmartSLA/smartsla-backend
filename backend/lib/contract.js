@@ -8,7 +8,6 @@ module.exports = dependencies => {
 
   return {
     addDemands,
-    addOrder,
     addSoftware,
     create,
     getById,
@@ -79,16 +78,6 @@ module.exports = dependencies => {
   function addDemands(contractId, demands) {
     return Contract.update({ _id: contractId }, { $addToSet: { demands: { $each: demands } } }).exec()
       .then(updatedResult => updatedResult.n); // http://mongoosejs.com/docs/api.html#model_Model.update
-  }
-
-  /**
-   * Add a order into a contract
-   * @param {String}   contractId - The contract ID
-   * @param {Object}   orderId    - The order ID
-   * @param {Promise}             - Resolve on success
-   */
-  function addOrder(contractId, orderId) {
-    return Contract.update({ _id: contractId }, { $push: { orders: orderId }}).exec();
   }
 
   /**
