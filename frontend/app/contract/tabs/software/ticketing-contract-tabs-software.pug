@@ -1,11 +1,10 @@
 .card.p-20
-  .row.m-b-10
-    .col-md-12
-      h4 #{__('Add software')}
-  .row
-    ticketing-contract-form-software.xs-col-12.hidden-xs(contract="$ctrl.contract")
+  .card-header
+    span #{__('Add software')}
+  .card-body
+    ticketing-contract-form-software(contract="$ctrl.contract")
 
-.card
+.card(ng-if="$ctrl.contract.software.length")
   .card-body
     .listview.lv-bordered.lv-lg
       .lv-header
@@ -22,3 +21,5 @@
       .lv-body
         .lv-item.p-0(ng-repeat="item in $ctrl.contract.software track by item.template.name")
           ticketing-contract-tabs-software-item(software="item")
+div(ng-if="!$ctrl.contract.software.length")
+  ticketing-empty-message(message=__('No software'))
