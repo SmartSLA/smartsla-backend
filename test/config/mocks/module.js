@@ -2,7 +2,17 @@
 
 /* global _: false */
 
-angular.module('esn.router', ['ui.router']);
+angular.module('esn.router', ['ui.router'])
+  .factory('session', function($q) {
+    return {
+      ready: $q.when(),
+      user: {},
+      domain: {},
+      userIsDomainAdministrator: function() {
+        return false;
+      }
+    };
+  });
 angular.module('esn.http', [])
   .factory('httpErrorHandler', function() {
     return {
@@ -61,4 +71,9 @@ angular.module('esn.notification', [])
     return {
       weakError: function() {}
     };
+  });
+angular.module('esn.session', []);
+angular.module('esn.domain', [])
+  .factory('domainAPI', function() {
+    return {};
   });

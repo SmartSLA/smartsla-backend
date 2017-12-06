@@ -16,6 +16,8 @@
     'ngSanitize',
     'ngTagsInput',
     'esn.i18n',
-    'esn.notification'
+    'esn.notification',
+    'esn.session',
+    'esn.domain'
   ]);
 })();

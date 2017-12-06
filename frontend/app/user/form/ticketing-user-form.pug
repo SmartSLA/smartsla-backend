@@ -23,11 +23,6 @@ ng-form(name="form")
     .col-md-6(ng-if="!$ctrl.updateMode")
       esn-form-group(label=__('Password'))
         input.form-control(type="password", ng-model="$ctrl.user.password", autocomplete="new-password", name="password", required, ng-disabled="$ctrl.updateMode")
-  .row(ng-if="!$ctrl.entity")
-    h5 #{__('Entity')}
-    small.c-red(ng-if="newEntities.length > 1")
-      | #{__('Only allows one entity')}
-    ticketing-search-auto-complete(new-tags="newEntities", max-tags="1", object-types="entity")
   .row
     .col-md-6
       esn-form-group(label=__('Main phone'))
@@ -35,3 +30,7 @@ ng-form(name="form")
     .col-md-6
       esn-form-group(label=__('Description'))
         textarea.form-control(ng-model="$ctrl.user.description")
+  .row(ng-if="!$ctrl.updateMode")
+    .col-xs-12
+      h5 #{__('Entity')}
+      ticketing-search-auto-complete(new-tags="newEntities", max-tags="1", object-types="entity", placeholder=__('Type a entity name'))
