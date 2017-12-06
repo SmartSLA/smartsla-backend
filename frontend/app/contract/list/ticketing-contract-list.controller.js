@@ -5,6 +5,7 @@
   function TicketingContractListController(
     $state,
     $scope,
+    $q,
     infiniteScrollHelper,
     ticketingContractClient,
     TicketingContractService,
@@ -57,8 +58,18 @@
       self.elements.unshift(contract);
     }
 
-    function create() {
-      return TicketingContractService.create(self.newContract);
+    function create(form) {
+      if (form && form.$valid) {
+        return TicketingContractService.create(self.newContract)
+          .then(function() {
+            // reset form
+            form.$setPristine();
+            form.$setUntouched();
+            self.newContract = {};
+          });
+      }
+
+      return $q.reject(new Error('Form is invalid'));
     }
   }
 })(angular);
