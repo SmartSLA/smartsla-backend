@@ -17,6 +17,9 @@ ng-form(name="form")
   .row
     .col-md-12
       h5 #{__('Manager')}
-      small.c-red(ng-if="newManagers.length > 1")
-        | #{__('Only allows one manager')}
-      ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
+      ticketing-search-auto-complete(
+        new-tags="newManagers",
+        max-tags="1",
+        object-types="user",
+        placeholder=__('Type a name or email...')
+      )
