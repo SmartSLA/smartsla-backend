@@ -2,7 +2,7 @@
   .card-header
     h2 {{::$ctrl.group.category | esnI18n}}
   .card-body
-    ticketing-glossary-form(category="$ctrl.group.category")
+    ticketing-glossary-form(group="$ctrl.group")
     .listview.lv-bordered.lv-lg(ng-if="$ctrl.group.glossaries.length > 0")
       .lv-header-alt
         h2.lvh-label {{::$ctrl.group.listTitle | esnI18n}}
