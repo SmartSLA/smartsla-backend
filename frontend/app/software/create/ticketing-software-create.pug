@@ -20,5 +20,5 @@
           .flex-vertical-centered.flex-end
             button.btn.btn-link(type="button", ng-click="$hide()")
               | #{__('Cancel')}
-            button.btn.btn-primary(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
+            button.btn.btn-primary(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid || form.$pending")
               | #{__('Create')}

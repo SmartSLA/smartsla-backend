@@ -4,24 +4,42 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingGlossaryFormController', TicketingGlossaryFormController);
 
-  function TicketingGlossaryFormController(TicketingGlossaryService, $q) {
+  function TicketingGlossaryFormController($q, _, TicketingGlossaryService) {
     var self = this;
 
-    self.save = save;
+    self.$onInit = $onInit;
 
-    function save(form) {
+    function $onInit() {
+      self.glossary = {
+        category: self.group.category
+      };
+
+      self.onAddBtnClick = onAddBtnClick;
+      self.uniqueWord = uniqueWord;
+    }
+
+    function onAddBtnClick(form) {
       if (form && form.$valid) {
-        self.glossary.category = self.category;
-
         return TicketingGlossaryService.create(self.glossary)
           .then(function() {
             // Reset form state
-            self.glossary = {};
+            self.glossary = {
+              category: self.group.category
+            };
             form.$setPristine();
+            form.$setUntouched();
           });
       }
 
       return $q.reject(new Error('Form is invalid'));
+    }
+
+    function uniqueWord(word) {
+      if (!word) {
+        return false;
+      }
+
+      return !_.find(self.group.glossaries, { word: word });
     }
   }
 })(angular);

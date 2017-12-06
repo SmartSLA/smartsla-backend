@@ -9,17 +9,27 @@ ng-form(name="form")
       a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.contract.organization._id})") {{::$ctrl.contract.organization.fullName}}
     .col-md-12.input-organization(ng-if="!$ctrl.organizationMode")
       h5 #{__('Organization')}
-      small.c-red(ng-if="newOrganizations.length > 1")
-        | #{__('Only allows one organization')}
-      ticketing-search-auto-complete(new-tags="newOrganizations", max-tags="1", object-types="organization")
+      ticketing-search-auto-complete(
+        new-tags="newOrganizations",
+        max-tags="1",
+        min-tags="1",
+        object-types="organization",
+        placeholder=__('Type a organization name')
+      )
   .row
     .col-md-6.input-manager
       h5 #{__('Manager')}
-      small.c-red(ng-if="newManagers.length > 1")
-        | #{__('Only allows one manager')}
-      ticketing-user-auto-complete(new-users="newManagers", max-tags="1")
+      ticketing-search-auto-complete(
+        new-tags="newManagers",
+        max-tags="1",
+        object-types="user",
+        placeholder=__('Type a name or email...')
+      )
     .col-md-6.input-support-manager
       h5 #{__('Default support manager')}
-      small.c-red(ng-if="newDefaultSupportManagers.length > 1")
-        | #{__('Only allows one default support manager')}
-      ticketing-user-auto-complete(new-users="newDefaultSupportManagers", max-tags="1")
+      ticketing-search-auto-complete(
+        new-tags="newDefaultSupportManagers",
+        max-tags="1",
+        object-types="user",
+        placeholder=__('Type a name or email...')
+      )

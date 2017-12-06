@@ -1,4 +1,6 @@
 extends /modules/subheader/responsive-subheader.pug
 
 block left
-  span.title.hidden-xs #{__('Global settings')}
+  ticketing-subheader-burger-button.hidden-md
+    i.mdi.mdi-menu
+  span.title.ellipsis #{__('Global settings')}

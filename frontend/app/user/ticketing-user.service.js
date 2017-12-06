@@ -7,19 +7,19 @@
   function TicketingUserService(
     $rootScope,
     $q,
+    $log,
     asyncAction,
     ticketingUserClient,
-    attendeeService,
+    domainAPI,
     TICKETING_USER_EVENTS
   ) {
-    var USER_SEARCH_LIMIT = 20;
 
     return {
       create: create,
       get: get,
       update: update,
       buildDisplayName: buildDisplayName,
-      searchUserCandidates: searchUserCandidates
+      getSearchProvider: getSearchProvider
     };
 
     function create(user) {
@@ -65,16 +65,24 @@
         });
     }
 
-    function searchUserCandidates(query) {
-      return attendeeService.getAttendeeCandidates(query, USER_SEARCH_LIMIT, ['user'])
-        .then(function(candidates) {
-          return candidates.map(function(candidate) {
-            candidate.displayName = candidate.displayName || candidate.email;
-            candidate.id = candidate.id || candidate._id;
+    function getSearchProvider(domainId) {
+      return {
+        objectType: 'user',
+        templateUrl: '/views/modules/auto-complete/user-auto-complete',
+        getDisplayName: function(user) {
+          return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
+        },
+        search: function(options) {
+          return domainAPI.getMembers(domainId, options)
+            .then(function(response) {
+              return response.data;
+            }, function(err) {
+              $log.error('Error while searching users:', err);
 
-            return candidate;
-          });
-        });
+              return $q.when([]);
+            });
+        }
+      };
     }
 
     function buildDisplayName(user) {
