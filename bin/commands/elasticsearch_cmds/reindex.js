@@ -3,6 +3,7 @@
 const Q = require('q');
 const {
   commons,
+  contract,
   db,
   organization,
   software
@@ -10,7 +11,8 @@ const {
 const { AVAILABLE_INDEX_TYPES } = require('./constants');
 const HANDLERS = {
   organizations: reindexOrganizations,
-  software: reindexSoftware
+  software: reindexSoftware,
+  contracts: reindexContracts
 };
 
 module.exports = {
@@ -105,6 +107,33 @@ function reindexSoftware(esConfig) {
   };
 
   commons.logInfo('Starting reindexing of software');
+
+  return db.connect(commons.getDBOptions())
+    .then(() => esConfig.reindexAll(options))
+    .finally(db.disconnect);
+}
+
+function reindexContracts(esConfig) {
+  const options = {
+    type: 'contracts',
+    name: 'contracts.idx',
+    denormalize: contract => {
+      contract = contract.toObject();
+      contract.id = contract._id;
+      const hideKeys = ['__v', '_id', 'schemaVersion'];
+
+      hideKeys.forEach(key => { delete contract[key]; });
+
+      return contract;
+    }
+  };
+  const cursor = contract.listByCursor();
+
+  options.next = function() {
+    return cursor.next();
+  };
+
+  commons.logInfo('Starting reindexing of contracts');
 
   return db.connect(commons.getDBOptions())
     .then(() => esConfig.reindexAll(options))

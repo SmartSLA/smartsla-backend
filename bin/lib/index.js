@@ -5,8 +5,10 @@ const db = require('./db');
 const organization = require('./organization');
 const software = require('./software');
 const ticketingUserRole = require('./ticketing-user-role');
+const contract = require('./contract');
 
 module.exports = {
+  contract,
   commons,
   db,
   organization,

@@ -12,6 +12,7 @@ module.exports = dependencies => {
     create,
     getById,
     list,
+    listByCursor,
     updateById
   };
 
@@ -93,5 +94,13 @@ module.exports = dependencies => {
     }
 
     return query.exec();
+  }
+
+  /**
+   * List contracts using cursor
+   * @param {Promise} - Resolve on success with a cursor object
+   */
+  function listByCursor() {
+    return Contract.find().cursor();
   }
 };
