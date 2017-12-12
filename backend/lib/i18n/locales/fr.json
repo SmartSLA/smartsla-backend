@@ -76,7 +76,7 @@
   "Updating permissions...": "Mettre à jour les permissions...",
   "Permissons updated": "Les permissions mis à jour",
   "Failed to update permissions": "Impossible de mettre à jour les permissions",
-  "Global settings": "Paramètres globaux",
+  "General": "Générale",
   "Category": "Catégorie",
   "Versions": "Versions",
   "No software": "Aucun logiciel",
@@ -127,5 +127,9 @@
   "Add demand": "Ajouter une demande",
   "Type a organization name": "Entrer un nom de l'organisation",
   "Type already exists": "Type existe déjà",
-  "Type a entity name": "Entrer un nom de l'entité"
+  "Type a entity name": "Entrer un nom de l'entité",
+  "My tickets": "Mes tickets",
+  "All tickets": "Tous les tickets",
+  "Reporting": "Rapport",
+  "Admin": "Admin"
 }

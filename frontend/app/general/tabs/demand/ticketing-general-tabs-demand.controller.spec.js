@@ -5,7 +5,7 @@
 
 var expect = chai.expect;
 
-describe('The TicketingSettingsTabsDemandController', function() {
+describe('The TicketingGeneralTabsDemandController', function() {
   var $controller, $rootScope;
   var TicketingGlossaryService, TICKETING_GLOSSARY_EVENTS, TICKETING_GLOSSARY_CATEGORIES;
 
@@ -29,7 +29,7 @@ describe('The TicketingSettingsTabsDemandController', function() {
 
   function initController($scope) {
     $scope = $scope || $rootScope.$new();
-    var controller = $controller('TicketingSettingsTabsDemandController', { $scope: $scope });
+    var controller = $controller('TicketingGeneralTabsDemandController', { $scope: $scope });
 
     $scope.$digest();
     controller.$onInit();

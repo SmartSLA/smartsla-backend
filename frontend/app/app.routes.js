@@ -21,34 +21,21 @@
         }
       };
     })
-    .config(function(tagsInputConfigProvider) {
-      // http://mbenford.github.io/ngTagsInput/documentation/global-configuration
-      // Change the placeholder attribute dynamically
-      tagsInputConfigProvider.setDefaults('tagsInput', { placeholder: '' });
-      // Change the tags-input's placeholder attribute dynamically
-      tagsInputConfigProvider.setActiveInterpolation('tagsInput', { placeholder: true });
-    })
     .config(function($stateProvider) {
       $stateProvider
         .state('ticketing', {
           url: '/ticketing',
-          template: '<h1>This is ticketing state</h1>',
-          resolve: {
-            isAdministrator: function($location, session, ticketingProvider) {
-              return session.ready.then(function() {
-                return ticketingProvider.userIsAdministrator(session.user._id)
-                  .catch(function() {
-                    $location.path('/');
-                  });
-              });
-            }
-          }
+          templateUrl: '/ticketing/app/app.html'
         })
-        .state('ticketingAdminCenter', {
-          url: '/ticketing/admin',
-          templateUrl: '/ticketing/app/admin/ticketing-admin.html',
+        .state('ticketing.admin', {
+          url: '/admin',
+          views: {
+            'root@ticketing': {
+              templateUrl: '/ticketing/app/admin/ticketing-admin.html'
+            }
+          },
           deepStateRedirect: {
-            default: 'ticketingAdminCenter.contract',
+            default: 'ticketing.admin.contract',
             params: true,
             fn: function() {
               return true;
@@ -67,58 +54,58 @@
             }
           }
         })
-        .state('ticketingAdminCenter.settings', {
-          url: '/settings',
+        .state('ticketing.admin.general', {
+          url: '/general',
           views: {
-            'admin-root@ticketingAdminCenter': {
-              template: '<ticketing-settings />'
+            'admin-root@ticketing.admin': {
+              template: '<ticketing-general />'
             }
           }
         })
-        .state('ticketingAdminCenter.organization', {
+        .state('ticketing.admin.organization', {
           url: '/organizations',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-organization />'
             }
           }
         })
-        .state('ticketingAdminCenter.users', {
+        .state('ticketing.admin.users', {
           url: '/users',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-user />'
             }
           }
         })
-        .state('ticketingAdminCenter.users.detail', {
+        .state('ticketing.admin.users.detail', {
           url: '/:userId',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-user-detail />'
             }
           }
         })
-        .state('ticketingAdminCenter.contract', {
+        .state('ticketing.admin.contract', {
           url: '/contracts',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-contract />'
             }
           }
         })
-        .state('ticketingAdminCenter.organization.detail', {
+        .state('ticketing.admin.organization.detail', {
           url: '/:organizationId',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-organization-detail />'
             }
           }
         })
-        .state('ticketingAdminCenter.contract.detail', {
+        .state('ticketing.admin.contract.detail', {
           url: '/:contractId',
           views: {
-            'admin-root@ticketingAdminCenter': {
+            'admin-root@ticketing.admin': {
               template: '<ticketing-contract-detail />'
             }
           }

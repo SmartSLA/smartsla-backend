@@ -10,7 +10,13 @@
 }
 
 @media (min-width: @screen-md-min) {
-  .ticketing-admin-root {
-    padding-top: 45px;
+  .ticketing-admin-root .ui-view {
+    padding-left: 15px;
+  }
+}
+
+@media (max-width: @screen-md-min) {
+  .ticketing-admin-root .ui-view {
+    margin-right: -15px;
   }
 }

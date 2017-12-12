@@ -11,6 +11,9 @@
     "enabled": false,
     "port": 8081
   },
+  "db": {
+    "attemptsLimit": 100
+  },
   "log": {
     "file": {
       "enabled": false

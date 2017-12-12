@@ -76,7 +76,7 @@
   "Updating permissions...": "Đang cập nhật quyền...",
   "Permissons updated": "Quyền đã cập nhật",
   "Failed to update permissions": "Không thể cập nhật quyền",
-  "Global settings": "Thiết lập chung",
+  "General": "Chung",
   "Category": "Danh mục",
   "Versions": "Phiên bản",
   "No software": "Không có phần mềm",
@@ -127,5 +127,9 @@
   "Add demand": "Thêm yêu cầu",
   "Type a organization name": "Nhập vào tên của một tổ chức",
   "Type already exists": "Loại đã tồn tại",
-  "Type a entity name": "Nhập vào tên của một tổ chức con"
+  "Type a entity name": "Nhập vào tên của một tổ chức con",
+  "My tickets": "Yêu cầu của tôi",
+  "All tickets": "Tất cả yêu cầu",
+  "Reporting": "Báo cáo",
+  "Admin": "Quản trị"
 }

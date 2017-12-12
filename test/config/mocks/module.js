@@ -77,3 +77,8 @@ angular.module('esn.domain', [])
   .factory('domainAPI', function() {
     return {};
   });
+angular.module('esn.template', [])
+  .provider('esnTemplate', function() {
+    this.setSuccessTemplate = function() {};
+    this.$get = function() {};
+  });

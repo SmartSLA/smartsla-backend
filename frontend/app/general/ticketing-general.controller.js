@@ -2,9 +2,9 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .controller('TicketingSettingsController', TicketingSettingsController);
+    .controller('TicketingGeneralController', TicketingGeneralController);
 
-  function TicketingSettingsController() {
+  function TicketingGeneralController() {
     var DEFAULT_TAB = 'demand';
     var self = this;
 

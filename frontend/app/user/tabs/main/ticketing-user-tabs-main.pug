@@ -31,13 +31,13 @@
             i.mdi.mdi-city.m-r-5
             | #{__('Organization')}
           dd(ng-if="$ctrl.user.entity.parent._id")
-            a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.entity.parent._id})") {{::$ctrl.user.entity.parent.fullName}}
+            a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.user.entity.parent._id})") {{::$ctrl.user.entity.parent.fullName}}
         dl.dl-horizontal
           dt
             i.mdi.mdi-city.m-r-5
             | #{__('Entity')}
           dd(ng-if="$ctrl.user.entity._id")
-            a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.entity._id})") {{::$ctrl.user.entity.fullName}}
+            a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.user.entity._id})") {{::$ctrl.user.entity.fullName}}
         dl.dl-horizontal
           dt
             i.mdi.mdi-comment-text.m-r-5

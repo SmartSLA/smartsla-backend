@@ -1,0 +1,21 @@
+header#header
+  .header-inner.flex-vertical-centered.flex-space-between
+    ul.nav.nav-pills.nav-stacked.list-inline.all-centered
+      li.logo
+        a(ui-sref='ticketing')
+          img(src="/ticketing/images/ossa-logo.png")
+      li
+        a.btn.btn-link(ui-sref-active="selected") #{__('My tickets')}
+      li
+        a.btn.btn-link(ui-sref-active="selected") #{__('All tickets')}
+      li
+        a.btn.btn-link(ui-sref-active="selected") #{__('Reporting')}
+      li
+        a.btn.btn-link(href="", ui-sref='ticketing.admin', ui-sref-active="selected") #{__('Admin')}
+
+    ul.list-inline.all-centered.header-actions
+      li.hover-scale-animation
+        esn-user-notification-toggler
+      li
+        profile-menu.profile-menu
+  sub-header-container
