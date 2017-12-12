@@ -15,9 +15,9 @@
     "grunt-contrib-concat": "1.0.1",
     "grunt-contrib-watch": "1.0.0",
     "grunt-eslint": "19.0.0",
-    "grunt-i18n-checker": "linagora/grunt-i18n-checker#v2.0.0",
+    "@linagora/grunt-i18n-checker": "2.0.5",
     "grunt-karma": "2.0.0",
-    "grunt-lint-pattern": "linagora/grunt-lint-pattern#7c6f4e1bc98c2851fec2714e115ac33e1b064ca7",
+    "@linagora/grunt-lint-pattern": "0.1.4",
     "grunt-mocha-cli": "3.0.0",
     "grunt-puglint": "1.0.0",
     "grunt-contrib-clean": "1.0.0",
@@ -26,7 +26,7 @@
     "karma-coverage": "1.1.1",
     "karma-firefox-launcher": "1.0.0",
     "karma-mocha": "1.1.1",
-    "karma-ng-jade2module-preprocessor": "linagora/karma-ng-jade2module-preprocessor#9fb962530b01",
+    "@linagora/karma-ng-jade2module-preprocessor": "0.5.3",
     "karma-phantomjs-launcher": "1.0.2",
     "karma-spec-reporter": "0.0.26",
     "linagora-rse": "linagora/openpaas-esn#master",
@@ -40,7 +40,7 @@
     "socket.io": "1.2.1",
     "supertest": "2.0.0",
     "time-grunt": "1.4.0",
-    "i18n-checker": "linagora/i18n-checker#v2.0.0"
+    "@linagora/i18n-checker": "2.0.3"
   },
   "scripts": {
     "test": "grunt test",
