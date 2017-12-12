@@ -6,7 +6,8 @@ const CONSTANTS = require('./constants');
 module.exports = {
   validateUserRole,
   validateGlossaryCategory,
-  uniqueDemands
+  uniqueDemands,
+  validateTicketState
 };
 
 function validateUserRole(role) {
@@ -25,4 +26,8 @@ function uniqueDemands(demands) {
   ].join());
 
   return unique.length === demands.length;
+}
+
+function validateTicketState(state) {
+  return CONSTANTS.TICKET_STATES.indexOf(state) > -1;
 }
