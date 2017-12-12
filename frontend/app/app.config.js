@@ -10,6 +10,6 @@
       tagsInputConfigProvider.setActiveInterpolation('tagsInput', { placeholder: true });
     })
     .config(function(esnTemplateProvider) {
-      esnTemplateProvider.setSuccessTemplate('/ticketing/app/app.html');
+      esnTemplateProvider.setSuccessTemplate('/ticketing/app/common/template/ticketing-template.html');
     });
 })(angular);
