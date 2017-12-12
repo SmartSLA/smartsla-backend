@@ -127,5 +127,9 @@
   "Add demand": "Add demand",
   "Type a organization name": "Type a organization name",
   "Type already exists": "Type already exists",
-  "Type a entity name": "Type a entity name"
+  "Type a entity name": "Type a entity name",
+  "My tickets": "My tickets",
+  "All tickets": "All tickets",
+  "Reporting": "Reporting",
+  "Admin": "Admin"
 }

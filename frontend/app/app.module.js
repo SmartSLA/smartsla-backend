@@ -18,6 +18,7 @@
     'esn.i18n',
     'esn.notification',
     'esn.session',
-    'esn.domain'
+    'esn.domain',
+    'esn.template'
   ]);
 })();

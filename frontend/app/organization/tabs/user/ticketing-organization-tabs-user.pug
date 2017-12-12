@@ -15,7 +15,7 @@
           ticketing-user-list-item.clickable(
             user="user",
             is-entity-mode="true",
-            ui-sref="ticketingAdminCenter.users.detail({ userId: user._id })"
+            ui-sref="ticketing.admin.users.detail({ userId: user._id })"
           )
 div(ng-if="!$ctrl.users.length")
   ticketing-empty-message(

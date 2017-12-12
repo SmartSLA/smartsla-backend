@@ -1,0 +1,29 @@
+.aside#contextual-sidebar(tabindex="-1", role="dialog")
+  .aside-dialog
+    .aside-content
+      #aside-header(ng-if="!hideHeader")
+        div.header-inner.flex-vertical-centered.flex-space-between
+          ul.list-inline.all-centered
+            li.logo
+              a(href='', ui-sref='ticketing')
+                img(src="/ticketing/images/ossa-logo.png")
+          ul.list-inline.all-centered.header-actions
+            li
+              .lv-actions.actions
+                a(href="", data-toggle="dropdown", aria-expanded="false")
+                  i.mdi.mdi-dots-vertical
+                ul.nav.nav-pills.nav-stacked.dropdown-menu.dropdown-menu-right
+                  li
+                    a #{__('My tickets')}
+                  li
+                    a #{__('All tickets')}
+                  li
+                    a #{__('Reporting')}
+                  li
+                    a(ui-sref='ticketing.admin', ui-sref-active="selected") #{__('Admin')}
+            li.hover-scale-animation
+              esn-user-notification-toggler
+            li
+              profile-menu.profile-menu
+              
+      .aside-body(ng-bind="content", ng-class="{'hideHeader' : hideHeader}")

@@ -17,19 +17,19 @@
             i.mdi.mdi-account.m-r-5
             | #{__('Manager')}
             dd
-              a(ui-sref="ticketingAdminCenter.users.detail({userId: $ctrl.contract.manager._id})") {{::$ctrl.contract.manager.displayName}}
+              a(ui-sref="ticketing.admin.users.detail({userId: $ctrl.contract.manager._id})") {{::$ctrl.contract.manager.displayName}}
         dl.dl-horizontal
           dt
             i.mdi.mdi-account.m-r-5
             | #{__('Default support manager')}
             dd
-              a(ui-sref="ticketingAdminCenter.users.detail({userId: $ctrl.contract.defaultSupportManager._id})") {{::$ctrl.contract.defaultSupportManager.displayName}}
+              a(ui-sref="ticketing.admin.users.detail({userId: $ctrl.contract.defaultSupportManager._id})") {{::$ctrl.contract.defaultSupportManager.displayName}}
         dl.dl-horizontal
           dt
             i.mdi.mdi-city.m-r-5
             | #{__('Organization')}
             dd
-              a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.contract.organization._id})") {{::$ctrl.contract.organization.shortName}}
+              a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.contract.organization._id})") {{::$ctrl.contract.organization.shortName}}
         dl.dl-horizontal
           dt
             i.mdi.mdi-calendar.m-r-5

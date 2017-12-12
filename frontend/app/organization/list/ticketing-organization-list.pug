@@ -14,7 +14,7 @@ sub-header(ng-if="!$ctrl.parent")
                 span #{__('Manager')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
-            ticketing-organization-list-item.clickable(organization="item", ui-sref="ticketingAdminCenter.organization.detail({organizationId: item._id})")
+            ticketing-organization-list-item.clickable(organization="item", ui-sref="ticketing.admin.organization.detail({organizationId: item._id})")
 div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
   ticketing-empty-message(
     icon="mdi-city",

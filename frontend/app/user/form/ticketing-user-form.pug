@@ -4,11 +4,11 @@ ng-form(name="form")
       dl.dl-horizontal
         dt #{__('Organization')}
         dd
-          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.entity.parent._id})") {{::$ctrl.user.entity.parent.fullName}}
+          a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.user.entity.parent._id})") {{::$ctrl.user.entity.parent.fullName}}
       dl.dl-horizontal
         dt #{__('Entity')}
         dd
-          a(ui-sref="ticketingAdminCenter.organization.detail({organizationId: $ctrl.user.entity._id})") {{::$ctrl.user.entity.fullName}}
+          a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.user.entity._id})") {{::$ctrl.user.entity.fullName}}
   .row
     .col-md-6
       esn-form-group(label=__('First name'))

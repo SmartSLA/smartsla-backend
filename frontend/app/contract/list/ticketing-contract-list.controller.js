@@ -47,7 +47,7 @@
     }
 
     function onItemClick(contractId) {
-      $state.go('ticketingAdminCenter.contract.detail', { contractId: contractId });
+      $state.go('ticketing.admin.contract.detail', { contractId: contractId });
     }
 
     function _onContractCreated(contract) {
