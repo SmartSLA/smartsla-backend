@@ -2,9 +2,9 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .controller('TicketingSettingsTabsDemandController', TicketingSettingsTabsDemandController);
+    .controller('TicketingGeneralTabsDemandController', TicketingGeneralTabsDemandController);
 
-  function TicketingSettingsTabsDemandController(
+  function TicketingGeneralTabsDemandController(
     $scope,
     TicketingGlossaryService,
     TICKETING_GLOSSARY_EVENTS,

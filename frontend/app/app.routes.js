@@ -54,11 +54,11 @@
             }
           }
         })
-        .state('ticketing.admin.settings', {
-          url: '/settings',
+        .state('ticketing.admin.general', {
+          url: '/general',
           views: {
             'admin-root@ticketing.admin': {
-              template: '<ticketing-settings />'
+              template: '<ticketing-general />'
             }
           }
         })
