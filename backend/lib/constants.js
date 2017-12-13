@@ -14,6 +14,7 @@ module.exports = {
     SOFTWARE_TYPE: 'Software type',
     ISSUE_TYPE: 'Issue type'
   },
+  TICKET_STATES: ['New', 'In Progress', 'Awaiting', 'Awaiting information', 'Awaiting validation', 'Abandoned', 'Closed'],
   INDICES: {
     ORGANIZATION: {
       name: 'organizations.idx',
