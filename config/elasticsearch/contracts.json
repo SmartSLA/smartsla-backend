@@ -1,0 +1,55 @@
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "nGram_filter": {
+          "type": "nGram",
+          "min_gram": 1,
+          "max_gram": 20,
+          "token_chars": [
+            "letter",
+            "digit",
+            "punctuation",
+            "symbol"
+          ]
+        }
+      },
+      "analyzer": {
+        "nGram_analyzer": {
+          "type": "custom",
+          "tokenizer": "whitespace",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "nGram_filter"
+          ]
+        },
+        "whitespace_analyzer": {
+          "type": "custom",
+          "tokenizer": "whitespace",
+          "filter": [
+            "lowercase",
+            "asciifolding"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "contracts": {
+      "properties": {
+        "title": {
+          "type": "string",
+          "analyzer": "nGram_analyzer",
+          "search_analyzer": "whitespace_analyzer",
+          "fields": {
+             "sort": {
+             "type": "string",
+             "index": "not_analyzed"
+             }
+           }
+        }
+      }
+    }
+  }
+}
