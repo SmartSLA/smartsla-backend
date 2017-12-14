@@ -7,8 +7,8 @@ const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
 describe('The POST /api/contracts/:id/software', function() {
-  let app, lib, helpers, ObjectId, apiURL;
-  let user1, user2, software1, software2, software3, demand1, demand2, contract;
+  let app, lib, helpers, ObjectId, esIntervalIndex, apiURL;
+  let user1, user2, software1, software2, software3, demand1, demand2, contract, organization;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -16,6 +16,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
     helpers = self.helpers;
     ObjectId = mongoose.Types.ObjectId;
+    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -41,17 +42,28 @@ describe('The POST /api/contracts/:id/software', function() {
         user2 = models.users[2];
         lib = helpers.modules.current.lib.lib;
 
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() =>
+        lib.start(err => {
+          if (err) {
+            done(err);
+          }
+
           lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          }))
-        .then(() => done())
-        .catch(err => done(err));
+            user: user1._id,
+            role: 'administrator'
+          })
+          .then(() =>
+            lib.ticketingUserRole.create({
+              user: user2._id,
+              role: 'user'
+            }))
+          .then(() =>
+            lib.organization.create({
+              shortName: 'organization'
+            })
+            .then(createOrganization => (organization = createOrganization)))
+          .then(() => done())
+          .catch(err => done(err));
+        });
       });
     });
   });
@@ -109,7 +121,7 @@ describe('The POST /api/contracts/:id/software', function() {
 
     lib.contract.create({
       title: 'contract1',
-      organization: new ObjectId(),
+      organization: organization._id,
       startDate: new Date(),
       endDate: new Date(),
       demands: [
@@ -320,7 +332,26 @@ describe('The POST /api/contracts/:id/software', function() {
             .then(updatedContract => {
               expect(updatedContract.software.length).to.equal(2);
               expect(updatedContract.software[1].template.toString()).to.equal(software2._id.toString());
-              done();
+
+              setTimeout(function() {
+                lib.contract.search({
+                  search: contract.title
+                }).then(result => {
+                  expect(result.list[0].software[0].template).to.deep.equal({
+                    _id: software1._id.toString(),
+                    name: software1.name
+                  });
+                  expect(result.list[0].software[1].template).to.deep.equal({
+                    _id: software2._id.toString(),
+                    name: software2.name
+                  });
+                  expect(result.list[0].organization).to.deep.equal({
+                    _id: organization._id.toString(),
+                    shortName: organization.shortName
+                  });
+                  done();
+                });
+              }, esIntervalIndex);
             });
         }));
     }));

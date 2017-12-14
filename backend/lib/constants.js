@@ -16,6 +16,10 @@ module.exports = {
   },
   TICKET_STATES: ['New', 'In Progress', 'Awaiting', 'Awaiting information', 'Awaiting validation', 'Abandoned', 'Closed'],
   INDICES: {
+    CONTRACT: {
+      name: 'contracts.idx',
+      type: 'contracts'
+    },
     ORGANIZATION: {
       name: 'organizations.idx',
       type: 'organizations'
@@ -26,6 +30,10 @@ module.exports = {
     }
   },
   EVENTS: {
+    CONTRACT: {
+      created: 'ticketing:contract:created',
+      updated: 'ticketing:contract:updated'
+    },
     ORGANIZATION: {
       created: 'ticketing:organization:created',
       updated: 'ticketing:organization:updated'

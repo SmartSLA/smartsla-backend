@@ -20,18 +20,15 @@ module.exports = dependencies => {
       const hideKeys = ['__v', '_id', 'schemaVersion'];
 
       ret.id = getId(ret);
+
       hideKeys.forEach(key => { delete ret[key]; });
     }
 
     const software = contract.software;
+    const organization = contract.organization;
 
     contract = contract instanceof Contract ? contract.toObject(options) : new Contract(contract).toObject(options);
-
-    software.forEach(item => {
-      item.template._id = item.template._id.toString();
-    });
-
-    contract.software = software;
+    contract = Object.assign(contract, { software, organization });
 
     return contract;
   }

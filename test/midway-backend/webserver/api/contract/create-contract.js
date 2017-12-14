@@ -7,8 +7,8 @@ const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
 describe('POST /api/contracts', function() {
-  let app, lib, helpers, ObjectId;
-  let user1, user2, contract;
+  let app, lib, helpers, ObjectId, esIntervalIndex;
+  let user1, user2, organization;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -16,6 +16,7 @@ describe('POST /api/contracts', function() {
 
     helpers = self.helpers;
     ObjectId = mongoose.Types.ObjectId;
+    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -41,29 +42,28 @@ describe('POST /api/contracts', function() {
         user2 = models.users[2];
         lib = helpers.modules.current.lib.lib;
 
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() => {
+        lib.start(err => {
+          if (err) {
+            done(err);
+          }
+
           lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          });
-        })
-        .then(() => {
-          lib.contract.create({
-            title: 'contract1',
-            organization: new ObjectId(),
-            startDate: new Date(),
-            endDate: new Date()
+            user: user1._id,
+            role: 'administrator'
           })
-          .then(createdContract => {
-            contract = createdContract;
-            done();
-          });
-        })
-        .catch(err => done(err));
+          .then(() =>
+            lib.ticketingUserRole.create({
+              user: user2._id,
+              role: 'user'
+            }))
+          .then(() =>
+            lib.organization.create({
+              shortName: 'organization'
+            })
+            .then(createOrganization => (organization = createOrganization)))
+          .then(() => done())
+          .catch(err => done(err));
+        });
       });
     });
   });
@@ -240,19 +240,31 @@ describe('POST /api/contracts', function() {
 
   it('should respond 201 if create contract is successfully', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const newContract = {
+      const contractJson = {
         title: 'new',
-        organization: new ObjectId(),
+        organization: organization._id,
         startDate: new Date(),
         endDate: new Date()
       };
       const req = requestAsMember(request(app).post('/api/contracts'));
 
-      req.send(newContract);
+      req.send(contractJson);
       req.expect(201)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body.shortName).to.equal(contract.shortName);
-          done();
+          expect(res.body.title).to.equal(contractJson.title);
+
+          setTimeout(function() {
+            lib.contract.search({
+              search: contractJson.title
+            }).then(result => {
+              expect(result.list[0].title).to.equal(contractJson.title);
+              expect(result.list[0].organization).to.deep.equal({
+                _id: organization._id.toString(),
+                shortName: organization.shortName
+              });
+              done();
+            });
+          }, esIntervalIndex);
         }));
     }));
   });

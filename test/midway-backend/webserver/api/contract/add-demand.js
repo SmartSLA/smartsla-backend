@@ -5,11 +5,10 @@ const Q = require('q');
 const path = require('path');
 const expect = require('chai').expect;
 const MODULE_NAME = 'linagora.esn.ticketing';
-const mongoose = require('mongoose');
 
 describe('The POST /api/contracts/:id/demands', function() {
-  let app, lib, helpers, ObjectId, apiURL;
-  let user1, user2, demand, contract;
+  let app, lib, helpers, esIntervalIndex, apiURL;
+  let user1, user2, demand, contract, software, organization;
   let demandGlossary, softwareGlossary, issueGlossary;
   const password = 'secret';
 
@@ -17,7 +16,7 @@ describe('The POST /api/contracts/:id/demands', function() {
     const self = this;
 
     helpers = self.helpers;
-    ObjectId = mongoose.Types.ObjectId;
+    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -44,17 +43,35 @@ describe('The POST /api/contracts/:id/demands', function() {
         user2 = models.users[2];
         lib = helpers.modules.current.lib.lib;
 
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() =>
+        lib.start(err => {
+          if (err) {
+            done(err);
+          }
+
           lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          }))
-        .then(() => done())
-        .catch(err => done(err));
+            user: user1._id,
+            role: 'administrator'
+          })
+          .then(() =>
+            lib.ticketingUserRole.create({
+              user: user2._id,
+              role: 'user'
+            }))
+          .then(() =>
+            lib.software.create({
+              name: 'software',
+              category: 'category',
+              versions: ['1']
+            })
+            .then(createdSofware => (software = createdSofware)))
+          .then(() =>
+            lib.organization.create({
+              shortName: 'organization'
+            })
+            .then(createOrganization => (organization = createOrganization)))
+          .then(() => done())
+          .catch(err => done(err));
+        });
       });
     });
   });
@@ -92,10 +109,15 @@ describe('The POST /api/contracts/:id/demands', function() {
 
     lib.contract.create({
       title: 'contract',
-      organization: new ObjectId(),
+      organization: organization._id,
       startDate: new Date(),
       endDate: new Date(),
-      demands: [demand]
+      demands: [demand],
+      software: [{
+        template: software._id,
+        type: 'normal',
+        versions: software.versions
+      }]
     })
     .then(createdContract => {
       contract = createdContract;
@@ -249,7 +271,22 @@ describe('The POST /api/contracts/:id/demands', function() {
             .then(updatedContract => {
               expect(updatedContract.demands.length).to.equal(2);
               expect(updatedContract.demands[1].demandType).to.equal(demandGlossary.word);
-              done();
+
+              setTimeout(function() {
+                lib.contract.search({
+                  search: contract.title
+                }).then(result => {
+                  expect(result.list[0].software[0].template).to.deep.equal({
+                    _id: software._id.toString(),
+                    name: software.name
+                  });
+                  expect(result.list[0].organization).to.deep.equal({
+                    _id: organization._id.toString(),
+                    shortName: organization.shortName
+                  });
+                  done();
+                });
+              }, esIntervalIndex);
             });
         }));
     }));

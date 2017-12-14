@@ -7,8 +7,8 @@ const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
 describe('POST /api/contracts/:id/permissions', function() {
-  let app, lib, helpers, ObjectId;
-  let user1, user2, contract, entity;
+  let app, lib, helpers, ObjectId, esIntervalIndex;
+  let user1, user2, contract, software, organization, entity;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -16,6 +16,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
     helpers = self.helpers;
     ObjectId = mongoose.Types.ObjectId;
+    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -41,44 +42,60 @@ describe('POST /api/contracts/:id/permissions', function() {
         user2 = models.users[2];
         lib = helpers.modules.current.lib.lib;
 
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() => {
-          lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          });
-        })
-        .then(() =>
-          lib.organization.create({
-            shortName: 'organization'
-          })
-        )
-        .then(org =>
-          lib.organization.create({
-            shortName: 'entity',
-            parent: org._id
-          })
-          .then(createdEntity => {
-            entity = createdEntity;
+        lib.start(err => {
+          if (err) {
+            done(err);
+          }
 
-            return lib.contract.create({
-              title: 'contract1',
-              organization: org._id,
-              startDate: new Date(),
-              endDate: new Date()
-            })
-            .then(createdContract => {
-              contract = createdContract;
-              done();
-            });
-          })
-        )
-        .catch(err => done(err));
+          done();
+        });
       });
     });
+  });
+
+  beforeEach(function(done) {
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() =>
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      }))
+    .then(() =>
+      lib.software.create({
+        name: 'software',
+        category: 'category',
+        versions: ['1']
+      })
+      .then(createdSofware => (software = createdSofware)))
+    .then(() =>
+      lib.organization.create({
+        shortName: 'organization'
+      })
+      .then(createOrganization => (organization = createOrganization)))
+    .then(() =>
+      lib.organization.create({
+        shortName: 'entity',
+        parent: organization._id
+      })
+      .then(createdEntity => (entity = createdEntity)))
+    .then(() =>
+      lib.contract.create({
+        title: 'contract',
+        organization: organization._id,
+        startDate: new Date(),
+        endDate: new Date(),
+        software: [{
+          template: software._id,
+          type: 'normal',
+          versions: software.versions
+        }]
+      })
+      .then(createdContract => (contract = createdContract)))
+    .then(() => done())
+    .catch(err => done(err));
   });
 
   afterEach(function(done) {
@@ -191,7 +208,18 @@ describe('POST /api/contracts/:id/permissions', function() {
           lib.contract.getById(contract._id)
             .then(result => {
               expect(result.permissions).to.equal(updatePermissions.permissions);
-              done();
+
+              setTimeout(function() {
+                lib.contract.search({
+                  search: contract.title
+                }).then(result => {
+                  expect(result.list[0].software[0].template).to.deep.equal({
+                    _id: software._id.toString(),
+                    name: software.name
+                  });
+                  done();
+                });
+              }, esIntervalIndex);
             }, err => done(err || 'should resolve'));
         }));
     }));
@@ -210,7 +238,18 @@ describe('POST /api/contracts/:id/permissions', function() {
           lib.contract.getById(contract._id)
             .then(result => {
               expect(result.permissions.length).to.equal(0);
-              done();
+
+              setTimeout(function() {
+                lib.contract.search({
+                  search: contract.title
+                }).then(result => {
+                  expect(result.list[0].software[0].template).to.deep.equal({
+                    _id: software._id.toString(),
+                    name: software.name
+                  });
+                  done();
+                });
+              }, esIntervalIndex);
             }, err => done(err || 'should resolve'));
         }));
     }));
@@ -229,7 +268,22 @@ describe('POST /api/contracts/:id/permissions', function() {
           lib.contract.getById(contract._id)
             .then(result => {
               expect(result.permissions).to.shallowDeepEqual(updatePermissions.permissions);
-              done();
+
+              setTimeout(function() {
+                lib.contract.search({
+                  search: contract.title
+                }).then(result => {
+                  expect(result.list[0].software[0].template).to.deep.equal({
+                    _id: software._id.toString(),
+                    name: software.name
+                  });
+                  expect(result.list[0].organization).to.deep.equal({
+                    _id: organization._id.toString(),
+                    shortName: organization.shortName
+                  });
+                  done();
+                });
+              }, esIntervalIndex);
             }, err => done(err || 'should resolve'));
         }));
     }));

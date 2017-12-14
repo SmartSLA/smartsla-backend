@@ -100,33 +100,57 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    const options = {
-      limit: +req.query.limit,
-      offset: +req.query.offset,
-      organization: req.query.organization
-    };
+    let getContracts;
+    let errorMessage;
 
-    options.populations = [{ path: 'manager' }];
+    if (req.query.search) {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        search: req.query.search
+      };
 
-    if (!req.query.organization) {
-      options.populations.push({ path: 'organization' });
+      errorMessage = 'Error while searching contracts';
+      getContracts = lib.contract.search(options);
+    } else {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        organization: req.query.organization
+      };
+
+      options.populations = [{ path: 'manager' }];
+
+      if (!req.query.organization) {
+        options.populations.push({ path: 'organization' });
+      }
+
+      errorMessage = 'Failed to list contracts';
+      getContracts = lib.contract.list(options)
+        .then(contracts => {
+          const denormalizeManager = manager => coreUser.denormalize.denormalize(manager);
+
+          contracts = contracts.map(contract => {
+            if (contract.manager) {
+              contract.manager = denormalizeManager(contract.manager);
+            }
+
+            return contract;
+          });
+
+          return {
+            total_count: contracts.length,
+            list: contracts
+          };
+        });
     }
 
-    return lib.contract.list(options)
-      .then(contracts => {
-        const denormalizeManager = manager => coreUser.denormalize.denormalize(manager);
-
-        contracts = contracts.map(contract => {
-          if (contract.manager) {
-            contract.manager = denormalizeManager(contract.manager);
-          }
-
-          return contract;
-        });
-        res.header('X-ESN-Items-Count', contracts.length);
-        res.status(200).json(contracts);
+    return getContracts
+      .then(result => {
+        res.header('X-ESN-Items-Count', result.total_count);
+        res.status(200).json(result.list);
       })
-      .catch(err => send500Error('Failed to list contract', err, res));
+      .catch(err => send500Error(errorMessage, err, res));
   }
 
   /**
@@ -137,8 +161,8 @@ module.exports = function(dependencies, lib) {
    */
   function update(req, res) {
     return lib.contract.updateById(req.params.id, req.body)
-      .then(numberOfUpdatedDocs => {
-        if (numberOfUpdatedDocs) {
+      .then(modified => {
+        if (modified) {
           return res.status(204).end();
         }
 
@@ -157,8 +181,8 @@ module.exports = function(dependencies, lib) {
     const { permissions } = req.body;
 
     return lib.contract.updateById(req.params.id, { permissions })
-      .then(numberOfUpdatedDocs => {
-        if (numberOfUpdatedDocs) {
+      .then(modified => {
+        if (modified) {
           return res.status(204).end();
         }
 
@@ -175,8 +199,8 @@ module.exports = function(dependencies, lib) {
    */
   function addSoftware(req, res) {
     return lib.contract.addSoftware(req.params.id, req.body)
-      .then(numberOfUpdatedDocs => {
-        if (numberOfUpdatedDocs) {
+      .then(modified => {
+        if (modified) {
           return res.status(204).end();
         }
 
@@ -193,8 +217,8 @@ module.exports = function(dependencies, lib) {
    */
   function addDemand(req, res) {
     return lib.contract.addDemands(req.params.id, [req.body])
-      .then(numberOfUpdatedDocs => {
-        if (numberOfUpdatedDocs) {
+      .then(modified => {
+        if (modified) {
           return res.status(204).end();
         }
 
