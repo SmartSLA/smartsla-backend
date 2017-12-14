@@ -7,6 +7,7 @@
   function TicketingContractService(
     $rootScope,
     $q,
+    $log,
     asyncAction,
     notificationFactory,
     esnI18nService,
@@ -21,6 +22,7 @@
       addSoftware: addSoftware,
       create: create,
       get: get,
+      getSearchProvider: getSearchProvider,
       updateBasicInfo: updateBasicInfo,
       updatePermissions: updatePermissions
     };
@@ -177,6 +179,26 @@
       }).then(function() {
         $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, demand);
       });
+    }
+
+    function getSearchProvider() {
+      return {
+        objectType: 'contract',
+        templateUrl: '/ticketing/app/contract/search-template/ticketing-contract-search-template.html',
+        getDisplayName: function(contract) {
+          return contract.title;
+        },
+        search: function(options) {
+          return ticketingContractClient.list(options)
+            .then(function(response) {
+              return response.data;
+            }, function(err) {
+              $log.error('Error while searching contract:', err);
+
+              return $q.when([]);
+            });
+        }
+      };
     }
 
     function _denormalizeManager(manager) {
