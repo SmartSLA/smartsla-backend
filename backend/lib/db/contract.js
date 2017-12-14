@@ -20,7 +20,7 @@ module.exports = dependencies => {
 
   const ContractSoftwareSchema = new Schema({
     active: { type: Boolean, default: true },
-    template: { type: Schema.ObjectId, ref: 'Software', required: true, unique: true },
+    template: { type: Schema.ObjectId, ref: 'Software', required: true },
     versions: [{ type: String, unique: true }],
     type: { type: String, required: true },
     timestamps: {

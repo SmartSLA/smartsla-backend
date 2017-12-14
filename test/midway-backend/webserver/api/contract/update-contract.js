@@ -7,8 +7,8 @@ const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
 describe('POST /api/contracts/:id', function() {
-  let app, lib, helpers, ObjectId;
-  let user1, user2, contract;
+  let app, lib, helpers, ObjectId, esIntervalIndex;
+  let user1, user2, contract, software, organization;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -16,6 +16,7 @@ describe('POST /api/contracts/:id', function() {
 
     helpers = self.helpers;
     ObjectId = mongoose.Types.ObjectId;
+    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
 
     helpers.modules.initMidway(MODULE_NAME, function(err) {
       if (err) {
@@ -41,29 +42,53 @@ describe('POST /api/contracts/:id', function() {
         user2 = models.users[2];
         lib = helpers.modules.current.lib.lib;
 
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() => {
+        lib.start(err => {
+          if (err) {
+            done(err);
+          }
+
           lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          });
-        })
-        .then(() => {
-          lib.contract.create({
-            title: 'contract1',
-            organization: new ObjectId(),
-            startDate: new Date(),
-            endDate: new Date()
+            user: user1._id,
+            role: 'administrator'
           })
-          .then(createdContract => {
-            contract = createdContract;
-            done();
-          });
-        })
-        .catch(err => done(err));
+          .then(() =>
+            lib.ticketingUserRole.create({
+              user: user2._id,
+              role: 'user'
+            }))
+          .then(() =>
+            lib.software.create({
+              name: 'foo',
+              category: 'foz',
+              versions: ['1']
+            }).then(createdSofware => {
+              software = createdSofware;
+            }))
+          .then(() =>
+            lib.organization.create({
+              shortName: 'organization'
+            })
+            .then(createOrganization => (organization = createOrganization)))
+          .then(() =>
+            lib.contract.create({
+              title: 'contract',
+              organization: organization._id,
+              startDate: new Date(),
+              endDate: new Date(),
+              software: [
+                {
+                  template: software._id,
+                  versions: software.versions,
+                  type: 'critical'
+                }
+              ]
+            })
+            .then(createdContract => {
+              contract = createdContract;
+              done();
+            }))
+          .catch(err => done(err));
+        });
       });
     });
   });
@@ -280,11 +305,11 @@ describe('POST /api/contracts/:id', function() {
     }));
   });
 
-  it('should respond 204 if user is an administrator', function(done) {
+  it('should respond 204 if update contract successfully', function(done) {
       helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
         const newContract = {
           title: 'new',
-          organization: new ObjectId(),
+          organization: organization._id,
           startDate: new Date(),
           endDate: new Date()
         };
@@ -296,8 +321,24 @@ describe('POST /api/contracts/:id', function() {
             lib.contract.getById(contract._id)
               .then(result => {
                 expect(result.shortName).to.equal(newContract.shortName);
-                done();
-              }, err => done(err || 'should resolve'));
+
+                setTimeout(function() {
+                  lib.contract.search({
+                    search: newContract.title
+                  }).then(result => {
+                    expect(result.list[0].software[0].template).to.deep.equal({
+                      _id: software._id.toString(),
+                      name: software.name
+                    });
+                    expect(result.list[0].organization).to.deep.equal({
+                      _id: organization._id.toString(),
+                      shortName: organization.shortName
+                    });
+                    done();
+                  });
+                }, esIntervalIndex);
+              })
+              .catch(err => done(err || 'should resolve'));
           }));
       }));
     });

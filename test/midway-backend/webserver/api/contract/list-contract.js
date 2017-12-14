@@ -43,31 +43,25 @@ describe('GET /api/contracts', function() {
           user: user1._id,
           role: 'administrator'
         })
-        .then(() => {
+        .then(() =>
           lib.ticketingUserRole.create({
             user: user2._id,
             role: 'user'
-          });
-        })
-        .then(() => {
+          }))
+        .then(() =>
           lib.organization.create({
             shortName: 'organization'
           })
-          .then(createdOrganization => {
-            organization = createdOrganization;
-
-            lib.contract.create({
-              title: 'contract1',
-              organization: createdOrganization._id,
-              startDate: new Date(),
-              endDate: new Date()
-            })
-            .then(createdContract => {
-              contract = createdContract;
-              done();
-            });
-          });
-        })
+          .then(createdOrganization => (organization = createdOrganization)))
+        .then(() =>
+          lib.contract.create({
+            title: 'contract1',
+            organization: organization._id,
+            startDate: new Date(),
+            endDate: new Date()
+          })
+          .then(createdContract => (contract = createdContract)))
+        .then(() => done())
         .catch(err => done(err));
       });
     });

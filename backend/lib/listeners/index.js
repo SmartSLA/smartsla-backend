@@ -3,6 +3,7 @@
 module.exports = dependencies => {
   const organization = require('./organization')(dependencies);
   const software = require('./software')(dependencies);
+  const contract = require('./contract')(dependencies);
 
   return {
     init
@@ -11,5 +12,6 @@ module.exports = dependencies => {
   function init() {
     organization.registerListener();
     software.registerListener();
+    contract.registerListener();
   }
 };
