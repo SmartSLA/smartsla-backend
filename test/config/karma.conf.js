@@ -41,7 +41,7 @@ module.exports = function(config) {
       'karma-mocha',
       'karma-coverage',
       'karma-spec-reporter',
-      'karma-ng-jade2module-preprocessor'
+      '@linagora/karma-ng-jade2module-preprocessor'
     ],
 
     coverageReporter: { type: 'text', dir: '/tmp' },
