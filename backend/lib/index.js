@@ -12,6 +12,7 @@ module.exports = function(dependencies) {
   const listeners = require('./listeners')(dependencies);
   const software = require('./software')(dependencies);
   const glossary = require('./ticketing-glossary')(dependencies);
+  const ticket = require('./ticket')(dependencies);
 
   return {
     constants,
@@ -23,7 +24,8 @@ module.exports = function(dependencies) {
     glossary,
     start,
     user,
-    ticketingUserRole
+    ticketingUserRole,
+    ticket
   };
 
   function start(callback) {
