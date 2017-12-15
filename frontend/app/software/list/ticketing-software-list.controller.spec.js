@@ -60,4 +60,16 @@ describe('The TicketingSoftwareListController', function() {
     expect(controller.elements.length).to.equal(2);
     expect(controller.elements[0]).to.deep.equal(newSoftware);
   });
+
+  it('should update a correct item after software updated event is fired', function() {
+    var elements = [{ _id: '1', versions: ['1', '2'] }, { _id: '2', versions: ['1', '2'] }];
+    var softwareToUpdate = { _id: elements[1]._id, versions: ['1', '2', '3'] };
+    var controller = initController(null, { elements: elements });
+
+    $rootScope.$broadcast(TICKETING_SOFTWARE_EVENTS.UPDATED, softwareToUpdate);
+
+    $rootScope.$digest();
+
+    expect(controller.elements[1].versions).to.deep.equal(softwareToUpdate.versions);
+  });
 });

@@ -6,7 +6,8 @@
       templateUrl: '/ticketing/app/software/form/ticketing-software-form.html',
       controller: 'TicketingSoftwareFormController',
       bindings: {
-        software: '='
+        software: '=',
+        editMode: '<'
       }
     });
 })(angular);

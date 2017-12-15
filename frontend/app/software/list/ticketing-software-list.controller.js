@@ -9,6 +9,7 @@
     $modal,
     infiniteScrollHelper,
     TicketingSoftwareService,
+    _,
     TICKETING_SOFTWARE_EVENTS
   ) {
     var self = this;
@@ -23,9 +24,14 @@
     function $onInit() {
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
+      self.onEditBtnClick = onEditBtnClick;
 
       $scope.$on(TICKETING_SOFTWARE_EVENTS.CREATED, function(event, software) {
         _onSoftwareCreated(software);
+      });
+
+      $scope.$on(TICKETING_SOFTWARE_EVENTS.UPDATED, function(event, updatedSoftware) {
+        _onSoftwareUpdated(updatedSoftware);
       });
     }
 
@@ -36,6 +42,19 @@
         placement: 'center',
         controllerAs: '$ctrl',
         controller: 'TicketingSoftwareCreateController'
+      });
+    }
+
+    function onEditBtnClick(software) {
+      $modal({
+        templateUrl: '/ticketing/app/software/edit/ticketing-software-edit.html',
+        backdrop: 'static',
+        placement: 'center',
+        controllerAs: '$ctrl',
+        controller: 'TicketingSoftwareEditController',
+        locals: {
+          software: software
+        }
       });
     }
 
@@ -51,6 +70,18 @@
       }
 
       self.elements.unshift(software);
+    }
+
+    function _onSoftwareUpdated(updatedSoftware) {
+      if (!updatedSoftware || !updatedSoftware._id) {
+        return;
+      }
+
+      var index = _.findIndex(self.elements, { _id: updatedSoftware._id });
+
+      if (index !== -1) {
+        self.elements[index] = updatedSoftware;
+      }
     }
   }
 })(angular);
