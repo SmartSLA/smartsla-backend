@@ -6,6 +6,7 @@ module.exports = (dependencies, lib, router) => {
   const {
     loadContract,
     canCreateTicket,
+    canListTicket,
     validateTicketCreation
   } = require('./middleware')(dependencies, lib);
 
@@ -15,5 +16,11 @@ module.exports = (dependencies, lib, router) => {
     loadContract,
     validateTicketCreation,
     controller.create
+  );
+
+  router.get('/tickets',
+    authorizationMW.requiresAPILogin,
+    canListTicket,
+    controller.list
   );
 };
