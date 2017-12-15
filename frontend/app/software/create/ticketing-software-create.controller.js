@@ -4,23 +4,23 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingSoftwareCreateController', TicketingSoftwareCreateController);
 
-  function TicketingSoftwareCreateController(TicketingSoftwareService, _) {
+  function TicketingSoftwareCreateController(_, TicketingSoftwareService) {
     var self = this;
 
     self.create = create;
 
     function create() {
-      self.newSoftware = _qualifySoftware(self.newSoftware);
-
-      return TicketingSoftwareService.create(self.newSoftware);
+      return TicketingSoftwareService.create(_qualifySoftware(self.newSoftware));
     }
 
     function _qualifySoftware(software) {
-      software.versions = _.map(software.versions, function(version) {
+      var result = angular.copy(software);
+
+      result.versions = _.map(result.versions, function(version) {
         return version.text;
       });
 
-      return software;
+      return result;
     }
   }
 })(angular);

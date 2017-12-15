@@ -14,7 +14,7 @@
           .flex-grow.flex-end
             button.btn.btn-link(ng-click="$ctrl.create(); $hide()", ng-disabled="form.$invalid")
               | #{__('Create')}
-        .modal-body.p-t-20
+        .modal-body.p-20
           ticketing-software-form(software="$ctrl.newSoftware")
         .modal-footer.flex.hidden-xs
           .flex-vertical-centered.flex-end
