@@ -9,7 +9,7 @@ module.exports = dependencies => {
   const TicketSoftwareSchema = new Schema({
     template: { type: Schema.ObjectId, ref: 'Software', required: true },
     criticality: { type: String, required: true },
-    versions: [{ type: String, required: true }]
+    version: { type: String, required: true }
   }, { _id: false });
 
   const TicketSchema = new Schema({
