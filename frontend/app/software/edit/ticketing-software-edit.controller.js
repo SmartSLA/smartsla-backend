@@ -2,15 +2,20 @@
   'use strict';
 
   angular.module('linagora.esn.ticketing')
-    .controller('TicketingSoftwareCreateController', TicketingSoftwareCreateController);
+    .controller('TicketingSoftwareEditController', TicketingSoftwareEditController);
 
-  function TicketingSoftwareCreateController(_, TicketingSoftwareService) {
+  function TicketingSoftwareEditController(
+    _,
+    TicketingSoftwareService,
+    software
+  ) {
     var self = this;
 
-    self.create = create;
+    self.save = save;
+    self.software = software;
 
-    function create() {
-      return TicketingSoftwareService.create(_qualifySoftware(self.newSoftware));
+    function save() {
+      return TicketingSoftwareService.update(_qualifySoftware(self.software));
     }
 
     function _qualifySoftware(software) {

@@ -13,7 +13,7 @@
                 span #{__('Versions')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
-            ticketing-software-list-item(software="item")
+            ticketing-software-list-item(software="item", on-edit-btn-click="$ctrl.onEditBtnClick(item)")
 div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
   ticketing-empty-message(
     icon="mdi-wrench",

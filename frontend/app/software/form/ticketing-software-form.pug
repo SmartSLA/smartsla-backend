@@ -2,17 +2,18 @@ ng-form(name="form")
   .row
     .col-xs-12
       esn-form-group(label=__('Name'), async-validator-error-message=__('That software already exists'), async-validator="$ctrl.uniqueSoftwareName")
-        input.form-control(type="text", ng-model="$ctrl.software.name", name="name", required)
+        input.form-control(type="text", ng-model="$ctrl.software.name", name="name", required, ng-disabled="$ctrl.editMode")
   .row
     .col-xs-12
       esn-form-group(label=__('Category'))
-        input.form-control(type="text", ng-model="$ctrl.software.category", name="category", required)
+        input.form-control(type="text", ng-model="$ctrl.software.category", name="category", required, ng-disabled="$ctrl.editMode")
   .row
     .col-xs-12
       tags-input.form-control(
         ng-model='$ctrl.software.versions',
         display-property="",
         placeholder=__('Add a version'),
+        add-on-space="true",
         replace-spaces-with-dashes='false',
         min-tags="1",
         min-length="1"

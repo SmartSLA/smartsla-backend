@@ -131,5 +131,9 @@
   "My tickets": "Yêu cầu của tôi",
   "All tickets": "Tất cả yêu cầu",
   "Reporting": "Báo cáo",
-  "Admin": "Quản trị"
+  "Admin": "Quản trị",
+  "Updating software...": "Đang cập nhật phần mềm...",
+  "Software updated": "Đã cập nhật phần mềm",
+  "Failed to update software": "Cập nhật phần mềm thất bại",
+  "Edit software": "Chỉnh sửa phần mềm"
 }

@@ -5,7 +5,8 @@
     .component('ticketingSoftwareListItem', {
       templateUrl: '/ticketing/app/software/list/item/ticketing-software-list-item.html',
       bindings: {
-        software: '<'
+        software: '<',
+        onEditBtnClick: '&'
       }
     });
 })(angular);

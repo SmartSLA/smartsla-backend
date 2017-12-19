@@ -4,7 +4,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingSoftwareFormController', TicketingSoftwareFormController);
 
-  function TicketingSoftwareFormController($q, ticketingSoftwareClient) {
+  function TicketingSoftwareFormController($q, TicketingSoftwareService) {
     var self = this;
 
     self.uniqueSoftwareName = uniqueSoftwareName;
@@ -14,11 +14,9 @@
         return $q.reject(new Error('Software name required'));
       }
 
-      return ticketingSoftwareClient.getByName(softwareName)
-        .then(function(response) {
-          var software = response.data;
-
-          if (software && software.length) {
+      return TicketingSoftwareService.getByName(softwareName)
+        .then(function(software) {
+          if (software && software._id !== self.software._id) {
             return $q.reject(new Error('Software already exists'));
           }
         });

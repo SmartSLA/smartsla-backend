@@ -64,4 +64,55 @@ describe('The TicketingSoftwareService', function() {
       $rootScope.$digest();
     });
   });
+
+  describe('The update function', function() {
+    it('should reject if there is no software is provided', function(done) {
+      TicketingSoftwareService.update()
+        .catch(function(err) {
+          expect(err.message).to.equal('Software is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if there is no software ID is provided', function(done) {
+      TicketingSoftwareService.update({})
+        .catch(function(err) {
+          expect(err.message).to.equal('Software ID is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to update software', function(done) {
+      var error = new Error('something wrong');
+      var software = { _id: '1234', foo: 'bar' };
+
+      ticketingSoftwareClient.update = sinon.stub().returns($q.reject(error));
+
+      TicketingSoftwareService.update(software)
+        .catch(function(err) {
+          expect(ticketingSoftwareClient.update).to.have.been.calledWith(software._id, software);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should fire an event if success to update software', function(done) {
+      var software = { _id: '1234', foo: 'bar' };
+
+      ticketingSoftwareClient.update = sinon.stub().returns($q.when());
+      $rootScope.$broadcast = sinon.spy();
+      TicketingSoftwareService.update(software)
+        .then(function() {
+          expect(ticketingSoftwareClient.update).to.have.been.calledWith(software._id, software);
+          expect($rootScope.$broadcast).to.have.been.calledWith(TICKETING_SOFTWARE_EVENTS.UPDATED, software);
+          done();
+        }, function(err) {
+          done(err || 'should resolve');
+        });
+      $rootScope.$digest();
+    });
+  });
 });

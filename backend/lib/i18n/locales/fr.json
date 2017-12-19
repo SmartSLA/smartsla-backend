@@ -131,5 +131,9 @@
   "My tickets": "Mes tickets",
   "All tickets": "Tous les tickets",
   "Reporting": "Rapport",
-  "Admin": "Admin"
+  "Admin": "Admin",
+  "Updating software...": "Mettre à jour de logiciel...",
+  "Software updated": "Logiciel est mis à jour",
+  "Failed to update software": "Impossible de mettre à jour le logiciel",
+  "Edit software": "Éditer le logiciel"
 }
