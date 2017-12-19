@@ -6,7 +6,8 @@
 
   function TicketingTicketClient(ticketingRestangular) {
     return {
-      create: create
+      create: create,
+      list: list
     };
 
     /**
@@ -16,6 +17,15 @@
      */
     function create(ticket) {
       return ticketingRestangular.all('tickets').post(ticket);
+    }
+
+    /**
+     * List tickets.
+     * @param  {Object} options - Query option, possible attributes are state, limit, offset
+     * @return {Promise}        - Resolve response with list of tickets
+     */
+    function list(options) {
+      return ticketingRestangular.all('tickets').getList(options);
     }
   }
 })(angular);
