@@ -33,7 +33,8 @@ module.exports = dependencies => {
     list,
     listByCursor,
     search,
-    updateById
+    updateById,
+    updateSoftware
   };
 
   /**
@@ -174,5 +175,23 @@ module.exports = dependencies => {
       .find()
       .populate(POPULATION_FOR_ELASTICSEARCH)
       .cursor();
+  }
+
+  /**
+   * Update a software of contract
+   * @param {Promise} - Resolve on success
+   */
+  function updateSoftware(contract, template, modified) {
+    const index = _.findIndex(contract.software, item => (String(item.template) === template));
+
+    contract.software[index].versions = modified.versions;
+
+    return contract.save()
+      .then(savedContract =>
+        savedContract.populate(POPULATION_FOR_ELASTICSEARCH)
+        .execPopulate()
+          .then(populatedContract => {
+            contractUpdatedTopic.publish(populatedContract);
+          }));
   }
 };

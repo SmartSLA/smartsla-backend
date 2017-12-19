@@ -11,7 +11,8 @@ module.exports = function(dependencies, lib) {
     get,
     list,
     update,
-    updatePermissions
+    updatePermissions,
+    updateSoftware
   };
 
   /**
@@ -225,5 +226,17 @@ module.exports = function(dependencies, lib) {
         return send404Error('Contract not found', res);
       })
       .catch(err => send500Error('Failed to add demand', err, res));
+  }
+
+  /**
+   * Update versions for a contract's software
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function updateSoftware(req, res) {
+    return lib.contract.updateSoftware(req.contract, req.params.softwareId, req.body)
+      .then(() => res.status(204).end())
+      .catch(err => send500Error('Failed to update software', err, res));
   }
 };

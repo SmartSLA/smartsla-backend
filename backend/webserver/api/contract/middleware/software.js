@@ -1,19 +1,22 @@
 'use strict';
 
 const composableMw = require('composable-middleware');
+const _ = require('lodash');
 
 module.exports = (dependencies, lib) => {
   const { validateObjectIds } = require('../../helpers')(dependencies, lib);
   const {
     send400Error,
+    send404Error,
     send500Error
   } = require('../../utils')(dependencies);
 
   return {
-    validateSoftware
+    validateSoftwareToAdd,
+    validateSoftwareToUpdate
   };
 
-  function validateSoftware(req, res, next) {
+  function validateSoftwareToAdd(req, res, next) {
     const middlewares = [
       validateSoftwareFormat,
       checkSoftwareTypesAvailable,
@@ -23,6 +26,31 @@ module.exports = (dependencies, lib) => {
     ];
 
     return composableMw(...middlewares)(req, res, next);
+  }
+
+  function validateSoftwareToUpdate(req, res, next) {
+    const contract = req.contract;
+    const { versions } = req.body;
+    const { softwareId } = req.params;
+
+    if (!versions || !Array.isArray(versions) || !versions.length) {
+      return send400Error('Software versions is required and must be an array which has at least one version', res);
+    }
+
+    if (!_.find(contract.software, item => (String(item.template) === softwareId))) {
+      return send404Error('Software not found', res);
+    }
+
+    lib.software.isSoftwareVersionsAvailable(softwareId, versions)
+      .then(isAvailable => {
+        if (!isAvailable) {
+          return send400Error('Software versions are unsupported', res);
+        }
+
+        next();
+      })
+      .catch(err => send500Error('Unable to check software versions', err, res));
+
   }
 
   function validateSoftwareFormat(req, res, next) {

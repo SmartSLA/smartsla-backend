@@ -8,7 +8,7 @@ module.exports = (dependencies, lib) => {
     requireAdministrator
   } = require('../../helpers')(dependencies, lib);
   const { validatePermissions } = require('./permission')(dependencies, lib);
-  const { validateSoftware } = require('./software')(dependencies, lib);
+  const { validateSoftwareToAdd, validateSoftwareToUpdate } = require('./software')(dependencies, lib);
   const { validateDemand } = require('./demand')(dependencies, lib);
   const {
     send400Error,
@@ -25,7 +25,8 @@ module.exports = (dependencies, lib) => {
     validateContractPayload,
     validateDemand,
     validatePermissions,
-    validateSoftware
+    validateSoftwareToAdd,
+    validateSoftwareToUpdate
   };
 
   function load(req, res, next) {
