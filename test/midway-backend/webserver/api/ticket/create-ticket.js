@@ -3,97 +3,78 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 
-describe('POST /api/tickets', function() {
-  const API_PATH = '/api/tickets';
+describe('POST /ticketing/api/tickets', function() {
+  const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers, ObjectId;
   let user1, user2, contract, demand, software;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
-
-    helpers = self.helpers;
+    helpers = this.helpers;
     ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
+    app = this.app;
+    lib = this.lib;
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
+
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        demand = {
-          demandType: 'Info',
-          softwareType: 'Normal',
-          issueType: 'Blocking'
-        };
-        software = {
-          template: new ObjectId(),
-          type: demand.softwareType,
-          versions: ['1', '2']
-        };
-
-        lib.start(err => {
-          if (err) {
-            done(err);
-          }
-
-          lib.ticketingUserRole.create({
-            user: user1._id,
-            role: 'administrator'
-          })
-          .then(() =>
-            lib.ticketingUserRole.create({
-              user: user2._id,
-              role: 'user'
-            })
-          )
-          .then(() =>
-            lib.contract.create({
-              title: 'contract',
-              organization: new ObjectId(),
-              defaultSupportManager: new ObjectId(),
-              startDate: new Date(),
-              endDate: new Date(),
-              demands: [demand],
-              software: [software]
-            })
-          )
-          .then(createdContract => {
-            contract = createdContract;
-
-            done();
-          })
-          .catch(err => done(err));
-        });
-      });
+      done();
     });
   });
 
+  beforeEach(function(done) {
+    demand = {
+      demandType: 'Info',
+      softwareType: 'Normal',
+      issueType: 'Blocking'
+    };
+    software = {
+      template: new ObjectId(),
+      type: demand.softwareType,
+      versions: ['1', '2']
+    };
+
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() =>
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      })
+    )
+    .then(() =>
+      lib.contract.create({
+        title: 'contract',
+        organization: new ObjectId(),
+        defaultSupportManager: new ObjectId(),
+        startDate: new Date(),
+        endDate: new Date(),
+        demands: [demand],
+        software: [software]
+      })
+    )
+    .then(createdContract => {
+      contract = createdContract;
+
+      done();
+    })
+    .catch(err => done(err));
+  });
+
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   function getObjectFromModel(document) {

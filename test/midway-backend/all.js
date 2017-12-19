@@ -55,6 +55,25 @@ before(function(done) {
   loader.load(MODULE_NAME, done);
 });
 
+before(function(done) {
+  const self = this;
+
+  self.helpers.modules.initMidway(MODULE_NAME, function(err) {
+    if (err) {
+      return done(err);
+    }
+    const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(self.helpers.modules.current.deps);
+    const api = require(self.testEnv.backendPath + '/webserver/api')(self.helpers.modules.current.deps, self.helpers.modules.current.lib.lib);
+
+    ticketingApp.use(require('body-parser').json());
+    ticketingApp.use('/ticketing/api', api);
+
+    self.app = self.helpers.modules.getWebServer(ticketingApp);
+    self.lib = self.helpers.modules.current.lib.lib;
+    self.lib.start(err => done(err));
+  });
+});
+
 beforeEach(function(done) {
   const esConfigPath = path.normalize(`${__dirname}/../../config/elasticsearch/`);
   const esnConf = new EsnConfig({ host: testConfig.elasticsearch.host, port: testConfig.elasticsearch.port, path: esConfigPath });

@@ -3,84 +3,65 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
-describe('PUT /api/organizations/:id', function() {
+describe('PUT /ticketing/api/organizations/:id', function() {
   let app, lib, helpers, ObjectId;
   let user1, user2, organization;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
-
-    helpers = self.helpers;
+    helpers = this.helpers;
     ObjectId = mongoose.Types.ObjectId;
+    app = this.app;
+    lib = this.lib;
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
+
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        lib.start(err => {
-          if (err) {
-            done(err);
-          }
-
-          lib.ticketingUserRole.create({
-            user: user1._id,
-            role: 'administrator'
-          })
-          .then(() => {
-            lib.ticketingUserRole.create({
-              user: user2._id,
-              role: 'user'
-            });
-          })
-          .then(() => {
-            lib.organization.create({
-              shortName: 'organization'
-            })
-            .then(createdOrganization => {
-              organization = createdOrganization;
-              done();
-            });
-          })
-          .catch(err => done(err));
-        });
-      });
+      done();
     });
   });
 
+  beforeEach(function(done) {
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() => {
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      });
+    })
+    .then(() => {
+      lib.organization.create({
+        shortName: 'organization'
+      })
+      .then(createdOrganization => {
+        organization = createdOrganization;
+        done();
+      });
+    })
+    .catch(err => done(err));
+  });
+
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 400 if organization payload is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/organizations/${organization._id}`));
       const newOrganization = {
         foo: 'baz'
       };
@@ -98,7 +79,7 @@ describe('PUT /api/organizations/:id', function() {
 
   it('should respond 400 if manager is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/organizations/${organization._id}`));
       const newOrganization = {
         shortName: 'baz',
         manager: 'wrong_objectId'
@@ -117,7 +98,7 @@ describe('PUT /api/organizations/:id', function() {
 
   it('should respond 400 if shortName is taken', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/organizations/${organization._id}`));
 
       lib.organization.create({
         shortName: 'organization2'
@@ -140,12 +121,12 @@ describe('PUT /api/organizations/:id', function() {
   });
 
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'put', '/api/organizations/abc', done);
+    helpers.api.requireLogin(app, 'put', '/ticketing/api/organizations/abc', done);
   });
 
   it('should respond 403 if user is not an administrator', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put('/api/organizations/abc'));
+      const req = requestAsMember(request(app).put('/ticketing/api/organizations/abc'));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -159,7 +140,7 @@ describe('PUT /api/organizations/:id', function() {
 
   it('should respond 404 if organization id is not an ObjectId', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put('/api/organizations/abc'));
+      const req = requestAsMember(request(app).put('/ticketing/api/organizations/abc'));
       const newOrganization = {
         shortName: 'new'
       };
@@ -177,7 +158,7 @@ describe('PUT /api/organizations/:id', function() {
 
   it('should respond 404 if organization not found', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/organizations/${new ObjectId()}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/organizations/${new ObjectId()}`));
       const newOrganization = {
         shortName: 'new'
       };
@@ -198,7 +179,7 @@ describe('PUT /api/organizations/:id', function() {
         const newOrganization = {
           shortName: 'new'
         };
-        const req = requestAsMember(request(app).put(`/api/organizations/${organization._id}`));
+        const req = requestAsMember(request(app).put(`/ticketing/api/organizations/${organization._id}`));
 
         req.send(newOrganization);
         req.expect(204)

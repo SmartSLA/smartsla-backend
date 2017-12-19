@@ -3,85 +3,66 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 
-describe('PUT /api/software/:id', function() {
+describe('PUT /ticketing/api/software/:id', function() {
   let app, lib, helpers;
   let user1, user2, software;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
+    helpers = this.helpers;
+    app = this.app;
+    lib = this.lib;
 
-    helpers = self.helpers;
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        lib.start(err => {
-          if (err) {
-            done(err);
-          }
-
-          lib.ticketingUserRole.create({
-            user: user1._id,
-            role: 'administrator'
-          })
-          .then(() => {
-            lib.ticketingUserRole.create({
-              user: user2._id,
-              role: 'user'
-            });
-          })
-          .then(() => {
-            lib.software.create({
-              name: 'foo',
-              category: 'foz',
-              versions: ['1']
-            })
-              .then(createdSofware => {
-                software = createdSofware;
-
-                done();
-              });
-          })
-          .catch(err => done(err));
-        });
-      });
+      done();
     });
   });
 
+  beforeEach(function(done) {
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() => {
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      });
+    })
+    .then(() => {
+      lib.software.create({
+        name: 'foo',
+        category: 'foz',
+        versions: ['1']
+      })
+        .then(createdSofware => {
+          software = createdSofware;
+
+          done();
+        });
+    })
+    .catch(err => done(err));
+  });
+
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 400 if there is no name in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
       const softwareToUpdate = {
         category: 'foo',
         versions: ['1']
@@ -100,7 +81,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if there is no category in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
       const softwareToUpdate = {
         name: 'foo',
         versions: ['1']
@@ -119,7 +100,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if there is no versions in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
       const softwareToUpdate = {
         name: 'foo',
         category: 'bar'
@@ -138,7 +119,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if versions is not an array', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
       const softwareToUpdate = {
         name: 'foo',
         category: 'bar',
@@ -158,7 +139,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if versions is an empty array', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
       const softwareToUpdate = {
         name: 'foo',
         category: 'bar',
@@ -178,7 +159,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if name is taken', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
 
       lib.software.create({
         name: 'bar',
@@ -206,7 +187,7 @@ describe('PUT /api/software/:id', function() {
 
   it('should respond 400 if lowercase of name is taken', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
 
       lib.software.create({
         name: 'bar',
@@ -233,12 +214,12 @@ describe('PUT /api/software/:id', function() {
   });
 
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'put', `/api/software/${software._id}`, done);
+    helpers.api.requireLogin(app, 'put', `/ticketing/api/software/${software._id}`, done);
   });
 
   it('should respond 403 if user is not an administrator', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+      const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -257,7 +238,7 @@ describe('PUT /api/software/:id', function() {
           category: 'baz',
           versions: ['1', '2']
         };
-        const req = requestAsMember(request(app).put(`/api/software/${software._id}`));
+        const req = requestAsMember(request(app).put(`/ticketing/api/software/${software._id}`));
 
         req.send(softwareToUpdate);
         req.expect(204)
