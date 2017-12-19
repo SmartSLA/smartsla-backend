@@ -29,5 +29,5 @@ function uniqueDemands(demands) {
 }
 
 function validateTicketState(state) {
-  return CONSTANTS.TICKET_STATES.indexOf(state) > -1;
+  return Object.values(CONSTANTS.TICKET_STATES).indexOf(state) > -1;
 }

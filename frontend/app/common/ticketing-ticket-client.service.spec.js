@@ -22,4 +22,16 @@ describe('The TicketingTicketClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The list function', function() {
+    it('should get to right endpoint to list tickets', function() {
+      var options = {};
+
+      $httpBackend.expectGET(API_PATH).respond(200, []);
+
+      TicketingTicketClient.list(options);
+
+      $httpBackend.flush();
+    });
+  });
 });

@@ -14,7 +14,15 @@ module.exports = {
     SOFTWARE_TYPE: 'Software type',
     ISSUE_TYPE: 'Issue type'
   },
-  TICKET_STATES: ['New', 'In Progress', 'Awaiting', 'Awaiting information', 'Awaiting validation', 'Abandoned', 'Closed'],
+  TICKET_STATES: {
+    NEW: 'New',
+    IN_PROGRESS: 'In Progress',
+    AWAITING: 'Awaiting',
+    AWAITING_INFORMATION: 'Awaiting information',
+    AWAITING_VALIDATION: 'Awaiting validation',
+    CLOSED: 'Closed',
+    ABANDONED: 'Abandoned'
+  },
   INDICES: {
     CONTRACT: {
       name: 'contracts.idx',

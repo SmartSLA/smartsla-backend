@@ -1,5 +1,6 @@
 'use strict';
 
+const { TICKET_STATES } = require('../constants');
 const { validateTicketState } = require('../helpers');
 
 module.exports = dependencies => {
@@ -18,14 +19,14 @@ module.exports = dependencies => {
     contract: { type: Schema.ObjectId, ref: 'Contract', required: true },
     demandType: { type: String, required: true },
     severity: String,
-    software: { type: TicketSoftwareSchema.tree },
+    software: TicketSoftwareSchema,
     description: { type: String, required: true, trim: true, minlength: 50 },
     environment: { type: String, trim: true },
     requester: { type: Schema.ObjectId, ref: 'User', required: true },
     supportManager: { type: Schema.ObjectId, ref: 'User', required: true },
     supportTechnicians: [{ type: Schema.ObjectId, ref: 'User' }],
     files: [Schema.ObjectId],
-    state: { type: String, default: 'New', validate: [validateTicketState, 'Invalid ticket state'] },
+    state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
     responseTime: { type: Number, min: 1 }, // in minute
     workaroundTime: { type: Number, min: 1 }, // in minute
     correctionTime: { type: Number, min: 1 }, // in minute

@@ -7,10 +7,15 @@ module.exports = (dependencies, lib) => {
   return {
     loadContract,
     canCreateTicket,
+    canListTicket,
     validateTicketCreation
   };
 
   function canCreateTicket(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canListTicket(req, res, next) {
     return requireAdministrator(req, res, next);
   }
 
