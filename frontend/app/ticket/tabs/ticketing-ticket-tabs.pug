@@ -1,0 +1,7 @@
+ul.esn-tab
+  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'open'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'open'")
+      | #{__('Open')}
+  li.btn-wave(ng-class="{'active': $ctrl.selectedTab === 'closed'}")
+    a(href="", ng-click="$ctrl.selectedTab = 'closed'")
+      | #{__('Closed')}

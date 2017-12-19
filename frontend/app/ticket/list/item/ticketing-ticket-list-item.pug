@@ -1,0 +1,19 @@
+.row.flex-vertical-centered
+  .col-md-1.col-xs-1.lv-title
+    span {{::$ctrl.ticket.number}}
+  .col-md-1.hidden-xs.lv-title
+    span {{::$ctrl.ticket.severity}}
+  .col-md-2.col-xs-2.lv-title
+    span {{::$ctrl.ticket.displayTime}}
+  .col-md-1.col-xs-2.lv-title
+    span {{::$ctrl.ticket.state}}
+  .col-md-1.hidden-xs.lv-title
+    span {{::$ctrl.ticket.responsiblePerson.firstname}} {{::$ctrl.ticket.responsiblePerson.lastname}}
+  .col-md-1.col-xs-2.lv-title
+    span(title="{{::$ctrl.ticket.contract.title}}") {{::$ctrl.ticket.contract.organization.shortName}}
+  .col-md-2.col-xs-2.lv-title
+    span {{::$ctrl.ticket.software.template.name}}
+  .col-md-2.col-xs-3.lv-title
+    span {{::$ctrl.ticket.title}}
+  .col-md-1.hidden-xs.lv-title
+    span(title="{{::$ctrl.ticket.creation | esnDatetime: 'mediumDate'}}") {{::$ctrl.ticket.updatedAt | esnDatetime: 'mediumDate'}}
