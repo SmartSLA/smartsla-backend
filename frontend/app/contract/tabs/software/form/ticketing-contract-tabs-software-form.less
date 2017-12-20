@@ -1,0 +1,29 @@
+ticketing-contract-tabs-software-form {
+  ticketing-search-auto-complete .form-group {
+    margin-bottom: 15px;
+
+    .input-group .fg-line {
+      padding: 0;
+    }
+  }
+
+  .row input.form-control {
+    margin-top: 5px;
+    padding: 5px;
+  }
+
+  .ui-select-match .ui-select-toggle {
+    .flex-vertical-centered;
+    text-transform: unset;
+  }
+
+  .ui-select-multiple.form-control:not(.ng-touched).ng-invalid {
+    border-bottom-color: @normalBorderColor;
+  }
+
+  .ui-select-multiple div {
+    input {
+      height: 30px !important; // override bootstrap css
+    }
+  }
+}

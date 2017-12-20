@@ -8,6 +8,7 @@
     $stateParams,
     $scope,
     $modal,
+    _,
     TicketingContractService,
     TICKETING_CONTRACT_EVENTS
   ) {
@@ -44,6 +45,10 @@
 
       $scope.$on(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, function(event, demand) {
         _onDemandAdded(demand);
+      });
+
+      $scope.$on(TICKETING_CONTRACT_EVENTS.SOFTWARE_UPDATED, function(event, software) {
+        _onSoftwareUpdated(software);
       });
     }
 
@@ -108,6 +113,20 @@
 
     function _onDemandAdded(demand) {
       self.contract.demands.unshift(demand);
+    }
+
+    function _onSoftwareUpdated(software) {
+      if (!software) {
+        return;
+      }
+
+      var index = _.findIndex(self.contract.software, function(item) {
+        return item.template._id === software.template._id;
+      });
+
+      if (index !== -1) {
+        self.contract.software[index] = software;
+      }
     }
   }
 })(angular);

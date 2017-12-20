@@ -4,6 +4,12 @@
   .col-md-3.col-xs-3
     span.ellipsis(title="{{::$ctrl.software.template.category}}") {{::$ctrl.software.template.category}}
   .col-md-3.col-xs-3
-    span.ellipsis(title="{{::$ctrl.software.versions | ticketingJoinArray}}") {{::$ctrl.software.versions | ticketingJoinArray}}
+    span.ellipsis(title="{{$ctrl.software.versions | orderBy | ticketingJoinArray}}") {{$ctrl.software.versions | orderBy | ticketingJoinArray}}
   .col-md-3.col-xs-3
     span.ellipsis(title="{{::$ctrl.software.type}}") {{::$ctrl.software.type}}
+  .lv-actions.actions
+    a(href="", data-toggle="dropdown", aria-expanded="false")
+      i.mdi.mdi-dots-vertical
+    ul.dropdown-menu.dropdown-menu-right
+      li
+        a(href="", ng-click="$ctrl.onEditBtnClick()") #{__('Edit')}
