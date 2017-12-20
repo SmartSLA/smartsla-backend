@@ -3,115 +3,102 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 
-describe('GET /api/tickets', function() {
-  const API_PATH = '/api/tickets';
+describe('GET /ticketing/api/tickets', function() {
+  const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers, ObjectId;
   let user1, user2, software, contract, ticket;
   const password = 'secret';
   const longDescription = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
   beforeEach(function(done) {
-    const self = this;
-
-    helpers = self.helpers;
+    helpers = this.helpers;
     ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
+    app = this.app;
+    lib = this.lib;
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
+
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() =>
-          lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          }))
-        .then(() =>
-          lib.software.create({
-            name: 'software1',
-            category: 'category1',
-            versions: ['1', '2', '3']
-          })
-          .then(createdSofware => {
-            software = createdSofware;
-          })
-        )
-        .then(() =>
-          lib.contract.create({
-            title: 'contract',
-            organization: new ObjectId(),
-            defaultSupportManager: new ObjectId(),
-            startDate: new Date(),
-            endDate: new Date(),
-            demands: [{
-              demandType: 'Info',
-              softwareType: 'Normal',
-              issueType: 'Blocking'
-            }],
-            software: [{
-              template: software._id,
-              type: 'Normal',
-              versions: ['1', '2']
-            }]
-          })
-          .then(createdContract => (contract = createdContract))
-        )
-        .then(() =>
-          lib.ticket.create({
-            state: 'New',
-            contract: contract._id,
-            title: 'ticket 1',
-            demandType: 'Info',
-            severity: 'Blocking',
-            software: {
-              template: contract.software[0].template,
-              criticality: contract.software[0].type,
-              version: '1'
-            },
-            description: longDescription,
-            requester: user1._id,
-            supportManager: user1._id
-          })
-          .then(createdTicket => {
-            ticket = createdTicket;
-            done();
-          })
-        )
-        .catch(err => done(err));
-      });
+      done();
     });
   });
 
+  beforeEach(function(done) {
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() =>
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      }))
+    .then(() =>
+      lib.software.create({
+        name: 'software1',
+        category: 'category1',
+        versions: ['1', '2', '3']
+      })
+      .then(createdSofware => {
+        software = createdSofware;
+      })
+    )
+    .then(() =>
+      lib.contract.create({
+        title: 'contract',
+        organization: new ObjectId(),
+        defaultSupportManager: new ObjectId(),
+        startDate: new Date(),
+        endDate: new Date(),
+        demands: [{
+          demandType: 'Info',
+          softwareType: 'Normal',
+          issueType: 'Blocking'
+        }],
+        software: [{
+          template: software._id,
+          type: 'Normal',
+          versions: ['1', '2']
+        }]
+      })
+      .then(createdContract => (contract = createdContract))
+    )
+    .then(() =>
+      lib.ticket.create({
+        state: 'New',
+        contract: contract._id,
+        title: 'ticket 1',
+        demandType: 'Info',
+        severity: 'Blocking',
+        software: {
+          template: contract.software[0].template,
+          criticality: contract.software[0].type,
+          version: '1'
+        },
+        description: longDescription,
+        requester: user1._id,
+        supportManager: user1._id
+      })
+      .then(createdTicket => {
+        ticket = createdTicket;
+        done();
+      })
+    )
+    .catch(err => done(err));
+  });
+
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 401 if not logged in', function(done) {

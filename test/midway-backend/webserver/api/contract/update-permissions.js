@@ -3,53 +3,33 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
-describe('POST /api/contracts/:id/permissions', function() {
+describe('POST /ticketing/api/contracts/:id/permissions', function() {
   let app, lib, helpers, ObjectId, esIntervalIndex;
   let user1, user2, contract, software, organization, entity;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
-
-    helpers = self.helpers;
+    helpers = this.helpers;
     ObjectId = mongoose.Types.ObjectId;
-    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
+    esIntervalIndex = this.testEnv.serversConfig.elasticsearch.interval_index;
+    app = this.app;
+    lib = this.lib;
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
+
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        lib.start(err => {
-          if (err) {
-            done(err);
-          }
-
-          done();
-        });
-      });
+      done();
     });
   });
 
@@ -99,15 +79,12 @@ describe('POST /api/contracts/:id/permissions', function() {
   });
 
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 400 if there is invalid permission in the payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
       const updatePermissions = {
         permissions: ['invalidEntityId', 2]
       };
@@ -125,7 +102,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 400 if there is a permission which not belongs to contract\'s organization', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
       const updatePermissions = {
         permissions: [new ObjectId()]
       };
@@ -142,12 +119,12 @@ describe('POST /api/contracts/:id/permissions', function() {
   });
 
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'post', `/api/contracts/${contract._id}/permissions`, done);
+    helpers.api.requireLogin(app, 'post', `/ticketing/api/contracts/${contract._id}/permissions`, done);
   });
 
   it('should respond 403 if user is not an administrator', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -161,7 +138,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 404 if contract id is not an ObjectId', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post('/api/contracts/abc/permissions'));
+      const req = requestAsMember(request(app).post('/ticketing/api/contracts/abc/permissions'));
       const updatePermissions = {
         permissions: [new ObjectId()]
       };
@@ -179,7 +156,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 404 if contract is not found', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${new ObjectId()}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${new ObjectId()}/permissions`));
       const updatePermissions = {
         permissions: [new ObjectId()]
       };
@@ -197,7 +174,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 204 if permissions = 1 (all entities have permission)', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
       const updatePermissions = {
         permissions: 1
       };
@@ -227,7 +204,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 204 if permissions is blank array (no entity has permission)', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
       const updatePermissions = {
         permissions: []
       };
@@ -257,7 +234,7 @@ describe('POST /api/contracts/:id/permissions', function() {
 
   it('should respond 204 if permissions is array of entities of contract\'s organization', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).post(`/api/contracts/${contract._id}/permissions`));
+      const req = requestAsMember(request(app).post(`/ticketing/api/contracts/${contract._id}/permissions`));
       const updatePermissions = {
         permissions: [String(entity._id)]
       };

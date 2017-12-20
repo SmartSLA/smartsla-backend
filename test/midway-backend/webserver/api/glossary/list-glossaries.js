@@ -3,75 +3,56 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 
-describe('GET /api/glossaries', function() {
-  const API_PATH = '/api/glossaries';
+describe('GET /ticketing/api/glossaries', function() {
+  const API_PATH = '/ticketing/api/glossaries';
   let app, lib, helpers;
   let user1, user2, glossary;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
+    helpers = this.helpers;
+    app = this.app;
+    lib = this.lib;
 
-    helpers = self.helpers;
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
+      lib.ticketingUserRole.create({
+        user: user1._id,
+        role: 'administrator'
+      })
+      .then(() =>
         lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
+          user: user2._id,
+          role: 'user'
         })
-        .then(() =>
-          lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          })
-        )
-        .then(() =>
-          lib.glossary.create({
-            word: 'foo',
-            category: 'Demand type'
-          })
-          .then(createdGlossary => {
-            glossary = createdGlossary;
-            done();
-          })
-        )
-        .catch(err => {
-          done(err);
-        });
-      });
+      )
+      .then(() =>
+        lib.glossary.create({
+          word: 'foo',
+          category: 'Demand type'
+        })
+        .then(createdGlossary => {
+          glossary = createdGlossary;
+          done();
+        })
+      )
+      .catch(err => done(err));
     });
   });
 
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   function getObjectFromModel(document) {

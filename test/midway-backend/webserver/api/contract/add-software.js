@@ -3,69 +3,53 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 const mongoose = require('mongoose');
 
-describe('The POST /api/contracts/:id/software', function() {
+describe('The POST /ticketing/api/contracts/:id/software', function() {
   let app, lib, helpers, ObjectId, esIntervalIndex, apiURL;
   let user1, user2, software1, software2, software3, demand1, demand2, contract, organization;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
-
-    helpers = self.helpers;
+    helpers = this.helpers;
     ObjectId = mongoose.Types.ObjectId;
-    esIntervalIndex = self.testEnv.serversConfig.elasticsearch.interval_index;
+    esIntervalIndex = this.testEnv.serversConfig.elasticsearch.interval_index;
+    app = this.app;
+    lib = this.lib;
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
+
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
-        lib.start(err => {
-          if (err) {
-            done(err);
-          }
-
-          lib.ticketingUserRole.create({
-            user: user1._id,
-            role: 'administrator'
-          })
-          .then(() =>
-            lib.ticketingUserRole.create({
-              user: user2._id,
-              role: 'user'
-            }))
-          .then(() =>
-            lib.organization.create({
-              shortName: 'organization'
-            })
-            .then(createOrganization => (organization = createOrganization)))
-          .then(() => done())
-          .catch(err => done(err));
-        });
-      });
+      done();
     });
+  });
+
+  beforeEach(function(done) {
+    lib.ticketingUserRole.create({
+      user: user1._id,
+      role: 'administrator'
+    })
+    .then(() =>
+      lib.ticketingUserRole.create({
+        user: user2._id,
+        role: 'user'
+      }))
+    .then(() =>
+      lib.organization.create({
+        shortName: 'organization'
+      })
+      .then(createOrganization => (organization = createOrganization)))
+    .then(() => done())
+    .catch(err => done(err));
   });
 
   beforeEach(function(done) {
@@ -136,17 +120,14 @@ describe('The POST /api/contracts/:id/software', function() {
     })
     .then(createdContract => {
       contract = createdContract;
-      apiURL = `/api/contracts/${contract._id}/software`;
+      apiURL = `/ticketing/api/contracts/${contract._id}/software`;
       done();
     })
     .catch(err => done(err));
   });
 
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 401 if not logged in', function(done) {

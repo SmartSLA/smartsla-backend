@@ -13,7 +13,8 @@ module.exports = function(dependencies, lib, router) {
     validateContractPayload,
     validateDemand,
     validatePermissions,
-    validateSoftware
+    validateSoftwareToAdd,
+    validateSoftwareToUpdate
   } = require('./middleware')(dependencies, lib);
 
   router.get('/contracts',
@@ -58,8 +59,18 @@ module.exports = function(dependencies, lib, router) {
     checkIdInParams('id', 'Contract'),
     canUpdateContract,
     load,
-    validateSoftware,
+    validateSoftwareToAdd,
     controller.addSoftware
+  );
+
+  router.post('/contracts/:id/software/:softwareId',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Contract'),
+    checkIdInParams('softwareId', 'Software'),
+    canUpdateContract,
+    load,
+    validateSoftwareToUpdate,
+    controller.updateSoftware
   );
 
   router.post('/contracts/:id/demands',

@@ -3,73 +3,56 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
-const MODULE_NAME = 'linagora.esn.ticketing';
 
-describe('GET /api/users/:id/isadministrator', function() {
+describe('GET /ticketing/api/users/:id/isadministrator', function() {
   let app, lib, helpers;
   let user0, user1, user2;
   const password = 'secret';
 
   beforeEach(function(done) {
-    const self = this;
+    helpers = this.helpers;
+    app = this.app;
+    lib = this.lib;
 
-    helpers = self.helpers;
+    const deployOptions = {
+      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    };
 
-    helpers.modules.initMidway(MODULE_NAME, function(err) {
+    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
       if (err) {
         return done(err);
       }
-      const ticketingApp = require(self.testEnv.backendPath + '/webserver/application')(helpers.modules.current.deps);
-      const api = require(self.testEnv.backendPath + '/webserver/api')(helpers.modules.current.deps, helpers.modules.current.lib.lib);
 
-      ticketingApp.use(require('body-parser').json());
-      ticketingApp.use('/api', api);
+      user0 = models.users[0];
+      user1 = models.users[1];
+      user2 = models.users[2];
 
-      app = helpers.modules.getWebServer(ticketingApp);
-      const deployOptions = {
-        fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-      };
-
-      helpers.api.applyDomainDeployment('ticketingModule', deployOptions, function(err, models) {
-        if (err) {
-          return done(err);
-        }
-
-        user0 = models.users[0];
-        user1 = models.users[1];
-        user2 = models.users[2];
-        lib = helpers.modules.current.lib.lib;
-
+      lib.ticketingUserRole.create({
+        user: user1._id,
+        role: 'administrator'
+      })
+      .then(() => {
         lib.ticketingUserRole.create({
-          user: user1._id,
-          role: 'administrator'
-        })
-        .then(() => {
-          lib.ticketingUserRole.create({
-            user: user2._id,
-            role: 'user'
-          });
-        })
-        .then(() => done())
-        .catch(err => done(err));
-      });
+          user: user2._id,
+          role: 'user'
+        });
+      })
+      .then(() => done())
+      .catch(err => done(err));
     });
   });
 
   afterEach(function(done) {
-    this.helpers.mongo.dropDatabase(err => {
-      if (err) return done(err);
-      this.testEnv.core.db.mongo.mongoose.connection.close(done);
-    });
+    helpers.mongo.dropDatabase(err => done(err));
   });
 
   it('should respond 401 if not logged in', function(done) {
-    helpers.api.requireLogin(app, 'get', `/api/users/${user1._id}/isadministrator`, done);
+    helpers.api.requireLogin(app, 'get', `/ticketing/api/users/${user1._id}/isadministrator`, done);
   });
 
   it('should respond 403 if user does not have permission to access Ticketing', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).get(`/api/users/${user0._id}/isadministrator`));
+      const req = requestAsMember(request(app).get(`/ticketing/api/users/${user0._id}/isadministrator`));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -83,7 +66,7 @@ describe('GET /api/users/:id/isadministrator', function() {
 
   it('should respond 404 if there is user id is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).get('/api/users/invalid_objectid/isadministrator'));
+      const req = requestAsMember(request(app).get('/ticketing/api/users/invalid_objectid/isadministrator'));
 
       req.expect(404)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -97,7 +80,7 @@ describe('GET /api/users/:id/isadministrator', function() {
 
   it('should respond 200 with true if user is an administrator', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).get(`/api/users/${user1._id}/isadministrator`));
+      const req = requestAsMember(request(app).get(`/ticketing/api/users/${user1._id}/isadministrator`));
 
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
@@ -109,7 +92,7 @@ describe('GET /api/users/:id/isadministrator', function() {
 
   it('should respond 200 with false if user is not an administrator', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-      const req = requestAsMember(request(app).get(`/api/users/${user2._id}/isadministrator`));
+      const req = requestAsMember(request(app).get(`/ticketing/api/users/${user2._id}/isadministrator`));
 
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
