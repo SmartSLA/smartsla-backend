@@ -10,26 +10,29 @@ ng-form(name="form")
     .col-md-12.input-organization(ng-if="!$ctrl.organizationMode")
       h5 #{__('Organization')}
       ticketing-search-auto-complete(
-        new-tags="newOrganizations",
+        new-tags="$ctrl.organizations",
         max-tags="1",
         min-tags="1",
         object-types="organization",
+        on-change="$ctrl.onOrganizationChange()",
         placeholder=__('Type a organization name')
       )
   .row
     .col-md-6.input-manager
       h5 #{__('Manager')}
       ticketing-search-auto-complete(
-        new-tags="newManagers",
+        new-tags="$ctrl.managers",
         max-tags="1",
         object-types="user",
+        on-change="$ctrl.onManagerChange()",
         placeholder=__('Type a name or email...')
       )
     .col-md-6.input-support-manager
       h5 #{__('Default support manager')}
       ticketing-search-auto-complete(
-        new-tags="newDefaultSupportManagers",
+        new-tags="$ctrl.defaultSupportManagers",
         max-tags="1",
         object-types="user",
+        on-change="$ctrl.onDefaultSupportManagerChange()"
         placeholder=__('Type a name or email...')
       )

@@ -33,4 +33,10 @@ ng-form(name="form")
   .row(ng-if="!$ctrl.updateMode")
     .col-xs-12
       h5 #{__('Entity')}
-      ticketing-search-auto-complete(new-tags="newEntities", max-tags="1", object-types="entity", placeholder=__('Type a entity name'))
+      ticketing-search-auto-complete(
+        new-tags="$ctrl.entities",
+        max-tags="1",
+        object-types="entity",
+        on-change="$ctrl.onEntityChange()",
+        placeholder=__('Type a entity name')
+      )

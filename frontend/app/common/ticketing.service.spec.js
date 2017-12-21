@@ -1,7 +1,6 @@
 'use strict';
 
 /* global chai: false */
-/* global sinon: false */
 
 var expect = chai.expect;
 
@@ -32,28 +31,6 @@ describe('The TicketingService', function() {
         b: 'b',
         c: 'c'
       });
-    });
-  });
-
-  describe('The handleAutoCompleteWithOneTag function', function() {
-    it('should set scope properties and watch them', function() {
-      var scope = {
-        $watch: sinon.spy()
-      };
-      var object = {
-        foo: 'abc',
-        bar: 'efg'
-      };
-      var keysMap = {
-        FOO: 'foo',
-        BAR: 'bar'
-      };
-
-      TicketingService.handleAutoCompleteWithOneTag(scope, object, keysMap);
-
-      expect(scope.FOO).to.deep.equal([object.foo]);
-      expect(scope.BAR).to.deep.equal([object.bar]);
-      expect(scope.$watch).to.have.been.calledTwice;
     });
   });
 });
