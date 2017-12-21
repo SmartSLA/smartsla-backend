@@ -12,7 +12,8 @@
         key-property='id',
         replace-spaces-with-dashes='false',
         on-tag-adding="$ctrl.onTagAdding($tag)",
-        on-tag-added="$ctrl.onTagAdded($tag)",
+        on-tag-added="$ctrl.onTagAdded($tag); $ctrl.onChange()",
+        on-tag-removed="$ctrl.onChange()"
         add-from-autocomplete-only="{{::$ctrl.addFromAutocompleteOnly}}",
         min-length="1"
       )

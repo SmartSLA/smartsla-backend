@@ -3,11 +3,12 @@ ng-form(name="form", ng-if="!$ctrl.editMode")
     .col-xs-12
       h5 #{__('Name')}
       ticketing-search-auto-complete(
-        new-tags="newSoftware",
+        new-tags="$ctrl.newSoftware",
         max-tags="1",
         min-tags="1",
         object-types="software",
         excluded-ids="$ctrl.existingSoftwareIds",
+        on-change="$ctrl.onSoftwareChange()"
         placeholder=__('Type a software name'))
   .row
     .col-xs-12

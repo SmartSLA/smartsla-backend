@@ -12,7 +12,8 @@
         minTags: '<',
         newTags: '=',
         objectTypes: '@',
-        excludedIds: '<'
+        excludedIds: '<',
+        onChange: '&'
       }
     });
 })(angular);

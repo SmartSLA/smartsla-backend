@@ -18,8 +18,9 @@ ng-form(name="form")
     .col-md-12
       h5 #{__('Manager')}
       ticketing-search-auto-complete(
-        new-tags="newManagers",
+        new-tags="$ctrl.managers",
         max-tags="1",
         object-types="user",
+        on-change="$ctrl.onManagerChange()",
         placeholder=__('Type a name or email...')
       )

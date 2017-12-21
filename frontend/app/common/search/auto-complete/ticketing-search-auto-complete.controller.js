@@ -27,6 +27,7 @@
       self.onTagAdding = onTagAdding;
       self.onTagAdded = onTagAdded;
       self.search = search;
+      self.newTags = self.newTags || [];
     }
 
     function search(query) {
