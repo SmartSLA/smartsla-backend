@@ -24,7 +24,8 @@
       get: get,
       getSearchProvider: getSearchProvider,
       updateBasicInfo: updateBasicInfo,
-      updatePermissions: updatePermissions
+      updatePermissions: updatePermissions,
+      updateSoftware: updateSoftware
     };
 
     function get(contractId) {
@@ -144,6 +145,36 @@
         return ticketingContractClient.addSoftware(contractId, softwareToAdd);
       }).then(function() {
         $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.SOFTWARE_ADDED, software);
+      });
+    }
+
+    function updateSoftware(contractId, software) {
+      if (!contractId) {
+        return $q.reject(new Error('contractId is required'));
+      }
+
+      if (!software) {
+        return $q.reject(new Error('software is required'));
+      }
+
+      if (!software.template || !software.template._id) {
+        return $q.reject(new Error('Software template and its ID are required'));
+      }
+
+      var softwareToUpdate = {
+        versions: software.versions
+      };
+
+      var notificationMessages = {
+        progressing: 'Updating software...',
+        success: 'Software updated',
+        failure: 'Failed to update software'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return ticketingContractClient.updateSoftware(contractId, software.template._id, softwareToUpdate);
+      }).then(function() {
+        $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.SOFTWARE_UPDATED, software);
       });
     }
 

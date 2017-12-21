@@ -12,7 +12,8 @@
       get: get,
       list: list,
       update: update,
-      updatePermissions: updatePermissions
+      updatePermissions: updatePermissions,
+      updateSoftware: updateSoftware
     };
 
     /**
@@ -89,6 +90,20 @@
         .one('contracts', contractId)
         .one('demands')
         .customPOST(demand);
+    }
+
+    /**
+     * Update a software for a contract.
+     * @param  {String} contractId   - The contract ID
+     * @param  {String} softwareId   - The software ID
+     * @param  {Object} modified     - The modified software object. For now, it contains only versions.
+     * @return {Promise}             - Resolve on success
+     */
+    function updateSoftware(contractId, softwareId, modified) {
+      return ticketingRestangular
+        .one('contracts', contractId)
+        .one('software', softwareId)
+        .customPOST(modified);
     }
   }
 })(angular);

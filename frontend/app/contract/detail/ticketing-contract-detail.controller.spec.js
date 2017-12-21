@@ -70,6 +70,30 @@ describe('The TicketingContractDetailController', function() {
     expect(controller.contract.demands[0]).to.deep.equal(demandToAdd);
   });
 
+  it('should update a correct item after software updated event is fired', function() {
+    var contract = {
+      software: [
+        {
+          template: { _id: '123', versions: ['1', '2'] },
+          versions: ['1', '2']
+        },
+        {
+          template: { _id: '456', versions: ['3', '4'] },
+          versions: '3'
+        }
+      ]
+    };
+    var softwareToUpdate = {
+      template: contract.software[1].template,
+      versions: ['3', '4']
+    };
+    var controller = initController(null, { contract: contract });
+
+    $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.SOFTWARE_UPDATED, softwareToUpdate);
+
+    expect(controller.contract.software[1]).to.deep.equal(softwareToUpdate);
+  });
+
   describe('The onAddDemandBtnClick function', function() {
     var contract;
 

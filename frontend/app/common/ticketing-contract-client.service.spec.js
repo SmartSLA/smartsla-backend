@@ -96,4 +96,18 @@ describe('The ticketingContractClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The updateSoftware function', function() {
+    it('should POST to right endpoint to update software', function() {
+      var contractId = '123';
+      var softwareId = '456';
+      var software = { foo: 'bar' };
+
+      $httpBackend.expectPOST('/ticketing/api/contracts/' + contractId + '/software/' + softwareId, software).respond(204);
+
+      ticketingContractClient.updateSoftware(contractId, softwareId, software);
+
+      $httpBackend.flush();
+    });
+  });
 });
