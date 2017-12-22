@@ -48,7 +48,7 @@ module.exports = (dependencies, lib) => {
       software,
       description,
       environment,
-      files
+      attachments
     } = req.body;
 
     if (!title) {
@@ -67,8 +67,8 @@ module.exports = (dependencies, lib) => {
       return send400Error('environment must be a string', res);
     }
 
-    if (files && (!Array.isArray(files) || !validateObjectIds(files))) {
-      return send400Error('files is invalid', res);
+    if (attachments && (!Array.isArray(attachments) || !validateObjectIds(attachments))) {
+      return send400Error('attachments is invalid', res);
     }
 
     const softwareCriticality = software && software.criticality ? software.criticality : undefined;

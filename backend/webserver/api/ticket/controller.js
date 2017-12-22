@@ -23,7 +23,7 @@ module.exports = function(dependencies, lib) {
       software: req.body.software,
       description: req.body.description,
       environment: req.body.environment,
-      files: req.body.files
+      attachments: req.body.attachments
     };
 
     // requester = current user

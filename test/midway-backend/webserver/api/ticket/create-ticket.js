@@ -238,14 +238,14 @@ describe('POST /ticketing/api/tickets', function() {
     }));
   });
 
-  it('should respond 400 if files is invalid', function(done) {
+  it('should respond 400 if attachments is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const newTicket = {
         contract: contract._id,
         title: 'ticket 1',
         demandType: 'info',
         description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
-        files: [1, 2]
+        attachments: [1, 2]
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
@@ -253,7 +253,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'files is invalid' }
+            error: { code: 400, message: 'Bad Request', details: 'attachments is invalid' }
           });
           done();
         }));
