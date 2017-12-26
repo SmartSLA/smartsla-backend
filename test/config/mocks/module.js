@@ -82,3 +82,9 @@ angular.module('esn.template', [])
     this.setSuccessTemplate = function() {};
     this.$get = function() {};
   });
+angular.module('esn.module-registry', [])
+  .factory('esnModuleRegistry', function() {
+    return {
+      add: function() {}
+    };
+  });
