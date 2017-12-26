@@ -4,15 +4,15 @@
   angular.module('linagora.esn.ticketing')
 
   .run(function(
-    dynamicDirectiveService,
     session,
     TicketingSearchService,
     TicketingOrganizationService,
     TicketingSoftwareService,
     TicketingUserService,
-    TicketingContractService
+    TicketingContractService,
+    esnModuleRegistry,
+    TICKETING_MODULE_METADATA
   ) {
-    var group = new dynamicDirectiveService.DynamicDirective(true, 'ticketing-application-menu', { priority: -10 });
     var organiztionSearchProvider = TicketingOrganizationService.getOrganizationSearchProvider();
     var entitySearchProvider = TicketingOrganizationService.getEntitySearchProvider();
     var softwareSearchProvider = TicketingSoftwareService.getSearchProvider();
@@ -29,6 +29,6 @@
       TicketingSearchService.addProvider(userSearchProvider);
     });
 
-    dynamicDirectiveService.addInjection('esn-application-menu', group);
+    esnModuleRegistry.add(TICKETING_MODULE_METADATA);
   });
 })(angular);

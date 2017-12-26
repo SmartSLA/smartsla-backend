@@ -19,6 +19,7 @@
     'esn.notification',
     'esn.session',
     'esn.domain',
-    'esn.template'
+    'esn.template',
+    'esn.module-registry'
   ]);
 })();
