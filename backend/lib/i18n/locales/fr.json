@@ -149,5 +149,20 @@
   "Awaiting": "Suspendue",
   "Awaiting information": "En attente d'info",
   "Awaiting validation": "En attente de validation",
-  "Abandoned": "Abandonnée"
+  "Abandoned": "Abandonnée",
+  "File %s ignored as its size exceeds the %s limit": "Le fichier %s ignore que sa taille dépasse la limite %s",
+  "Creating issue...": "Création de demande...",
+  "Issue created": "Demande créé",
+  "Failed to create issue": "Impossible de mettre à jour une demande",
+  "Image / PDF / Video / Doc (Maximum 5MB each)": "Image / PDF / Vidéo / Doc (Maximum 5 MB chacun)",
+  "Error": "Erreur",
+  "Uploading": "Téléchargement",
+  "Attachment": "Pièces jointe",
+  "Upload failed": "Téléchargement échoué",
+  "Retry": "Réessayer",
+  "New issue": "Nouvelle demande",
+  "Severity": "Sévérité",
+  "Version": "Version",
+  "Environment": "Environnement",
+  "Operating system, architecture, ...": "Système d'exploitation, architecture, ..."
 }

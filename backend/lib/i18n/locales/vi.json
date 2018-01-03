@@ -149,5 +149,20 @@
   "Awaiting": "Chờ",
   "Awaiting information": "Chờ thông tin",
   "Awaiting validation": "Chờ xác nhận",
-  "Abandoned": "Hủy"
+  "Abandoned": "Hủy",
+  "File %s ignored as its size exceeds the %s limit": "Bỏ qua file %s bởi dung lượng lớn hơn giới hạn: %s",
+  "Creating issue...": "Đang tạo vấn đề...",
+  "Issue created": "Đã tạo vấn đề",
+  "Failed to create issue": "Tạo vấn đề thất bại",
+  "Image / PDF / Video / Doc (Maximum 5MB each)": "Ảnh / PDF / Video / Tài liệu (Tối đa 5MB mỗi đính kèm)",
+  "Error": "Lỗi",
+  "Uploading": "Đang tải lên",
+  "Attachment": "Đính kèm",
+  "Upload failed": "Tải lên thất bại",
+  "Retry": "Thử lại",
+  "New issue": "Vấn đề mới",
+  "Severity": "Mức độ nghiêm trọng",
+  "Version": "Phiên bản",
+  "Environment": "Môi trương",
+  "Operating system, architecture, ...": "Hệ điều hành, kiến trúc..."
 }
