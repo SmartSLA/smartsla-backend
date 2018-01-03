@@ -1,0 +1,86 @@
+ng-form(name="form")
+  .row
+    .col-md-6
+      .row
+        .col-xs-12
+          h5 #{__('Contract')}
+          ticketing-search-auto-complete(
+            new-tags="$ctrl.contracts",
+            object-types="contract",
+            min-tags="1",
+            max-tags="10",
+            place-holder="Type a contract name",
+            on-change="$ctrl.onContractChange()"
+          )
+      .row.m-b-30
+        .col-xs-12
+          h5 #{__('Organization')}
+          input.form-control(ng-model="$ctrl.ticket.contract.organization.shortName", disabled)
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Demand type'))
+            .select
+              select.form-control(
+                ng-model="$ctrl.ticket.demandType",
+                name="demandType",
+                ng-options="demandType for demandType in $ctrl.availableDemandTypes",
+                ng-change="$ctrl.onDemandTypeChange()",
+                ng-disabled="!$ctrl.ticket.contract",
+                required
+              )
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Severity'))
+            .select
+              select.form-control(
+                ng-model="$ctrl.ticket.severity",
+                name="severity",
+                ng-options="severity for severity in $ctrl.availableSeverities",
+                ng-change="$ctrl.onServerityChange()",
+                ng-disabled="!$ctrl.ticket.demandType"
+              )
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Software'))
+            .select
+              select.form-control(
+                ng-model="$ctrl.software",
+                name="software",
+                ng-options="item as item.label for item in $ctrl.availableSoftware",
+                ng-change="$ctrl.onSoftwareChange()",
+                ng-disabled="!$ctrl.ticket.severity"
+              )
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Version'))
+            .select
+              select.form-control(
+                ng-model="$ctrl.ticket.software.version",
+                name="softwareVersion",
+                ng-options="version for version in $ctrl.availableSoftwareVersions",
+                ng-disabled="!$ctrl.ticket.software",
+                ng-required="$ctrl.ticket.software"
+              )
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Environment'), helper=__('Operating system, architecture, ...'))
+            input.form-control(ng-model="$ctrl.ticket.environment", name="environment")
+    .col-md-6
+      .row.title
+        .col-xs-12
+          esn-form-group(label=__('Title'))
+            input.form-control(ng-model="$ctrl.ticket.title", name="title", required)
+      .row
+        .col-xs-12
+          esn-form-group(label=__('Description'))
+            textarea.form-control(
+              ng-model="$ctrl.ticket.description",
+              name="description",
+              type="text",
+              minlength="50",
+              rows="8",
+              required
+            )
+      .row
+        .col-xs-12
+          ticketing-attachments(attachments="$ctrl.ticket.attachments")
