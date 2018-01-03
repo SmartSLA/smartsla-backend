@@ -15,13 +15,21 @@ module.exports = dependencies => {
 
   /**
    * Create ticket.
-   * @param {Object}  ticket - The ticket object
-   * @param {Promise}        - Resolve on success
+   * @param {Object}  ticket  - The ticket object
+   * @param {Object}  options - The options object may contain population options
+   * @param {Promise}         - Resolve on success
    */
-  function create(ticket) {
+  function create(ticket, options = {}) {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
 
-    return Ticket.create(ticket);
+    return Ticket.create(ticket)
+      .then(createdTicket => {
+        if (options.populations) {
+          return createdTicket.populate(options.populations).execPopulate();
+        }
+
+        return createdTicket;
+      });
   }
 
   /**
