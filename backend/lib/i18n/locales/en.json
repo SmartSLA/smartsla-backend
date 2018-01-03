@@ -149,5 +149,20 @@
   "Awaiting": "Awaiting",
   "Awaiting information": "Awaiting information",
   "Awaiting validation": "Awaiting validation",
-  "Abandoned": "Abandoned"
+  "Abandoned": "Abandoned",
+  "File %s ignored as its size exceeds the %s limit": "File %s ignored as its size exceeds the %s limit",
+  "Creating issue...": "Creating issue...",
+  "Issue created": "Issue created",
+  "Failed to create issue": "Failed to create issue",
+  "Image / PDF / Video / Doc (Maximum 5MB each)": "Image / PDF / Video / Doc (Maximum 5MB each)",
+  "Error": "Error",
+  "Uploading": "Uploading",
+  "Attachment": "Attachment",
+  "Upload failed": "Upload failed",
+  "Retry": "Retry",
+  "New issue": "New issue",
+  "Severity": "Severity",
+  "Version": "Version",
+  "Environment": "Environment",
+  "Operating system, architecture, ...": "Operating system, architecture, ..."
 }

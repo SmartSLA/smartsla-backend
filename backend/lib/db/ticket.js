@@ -25,7 +25,7 @@ module.exports = dependencies => {
     requester: { type: Schema.ObjectId, ref: 'User', required: true },
     supportManager: { type: Schema.ObjectId, ref: 'User', required: true },
     supportTechnicians: [{ type: Schema.ObjectId, ref: 'User' }],
-    files: [Schema.ObjectId],
+    attachments: [Schema.ObjectId],
     state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
     responseTime: { type: Number, min: 1 }, // in minute
     workaroundTime: { type: Number, min: 1 }, // in minute

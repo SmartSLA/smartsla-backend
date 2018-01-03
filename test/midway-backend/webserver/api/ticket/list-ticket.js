@@ -3,17 +3,17 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
+const _ = require('lodash');
 
 describe('GET /ticketing/api/tickets', function() {
   const API_PATH = '/ticketing/api/tickets';
-  let app, lib, helpers, ObjectId;
-  let user1, user2, software, contract, ticket;
+  let app, lib, helpers;
+  let user1, user2, software, contract, organization;
   const password = 'secret';
-  const longDescription = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
+  const description = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
   beforeEach(function(done) {
     helpers = this.helpers;
-    ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
     app = this.app;
     lib = this.lib;
 
@@ -54,10 +54,16 @@ describe('GET /ticketing/api/tickets', function() {
       })
     )
     .then(() =>
+      lib.organization.create({
+        shortName: 'organization'
+      })
+      .then(createOrganization => (organization = createOrganization))
+    )
+    .then(() =>
       lib.contract.create({
         title: 'contract',
-        organization: new ObjectId(),
-        defaultSupportManager: new ObjectId(),
+        organization: organization._id,
+        defaultSupportManager: user1._id,
         startDate: new Date(),
         endDate: new Date(),
         demands: [{
@@ -73,28 +79,32 @@ describe('GET /ticketing/api/tickets', function() {
       })
       .then(createdContract => (contract = createdContract))
     )
-    .then(() =>
-      lib.ticket.create({
-        state: 'New',
-        contract: contract._id,
-        title: 'ticket 1',
-        demandType: 'Info',
-        severity: 'Blocking',
-        software: {
-          template: contract.software[0].template,
-          criticality: contract.software[0].type,
-          version: '1'
-        },
-        description: longDescription,
-        requester: user1._id,
-        supportManager: user1._id
-      })
-      .then(createdTicket => {
-        ticket = createdTicket;
-        done();
-      })
-    )
+    .then(() => done())
     .catch(err => done(err));
+  });
+
+  const getObjectFromModel = document => JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
+  const populateTicket = (ticket, options) => Object.assign(_.cloneDeep(ticket), {
+    contract: {
+      _id: options.contract._id,
+      title: options.contract.title,
+      demands: options.contract.demands,
+      organization: {
+        _id: options.organization._id,
+        shortName: options.organization.shortName
+      }
+    },
+    software: {
+      template: {
+        _id: options.software._id,
+        name: options.software.name
+      }
+    },
+    supportManager: {
+      _id: options.user._id,
+      firstname: options.user.firstname,
+      lastname: options.user.lastname
+    }
   });
 
   afterEach(function(done) {
@@ -132,7 +142,7 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
@@ -147,10 +157,22 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
+    const expectTicketA = populateTicket(ticketAJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
+    const expectTicketB = populateTicket(ticketBJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
@@ -160,17 +182,9 @@ describe('GET /ticketing/api/tickets', function() {
 
           req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
-            expect(res.headers['x-esn-items-count']).to.equal('3');
-            expect(res.body[0].title).to.equal(ticketBJSON.title);
-            expect(res.body[0].contract._id).to.equal(`${ticketBJSON.contract}`);
-            expect(res.body[0].software.template._id).to.equal(`${ticketBJSON.software.template}`);
-            expect(res.body[1].title).to.equal(ticketAJSON.title);
-            expect(res.body[1].contract._id).to.equal(`${ticketAJSON.contract}`);
-            expect(res.body[1].software.template._id).to.equal(`${ticketAJSON.software.template}`);
-            expect(res.body[2].title).to.equal(ticket.title);
-            expect(res.body[2].contract._id).to.equal(`${ticket.contract}`);
-            expect(res.body[2].software.template._id).to.equal(`${ticket.software.template}`);
-
+            expect(res.headers['x-esn-items-count']).to.equal('2');
+            expect(res.body[0]).to.shallowDeepEqual(getObjectFromModel(expectTicketB));
+            expect(res.body[1]).to.shallowDeepEqual(getObjectFromModel(expectTicketA));
             done();
           }));
         }))
@@ -190,12 +204,12 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
     const ticketBJSON = {
-      state: 'Abandoned',
+      state: 'Awaiting',
       contract: contract._id,
       title: 'ticket B',
       demandType: 'Info',
@@ -205,10 +219,16 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
+    const expectResult = populateTicket(ticketBJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
@@ -220,10 +240,7 @@ describe('GET /ticketing/api/tickets', function() {
           req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.headers['x-esn-items-count']).to.equal('1');
-            expect(res.body[0].title).to.equal(ticket.title);
-            expect(res.body[0].contract._id).to.equal(`${ticket.contract}`);
-            expect(res.body[0].software.template._id).to.equal(`${ticket.software.template}`);
-
+            expect(res.body[0]).to.shallowDeepEqual(getObjectFromModel(expectResult));
             done();
           }));
         }))
@@ -243,7 +260,7 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
@@ -258,10 +275,16 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
     };
+    const expectResult = populateTicket(ticketAJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
@@ -273,9 +296,7 @@ describe('GET /ticketing/api/tickets', function() {
           req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.headers['x-esn-items-count']).to.equal('1');
-            expect(res.body[0].title).to.equal(ticketAJSON.title);
-            expect(res.body[0].contract._id).to.equal(`${ticketAJSON.contract}`);
-            expect(res.body[0].software.template._id).to.equal(`${ticketAJSON.software.template}`);
+            expect(res.body[0]).to.shallowDeepEqual(getObjectFromModel(expectResult));
 
             done();
           }));
@@ -285,7 +306,21 @@ describe('GET /ticketing/api/tickets', function() {
   });
 
   it('should respond 200 with the list contains only latest ticket based on updated time if offset=0 and limit=1', function(done) {
-    lib.ticket.create({
+    const ticketAJSON = {
+      contract: contract._id,
+      title: 'ticket 1',
+      demandType: 'Info',
+      severity: 'Blocking',
+      software: {
+        template: contract.software[0].template,
+        criticality: contract.software[0].type,
+        version: '1'
+      },
+      description,
+      requester: user1._id,
+      supportManager: user1._id
+    };
+    const ticketBJSON = {
       contract: contract._id,
       title: 'ticket 2',
       demandType: 'Info',
@@ -295,30 +330,50 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
-    })
-    .then(createdTicket => {
-      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-        const req = requestAsMember(request(app).get(API_PATH));
+    };
+    const expectResult = populateTicket(ticketBJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
 
-        req.query({ offset: 0, limit: 1 });
-        req.expect(200)
-          .end(helpers.callbacks.noErrorAnd(res => {
-            expect(res.headers['x-esn-items-count']).to.equal('1');
-            expect(res.body[0].title).to.equal(createdTicket.title);
-            expect(res.body[0].contract._id).to.equal(`${createdTicket.contract}`);
-            expect(res.body[0].software.template._id).to.equal(`${createdTicket.software.template}`);
+    lib.ticket.create(ticketAJSON)
+      .then(() => lib.ticket.create(ticketBJSON))
+      .then(() => {
+        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+          const req = requestAsMember(request(app).get(API_PATH));
 
-            done();
-          }));
-      }));
-    }, err => done(err || 'should resolve'));
+          req.query({ offset: 0, limit: 1 });
+          req.expect(200)
+            .end(helpers.callbacks.noErrorAnd(res => {
+              expect(res.headers['x-esn-items-count']).to.equal('1');
+              expect(res.body[0]).to.shallowDeepEqual(getObjectFromModel(expectResult));
+              done();
+            }));
+        }));
+      }, err => done(err || 'should resolve'));
   });
 
   it('should respond 200 with the list contains only oldest ticket based on updated time if offset=1', function(done) {
-    lib.ticket.create({
+    const ticketAJSON = {
+      contract: contract._id,
+      title: 'ticket 1',
+      demandType: 'Info',
+      severity: 'Blocking',
+      software: {
+        template: contract.software[0].template,
+        criticality: contract.software[0].type,
+        version: '1'
+      },
+      description,
+      requester: user1._id,
+      supportManager: user1._id
+    };
+    const ticketBJSON = {
       contract: contract._id,
       title: 'ticket 2',
       demandType: 'Info',
@@ -328,25 +383,32 @@ describe('GET /ticketing/api/tickets', function() {
         criticality: contract.software[0].type,
         version: '1'
       },
-      description: longDescription,
+      description,
       requester: user1._id,
       supportManager: user1._id
-    })
-    .then(() => {
-      helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
-        const req = requestAsMember(request(app).get(API_PATH));
+    };
+    const expectResult = populateTicket(ticketAJSON, {
+      contract,
+      organization,
+      software,
+      user: user1
+    });
 
-        req.query({ offset: 1 });
-        req.expect(200)
-        .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.headers['x-esn-items-count']).to.equal('1');
-          expect(res.body[0].title).to.equal(ticket.title);
-          expect(res.body[0].contract._id).to.equal(`${ticket.contract}`);
-          expect(res.body[0].software.template._id).to.equal(`${ticket.software.template}`);
+    lib.ticket.create(ticketAJSON)
+      .then(() => lib.ticket.create(ticketBJSON))
+      .then(() => {
+        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+          const req = requestAsMember(request(app).get(API_PATH));
 
-          done();
+          req.query({ offset: 1 });
+          req.expect(200)
+          .end(helpers.callbacks.noErrorAnd(res => {
+            expect(res.headers['x-esn-items-count']).to.equal('1');
+            expect(res.body[0]).to.shallowDeepEqual(getObjectFromModel(expectResult));
+
+            done();
+          }));
         }));
-      }));
-    }, err => done(err || 'should resolve'));
+      }, err => done(err || 'should resolve'));
   });
 });

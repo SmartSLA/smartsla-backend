@@ -3,12 +3,14 @@
 const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
+const _ = require('lodash');
 
 describe('POST /ticketing/api/tickets', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers, ObjectId;
-  let user1, user2, contract, demand, software;
+  let user1, user2, contract, demand, software, organization;
   const password = 'secret';
+  const description = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
   beforeEach(function(done) {
     helpers = this.helpers;
@@ -38,11 +40,6 @@ describe('POST /ticketing/api/tickets', function() {
       softwareType: 'Normal',
       issueType: 'Blocking'
     };
-    software = {
-      template: new ObjectId(),
-      type: demand.softwareType,
-      versions: ['1', '2']
-    };
 
     lib.ticketingUserRole.create({
       user: user1._id,
@@ -55,14 +52,32 @@ describe('POST /ticketing/api/tickets', function() {
       })
     )
     .then(() =>
+      lib.organization.create({
+        shortName: 'organization'
+      })
+      .then(createdOrganization => (organization = createdOrganization))
+    )
+    .then(() =>
+      lib.software.create({
+        name: 'software',
+        category: 'category',
+        versions: ['1']
+      })
+      .then(createdSofware => (software = createdSofware))
+    )
+    .then(() =>
       lib.contract.create({
         title: 'contract',
-        organization: new ObjectId(),
-        defaultSupportManager: new ObjectId(),
+        organization: organization._id,
+        defaultSupportManager: user1._id,
         startDate: new Date(),
         endDate: new Date(),
         demands: [demand],
-        software: [software]
+        software: [{
+          template: software._id,
+          type: demand.softwareType,
+          versions: software.versions
+        }]
       })
     )
     .then(createdContract => {
@@ -77,9 +92,7 @@ describe('POST /ticketing/api/tickets', function() {
     helpers.mongo.dropDatabase(err => done(err));
   });
 
-  function getObjectFromModel(document) {
-    return JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
-  }
+  const getObjectFromModel = document => JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
 
   it('should respond 400 if there is no contract in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
@@ -222,7 +235,7 @@ describe('POST /ticketing/api/tickets', function() {
         contract: contract._id,
         title: 'ticket 1',
         demandType: 'info',
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
+        description,
         environment: []
       };
       const req = requestAsMember(request(app).post(API_PATH));
@@ -238,14 +251,14 @@ describe('POST /ticketing/api/tickets', function() {
     }));
   });
 
-  it('should respond 400 if files is invalid', function(done) {
+  it('should respond 400 if attachments is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const newTicket = {
         contract: contract._id,
         title: 'ticket 1',
         demandType: 'info',
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
-        files: [1, 2]
+        description,
+        attachments: [1, 2]
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
@@ -253,7 +266,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'files is invalid' }
+            error: { code: 400, message: 'Bad Request', details: 'attachments is invalid' }
           });
           done();
         }));
@@ -266,7 +279,7 @@ describe('POST /ticketing/api/tickets', function() {
         contract: new ObjectId(),
         title: 'ticket 1',
         demandType: 'info',
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo'
+        description
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
@@ -293,7 +306,7 @@ describe('POST /ticketing/api/tickets', function() {
           criticality: software.type,
           version: software.versions[0]
         },
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo'
+        description
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
@@ -317,10 +330,10 @@ describe('POST /ticketing/api/tickets', function() {
         severity: demand.issueType,
         software: {
           template: software.template,
-          criticality: software.type,
+          criticality: demand.softwareType,
           version: 'invalid-version'
         },
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo'
+        description
       };
       const req = requestAsMember(request(app).post(API_PATH));
 
@@ -361,18 +374,42 @@ describe('POST /ticketing/api/tickets', function() {
         demandType: demand.demandType,
         severity: demand.issueType,
         software: {
-          template: software.template,
-          criticality: software.type,
-          version: '2'
+          template: software._id,
+          criticality: demand.softwareType,
+          version: software.versions[0]
         },
-        description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo'
+        description
       };
+      const expectResult = Object.assign(_.cloneDeep(newTicket), {
+        contract: {
+          _id: contract._id,
+          title: contract.title,
+          organization: {
+            _id: organization._id,
+            shortName: organization.shortName
+          },
+          demands: contract.demands
+        },
+        software: {
+          template: {
+            _id: software._id,
+            name: software.name
+          },
+          criticality: demand.softwareType,
+          version: software.versions[0]
+        },
+        supportManager: {
+          _id: user1._id,
+          firstname: user1.firstname,
+          lastname: user1.lastname
+        }
+      });
       const req = requestAsMember(request(app).post(API_PATH));
 
       req.send(newTicket);
       req.expect(201)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body).to.shallowDeepEqual(getObjectFromModel(newTicket));
+          expect(res.body).to.shallowDeepEqual(getObjectFromModel(expectResult));
           done();
         }));
     }));

@@ -2,6 +2,28 @@
 
 module.exports = function(dependencies, lib) {
   const { send500Error } = require('../utils')(dependencies);
+  const TICKET_POPULATIONS = [
+    {
+      path: 'contract',
+      select: 'title organization demands',
+      populate: {
+        path: 'organization',
+        select: 'shortName'
+      }
+    },
+    {
+      path: 'supportTechnicians',
+      select: 'firstname lastname'
+    },
+    {
+      path: 'supportManager',
+      select: 'firstname lastname'
+    },
+    {
+      path: 'software.template',
+      select: 'name'
+    }
+  ];
 
   return {
     create,
@@ -23,7 +45,7 @@ module.exports = function(dependencies, lib) {
       software: req.body.software,
       description: req.body.description,
       environment: req.body.environment,
-      files: req.body.files
+      attachments: req.body.attachments
     };
 
     // requester = current user
@@ -31,7 +53,7 @@ module.exports = function(dependencies, lib) {
     // supportManager = defaultSupportManager of contract
     newTicket.supportManager = req.contract.defaultSupportManager;
 
-    return lib.ticket.create(newTicket)
+    return lib.ticket.create(newTicket, { populations: TICKET_POPULATIONS })
       .then(ticket => res.status(201).json(ticket))
       .catch(err => send500Error('Failed to create ticket', err, res));
   }
@@ -49,30 +71,8 @@ module.exports = function(dependencies, lib) {
       offset: +req.query.offset,
       state: req.query.state
     };
-    const userPopulationFields = 'firstname lastname';
 
-    options.populations = [
-      {
-        path: 'contract',
-        select: 'title organization demands',
-        populate: {
-          path: 'organization',
-          select: 'shortName'
-        }
-      },
-      {
-        path: 'supportTechnicians',
-        userPopulationFields
-      },
-      {
-        path: 'supportManager',
-        select: userPopulationFields
-      },
-      {
-        path: 'software.template',
-        select: 'name'
-      }
-    ];
+    options.populations = TICKET_POPULATIONS;
 
     // there is not "open" state of ticket
     // list open tickets is list tickets with state is not either equal 'Closed' or 'Abandoned'

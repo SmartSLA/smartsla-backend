@@ -20,6 +20,7 @@
     'esn.session',
     'esn.domain',
     'esn.template',
-    'esn.module-registry'
+    'esn.module-registry',
+    'esn.file'
   ]);
 })();

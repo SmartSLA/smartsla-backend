@@ -42,7 +42,10 @@ angular.module('esn.attendee', [])
     };
   });
 angular.module('esn.core', [])
-  .constant('_', _);
+  .constant('_', _)
+  .filter('bytes', function() {
+    return function(input) { return input; };
+  });
 angular.module('ui.select', {});
 angular.module('ngSanitize', {});
 angular.module('ngTagsInput', [])
@@ -86,5 +89,11 @@ angular.module('esn.module-registry', [])
   .factory('esnModuleRegistry', function() {
     return {
       add: function() {}
+    };
+  });
+angular.module('esn.file', [])
+  .factory('fileUploadService', function() {
+    return {
+      get: function() {}
     };
   });
