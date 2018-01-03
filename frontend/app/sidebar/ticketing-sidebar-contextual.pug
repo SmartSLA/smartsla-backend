@@ -14,9 +14,9 @@
                   i.mdi.mdi-dots-vertical
                 ul.nav.nav-pills.nav-stacked.dropdown-menu.dropdown-menu-right
                   li
-                    a #{__('My tickets')}
+                    a #{__('My issues')}
                   li
-                    a #{__('All tickets')}
+                    a(ui-sref='ticketing.tickets.all', ui-sref-active="selected") #{__('All issues')}
                   li
                     a #{__('Reporting')}
                   li
@@ -25,5 +25,4 @@
               esn-user-notification-toggler
             li
               profile-menu.profile-menu
-              
       .aside-body(ng-bind="content", ng-class="{'hideHeader' : hideHeader}")

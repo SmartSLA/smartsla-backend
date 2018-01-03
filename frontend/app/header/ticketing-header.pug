@@ -5,9 +5,9 @@ header#header
         a(ui-sref='ticketing')
           img(src="/ticketing/images/ossa-logo.png")
       li
-        a.btn.btn-link(ui-sref-active="selected") #{__('My tickets')}
+        a.btn.btn-link(ui-sref-active="selected") #{__('My issues')}
       li
-        a.btn.btn-link(ui-sref-active="selected") #{__('All tickets')}
+        a.btn.btn-link(ui-sref='ticketing.tickets.all', ui-sref-active="selected") #{__('All issues')}
       li
         a.btn.btn-link(ui-sref-active="selected") #{__('Reporting')}
       li

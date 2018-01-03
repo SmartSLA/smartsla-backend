@@ -21,11 +21,46 @@
         }
       };
     })
-    .config(function($stateProvider) {
+    .config(function($stateProvider, $urlRouterProvider) {
+      $urlRouterProvider.when('/ticketing/issues', function($location, session, ticketingProvider) {
+        ticketingProvider.userIsAdministrator(session.user._id)
+          .then(function(isAdministrator) {
+            if (isAdministrator) {
+              return $location.path('/ticketing/issues/all');
+            }
+
+            return $location.path('/ticketing');
+          });
+      });
+
       $stateProvider
         .state('ticketing', {
           url: '/ticketing',
           templateUrl: '/ticketing/app/app.html'
+        })
+        .state('ticketing.tickets', {
+          abstract: true,
+          url: '/issues'
+        })
+        .state('ticketing.tickets.all', {
+          url: '/all',
+          views: {
+            'root@ticketing': {
+              template: '<ticketing-ticket />'
+            }
+          },
+          resolve: {
+            isAdministrator: function($location, session, ticketingProvider) {
+              return session.ready.then(function() {
+                return ticketingProvider.userIsAdministrator(session.user._id)
+                  .then(function(isAdministrator) {
+                    if (!isAdministrator) {
+                      $location.path('/ticketing');
+                    }
+                  });
+              });
+            }
+          }
         })
         .state('ticketing.admin', {
           url: '/admin',
