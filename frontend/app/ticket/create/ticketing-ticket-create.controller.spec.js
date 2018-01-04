@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('The TicketingTicketCreateController', function() {
   var $rootScope, $controller;
-  var TicketingTicketService, TicketingService;
+  var TicketingTicketService;
 
   beforeEach(function() {
     module('linagora.esn.ticketing');
@@ -15,17 +15,11 @@ describe('The TicketingTicketCreateController', function() {
     inject(function(
       _$rootScope_,
       _$controller_,
-      _TicketingTicketService_,
-      _TicketingService_
+      _TicketingTicketService_
     ) {
       $rootScope = _$rootScope_;
       $controller = _$controller_;
       TicketingTicketService = _TicketingTicketService_;
-      TicketingService = _TicketingService_;
-    });
-
-    TicketingService.depopulate = sinon.spy(function(object) {
-      return object;
     });
   });
 
@@ -50,19 +44,14 @@ describe('The TicketingTicketCreateController', function() {
       controller.create()
         .catch(function() {
           expect(TicketingTicketService.create).to.have.been.calledWith(ticket);
-          expect(TicketingService.depopulate).to.have.been.calledOnce;
           done();
         });
 
       $rootScope.$digest();
     });
 
-    it('should qualify data before create ticket', function(done) {
-      var ticket = {
-        attachments: [
-          { _id: '123' }
-        ]
-      };
+    it('should resolve if success to create ticket', function(done) {
+      var ticket = { foo: 'bar' };
 
       TicketingTicketService.create = sinon.stub().returns($q.when());
       var controller = initController();
@@ -70,10 +59,7 @@ describe('The TicketingTicketCreateController', function() {
       controller.ticket = ticket;
       controller.create()
         .then(function() {
-          expect(TicketingTicketService.create).to.have.been.calledWith({
-            attachments: [ticket.attachments[0]._id]
-          });
-          expect(TicketingService.depopulate).to.have.been.calledOnce;
+          expect(TicketingTicketService.create).to.have.been.calledWith(ticket);
           done();
         }, function(err) {
           done(err || 'should resolve');

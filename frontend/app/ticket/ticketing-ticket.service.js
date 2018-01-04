@@ -6,8 +6,11 @@
 
   function TicketingTicketService(
     $rootScope,
+    $q,
+    _,
     asyncAction,
     TicketingTicketClient,
+    TicketingService,
     TICKETING_TICKET_EVENTS
   ) {
     return {
@@ -42,10 +45,43 @@
       };
 
       return asyncAction(notificationMessages, function() {
-        return TicketingTicketClient.create(ticket);
+        return _handleCreatingTicket(ticket);
       }).then(function(response) {
         $rootScope.$broadcast(TICKETING_TICKET_EVENTS.CREATED, buildResponsiblePerson(response.data));
       });
+    }
+
+    function _handleCreatingTicket(ticket) {
+      function _waitForUploaded(uploading) {
+        return $q(function(resolve) {
+          function checkFlag() {
+            if (!uploading) {
+              resolve();
+            }
+
+            uploading = _.some(ticket.attachments, { status: 'uploading' });
+            setTimeout(checkFlag, 1000);
+          }
+
+          checkFlag();
+        });
+      }
+      TicketingService.depopulate(ticket, ['contract']);
+
+      if (!ticket.attachments || !ticket.attachments.length) {
+        return TicketingTicketClient.create(ticket);
+      }
+
+      var uploading = true;
+
+      return _waitForUploaded(uploading)
+        .then(function() {
+          ticket.attachments = _.map(ticket.attachments, function(attachment) {
+            return attachment._id;
+          });
+
+          return TicketingTicketClient.create(ticket);
+        });
     }
   }
 })(angular);
