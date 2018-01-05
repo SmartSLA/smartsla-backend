@@ -273,6 +273,81 @@ describe('POST /ticketing/api/tickets', function() {
     }));
   });
 
+  it('should respond 400 if software is provided but template is not provied', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const newTicket = {
+        contract: contract._id,
+        title: 'ticket 1',
+        demandType: demand.demandType,
+        description,
+        software: {
+          criticality: demand.softwareType,
+          version: software.versions[0]
+        }
+      };
+      const req = requestAsMember(request(app).post(API_PATH));
+
+      req.send(newTicket);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'software is invalid: template, version and criticality are required' }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if software is provided but version is not provied', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const newTicket = {
+        contract: contract._id,
+        title: 'ticket 1',
+        demandType: demand.demandType,
+        description,
+        software: {
+          template: software._id,
+          criticality: demand.softwareType
+        }
+      };
+      const req = requestAsMember(request(app).post(API_PATH));
+
+      req.send(newTicket);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'software is invalid: template, version and criticality are required' }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if software is provided but criticality is not provied', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const newTicket = {
+        contract: contract._id,
+        title: 'ticket 1',
+        demandType: demand.demandType,
+        description,
+        software: {
+          template: software._id,
+          version: software.versions[0]
+        }
+      };
+      const req = requestAsMember(request(app).post(API_PATH));
+
+      req.send(newTicket);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'software is invalid: template, version and criticality are required' }
+          });
+          done();
+        }));
+    }));
+  });
+
   it('should respond 400 if contract not found', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const newTicket = {
@@ -302,12 +377,13 @@ describe('POST /ticketing/api/tickets', function() {
         demandType: demand.demandType,
         severity: 'invalid-severity',
         software: {
-          template: software.template,
-          criticality: software.type,
+          template: software._id,
+          criticality: demand.softwareType,
           version: software.versions[0]
         },
         description
       };
+
       const req = requestAsMember(request(app).post(API_PATH));
 
       req.send(newTicket);
@@ -329,7 +405,7 @@ describe('POST /ticketing/api/tickets', function() {
         demandType: demand.demandType,
         severity: demand.issueType,
         software: {
-          template: software.template,
+          template: software._id,
           criticality: demand.softwareType,
           version: 'invalid-version'
         },
