@@ -22,7 +22,7 @@ deploy_dev:
   stage: deploy_dev
   environment:
     name: dev
-    url: https://ticketing.linagora.com
+    url: http://ticketing.linagora.com
   only:
     - master@linagora/lgs/openpaas/linagora.esn.ticketing
   script:
