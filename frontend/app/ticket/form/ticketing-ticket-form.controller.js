@@ -4,8 +4,10 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingTicketFormController', TicketingTicketFormController);
 
-  function TicketingTicketFormController(_) {
+  function TicketingTicketFormController(_, esnI18nService) {
     var self = this;
+    var NO_SEVERITY_LABEL = 'No severity';
+    var NO_SOFTWARE_LABEL = 'No software';
 
     self.$onInit = $onInit;
 
@@ -32,64 +34,45 @@
       });
 
       // unique the array of available types
-      self.availableDemandTypes = self.availableDemandTypes.filter(function(value, index) {
-        return self.availableDemandTypes.indexOf(value) === index;
-      }).filter(Boolean);
+      self.availableDemandTypes = _.uniq(self.availableDemandTypes);
     }
 
     function onDemandTypeChange() {
       _resetTicketFields(['severity', 'software']);
+
       self.software = null;
-      if (!self.ticket.demandType) {
-        self.availableSeverities = [];
-
-        return;
-      }
-
-      self.availableSeverities = _.map(self.ticket.contract.demands, function(demand) {
-        if (demand.demandType === self.ticket.demandType) {
-          return demand.issueType;
-        }
+      self.availableSeverities = _buildAvailableSeverities(self.ticket);
+      self.availableSoftware = _buildAvailableSoftware({
+        contract: self.ticket.contract,
+        demandType: self.ticket.demandType
       });
-
-      // unique the array of available types
-      self.availableSeverities = self.availableSeverities.filter(function(value, index) {
-        return self.availableSeverities.indexOf(value) === index;
-      }).filter(Boolean);
     }
 
     function onServerityChange() {
       _resetTicketFields(['software']);
-      self.software = null;
-      if (!self.ticket.demandType || !self.ticket.severity) {
-        self.availableSoftware = [];
-
-        return;
+      if (!self.severity || self.severity === NO_SEVERITY_LABEL) {
+        _resetTicketFields(['severity']);
+      } else {
+        self.ticket.severity = self.severity;
       }
 
-      var availableSoftwareCriticality = _.map(self.ticket.contract.demands, function(demand) {
-        if (demand.demandType === self.ticket.demandType && demand.issueType === self.ticket.severity) {
-          return demand.softwareType;
-        }
-      }).filter(Boolean);
-
-      self.availableSoftware = _.map(self.ticket.contract.software, function(item) {
-        if (availableSoftwareCriticality.indexOf(item.type) > -1) {
-          return {
-            template: item.template._id,
-            type: item.type,
-            versions: item.versions,
-            label: item.template.name + ' - (' + item.type + ')'
-          };
-        }
-      }).filter(Boolean);
+      self.software = null;
+      self.availableSoftware = _buildAvailableSoftware({
+        contract: self.ticket.contract,
+        demandType: self.ticket.demandType,
+        severity: self.severity
+      });
     }
 
     function onSoftwareChange() {
-      self.ticket.software = {
-        template: self.software.template,
-        criticality: self.software.type
-      };
+      if (self.software && self.software.template) {
+        self.ticket.software = {
+          template: self.software.template,
+          criticality: self.software.type
+        };
+      } else {
+        _resetTicketFields(['software']);
+      }
 
       self.availableSoftwareVersions = self.software.versions;
     }
@@ -102,6 +85,69 @@
       angular.forEach(fields, function(key) {
         delete self.ticket[key];
       });
+    }
+
+    function _buildAvailableSeverities(ticket) {
+      if (!ticket.demandType) {
+        return [];
+      }
+
+      var availableSeverities = _.map(ticket.contract.demands, function(demand) {
+        if (demand.demandType === ticket.demandType) {
+          return demand.issueType ? demand.issueType : esnI18nService.translate(NO_SEVERITY_LABEL).toString();
+        }
+      }).filter(Boolean);
+
+      if (availableSeverities.indexOf(NO_SEVERITY_LABEL) !== -1) {
+        availableSeverities.unshift(NO_SEVERITY_LABEL); //push no severity option at the top of list
+      }
+
+      // unique the array of available severities
+     return _.uniq(availableSeverities);
+    }
+
+    function _buildAvailableSoftware(options) {
+      if (!options.demandType) {
+        return [];
+      }
+
+      var availableSoftwareCriticalities;
+
+      if (options.severity && options.severity !== NO_SEVERITY_LABEL) {
+        availableSoftwareCriticalities = _.map(options.contract.demands, function(demand) {
+          if (demand.demandType === options.demandType && demand.issueType === options.severity) {
+            return demand.softwareType ? demand.softwareType : NO_SOFTWARE_LABEL;
+          }
+        });
+      } else {
+        availableSoftwareCriticalities = _.map(options.contract.demands, function(demand) {
+          if (!demand.issueType && demand.demandType === options.demandType) {
+            return demand.softwareType ? demand.softwareType : NO_SOFTWARE_LABEL;
+          }
+        });
+
+        // unique the array of available software criticalities
+        availableSoftwareCriticalities = _.uniq(availableSoftwareCriticalities);
+      }
+
+      var availableSoftware = _.map(options.contract.software, function(item) {
+        if (availableSoftwareCriticalities.indexOf(item.type) > -1) {
+          return {
+            template: item.template._id,
+            type: item.type,
+            versions: item.versions,
+            label: item.template.name + ' - (' + item.type + ')'
+          };
+        }
+      }).filter(Boolean);
+
+      if (availableSoftwareCriticalities.indexOf(NO_SOFTWARE_LABEL) > -1) {
+        availableSoftware.unshift({
+          label: esnI18nService.translate(NO_SOFTWARE_LABEL).toString()
+        });
+      }
+
+      return availableSoftware;
     }
   }
 })(angular);

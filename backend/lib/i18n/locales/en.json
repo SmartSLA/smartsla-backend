@@ -164,5 +164,6 @@
   "Severity": "Severity",
   "Version": "Version",
   "Environment": "Environment",
-  "Operating system, architecture, ...": "Operating system, architecture, ..."
+  "Operating system, architecture, ...": "Operating system, architecture, ...",
+  "No severity": "No severity"
 }

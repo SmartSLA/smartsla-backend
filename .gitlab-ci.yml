@@ -2,6 +2,7 @@ image: linagora/node-test-base:8
 
 stages:
   - test
+  - deploy_dev
 
 test:
   stage: test
@@ -17,3 +18,24 @@ test:
     - npm update
     - bower i --allow-root
     - grunt --chunk=1 --ci
+deploy_dev:
+  stage: deploy_dev
+  tags:
+    - ticketing.linagora.com
+    - deployment
+  environment:
+    name: dev
+    url: https://ticketing.linagora.com
+  only:
+    - master@linagora/lgs/openpaas/linagora.esn.ticketing
+  script:
+    - cd /srv/linagora.esn.ticketing
+    - git fetch --all
+    - git checkout master
+    - npm install --ignore-scripts --production
+    - npm update --production
+    - npm prune
+    - bower install --production
+    - bower prune
+    - git checkout -- .
+    - sudo /etc/init.d/ticketing restart
