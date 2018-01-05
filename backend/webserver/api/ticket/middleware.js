@@ -71,13 +71,17 @@ module.exports = (dependencies, lib) => {
       return send400Error('attachments is invalid', res);
     }
 
+    if (software && (!software.template || !software.version || !software.criticality)) {
+      return send400Error('software is invalid: template, version and criticality are required', res);
+    }
+
     const softwareCriticality = software && software.criticality ? software.criticality : undefined;
 
     if (!_validateDemand({ demandType, severity, softwareCriticality }, req.contract.demands)) {
       return send400Error('the triple (demandType, severity, software criticality) is not supported', res);
     }
 
-    if (!_validateSoftware(software, req.contract.software)) {
+    if (software && !_validateSoftware(software, req.contract.software)) {
       return send400Error('the pair (software template, software version) is not supported', res);
     }
 
@@ -90,8 +94,9 @@ module.exports = (dependencies, lib) => {
                                          (item.softwareType === demand.softwareCriticality));
   }
 
-  function _validateSoftware(software = {}, availableSoftware) {
+  function _validateSoftware(software, availableSoftware) {
     return availableSoftware.some(item => (String(item.template) === String(software.template)) &&
-                                          (item.versions.indexOf(software.version) > -1));
+                                          (item.versions.indexOf(software.version) > -1) &&
+                                          (item.type === software.criticality));
   }
 };
