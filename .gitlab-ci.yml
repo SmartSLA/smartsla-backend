@@ -20,9 +20,6 @@ test:
     - grunt --chunk=1 --ci
 deploy_dev:
   stage: deploy_dev
-  tags:
-    - ticketing.linagora.com
-    - deployment
   environment:
     name: dev
     url: https://ticketing.linagora.com
