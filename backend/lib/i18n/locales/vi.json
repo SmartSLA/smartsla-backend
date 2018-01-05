@@ -164,5 +164,6 @@
   "Severity": "Mức độ nghiêm trọng",
   "Version": "Phiên bản",
   "Environment": "Môi trương",
-  "Operating system, architecture, ...": "Hệ điều hành, kiến trúc..."
+  "Operating system, architecture, ...": "Hệ điều hành, kiến trúc...",
+  "No severity": "Không có mức độ nghiêm trọng"
 }
