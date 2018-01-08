@@ -38,7 +38,6 @@ deploy_dev:
     - bower install --production
     - bower prune
     - git checkout -- .
-    - npm link
     - cd /srv/esn
     - git fetch --all
     - git checkout master
@@ -48,5 +47,4 @@ deploy_dev:
     - bower install --production
     - bower prune
     - git checkout -- .
-    - npm link linagora.esn.ticketing
     - sudo /etc/init.d/ticketing restart
