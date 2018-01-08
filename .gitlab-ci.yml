@@ -43,7 +43,6 @@ deploy_dev:
     - git checkout master
     - npm install --ignore-scripts --production
     - npm update --production
-    - npm prune
     - bower install --production
     - bower prune
     - git checkout -- .
