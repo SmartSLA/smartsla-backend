@@ -31,7 +31,7 @@ deploy_dev:
   script:
     - cd /srv/linagora.esn.ticketing
     - git fetch --all
-    - git checkout master
+    - git checkout ${CI_COMMIT_SHA}
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
@@ -40,7 +40,7 @@ deploy_dev:
     - git checkout -- .
     - cd /srv/esn
     - git fetch --all
-    - git checkout master
+    - git checkout ${CI_COMMIT_SHA}
     - npm install --ignore-scripts --production
     - npm update --production
     - bower install --production
