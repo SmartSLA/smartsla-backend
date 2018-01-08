@@ -28,6 +28,7 @@ ng-form(name="form")
                 ng-disabled="!$ctrl.ticket.contract",
                 required
               )
+                option.empty-option
       .row
         .col-xs-12
           esn-form-group(label=__('Severity'))
@@ -39,6 +40,7 @@ ng-form(name="form")
                 ng-change="$ctrl.onServerityChange()",
                 ng-disabled="!$ctrl.ticket.demandType"
               )
+                option.empty-option
       .row
         .col-xs-12
           esn-form-group(label=__('Software'))
@@ -50,6 +52,7 @@ ng-form(name="form")
                 ng-change="$ctrl.onSoftwareChange()",
                 ng-disabled="!$ctrl.ticket.demandType"
               )
+                option.empty-option
       .row
         .col-xs-12
           esn-form-group(label=__('Version'))
@@ -61,6 +64,7 @@ ng-form(name="form")
                 ng-disabled="!$ctrl.ticket.software || !$ctrl.ticket.software.template",
                 ng-required="$ctrl.ticket.software"
               )
+                option.empty-option
       .row
         .col-xs-12
           esn-form-group(label=__('Environment'), helper=__('Operating system, architecture, ...'))
