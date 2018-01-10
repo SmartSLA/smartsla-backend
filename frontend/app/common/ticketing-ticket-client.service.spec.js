@@ -34,4 +34,16 @@ describe('The TicketingTicketClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The get function', function() {
+    it('should GET to right endpoint to get ticket', function() {
+      var ticketId = '123';
+
+      $httpBackend.expectGET(API_PATH + '/' + ticketId).respond(200, {});
+
+      TicketingTicketClient.get(ticketId);
+
+      $httpBackend.flush();
+    });
+  });
 });

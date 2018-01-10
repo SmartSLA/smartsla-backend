@@ -10,7 +10,8 @@ module.exports = dependencies => {
   return {
     create,
     list,
-    listOpenTickets
+    listOpenTickets,
+    getById
   };
 
   /**
@@ -68,6 +69,21 @@ module.exports = dependencies => {
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-updatedAt');
+
+    if (options.populations) {
+      query.populate(options.populations);
+    }
+
+    return query.exec();
+  }
+
+  /**
+   * Get ticket by ID.
+   * @param  {String}   ticketId - The ticket ID
+   * @return {Promise}           - Resolve the found ticket
+   */
+  function getById(ticketId, options = {}) {
+    const query = Ticket.findById(ticketId);
 
     if (options.populations) {
       query.populate(options.populations);

@@ -8,6 +8,7 @@ module.exports = (dependencies, lib) => {
     loadContract,
     canCreateTicket,
     canListTicket,
+    canReadTicket,
     validateTicketCreation
   };
 
@@ -16,6 +17,10 @@ module.exports = (dependencies, lib) => {
   }
 
   function canListTicket(req, res, next) {
+    return requireAdministrator(req, res, next);
+  }
+
+  function canReadTicket(req, res, next) {
     return requireAdministrator(req, res, next);
   }
 
