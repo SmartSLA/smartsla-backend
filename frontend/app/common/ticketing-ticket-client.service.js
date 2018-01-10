@@ -7,7 +7,8 @@
   function TicketingTicketClient(ticketingRestangular) {
     return {
       create: create,
-      list: list
+      list: list,
+      get: get
     };
 
     /**
@@ -26,6 +27,15 @@
      */
     function list(options) {
       return ticketingRestangular.all('tickets').getList(options);
+    }
+
+    /**
+     * Get a ticket by ID.
+     * @param  {String} ticketId - The ticket ID
+     * @return {Promise}         - Resolve response with a ticket
+     */
+    function get(ticketId) {
+      return ticketingRestangular.one('tickets', ticketId).get();
     }
   }
 })(angular);

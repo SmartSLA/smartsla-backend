@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
-  const { send500Error } = require('../utils')(dependencies);
+  const { send404Error, send500Error } = require('../utils')(dependencies);
   const TICKET_POPULATIONS = [
     {
       path: 'contract',
@@ -27,7 +27,8 @@ module.exports = function(dependencies, lib) {
 
   return {
     create,
-    list
+    list,
+    get
   };
 
   /**
@@ -88,5 +89,23 @@ module.exports = function(dependencies, lib) {
         res.status(200).json(tickets);
       })
       .catch(err => send500Error('Failed to list tickets', err, res));
+  }
+
+  /**
+   * Get ticket.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function get(req, res) {
+    lib.ticket.getById(req.params.id, { populations: [...TICKET_POPULATIONS, { path: 'requester', select: 'firstname lastname' }] })
+      .then(ticket => {
+        if (!ticket) {
+          return send404Error('Ticket not found', res);
+        }
+
+        res.status(200).json(ticket);
+      })
+      .catch(err => send500Error('Failed to get ticket', err, res));
   }
 };
