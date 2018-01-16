@@ -13,6 +13,15 @@ module.exports = dependencies => {
     version: { type: String, required: true }
   }, { _id: false });
 
+  const TicketTimeSchema = new Schema({
+    responseTime: { type: Number, min: 1 }, // in minute
+    workaroundTime: { type: Number, min: 1 }, // in minute
+    correctionTime: { type: Number, min: 1 }, // in minute
+    suspendedAt: Date, // moment when suspend ticket
+    suspendTime: { type: Number, min: 0, default: 0 } // in minute, cumulated when ticket is changed from suspended state to "In progress" state
+                                                      // used when calculate workaroundTime and correctionTime
+  }, { _id: false });
+
   const TicketSchema = new Schema({
     title: { type: String, required: true, trim: true },
     number: { type: Number, unique: true },
@@ -27,9 +36,7 @@ module.exports = dependencies => {
     supportTechnicians: [{ type: Schema.ObjectId, ref: 'User' }],
     attachments: [Schema.ObjectId],
     state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
-    responseTime: { type: Number, min: 1 }, // in minute
-    workaroundTime: { type: Number, min: 1 }, // in minute
-    correctionTime: { type: Number, min: 1 }, // in minute
+    times: TicketTimeSchema,
     schemaVersion: { type: Number, default: 1 }
   }, {
     timestamps: { createdAt: 'creation' }
@@ -37,16 +44,16 @@ module.exports = dependencies => {
 
   const TicketModel = mongoose.model('Ticket', TicketSchema);
 
-  function _validateTimes(responseTime, workaroundTime, correctionTime) {
-    if (workaroundTime && responseTime && workaroundTime < responseTime) {
+  function _validateTimes(times) {
+    if (times && times.workaroundTime && times.responseTime && times.workaroundTime < times.responseTime) {
       return new Error('workaroundTime can NOT be smaller than responseTime');
     }
 
-    if (correctionTime && responseTime && correctionTime < responseTime) {
+    if (times && times.correctionTime && times.responseTime && times.correctionTime < times.responseTime) {
       return new Error('correctionTime can NOT be smaller than responseTime');
     }
 
-    if (correctionTime && workaroundTime && correctionTime < workaroundTime) {
+    if (times && times.correctionTime && times.workaroundTime && times.correctionTime < times.workaroundTime) {
       return new Error('correctionTime can NOT be smaller than workaroundTime');
     }
   }
@@ -54,7 +61,7 @@ module.exports = dependencies => {
   TicketSchema.pre('save', function(next) {
     const self = this;
 
-    const timesError = _validateTimes(self.responseTime, self.workaroundTime, self.correctionTime);
+    const timesError = _validateTimes(self.times);
 
     if (timesError) {
       return next(timesError);
