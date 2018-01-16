@@ -105,8 +105,10 @@ describe('The Ticket model', function() {
         description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
         requester: new ObjectId(),
         supportManager: new ObjectId(),
-        responseTime: 2,
-        workaroundTime: 1
+        times: {
+          responseTime: 2,
+          workaroundTime: 1
+        }
       }, err => {
         expect(err).to.exist;
         expect(err.message).to.equal('workaroundTime can NOT be smaller than responseTime');
@@ -123,8 +125,10 @@ describe('The Ticket model', function() {
         description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
         requester: new ObjectId(),
         supportManager: new ObjectId(),
-        responseTime: 2,
-        correctionTime: 1
+        times: {
+          responseTime: 2,
+          correctionTime: 1
+        }
       }, err => {
         expect(err).to.exist;
         expect(err.message).to.equal('correctionTime can NOT be smaller than responseTime');
@@ -141,8 +145,10 @@ describe('The Ticket model', function() {
         description: 'fooooooooooooooooooooooooooooooooooooooooooooooooo',
         requester: new ObjectId(),
         supportManager: new ObjectId(),
-        workaroundTime: 2,
-        correctionTime: 1
+        times: {
+          workaroundTime: 2,
+          correctionTime: 1
+        }
       }, err => {
         expect(err).to.exist;
         expect(err.message).to.equal('correctionTime can NOT be smaller than workaroundTime');
