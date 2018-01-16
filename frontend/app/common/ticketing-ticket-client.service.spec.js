@@ -3,9 +3,13 @@
 describe('The TicketingTicketClient service', function() {
   var API_PATH = '/ticketing/api/tickets';
   var $httpBackend;
-  var TicketingTicketClient;
+  var TicketingTicketClient, ticketId;
 
   beforeEach(module('linagora.esn.ticketing'));
+
+  beforeEach(function() {
+    ticketId = '123';
+  });
 
   beforeEach(inject(function(_$httpBackend_, _TicketingTicketClient_) {
     $httpBackend = _$httpBackend_;
@@ -43,6 +47,64 @@ describe('The TicketingTicketClient service', function() {
 
       TicketingTicketClient.get(ticketId);
 
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The update function', function() {
+    it('should POST to right endpoint to update basic info of ticket', function() {
+      var updateData = { foo: 'baz' };
+
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId, updateData).respond(200, {});
+
+      TicketingTicketClient.update(ticketId, updateData);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The updateState function', function() {
+    it('should POST to right endpoint to update state of ticket', function() {
+      var newState = 'In progress';
+
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId, newState).respond(200, {});
+
+      TicketingTicketClient.update(ticketId, newState);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The setWorkaroundTime function', function() {
+    it('should POST to right endpoint to set workaround time of ticket', function() {
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=workaroundTime').respond(200, {});
+
+      TicketingTicketClient.setWorkaroundTime(ticketId);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The unsetWorkaroundTime function', function() {
+    it('should POST to right endpoint to unset workaround time of ticket', function() {
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=workaroundTime').respond(200, {});
+
+      TicketingTicketClient.unsetWorkaroundTime(ticketId);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The setCorrectionTime function', function() {
+    it('should POST to right endpoint to set correction time of ticket', function() {
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=correctionTime').respond(200, {});
+
+      TicketingTicketClient.setCorrectionTime(ticketId);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The unsetCorrectionTime function', function() {
+    it('should POST to right endpoint to unset correction time of ticket', function() {
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=correctionTime').respond(200, {});
+
+      TicketingTicketClient.unsetCorrectionTime(ticketId);
       $httpBackend.flush();
     });
   });
