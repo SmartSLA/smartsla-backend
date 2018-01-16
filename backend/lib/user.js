@@ -103,6 +103,10 @@ module.exports = dependencies => {
   }
 
   function _buildUserFromUserRole(userRole) {
+    if (!userRole) {
+      return null;
+    }
+
     return organization.getEntityByUserId(userRole.user._id)
       .then(entity => {
         if (entity) {
