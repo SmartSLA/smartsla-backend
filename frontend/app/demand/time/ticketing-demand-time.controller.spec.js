@@ -6,7 +6,7 @@ var expect = chai.expect;
 
 describe('The TicketingDemandTimeController', function() {
   var $controller, $rootScope, $scope;
-  var TICKETING_CONTRACT_EVENTS, TICKETING_TIME_AVAILABLE_UNITS;
+  var TICKETING_CONTRACT_EVENTS, TICKETING_TIME_UNITS;
 
   beforeEach(function() {
     module('linagora.esn.ticketing');
@@ -15,12 +15,12 @@ describe('The TicketingDemandTimeController', function() {
       _$controller_,
       _$rootScope_,
       _TICKETING_CONTRACT_EVENTS_,
-      _TICKETING_TIME_AVAILABLE_UNITS_
+      _TICKETING_TIME_UNITS_
     ) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       TICKETING_CONTRACT_EVENTS = _TICKETING_CONTRACT_EVENTS_;
-      TICKETING_TIME_AVAILABLE_UNITS = _TICKETING_TIME_AVAILABLE_UNITS_;
+      TICKETING_TIME_UNITS = _TICKETING_TIME_UNITS_;
     });
   });
 
@@ -45,6 +45,6 @@ describe('The TicketingDemandTimeController', function() {
     $rootScope.$broadcast(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, demandToAdd);
 
     expect(controller.value).to.be.null;
-    expect(controller.unit).to.deep.equal(TICKETING_TIME_AVAILABLE_UNITS[0]);
+    expect(controller.unit).to.deep.equal(TICKETING_TIME_UNITS[0]);
   });
 });

@@ -10,6 +10,6 @@ ng-form(name="form")
   .select
     select.form-control(
       ng-model="$ctrl.unit",
-      ng-options="unit.text for unit in $ctrl.availableUnits",
+      ng-options="unit.name for unit in $ctrl.availableUnits",
       ng-change="$ctrl.onChange()"
     )
