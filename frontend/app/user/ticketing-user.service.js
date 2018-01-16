@@ -69,9 +69,7 @@
       return {
         objectType: 'user',
         templateUrl: '/views/modules/auto-complete/user-auto-complete',
-        getDisplayName: function(user) {
-          return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
-        },
+        getDisplayName: buildDisplayName,
         search: function(options) {
           return domainAPI.getMembers(domainId, options)
             .then(function(response) {
@@ -86,7 +84,7 @@
     }
 
     function buildDisplayName(user) {
-      return user.firstname + ' ' + user.lastname;
+      return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
     }
   }
 })(angular);
