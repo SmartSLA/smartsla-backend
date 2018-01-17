@@ -1,0 +1,4 @@
+div
+  .progress(ng-style="{ width: $ctrl.progress + '%' }", ng-class="$ctrl.progress <= 50 ? 'green' : $ctrl.progress  <= 75 ? 'yellow' : 'red'")
+  .col-xs-12.p-0
+    span.ellipsis(title="{{$ctrl.label}}") {{$ctrl.label}}

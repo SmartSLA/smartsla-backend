@@ -11,10 +11,12 @@
     asyncAction,
     TicketingTicketClient,
     TicketingService,
+    TicketingUserService,
     TICKETING_TICKET_EVENTS
   ) {
     return {
       create: create,
+      get: get,
       list: list
     };
 
@@ -22,15 +24,9 @@
       return TicketingTicketClient.list(options)
         .then(function(response) {
           return response.data.map(function(ticket) {
-              return buildResponsiblePerson(ticket);
+              return _buildResponsiblePerson(ticket);
             });
         });
-    }
-
-    function buildResponsiblePerson(ticket) {
-      ticket.responsiblePerson = ticket.supportTechnicians && ticket.supportTechnicians.length > 0 ? ticket.supportTechnicians[0] : ticket.supportManager;
-
-      return ticket;
     }
 
     function create(ticket) {
@@ -47,8 +43,41 @@
       return asyncAction(notificationMessages, function() {
         return _handleCreatingTicket(ticket);
       }).then(function(response) {
-        $rootScope.$broadcast(TICKETING_TICKET_EVENTS.CREATED, buildResponsiblePerson(response.data));
+        $rootScope.$broadcast(TICKETING_TICKET_EVENTS.CREATED, _buildResponsiblePerson(response.data));
       });
+    }
+
+    function get(ticketId) {
+      return TicketingTicketClient.get(ticketId)
+        .then(function(response) {
+          var ticket = response.data;
+
+          if (ticket.requester) {
+            ticket.requester.displayName = TicketingUserService.buildDisplayName(ticket.requester);
+          }
+          if (ticket.supportManager) {
+            ticket.supportManager.displayName = TicketingUserService.buildDisplayName(ticket.supportManager);
+          }
+
+          ticket.supportTechnicians = _.map(ticket.supportTechnicians, function(supportTechnician) {
+            supportTechnician.displayName = TicketingUserService.buildDisplayName(supportTechnician);
+
+            return supportTechnician;
+          });
+          ticket.attachments = _.map(ticket.attachments, function(attachment) {
+            attachment.name = attachment.filename;
+
+            return attachment;
+          });
+
+          return ticket;
+        });
+    }
+
+    function _buildResponsiblePerson(ticket) {
+      ticket.responsiblePerson = ticket.supportTechnicians && ticket.supportTechnicians.length > 0 ? ticket.supportTechnicians[0] : ticket.supportManager;
+
+      return ticket;
     }
 
     function _handleCreatingTicket(ticket) {
