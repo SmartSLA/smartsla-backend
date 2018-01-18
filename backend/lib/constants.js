@@ -16,7 +16,7 @@ module.exports = {
   },
   TICKET_STATES: {
     NEW: 'New',
-    IN_PROGRESS: 'In Progress',
+    IN_PROGRESS: 'In progress',
     AWAITING: 'Awaiting',
     AWAITING_INFORMATION: 'Awaiting information',
     AWAITING_VALIDATION: 'Awaiting validation',

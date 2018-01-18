@@ -25,7 +25,7 @@
                 span #{__('Last update')}
         .lv-body
           .lv-item.p-0(ng-repeat="item in $ctrl.elements track by item._id")
-            ticketing-ticket-list-item(ticket="item")
+            ticketing-ticket-list-item.clickable(ticket="item", ui-sref="ticketing.tickets.detail({ ticketId: item._id })")
 div(ng-if="!$ctrl.elements.length && $ctrl.infiniteScrollCompleted")
   ticketing-empty-message(
     icon="mdi-check",

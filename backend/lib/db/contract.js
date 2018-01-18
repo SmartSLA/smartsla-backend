@@ -12,7 +12,7 @@ module.exports = dependencies => {
     issueType: { type: String },
     responseTime: { type: Number, default: 0 }, // unit: hours
     workaroundTime: { type: Number, default: 0 }, // unit: hours
-    solvingTime: { type: Number, default: 0 }, // unit: hours
+    correctionTime: { type: Number, default: 0 }, // unit: hours
     timestamps: {
       creation: { type: Date, default: Date.now }
     }

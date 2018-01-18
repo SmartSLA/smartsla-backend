@@ -62,6 +62,14 @@
             }
           }
         })
+        .state('ticketing.tickets.detail', {
+          url: '/:ticketId',
+          views: {
+            'root@ticketing': {
+              template: '<ticketing-ticket-detail />'
+            }
+          }
+        })
         .state('ticketing.admin', {
           url: '/admin',
           views: {
@@ -105,6 +113,14 @@
             }
           }
         })
+        .state('ticketing.admin.organization.detail', {
+          url: '/:organizationId',
+          views: {
+            'admin-root@ticketing.admin': {
+              template: '<ticketing-organization-detail />'
+            }
+          }
+        })
         .state('ticketing.admin.users', {
           url: '/users',
           views: {
@@ -126,14 +142,6 @@
           views: {
             'admin-root@ticketing.admin': {
               template: '<ticketing-contract />'
-            }
-          }
-        })
-        .state('ticketing.admin.organization.detail', {
-          url: '/:organizationId',
-          views: {
-            'admin-root@ticketing.admin': {
-              template: '<ticketing-organization-detail />'
             }
           }
         })

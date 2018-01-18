@@ -21,6 +21,7 @@
     'esn.domain',
     'esn.template',
     'esn.module-registry',
-    'esn.file'
+    'esn.file',
+    'esn.attachment'
   ]);
 })();

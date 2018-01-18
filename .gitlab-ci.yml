@@ -30,8 +30,7 @@ deploy_dev:
     - master@linagora/lgs/openpaas/linagora.esn.ticketing
   script:
     - cd /srv/linagora.esn.ticketing
-    - git fetch --all
-    - git checkout master
+    - git pull origin master
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
@@ -39,8 +38,7 @@ deploy_dev:
     - bower prune
     - git checkout -- .
     - cd /srv/esn
-    - git fetch --all
-    - git checkout master
+    - git pull origin master
     - npm install --ignore-scripts --production
     - npm update --production
     - bower install --production

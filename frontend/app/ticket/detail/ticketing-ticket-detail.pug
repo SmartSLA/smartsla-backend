@@ -1,0 +1,175 @@
+.card.m-t-25
+  .card-body(ng-if="$ctrl.ticket")
+    .row.m-b-20
+      .col-xs-12
+        h2 {{::$ctrl.ticket.title}}
+    .row
+      .col-md-8
+        .row
+          .col-md-9
+            .row
+              .col-xs-3
+                label
+                  i.mdi.mdi-information-outline.m-r-5
+                  | #{__('State')}
+              .col-xs-9
+                | {{$ctrl.ticket.state}}
+        .row
+          .col-md-9
+            .row
+              .col-xs-3
+                label.time-label
+                  i.mdi.mdi-phone.m-r-5
+                  | #{__('Response')}
+              .col-xs-9
+                span(ng-if="$ctrl.ticket.times.responseTime") {{$ctrl.ticket.times.responseTime | ticketingTime}}
+                ticketing-ticket-timer-bar(
+                  ng-if="!$ctrl.ticket.times.responseTime",
+                  countdown="$ctrl.responseTimer.countdown",
+                  passed="$ctrl.responseTimer.passed",
+                  interval="$ctrl.responseTimer.interval"
+                )
+        .row
+          .col-md-9
+            .row
+              .col-xs-3
+                label.time-label
+                  i.mdi.mdi-lightbulb-on-outline.m-r-5
+                  | #{__('Workaround')}
+              .col-xs-9
+                span(ng-if="$ctrl.ticket.times.workaroundTime") {{$ctrl.ticket.times.workaroundTime | ticketingTime}}
+                ticketing-ticket-timer-bar(
+                  ng-if="!$ctrl.ticket.times.workaroundTime",
+                  countdown="$ctrl.workaroundTimer.countdown",
+                  passed="$ctrl.workaroundTimer.passed",
+                  interval="$ctrl.workaroundTimer.interval"
+                )
+          .col-md-3
+            label.checkbox.checkbox-inline
+              input(type="checkbox")
+              i.input-helper
+            span #{__('Workaround')}
+        .row
+          .col-md-9
+            .row
+              .col-xs-3
+                label.time-label
+                  i.mdi.mdi-cube-outline.m-r-5
+                  | #{__('Correction')}
+              .col-xs-9
+                span(ng-if="$ctrl.ticket.times.correctionTime") {{$ctrl.ticket.times.correctionTime | ticketingTime}}
+                ticketing-ticket-timer-bar(
+                  ng-if="!$ctrl.ticket.times.correctionTime",
+                  countdown="$ctrl.correctionTimer.countdown",
+                  passed="$ctrl.correctionTimer.passed",
+                  interval="$ctrl.correctionTimer.interval"
+                )
+          .col-md-3
+            label.checkbox.checkbox-inline
+              input(type="checkbox")
+              i.input-helper
+            span #{__('Fixed')}
+        .row
+          .col-md-9
+            .row
+              .col-xs-3
+                label.time-label
+                  i.mdi.mdi-harddisk.m-r-5
+                  | #{__('Environment')}
+              .col-xs-9
+                p {{$ctrl.ticket.environment}}
+        .row
+          .col-md-12
+            label
+              i.mdi.mdi-comment-text-outline.m-r-5
+              | #{__('Description')}
+            p {{$ctrl.ticket.description}}
+      .col-md-4
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-file.m-r-5
+              | #{__('Contract')}
+          .col-xs-8
+            | {{::$ctrl.ticket.contract.title}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-city.m-r-5
+              | #{__('Organization')}
+          .col-xs-8
+            | {{::$ctrl.ticket.contract.organization.shortName}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-account.m-r-5
+              | #{__('Requester')}
+          .col-xs-8
+            | {{::$ctrl.ticket.requester.displayName}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-account-multiple.m-r-5
+              | #{__('Support engineers')}
+          .col-xs-8
+            | {{$ctrl.supportTechnicians | ticketingJoinArray}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-account.m-r-5
+              | #{__('Support manager')}
+          .col-xs-8
+            | {{::$ctrl.ticket.supportManager.displayName}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-package-variant.m-r-5
+              | #{__('Software')}
+          .col-xs-8
+            | {{::$ctrl.ticket.software.template.name}} - ({{::$ctrl.ticket.software.criticality}})
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-flag-outline-variant.m-r-5
+              | #{__('Demand type')}
+          .col-xs-8
+            | {{::$ctrl.ticket.demandType}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-flag-variant.m-r-5
+              | #{__('Issue type')}
+          .col-xs-8
+            | {{::$ctrl.ticket.severity}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-timer.m-r-5
+              | #{__('Response time SLA')}
+          .col-xs-8
+            | {{$ctrl.demand.responseTime | ticketingTime}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-timer.m-r-5
+              | #{__('Workaround time SLA')}
+          .col-xs-8
+            | {{$ctrl.demand.workaroundTime | ticketingTime}}
+        .row
+          .col-xs-4
+            label
+              i.mdi.mdi-timer.m-r-5
+              | #{__('Correction time SLA')}
+          .col-xs-8
+            | {{$ctrl.demand.correctionTime | ticketingTime}}
+            
+    .row
+      .col-xs-12(ng-if="$ctrl.ticket.attachments.length")
+        h5 #{__('Attachments')}
+        esn-attachment.m-r-20(
+          ng-repeat="attachment in $ctrl.ticket.attachments track by attachment._id",
+          attachment="attachment",
+          gallery="$ctrl.ticket._id",
+          preview="true",
+          viewer="true"
+        )

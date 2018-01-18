@@ -58,4 +58,43 @@ describe('The TicketingTicketService', function() {
       expect($rootScope.$broadcast).to.have.been.calledWith(TICKETING_TICKET_EVENTS.CREATED, ticket);
     });
   });
+
+  describe('The get function', function() {
+    it('should reject if failed to get ticket', function(done) {
+      TicketingTicketClient.get = sinon.stub().returns($q.reject());
+
+      TicketingTicketService.get()
+        .catch(function() {
+          expect(TicketingTicketClient.get).to.have.been.calledOnce;
+          done();
+        });
+
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to get ticket', function(done) {
+      var ticket = {
+        requester: { firstname: 'firstname', lastname: 'lastname' },
+        attachments: [{ filename: 'filename' }]
+      };
+
+      TicketingTicketClient.get = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.get()
+        .then(function(result) {
+          expect(TicketingTicketClient.get).to.have.been.calledOnce;
+          expect(result).to.deep.equal({
+            requester: { firstname: 'firstname', lastname: 'lastname', displayName: 'firstname lastname' },
+            attachments: [{ filename: 'filename', name: 'filename' }],
+            supportTechnicians: []
+          });
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
 });

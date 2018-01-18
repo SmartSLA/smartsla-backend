@@ -7,7 +7,7 @@
   function TicketingDemandTimeController(
     $scope,
     _,
-    TICKETING_TIME_AVAILABLE_UNITS,
+    TICKETING_TIME_UNITS,
     TICKETING_CONTRACT_EVENTS
   ) {
     var self = this;
@@ -15,8 +15,8 @@
     self.$onInit = $onInit;
 
     function $onInit() {
-      self.availableUnits = TICKETING_TIME_AVAILABLE_UNITS;
-      self.unit = TICKETING_TIME_AVAILABLE_UNITS[0];
+      self.availableUnits = TICKETING_TIME_UNITS;
+      self.unit = TICKETING_TIME_UNITS[0];
       self.onChange = onChange;
 
       $scope.$on(TICKETING_CONTRACT_EVENTS.DEMAND_ADDED, function() {
@@ -30,7 +30,7 @@
 
     function _onDemandAdded() {
       self.value = null;
-      self.unit = TICKETING_TIME_AVAILABLE_UNITS[0];
+      self.unit = TICKETING_TIME_UNITS[0];
     }
   }
 })(angular);

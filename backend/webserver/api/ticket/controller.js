@@ -1,6 +1,9 @@
 'use strict';
 
+const Q = require('q');
+
 module.exports = function(dependencies, lib) {
+  const filestore = dependencies('filestore');
   const { send404Error, send500Error } = require('../utils')(dependencies);
   const TICKET_POPULATIONS = [
     {
@@ -104,7 +107,15 @@ module.exports = function(dependencies, lib) {
           return send404Error('Ticket not found', res);
         }
 
-        res.status(200).json(ticket);
+        const promises = ticket.attachments.map(attachment => Q.ninvoke(filestore, 'getMeta', attachment));
+
+        return Q.all(promises)
+          .then(result => {
+            ticket = ticket.toObject();
+            ticket.attachments = result;
+
+            res.status(200).json(ticket);
+          });
       })
       .catch(err => send500Error('Failed to get ticket', err, res));
   }

@@ -97,3 +97,4 @@ angular.module('esn.file', [])
       get: function() {}
     };
   });
+angular.module('esn.attachment', []);
