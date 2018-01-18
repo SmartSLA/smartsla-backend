@@ -5,6 +5,7 @@ const CONSTANTS = require('../../constants');
 
 module.exports = function(dependencies, lib) {
   const filestore = dependencies('filestore');
+  const activitystreams = dependencies('activitystreams');
   const { send404Error, send500Error } = require('../utils')(dependencies);
   const TICKET_POPULATIONS = [
     {
@@ -33,7 +34,8 @@ module.exports = function(dependencies, lib) {
     create,
     list,
     get,
-    update
+    update,
+    getActivities
   };
 
   /**
@@ -170,5 +172,29 @@ module.exports = function(dependencies, lib) {
     updateTicket
       .then(updatedTicket => res.status(200).json(updatedTicket))
       .catch(err => send500Error(errorMessage, err, res));
+  }
+
+  /**
+  * Get ticket's activities.
+  *
+  * @param {Request} req
+  * @param {Response} res
+  */
+  function getActivities(req, res) {
+    const options = {
+      limit: +req.query.limit || lib.constants.DEFAULT_LIST_OPTIONS.LIMIT,
+      offset: +req.query.offset || lib.constants.DEFAULT_LIST_OPTIONS.OFFSET,
+      object: {
+        objectType: lib.constants.OBJECT_TYPES.ticket,
+        _id: req.params.id
+      }
+    };
+
+    return Q.ninvoke(activitystreams, 'getTimelineEntries', options)
+      .then(result => {
+        res.header('X-ESN-Items-Count', result.length);
+        res.status(200).json(result);
+      })
+      .catch(err => send500Error('Failed to list timelines of ticket', err, res));
   }
 };
