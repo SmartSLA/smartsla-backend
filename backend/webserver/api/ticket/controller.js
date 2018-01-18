@@ -1,6 +1,7 @@
 'use strict';
 
 const Q = require('q');
+const CONSTANTS = require('../../constants');
 
 module.exports = function(dependencies, lib) {
   const filestore = dependencies('filestore');
@@ -31,7 +32,8 @@ module.exports = function(dependencies, lib) {
   return {
     create,
     list,
-    get
+    get,
+    update
   };
 
   /**
@@ -118,5 +120,55 @@ module.exports = function(dependencies, lib) {
           });
       })
       .catch(err => send500Error('Failed to get ticket', err, res));
+  }
+
+  /**
+   * Update a ticket: update basic info, update state, set/unset workaroundTime/correctionTime.
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function update(req, res) {
+    let updateTicket;
+    let errorMessage;
+
+    if (!req.query.action) {
+      const modifiedTicket = {
+        title: req.body.title,
+        description: req.body.description,
+        environment: req.body.environment,
+        demandType: req.body.demandType,
+        severity: req.body.severity,
+        software: req.body.software,
+        requester: req.body.requester,
+        supportManager: req.body.supportManager,
+        supportTechnicians: req.body.supportTechnicians
+      };
+
+      updateTicket = lib.ticket.updateById(req.params.id, modifiedTicket);
+      errorMessage = 'Failed to update ticket';
+    }
+
+    switch (req.query.action) {
+      case CONSTANTS.TICKET_ACTIONS.updateState:
+        updateTicket = lib.ticket.updateState(req.ticket, req.body.state);
+        errorMessage = 'Failed to update state of ticket';
+        break;
+      case CONSTANTS.TICKET_ACTIONS.set:
+      case CONSTANTS.TICKET_ACTIONS.unset:
+        if (req.query.field === 'workaroundTime') {
+          updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === CONSTANTS.TICKET_ACTIONS.set);
+        }
+        if (req.query.field === 'correctionTime') {
+          updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === CONSTANTS.TICKET_ACTIONS.set);
+        }
+
+        errorMessage = `Failed to ${req.query.action} ${req.query.field}`;
+        break;
+    }
+
+    updateTicket
+      .then(updatedTicket => res.status(200).json(updatedTicket))
+      .catch(err => send500Error(errorMessage, err, res));
   }
 };

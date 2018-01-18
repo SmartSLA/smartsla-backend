@@ -8,7 +8,13 @@
     return {
       create: create,
       list: list,
-      get: get
+      get: get,
+      update: update,
+      updateState: updateState,
+      setWorkaroundTime: setWorkaroundTime,
+      unsetWorkaroundTime: unsetWorkaroundTime,
+      setCorrectionTime: setCorrectionTime,
+      unsetCorrectionTime: unsetCorrectionTime
     };
 
     /**
@@ -36,6 +42,62 @@
      */
     function get(ticketId) {
       return ticketingRestangular.one('tickets', ticketId).get();
+    }
+
+    /**
+     * Update basic info of ticket.
+     * @param  {String} ticketId    - The ticket ID
+     * @param  {Object} updateData  - The update object
+     * @return {Promise}            - Resolve on success
+     */
+    function update(ticketId, updateData) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST(updateData);
+    }
+
+    /**
+     * Update state of ticket.
+     * @param  {String} ticketId  - The ticket ID
+     * @param  {String} newState  - New state
+     * @return {Promise}          - Resolve on success
+     */
+    function updateState(ticketId, newState) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST({ state: newState }, null, { action: 'updateState' });
+    }
+
+    /**
+     * Set workaround time of ticket.
+     * @param  {String} ticketId  - The ticket ID
+     * @return {Promise}          - Resolve on success
+     */
+    function setWorkaroundTime(ticketId) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'workaroundTime' });
+    }
+
+    /**
+     * Unset workaround time of ticket.
+     * @param  {String} ticketId  - The ticket ID
+     * @return {Promise}          - Resolve on success
+     */
+    function unsetWorkaroundTime(ticketId) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'workaroundTime' });
+    }
+
+    /**
+     * Set correction time of ticket.
+     * @param  {String} ticketId  - The ticket ID
+     * @return {Promise}          - Resolve on success
+     */
+    function setCorrectionTime(ticketId) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'correctionTime' });
+    }
+
+    /**
+     * Unset correction time of ticket.
+     * @param  {String} ticketId  - The ticket ID
+     * @return {Promise}          - Resolve on success
+     */
+    function unsetCorrectionTime(ticketId) {
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'correctionTime' });
     }
   }
 })(angular);

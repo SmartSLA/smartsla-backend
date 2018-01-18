@@ -14,9 +14,9 @@ module.exports = dependencies => {
   }, { _id: false });
 
   const TicketTimeSchema = new Schema({
-    responseTime: { type: Number, min: 1 }, // in minute
-    workaroundTime: { type: Number, min: 1 }, // in minute
-    correctionTime: { type: Number, min: 1 }, // in minute
+    responseTime: { type: Number, min: 0 }, // in minute
+    workaroundTime: { type: Number, min: 0 }, // in minute
+    correctionTime: { type: Number, min: 0 }, // in minute
     suspendedAt: Date, // moment when suspend ticket
     suspendTime: { type: Number, min: 0, default: 0 } // in minute, cumulated when ticket is changed from suspended state to "In progress" state
                                                       // used when calculate workaroundTime and correctionTime

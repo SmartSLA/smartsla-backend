@@ -5,11 +5,14 @@ module.exports = (dependencies, lib, router) => {
   const { checkIdInParams } = dependencies('helperMw');
   const controller = require('./controller')(dependencies, lib);
   const {
+    loadTicketWithContractInfo,
     loadContract,
     canCreateTicket,
     canListTicket,
     canReadTicket,
-    validateTicketCreation
+    canUpdateTicket,
+    validateTicketCreation,
+    validateTicketUpdate
   } = require('./middleware')(dependencies, lib);
 
   router.post('/tickets',
@@ -31,5 +34,14 @@ module.exports = (dependencies, lib, router) => {
     canReadTicket,
     checkIdInParams('id', 'Ticket'),
     controller.get
+  );
+
+  router.post('/tickets/:id',
+    authorizationMW.requiresAPILogin,
+    canUpdateTicket,
+    checkIdInParams('id', 'Ticket'),
+    loadTicketWithContractInfo,
+    validateTicketUpdate,
+    controller.update
   );
 };

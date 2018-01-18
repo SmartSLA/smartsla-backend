@@ -7,7 +7,8 @@ module.exports = {
   validateUserRole,
   validateGlossaryCategory,
   uniqueDemands,
-  validateTicketState
+  validateTicketState,
+  isSuspendedTicketState
 };
 
 function validateUserRole(role) {
@@ -30,4 +31,11 @@ function uniqueDemands(demands) {
 
 function validateTicketState(state) {
   return Object.values(CONSTANTS.TICKET_STATES).indexOf(state) > -1;
+}
+
+function isSuspendedTicketState(state) {
+  return [CONSTANTS.TICKET_STATES.AWAITING,
+          CONSTANTS.TICKET_STATES.AWAITING_INFORMATION,
+          CONSTANTS.TICKET_STATES.AWAITING_VALIDATION,
+          CONSTANTS.TICKET_STATES.CLOSED].indexOf(state) > -1;
 }
