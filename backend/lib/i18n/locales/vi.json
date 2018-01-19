@@ -115,7 +115,6 @@
   "Failed to add issue type": "Không thể thêm loại vấn đề",
   "Response time": "Thời gian phản hồi",
   "Workaround time": "Thời gian giải quyết tạm thời",
-  "Solving time": "Thời gian giải quyết",
   "No demand": "Không có yêu cầu",
   "Adding demand...": "Đang thêm yêu cầu...",
   "Demand added": "Đã thêm yêu cầu",
@@ -178,6 +177,6 @@
   "Workaround time SLA": "Thời gian giải quyết tạm thời (Hợp đồng)",
   "Correction time SLA": "Thời gian giải quyết (Hợp đồng)",
   "Attachments": "Tệp đính kèm",
-  "expired": "hết hạn",
+  "Expired": "Hết hạn",
   "%s remaining": "còn lại %s"
 }

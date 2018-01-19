@@ -115,7 +115,6 @@
   "Failed to add issue type": "Impossible d'ajouter le type de problème",
   "Response time": "Temps de réponse",
   "Workaround time": "Temps de contournement",
-  "Solving time": "Temps de résolution",
   "No demand": "Aucune demande",
   "Adding demand...": "Ajouter une demande...",
   "Demand added": "Demande ajoutée",
@@ -178,6 +177,6 @@
   "Workaround time SLA": "Temps de contournement SLA",
   "Correction time SLA": "Temps de correction SLA",
   "Attachments": "Pièces jointes",
-  "expired": "expiré",
+  "Expired": "Expiré",
   "%s remaining": "%s restant"
 }
