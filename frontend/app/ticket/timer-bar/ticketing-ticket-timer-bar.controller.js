@@ -12,20 +12,25 @@
     self.$onDestroy = $onDestroy;
 
     function $onInit() {
-      self.progress = self.passed * 100 / self.countdown;
-      self.label = _buildLabel(self.countdown - self.passed);
+      if (self.countdown > 0) {
+        self.progress = self.passed * 100 / self.countdown;
+        self.label = _buildLabel(self.countdown - self.passed);
 
-      if (self.progress < 100) {
-        caculateProgress = setInterval(function() {
-          if (self.progress > 100) {
-            clearInterval(caculateProgress);
-          } else {
-            self.passed ++;
-            self.progress = self.passed * 100 / self.countdown;
-          }
+        if (self.progress < 100) {
+          caculateProgress = setInterval(function() {
+            if (self.progress > 100) {
+              clearInterval(caculateProgress);
+            } else {
+              self.passed ++;
+              self.progress = self.passed * 100 / self.countdown;
+            }
 
-          self.label = _buildLabel(self.countdown - self.passed);
-        }, self.interval);
+            self.label = _buildLabel(self.countdown - self.passed);
+          }, self.interval);
+        }
+      } else {
+        self.progress = 0;
+        self.label = '∞';
       }
     }
 
