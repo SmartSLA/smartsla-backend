@@ -17,7 +17,7 @@
 
       if (self.progress < 100) {
         caculateProgress = setInterval(function() {
-          if (self.progress >= 100) {
+          if (self.progress > 100) {
             clearInterval(caculateProgress);
           } else {
             self.passed ++;
@@ -35,10 +35,10 @@
 
     function _buildLabel(remainder) {
       if (remainder < 0) {
-        return esnI18nService.translate('expired').toString();
+        return esnI18nService.translate('Expired').toString();
       }
 
-      return esnI18nService.translate('%s remaining', $filter('ticketingTime')(remainder)).toString();
+      return esnI18nService.translate('%s remaining', $filter('ticketingTime')(Math.round(remainder))).toString();
     }
   }
 })(angular);

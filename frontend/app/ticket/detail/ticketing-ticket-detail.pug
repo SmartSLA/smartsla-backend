@@ -14,7 +14,7 @@
                   | #{__('State')}
               .col-xs-9
                 | {{$ctrl.ticket.state}}
-        .row
+        .row.m-t-10
           .col-md-9
             .row
               .col-xs-3
@@ -29,7 +29,7 @@
                   passed="$ctrl.responseTimer.passed",
                   interval="$ctrl.responseTimer.interval"
                 )
-        .row
+        .row.m-t-10
           .col-md-9
             .row
               .col-xs-3
@@ -49,7 +49,7 @@
               input(type="checkbox")
               i.input-helper
             span #{__('Workaround')}
-        .row
+        .row.m-t-10
           .col-md-9
             .row
               .col-xs-3
@@ -69,7 +69,7 @@
               input(type="checkbox")
               i.input-helper
             span #{__('Fixed')}
-        .row
+        .row.m-t-10
           .col-md-9
             .row
               .col-xs-3
@@ -78,7 +78,7 @@
                   | #{__('Environment')}
               .col-xs-9
                 p {{$ctrl.ticket.environment}}
-        .row
+        .row.m-t-10
           .col-md-12
             label
               i.mdi.mdi-comment-text-outline.m-r-5
@@ -92,70 +92,70 @@
               | #{__('Contract')}
           .col-xs-8
             | {{::$ctrl.ticket.contract.title}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-city.m-r-5
               | #{__('Organization')}
           .col-xs-8
             | {{::$ctrl.ticket.contract.organization.shortName}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-account.m-r-5
               | #{__('Requester')}
           .col-xs-8
             | {{::$ctrl.ticket.requester.displayName}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-account-multiple.m-r-5
               | #{__('Support engineers')}
           .col-xs-8
             | {{$ctrl.supportTechnicians | ticketingJoinArray}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-account.m-r-5
               | #{__('Support manager')}
           .col-xs-8
             | {{::$ctrl.ticket.supportManager.displayName}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-package-variant.m-r-5
               | #{__('Software')}
-          .col-xs-8
+          .col-xs-8(ng-if="$ctrl.ticket.software")
             | {{::$ctrl.ticket.software.template.name}} - ({{::$ctrl.ticket.software.criticality}})
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-flag-outline-variant.m-r-5
               | #{__('Demand type')}
           .col-xs-8
             | {{::$ctrl.ticket.demandType}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-flag-variant.m-r-5
               | #{__('Issue type')}
           .col-xs-8
             | {{::$ctrl.ticket.severity}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-timer.m-r-5
               | #{__('Response time SLA')}
           .col-xs-8
             | {{$ctrl.demand.responseTime | ticketingTime}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-timer.m-r-5
               | #{__('Workaround time SLA')}
           .col-xs-8
             | {{$ctrl.demand.workaroundTime | ticketingTime}}
-        .row
+        .row.m-t-10
           .col-xs-4
             label
               i.mdi.mdi-timer.m-r-5
