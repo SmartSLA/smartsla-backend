@@ -178,5 +178,7 @@
   "Correction time SLA": "Correction time SLA",
   "Attachments": "Attachments",
   "Expired": "Expired",
-  "%s remaining": "%s remaining"
+  "%s remaining": "%s remaining",
+  "Issue is changed": "Issue is changed",
+  "Activities": "Activities"
 }

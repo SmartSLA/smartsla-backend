@@ -173,3 +173,7 @@
           preview="true",
           viewer="true"
         )
+    .row.m-t-20
+      .col-xs-12
+        h4 #{__('Activities')}
+        ticketing-ticket-activities(ticket-id="$ctrl.ticket._id")

@@ -178,5 +178,7 @@
   "Correction time SLA": "Thời gian giải quyết (Hợp đồng)",
   "Attachments": "Tệp đính kèm",
   "Expired": "Hết hạn",
-  "%s remaining": "còn lại %s"
+  "%s remaining": "còn lại %s",
+  "Issue is changed": "Vấn đề đã được thay đổi",
+  "Activities": "Hoạt động"
 }
