@@ -6,7 +6,10 @@ const CONSTANTS = require('../../constants');
 module.exports = function(dependencies, lib) {
   const filestore = dependencies('filestore');
   const activitystreams = dependencies('activitystreams');
+  const pubsubLocal = dependencies('pubsub').local;
   const { send404Error, send500Error } = require('../utils')(dependencies);
+
+  const ticketUpdateTopic = pubsubLocal.topic(lib.constants.EVENTS.TICKET.update);
   const TICKET_POPULATIONS = [
     {
       path: 'contract',
@@ -170,7 +173,15 @@ module.exports = function(dependencies, lib) {
     }
 
     updateTicket
-      .then(updatedTicket => res.status(200).json(updatedTicket))
+      .then(updatedTicket => {
+        ticketUpdateTopic.publish({
+          actor: req.user,
+          ticketId: req.params.id,
+          verb: lib.constants.TICKET_ACTIVITY.ACTIONS.update
+        });
+
+        res.status(200).json(updatedTicket);
+      })
       .catch(err => send500Error(errorMessage, err, res));
   }
 
@@ -195,6 +206,6 @@ module.exports = function(dependencies, lib) {
         res.header('X-ESN-Items-Count', result.length);
         res.status(200).json(result);
       })
-      .catch(err => send500Error('Failed to list timelines of ticket', err, res));
+      .catch(err => send500Error('Failed to get activities of ticket', err, res));
   }
 };
