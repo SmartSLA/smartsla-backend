@@ -44,4 +44,10 @@ module.exports = (dependencies, lib, router) => {
     validateTicketUpdate,
     controller.update
   );
+
+  router.get('/tickets/:id/activities',
+    authorizationMW.requiresAPILogin,
+    canReadTicket,
+    controller.getActivities
+  );
 };

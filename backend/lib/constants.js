@@ -49,6 +49,15 @@ module.exports = {
     SOFTWARE: {
       created: 'ticketing:software:created',
       updated: 'ticketing:software:updated'
+    },
+    TICKET: {
+      updated: 'ticketing:ticket:updated'
+    }
+  },
+  TICKET_ACTIVITY: {
+    OBJECT_TYPE: 'ticket',
+    ACTIONS: {
+      update: 'update'
     }
   }
 };
