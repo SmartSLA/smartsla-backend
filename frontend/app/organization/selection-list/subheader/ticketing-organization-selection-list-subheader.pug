@@ -1,4 +1,10 @@
 .selection-list-sub-header
   .flex-vertical-centered
+    | 
     h2.title
-      | #{__('%s/%s entity(ies) have permission', '{{ $ctrl.getNumberOfSelectedItems() }}', '{{$ctrl.total}}')}
+      | {{ $ctrl.getNumberOfSelectedItems() + '/' + $ctrl.total }} 
+      span(ng-hide='$ctrl.getNumberOfSelectedItems() <= 1')
+        | #{__('entities have permission')} 
+        //- #{__('%s/%s entity(ies) have permission', '{{ $ctrl.getNumberOfSelectedItems() }}', '{{$ctrl.total}}')}
+      span(ng-show='$ctrl.getNumberOfSelectedItems() <= 1')
+        | #{__('entity has permission')}

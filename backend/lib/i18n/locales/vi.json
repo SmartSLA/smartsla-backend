@@ -217,5 +217,7 @@
   "Support user": "Kỹ thuật viên",
   "Updating issue...": "Đang cập nhật vấn đề...",
   "Issue updated": "Đã cập nhật vấn đề",
-  "Failed to update issue": "Cập nhật vấn đề thất bại"
+  "Failed to update issue": "Cập nhật vấn đề thất bại",
+  "entities have permission":"entities have permission",
+  "entity has permission":"entity has permission"
 }

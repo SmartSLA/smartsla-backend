@@ -217,5 +217,7 @@
   "Support user": "Utilisateur de support",
   "Updating issue...": "Mettre à jour la demande...",
   "Issue updated": "La demande est mise à jour",
-  "Failed to update issue": "Impossible de mettre à jour la demande"
+  "Failed to update issue": "Impossible de mettre à jour la demande",
+  "entities have permission":"entitées ont la permission",
+  "entity has permission":"entité a la permission"
 }
