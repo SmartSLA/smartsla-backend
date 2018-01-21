@@ -23,6 +23,8 @@
     };
     var originTicket;
 
+    var originTicket;
+
     self.$onInit = $onInit;
 
     function $onInit() {

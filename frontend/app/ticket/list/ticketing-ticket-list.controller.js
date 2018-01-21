@@ -11,7 +11,8 @@
     infiniteScrollHelper,
     TicketingTicketService,
     TICKETING_TICKET_EVENTS,
-    TICKETING_USER_ROLES
+    TICKETING_USER_ROLES,
+    TICKETING_TICKET_STATES
   ) {
     var self = this;
     var DEFAULT_STATE = 'open';
@@ -23,6 +24,7 @@
     };
 
     self.$onInit = $onInit;
+    self.getIconFromState = getIconFromState;
 
     function $onInit() {
       options.scope = self.scope;
@@ -62,6 +64,14 @@
       }
 
       self.elements.unshift(createdTicket);
+    }
+
+    function getIconFromState(state) {
+      var key = Object.keys(TICKETING_TICKET_STATES).filter(function(key) {
+        return TICKETING_TICKET_STATES[key].value === state;
+      })[0];
+
+      return TICKETING_TICKET_STATES[key].icon;
     }
   }
 })(angular);
