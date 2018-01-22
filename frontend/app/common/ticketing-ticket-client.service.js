@@ -9,6 +9,7 @@
       create: create,
       list: list,
       get: get,
+      getActivities: getActivities,
       update: update,
       updateState: updateState,
       setWorkaroundTime: setWorkaroundTime,
@@ -98,6 +99,19 @@
      */
     function unsetCorrectionTime(ticketId) {
       return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'correctionTime' });
+    }
+
+    /**
+     * List ticket's activities
+     * @param  {String} ticketId  - The ticket ID
+     * @param  {Object} options   - Query option, possible attributes are limit and offset
+     * @return {Promise}          - Resolve on success
+     */
+    function getActivities(ticketId, options) {
+      return ticketingRestangular
+        .one('tickets', ticketId)
+        .all('activities')
+        .getList(options);
     }
   }
 })(angular);

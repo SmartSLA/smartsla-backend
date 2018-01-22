@@ -178,5 +178,7 @@
   "Correction time SLA": "Temps de correction SLA",
   "Attachments": "Pièces jointes",
   "Expired": "Expiré",
-  "%s remaining": "%s restant"
+  "%s remaining": "%s restant",
+  "Issue is changed": "La demande est modifiée",
+  "Activities": "Activités"
 }

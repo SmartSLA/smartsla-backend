@@ -196,15 +196,15 @@ module.exports = function(dependencies, lib) {
       limit: +req.query.limit || lib.constants.DEFAULT_LIST_OPTIONS.LIMIT,
       offset: +req.query.offset || lib.constants.DEFAULT_LIST_OPTIONS.OFFSET,
       object: {
-        objectType: lib.constants.OBJECT_TYPES.ticket,
+        objectType: lib.constants.TICKET_ACTIVITY.OBJECT_TYPE,
         _id: req.params.id
       }
     };
 
     return Q.ninvoke(activitystreams, 'getTimelineEntries', options)
       .then(result => {
-        res.header('X-ESN-Items-Count', result.length);
-        res.status(200).json(result);
+        res.header('X-ESN-Items-Count', result.total_count);
+        res.status(200).json(result.list);
       })
       .catch(err => send500Error('Failed to get activities of ticket', err, res));
   }

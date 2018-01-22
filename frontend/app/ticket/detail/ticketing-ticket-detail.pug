@@ -165,11 +165,15 @@
             
     .row
       .col-xs-12(ng-if="$ctrl.ticket.attachments.length")
-        h5 #{__('Attachments')}
-        esn-attachment.m-r-20(
+        h4 #{__('Attachments')}
+        esn-attachment.m-r-20.p-l-25(
           ng-repeat="attachment in $ctrl.ticket.attachments track by attachment._id",
           attachment="attachment",
           gallery="$ctrl.ticket._id",
           preview="true",
           viewer="true"
         )
+    .row.m-t-20
+      .col-xs-12
+        h4 #{__('Activities')}
+        ticketing-ticket-activities(ticket-id="$ctrl.ticket._id")

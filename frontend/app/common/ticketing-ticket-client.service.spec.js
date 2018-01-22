@@ -41,8 +41,6 @@ describe('The TicketingTicketClient service', function() {
 
   describe('The get function', function() {
     it('should GET to right endpoint to get ticket', function() {
-      var ticketId = '123';
-
       $httpBackend.expectGET(API_PATH + '/' + ticketId).respond(200, {});
 
       TicketingTicketClient.get(ticketId);
@@ -105,6 +103,15 @@ describe('The TicketingTicketClient service', function() {
       $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=correctionTime').respond(200, {});
 
       TicketingTicketClient.unsetCorrectionTime(ticketId);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('The getActivities function', function() {
+    it('should GET to right endpoint to get activities of ticket', function() {
+      $httpBackend.expectGET(API_PATH + '/' + ticketId + '/activities').respond(200, []);
+
+      TicketingTicketClient.getActivities(ticketId, []);
       $httpBackend.flush();
     });
   });
