@@ -180,5 +180,17 @@
   "Expired": "Expiré",
   "%s remaining": "%s restant",
   "Issue is changed": "La demande est modifiée",
-  "Activities": "Activités"
+  "Activities": "Activités",
+  "Setting workaround time...": "Définir le temps de contournement...",
+  "Workaround time is set": "Le temps de contournement est défini",
+  "Failed to set workaround time": "Impossible de définir le temps de contournement",
+  "Unsetting workaround time...": "Supprimer le temps de contournement...",
+  "Workaround time is unset": "Le temps de contournement est supprimé",
+  "Failed to unset workaround time": "Impossible de supprimer le temps de contournement",
+  "Setting correction time...": "Définir le temps de correction...",
+  "Correction time is set": "Le temps de correction est défini",
+  "Failed to set correction time": "Impossible de définir le temps de correction",
+  "Unsetting correction time...": "Supprimer le temps de correction...",
+  "Correction time is unset": "Le temps de correction est supprimé",
+  "Failed to unset correction time": "Impossible de supprimer le temps de correction"
 }

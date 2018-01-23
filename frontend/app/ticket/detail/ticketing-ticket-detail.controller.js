@@ -18,6 +18,9 @@
     function $onInit() {
       self.ticketId = $stateParams.ticketId;
 
+      self.onWorkaroundCheckboxChange = onWorkaroundCheckboxChange;
+      self.onCorrectionCheckboxChange = onCorrectionCheckboxChange;
+
       TicketingTicketService.get(self.ticketId)
         .then(function(ticket) {
           self.ticket = ticket;
@@ -32,20 +35,44 @@
             return supportTechnician.displayName;
           });
 
-          self.responseTimer = _caculatorTimer('responseTime');
-          self.workaroundTimer = _caculatorTimer('workaroundTime');
-          self.correctionTimer = _caculatorTimer('correctionTime');
+          self.responseTimer = _calculateTimer('responseTime');
+          self.workaroundTimer = _calculateTimer('workaroundTime');
+          self.correctionTimer = _calculateTimer('correctionTime');
         });
     }
 
-    function _caculatorTimer(type) {
+    function onWorkaroundCheckboxChange(event) {
+      event.preventDefault();
+
+      var handleWorkaroundTime = (self.ticket.times && self.ticket.times.workaroundTime !== undefined) ? TicketingTicketService.unsetWorkaroundTime(self.ticketId) : TicketingTicketService.setWorkaroundTime(self.ticketId);
+
+      handleWorkaroundTime
+        .then(function(updatedTicket) {
+          // update ticket times
+          self.ticket.times = updatedTicket.times;
+        });
+    }
+
+    function onCorrectionCheckboxChange(event) {
+      event.preventDefault();
+
+      var handleCorrectionTime = (self.ticket.times && self.ticket.times.correctionTime !== undefined) ? TicketingTicketService.unsetCorrectionTime(self.ticketId) : TicketingTicketService.setCorrectionTime(self.ticketId);
+
+      handleCorrectionTime
+        .then(function(updatedTicket) {
+          // update ticket times
+          self.ticket.times = updatedTicket.times;
+        });
+    }
+
+    function _calculateTimer(type) {
       if (self.ticket.times && self.ticket.times[type]) {
         return;
       }
 
-      var creattionDate = new Date(self.ticket.creation);
+      var creationDate = new Date(self.ticket.creation);
       var theoryTime = self.demand[type];
-      var passedTime = ((new Date() - creattionDate) / 60000); //in minutes
+      var passedTime = ((new Date() - creationDate) / 60000); // in minutes
 
       if (type !== 'responseTime' && self.ticket.times && self.ticket.times.suspendTime) {
         passedTime -= self.ticket.times.suspendTime;

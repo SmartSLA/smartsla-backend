@@ -180,5 +180,17 @@
   "Expired": "Hết hạn",
   "%s remaining": "còn lại %s",
   "Issue is changed": "Vấn đề đã được thay đổi",
-  "Activities": "Hoạt động"
+  "Activities": "Hoạt động",
+  "Setting workaround time...": "Đang thiết lập thời gian giải quyết tạm thời...",
+  "Workaround time is set": "Thời gian giải quyết tạm thời đã được thiết lập",
+  "Failed to set workaround time": "Không thể thiết lập thời gian giải quyết tạm thời",
+  "Unsetting workaround time...": "Đang bỏ thiết lập thời gian giải quyết tạm thời...",
+  "Workaround time is unset": "Thời gian giải quyết tạm thời đã được bỏ thiết lập",
+  "Failed to unset workaround time": "Không thể bỏ thiết lập thời gian giải quyết tạm thời",
+  "Setting correction time...": "Đang thiết lập thời gian giải quyết...",
+  "Correction time is set": "Thời gian giải quyết đã được thiết lập",
+  "Failed to set correction time": "Không thể thiết lập thời gian giải quyết",
+  "Unsetting correction time...": "Đang bỏ thiết lập thời gian giải quyết...",
+  "Correction time is unset": "Thời gian giải quyết đã được bỏ thiết lập",
+  "Failed to unset correction time": "Không thể bỏ thiết lập thời gian giải quyết"
 }

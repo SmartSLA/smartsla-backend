@@ -17,7 +17,11 @@
     return {
       create: create,
       get: get,
-      list: list
+      list: list,
+      setWorkaroundTime: setWorkaroundTime,
+      unsetWorkaroundTime: unsetWorkaroundTime,
+      setCorrectionTime: setCorrectionTime,
+      unsetCorrectionTime: unsetCorrectionTime
     };
 
     function list(options) {
@@ -72,6 +76,82 @@
 
           return ticket;
         });
+    }
+
+    function setWorkaroundTime(ticketId) {
+      if (!ticketId) {
+        return $q.reject(new Error('ticketId is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Setting workaround time...',
+        success: 'Workaround time is set',
+        failure: 'Failed to set workaround time'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.setWorkaroundTime(ticketId)
+          .then(function(response) {
+            return response.data;
+          });
+      });
+    }
+
+    function unsetWorkaroundTime(ticketId) {
+      if (!ticketId) {
+        return $q.reject(new Error('ticketId is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Unsetting workaround time...',
+        success: 'Workaround time is unset',
+        failure: 'Failed to unset workaround time'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.unsetWorkaroundTime(ticketId)
+          .then(function(response) {
+            return response.data;
+          });
+      });
+    }
+
+    function setCorrectionTime(ticketId) {
+      if (!ticketId) {
+        return $q.reject(new Error('ticketId is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Setting correction time...',
+        success: 'Correction time is set',
+        failure: 'Failed to set correction time'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.setCorrectionTime(ticketId)
+          .then(function(response) {
+            return response.data;
+          });
+      });
+    }
+
+    function unsetCorrectionTime(ticketId) {
+      if (!ticketId) {
+        return $q.reject(new Error('ticketId is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Unsetting correction time...',
+        success: 'Correction time is unset',
+        failure: 'Failed to unset correction time'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.unsetCorrectionTime(ticketId)
+          .then(function(response) {
+            return response.data;
+          });
+      });
     }
 
     function _buildResponsiblePerson(ticket) {

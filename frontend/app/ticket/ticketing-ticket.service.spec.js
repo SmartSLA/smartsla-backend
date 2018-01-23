@@ -97,4 +97,192 @@ describe('The TicketingTicketService', function() {
       $rootScope.$digest();
     });
   });
+
+  describe('The setWorkaroundTime function', function() {
+    it('should reject if there is no ticketId is provided', function(done) {
+      TicketingTicketService.setWorkaroundTime()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticketId is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to set workaround time', function(done) {
+      var error = new Error('something wrong');
+      var ticketId = '123';
+
+      TicketingTicketClient.setWorkaroundTime = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.setWorkaroundTime(ticketId)
+        .catch(function(err) {
+          expect(TicketingTicketClient.setWorkaroundTime).to.have.been.calledWith(ticketId);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to set workaround time', function(done) {
+      var ticket = {
+        _id: '123',
+        times: { creation: '2017', workaroundTime: 6 }
+      };
+
+      TicketingTicketClient.setWorkaroundTime = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.setWorkaroundTime(ticket._id)
+        .then(function(result) {
+          expect(TicketingTicketClient.setWorkaroundTime).to.have.been.calledWith(ticket._id);
+          expect(result).to.deep.equal(ticket);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
+
+  describe('The unsetWorkaroundTime function', function() {
+    it('should reject if there is no ticketId is provided', function(done) {
+      TicketingTicketService.unsetWorkaroundTime()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticketId is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to unset workaround time', function(done) {
+      var error = new Error('something wrong');
+      var ticketId = '123';
+
+      TicketingTicketClient.unsetWorkaroundTime = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.unsetWorkaroundTime(ticketId)
+        .catch(function(err) {
+          expect(TicketingTicketClient.unsetWorkaroundTime).to.have.been.calledWith(ticketId);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to unset workaround time', function(done) {
+      var ticket = {
+        _id: '123',
+        times: { creation: '2017' }
+      };
+
+      TicketingTicketClient.unsetWorkaroundTime = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.unsetWorkaroundTime(ticket._id)
+        .then(function(result) {
+          expect(TicketingTicketClient.unsetWorkaroundTime).to.have.been.calledWith(ticket._id);
+          expect(result).to.deep.equal(ticket);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
+
+  describe('The setCorrectionTime function', function() {
+    it('should reject if there is no ticketId is provided', function(done) {
+      TicketingTicketService.setCorrectionTime()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticketId is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to set correction time', function(done) {
+      var error = new Error('something wrong');
+      var ticketId = '123';
+
+      TicketingTicketClient.setCorrectionTime = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.setCorrectionTime(ticketId)
+        .catch(function(err) {
+          expect(TicketingTicketClient.setCorrectionTime).to.have.been.calledWith(ticketId);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to set correction time', function(done) {
+      var ticket = {
+        _id: '123',
+        times: { creation: '2017', correctionTime: 6 }
+      };
+
+      TicketingTicketClient.setCorrectionTime = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.setCorrectionTime(ticket._id)
+        .then(function(result) {
+          expect(TicketingTicketClient.setCorrectionTime).to.have.been.calledWith(ticket._id);
+          expect(result).to.deep.equal(ticket);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
+
+  describe('The unsetCorrectionTime function', function() {
+    it('should reject if there is no ticketId is provided', function(done) {
+      TicketingTicketService.unsetCorrectionTime()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticketId is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to unset correction time', function(done) {
+      var error = new Error('something wrong');
+      var ticketId = '123';
+
+      TicketingTicketClient.unsetCorrectionTime = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.unsetCorrectionTime(ticketId)
+        .catch(function(err) {
+          expect(TicketingTicketClient.unsetCorrectionTime).to.have.been.calledWith(ticketId);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to unset correction time', function(done) {
+      var ticket = {
+        _id: '123',
+        times: { creation: '2017' }
+      };
+
+      TicketingTicketClient.unsetCorrectionTime = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.unsetCorrectionTime(ticket._id)
+        .then(function(result) {
+          expect(TicketingTicketClient.unsetCorrectionTime).to.have.been.calledWith(ticket._id);
+          expect(result).to.deep.equal(ticket);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
 });
