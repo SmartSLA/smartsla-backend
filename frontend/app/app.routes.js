@@ -152,6 +152,14 @@
               template: '<ticketing-contract-detail />'
             }
           }
+        })
+        .state('ticketing.admin.software', {
+          url: '/softwares',
+          views: {
+            'admin-root@ticketing.admin': {
+              template: '<ticketing-software />'
+            }
+          }
         });
     });
 })();
