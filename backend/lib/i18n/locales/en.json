@@ -180,5 +180,17 @@
   "Expired": "Expired",
   "%s remaining": "%s remaining",
   "Issue is changed": "Issue is changed",
-  "Activities": "Activities"
+  "Activities": "Activities",
+  "Setting workaround time...": "Setting workaround time...",
+  "Workaround time is set": "Workaround time is set",
+  "Failed to set workaround time": "Failed to set workaround time",
+  "Unsetting workaround time...": "Unsetting workaround time...",
+  "Workaround time is unset": "Workaround time is unset",
+  "Failed to unset workaround time": "Failed to unset workaround time",
+  "Setting correction time...": "Setting correction time...",
+  "Correction time is set": "Correction time is set",
+  "Failed to set correction time": "Failed to set correction time",
+  "Unsetting correction time...": "Unsetting correction time...",
+  "Correction time is unset": "Correction time is unset",
+  "Failed to unset correction time": "Failed to unset correction time"
 }
