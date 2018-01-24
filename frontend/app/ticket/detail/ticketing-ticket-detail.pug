@@ -13,7 +13,14 @@
                   i.mdi.mdi-information-outline.m-r-5
                   | #{__('State')}
               .col-xs-9
-                | {{$ctrl.ticket.state}}
+                .select
+                  select.form-control(
+                    ng-model="$ctrl.state",
+                    name="state",
+                    ng-options="state for state in $ctrl.availableStates",
+                    ng-change="$ctrl.onStateChange()",
+                    required
+                  )
         .row.m-t-10
           .col-md-9
             .row
@@ -42,7 +49,8 @@
                   ng-if="$ctrl.ticket.times.workaroundTime === undefined",
                   countdown="$ctrl.workaroundTimer.countdown",
                   passed="$ctrl.workaroundTimer.passed",
-                  interval="$ctrl.workaroundTimer.interval"
+                  interval="$ctrl.workaroundTimer.interval",
+                  stop="$ctrl.isSuspendedState($ctrl.ticket.state)"
                 )
           .col-md-3
             label.checkbox.checkbox-inline(ng-click="$ctrl.onWorkaroundCheckboxChange($event)")
@@ -62,7 +70,8 @@
                   ng-if="$ctrl.ticket.times.correctionTime === undefined",
                   countdown="$ctrl.correctionTimer.countdown",
                   passed="$ctrl.correctionTimer.passed",
-                  interval="$ctrl.correctionTimer.interval"
+                  interval="$ctrl.correctionTimer.interval",
+                  stop="$ctrl.isSuspendedState($ctrl.ticket.state)"
                 )
           .col-md-3
             label.checkbox.checkbox-inline(ng-click="$ctrl.onCorrectionCheckboxChange($event)")

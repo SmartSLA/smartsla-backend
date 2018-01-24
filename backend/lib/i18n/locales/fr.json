@@ -179,6 +179,7 @@
   "Attachments": "Pièces jointes",
   "Expired": "Expiré",
   "%s remaining": "%s restant",
+  "%s remaining (suspending...)": "%s restant (suspendue...)",
   "Issue is changed": "La demande est modifiée",
   "Activities": "Activités",
   "Setting workaround time...": "Définir le temps de contournement...",

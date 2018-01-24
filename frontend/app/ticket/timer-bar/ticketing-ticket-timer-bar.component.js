@@ -8,7 +8,8 @@
       bindings: {
         countdown: '<',
         interval: '<',
-        passed: '<'
+        passed: '<',
+        stop: '<'
       }
     });
 })(angular);

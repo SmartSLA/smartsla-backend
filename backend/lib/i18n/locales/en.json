@@ -179,6 +179,7 @@
   "Attachments": "Attachments",
   "Expired": "Expired",
   "%s remaining": "%s remaining",
+  "%s remaining (suspending...)": "%s remaining (suspending...)",
   "Issue is changed": "Issue is changed",
   "Activities": "Activities",
   "Setting workaround time...": "Setting workaround time...",

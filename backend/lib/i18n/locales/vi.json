@@ -179,6 +179,7 @@
   "Attachments": "Tệp đính kèm",
   "Expired": "Hết hạn",
   "%s remaining": "còn lại %s",
+  "%s remaining (suspending...)": "còn lại %s (chờ...)",
   "Issue is changed": "Vấn đề đã được thay đổi",
   "Activities": "Hoạt động",
   "Setting workaround time...": "Đang thiết lập thời gian giải quyết tạm thời...",
