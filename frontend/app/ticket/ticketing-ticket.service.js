@@ -18,6 +18,7 @@
       create: create,
       get: get,
       list: list,
+      updateState: updateState,
       setWorkaroundTime: setWorkaroundTime,
       unsetWorkaroundTime: unsetWorkaroundTime,
       setCorrectionTime: setCorrectionTime,
@@ -76,6 +77,29 @@
 
           return ticket;
         });
+    }
+
+    function updateState(ticketId, state) {
+      if (!ticketId) {
+        return $q.reject(new Error('ticketId is required'));
+      }
+
+      if (!state) {
+        return $q.reject(new Error('state is required'));
+      }
+
+      var notificationMessages = {
+        progressing: 'Updating state...',
+        success: 'State is updated',
+        failure: 'Failed to update state'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.updateState(ticketId, state)
+          .then(function(response) {
+            return response.data;
+          });
+      });
     }
 
     function setWorkaroundTime(ticketId) {

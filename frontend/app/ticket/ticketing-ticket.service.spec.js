@@ -8,6 +8,7 @@ var expect = chai.expect;
 describe('The TicketingTicketService', function() {
   var $rootScope, TicketingTicketClient, TicketingTicketService;
   var TICKETING_TICKET_EVENTS;
+  var ticketId;
 
   beforeEach(function() {
     module('linagora.esn.ticketing');
@@ -24,6 +25,10 @@ describe('The TicketingTicketService', function() {
       TicketingTicketService = _TicketingTicketService_;
       TICKETING_TICKET_EVENTS = _TICKETING_TICKET_EVENTS_;
     });
+  });
+
+  beforeEach(function() {
+    ticketId = '123';
   });
 
   describe('The create function', function() {
@@ -88,6 +93,63 @@ describe('The TicketingTicketService', function() {
             attachments: [{ filename: 'filename', name: 'filename' }],
             supportTechnicians: []
           });
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
+
+  describe('The updateState function', function() {
+    it('should reject if there is no ticketId is provided', function(done) {
+      TicketingTicketService.updateState()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticketId is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if there is no state is provided', function(done) {
+      TicketingTicketService.updateState(ticketId)
+        .catch(function(err) {
+          expect(err.message).to.equal('state is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to update state', function(done) {
+      var error = new Error('something wrong');
+      var newState = 'In progress';
+
+      TicketingTicketClient.updateState = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.updateState(ticketId, newState)
+        .catch(function(err) {
+          expect(TicketingTicketClient.updateState).to.have.been.calledWith(ticketId, newState);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to update state', function(done) {
+      var newState = 'In progress';
+      var ticket = {
+        _id: '123',
+        state: newState
+      };
+
+      TicketingTicketClient.updateState = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.updateState(ticket._id, newState)
+        .then(function(result) {
+          expect(TicketingTicketClient.updateState).to.have.been.calledWith(ticket._id, newState);
+          expect(result).to.deep.equal(ticket);
           done();
         })
         .catch(function(err) {
