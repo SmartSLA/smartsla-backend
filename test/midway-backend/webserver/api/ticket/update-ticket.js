@@ -136,9 +136,10 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('should respond 400 if there is no title in payload', function(done) {
+  it('should respond 400 if there is empty title in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
+        title: '',
         demandType: demand1.demandType
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -154,10 +155,11 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('should respond 400 if there is no demandType in payload', function(done) {
+  it('should respond 400 if there is empty demandType in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
-        title: 'modified title'
+        title: 'modified title',
+        demandType: ''
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
@@ -172,11 +174,12 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('should respond 400 if there is no description in payload', function(done) {
+  it('should respond 400 if there is empty description in payload', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
-        demandType: demand1.demandType
+        demandType: demand1.demandType,
+        description: ''
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
@@ -184,7 +187,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description is required' }
           });
           done();
         }));
@@ -204,7 +207,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description must be a string with minimum length of 50' }
           });
           done();
         }));
@@ -224,7 +227,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description must be a string with minimum length of 50' }
           });
           done();
         }));
@@ -279,9 +282,6 @@ describe('POST /ticketing/api/tickets/:id', function() {
   it('should respond 400 if software is provided but version is not provied', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
-        title: 'modified title',
-        demandType: demand2.demandType,
-        description,
         software: {
           template: software._id,
           criticality: demand1.softwareType
@@ -303,9 +303,6 @@ describe('POST /ticketing/api/tickets/:id', function() {
   it('should respond 400 if software is provided but criticality is not provied', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
-        title: 'modified title',
-        demandType: demand2.demandType,
-        description,
         software: {
           template: software._id,
           version: software.versions[0]
@@ -344,7 +341,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'the triple (demandType, severity, software criticality) is not supported' }
+            error: { code: 400, message: 'Bad Request', details: 'The triple (demandType, severity, software criticality) is not supported' }
           });
           done();
         }));
@@ -370,14 +367,14 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'the pair (software template, software version) is not supported' }
+            error: { code: 400, message: 'Bad Request', details: 'The pair (software template, software version) is not supported' }
           });
           done();
         }));
     }));
   });
 
-  it('should respond 400 if requester is not provied', function(done) {
+  it('should respond 400 if there is a null requester', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
@@ -388,7 +385,8 @@ describe('POST /ticketing/api/tickets/:id', function() {
           criticality: demand1.softwareType,
           version: software.versions[1]
         },
-        description
+        description,
+        requester: null
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
@@ -457,7 +455,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('should respond 400 if supportManager is not provied', function(done) {
+  it('should respond 400 if there is a null supportManager', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
@@ -469,7 +467,8 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[1]
         },
         description,
-        requester: user1._id
+        requester: user1._id,
+        supportManager: null
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 

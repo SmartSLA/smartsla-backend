@@ -143,7 +143,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: `${unsupportedAction.action} is not a valid action on field ${unsupportedAction.field} of ticket` }
+            error: { code: 400, message: 'Bad Request', details: `Action ${unsupportedAction.action} is not supported` }
           });
           done();
         }));

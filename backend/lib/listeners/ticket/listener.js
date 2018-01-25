@@ -24,7 +24,8 @@ module.exports = dependencies => {
       object: {
         objectType: TICKET_ACTIVITY.OBJECT_TYPE,
         _id: data.ticketId
-      }
+      },
+      changeset: data.changeset
     };
 
     return Q.ninvoke(activitystreams, 'addTimelineEntry', entry)

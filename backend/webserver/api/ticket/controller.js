@@ -1,7 +1,7 @@
 'use strict';
 
 const Q = require('q');
-const CONSTANTS = require('../../constants');
+const _ = require('lodash');
 
 module.exports = function(dependencies, lib) {
   const filestore = dependencies('filestore');
@@ -9,7 +9,7 @@ module.exports = function(dependencies, lib) {
   const pubsubLocal = dependencies('pubsub').local;
   const { send404Error, send500Error } = require('../utils')(dependencies);
 
-  const ticketUpdateTopic = pubsubLocal.topic(lib.constants.EVENTS.TICKET.update);
+  const ticketUpdateTopic = pubsubLocal.topic(lib.constants.EVENTS.TICKET.updated);
   const TICKET_POPULATIONS = [
     {
       path: 'contract',
@@ -136,36 +136,57 @@ module.exports = function(dependencies, lib) {
   function update(req, res) {
     let updateTicket;
     let errorMessage;
+    const activityData = {
+      actor: req.user,
+      ticketId: req.params.id,
+      verb: lib.constants.TICKET_ACTIVITY.VERBS.update,
+      changeset: req.changeset || []
+    };
 
     if (!req.query.action) {
-      const modifiedTicket = {
-        title: req.body.title,
-        description: req.body.description,
-        environment: req.body.environment,
-        demandType: req.body.demandType,
-        severity: req.body.severity,
-        software: req.body.software,
-        requester: req.body.requester,
-        supportManager: req.body.supportManager,
-        supportTechnicians: req.body.supportTechnicians
+      const changesetKeys = {
+        title: 'title',
+        description: 'description',
+        environment: 'environment',
+        demandType: 'demand type',
+        severity: 'severity'
       };
 
-      updateTicket = lib.ticket.updateById(req.params.id, modifiedTicket);
+      _.transform(req.body, (result, value, key) => {
+        if (changesetKeys[key] && !_.isEqual(value, req.ticket[key])) {
+          activityData.changeset.push({
+            key,
+            displayName: changesetKeys[key],
+            from: req.ticket[key],
+            to: value
+          });
+        }
+      });
+
+      const softwareChange = req.body.software !== undefined ? _buildActivityForUpdateSoftware(req.ticket, req.body.software) : undefined;
+
+      if (softwareChange) activityData.changeset.push(softwareChange);
+
+      updateTicket = lib.ticket.updateById(req.params.id, req.body);
       errorMessage = 'Failed to update ticket';
     }
 
     switch (req.query.action) {
-      case CONSTANTS.TICKET_ACTIONS.updateState:
+      case lib.constants.TICKET_ACTIONS.updateState:
         updateTicket = lib.ticket.updateState(req.ticket, req.body.state);
         errorMessage = 'Failed to update state of ticket';
         break;
-      case CONSTANTS.TICKET_ACTIONS.set:
-      case CONSTANTS.TICKET_ACTIONS.unset:
-        if (req.query.field === 'workaroundTime') {
-          updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === CONSTANTS.TICKET_ACTIONS.set);
+      case lib.constants.TICKET_ACTIONS.set:
+      case lib.constants.TICKET_ACTIONS.unset:
+        activityData.verb = req.query.action;
+
+        if (req.query.field === lib.constants.TICKET_ABLE_TO_SETUP_FIELDS.workaroundTime) {
+          activityData.changeset = [{ key: req.query.field, displayName: 'workaround time' }];
+          updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
         }
-        if (req.query.field === 'correctionTime') {
-          updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === CONSTANTS.TICKET_ACTIONS.set);
+        if (req.query.field === lib.constants.TICKET_ABLE_TO_SETUP_FIELDS.correctionTime) {
+          activityData.changeset = [{ key: req.query.field, displayName: 'correction time' }];
+          updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
         }
 
         errorMessage = `Failed to ${req.query.action} ${req.query.field}`;
@@ -174,15 +195,48 @@ module.exports = function(dependencies, lib) {
 
     updateTicket
       .then(updatedTicket => {
-        ticketUpdateTopic.publish({
-          actor: req.user,
-          ticketId: req.params.id,
-          verb: lib.constants.TICKET_ACTIVITY.ACTIONS.update
-        });
-
+        if (activityData.changeset.length > 0) {
+          ticketUpdateTopic.publish(activityData);
+        }
         res.status(200).json(updatedTicket);
       })
       .catch(err => send500Error(errorMessage, err, res));
+  }
+
+  function _buildActivityForUpdateSoftware(ticket, software) {
+    if (software === null || _.isEmpty(software)) {
+      if (!ticket.software) {
+        return;
+      }
+
+      return {
+        key: 'software',
+        displayName: 'software',
+        from: `${ticket.software.template.name} ${ticket.software.version} - (${ticket.software.criticality})`
+      };
+    }
+
+    if (!ticket.software || String(software.template) !== String(ticket.software.template._id)) {
+      const softwareTemplate = _.find(ticket.contract.software, item => item.template._id === software.template);
+
+      return {
+        key: 'software',
+        displayName: 'software',
+        from: ticket.software ? `${ticket.software.template.name} ${ticket.software.version} - (${ticket.software.criticality})` : '',
+        to: `${softwareTemplate.name} ${software.version} - (${software.type})`
+      };
+    }
+
+    if (software.version === ticket.software.version && software.criticality === ticket.software.criticality) {
+      return;
+    }
+
+    return {
+      key: 'software',
+      displayName: 'software',
+      from: ticket.software ? `${ticket.software.template.name} ${ticket.software.version} - (${ticket.software.criticality})` : '',
+      to: `${ticket.software.template.name} ${software.version} - (${software.criticality})`
+    };
   }
 
   /**

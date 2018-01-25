@@ -7,7 +7,8 @@ module.exports = (dependencies, lib) => {
 
   return {
     validateObjectIds,
-    requireAdministrator
+    requireAdministrator,
+    buildUserDisplayName
   };
 
   function requireAdministrator(req, res, next) {
@@ -34,5 +35,9 @@ module.exports = (dependencies, lib) => {
 
   function _validateObjectId(id) {
     return ObjectId.isValid(String(id));
+  }
+
+  function buildUserDisplayName(user) {
+    return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
   }
 };
