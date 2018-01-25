@@ -22,7 +22,8 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.middleware.helper', 'helperMw'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.i18n', 'i18n'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.filestore', 'filestore'),
-    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.activitystreams', 'activitystreams')
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.activitystreams', 'activitystreams'),
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.wsserver', 'wsserver')
   ],
 
   states: {
@@ -80,6 +81,8 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
     },
 
     start: function(dependencies, callback) {
+      require('./backend/ws')(dependencies).init();
+
       this.lib.start(callback);
     }
   }

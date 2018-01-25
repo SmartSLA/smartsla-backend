@@ -70,5 +70,8 @@ module.exports = {
       set: 'set',
       unset: 'unset'
     }
+  },
+  NOTIFICATIONS: {
+    updated: 'ticketing:notification:ticket:updated'
   }
 };

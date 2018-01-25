@@ -98,3 +98,7 @@ angular.module('esn.file', [])
     };
   });
 angular.module('esn.attachment', []);
+angular.module('esn.websocket', [])
+  .factory('livenotification', function() {
+    return {};
+  });

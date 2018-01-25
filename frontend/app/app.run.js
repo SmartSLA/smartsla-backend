@@ -11,6 +11,7 @@
     TicketingUserService,
     TicketingContractService,
     esnModuleRegistry,
+    TicketingTicketLiveUpdateInitializer,
     TICKETING_MODULE_METADATA
   ) {
     var organiztionSearchProvider = TicketingOrganizationService.getOrganizationSearchProvider();
@@ -28,6 +29,8 @@
 
       TicketingSearchService.addProvider(userSearchProvider);
     });
+
+    TicketingTicketLiveUpdateInitializer.start();
 
     esnModuleRegistry.add(TICKETING_MODULE_METADATA);
   });
