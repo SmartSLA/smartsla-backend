@@ -22,6 +22,7 @@
     'esn.template',
     'esn.module-registry',
     'esn.file',
-    'esn.attachment'
+    'esn.attachment',
+    'esn.websocket'
   ]);
 })();

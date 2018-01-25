@@ -4,9 +4,12 @@ const Q = require('q');
 
 module.exports = dependencies => {
   const pubsubLocal = dependencies('pubsub').local;
+  const pubsubGlobal = dependencies('pubsub').global;
   const logger = dependencies('logger');
-  const { EVENTS, TICKET_ACTIVITY } = require('../../constants');
+  const { EVENTS, TICKET_ACTIVITY, NOTIFICATIONS } = require('../../constants');
   const activitystreams = dependencies('activitystreams');
+
+  const ticketUpdatedNotificationTopic = pubsubLocal.topic(NOTIFICATIONS.updated);
 
   return {
     register
@@ -29,7 +32,10 @@ module.exports = dependencies => {
     };
 
     return Q.ninvoke(activitystreams, 'addTimelineEntry', entry)
-      .then(result => logger.debug('timelineEntry has been saved', result))
+      .then(result => {
+        ticketUpdatedNotificationTopic.forward(pubsubGlobal, result[0]);
+        logger.debug('timelineEntry has been saved', result);
+      })
       .catch(err => logger.error('Error while creating timelineEntry', err));
   }
 
