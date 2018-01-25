@@ -180,7 +180,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description is required' }
           });
           done();
         }));
@@ -201,7 +201,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description must be a string with minimum length of 50' }
           });
           done();
         }));
@@ -222,7 +222,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'description is required and must be a string with minimum length of 50' }
+            error: { code: 400, message: 'Bad Request', details: 'description must be a string with minimum length of 50' }
           });
           done();
         }));
@@ -266,7 +266,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'attachments is invalid' }
+            error: { code: 400, message: 'Bad Request', details: 'Attachments are invalid' }
           });
           done();
         }));
@@ -390,7 +390,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'the triple (demandType, severity, software criticality) is not supported' }
+            error: { code: 400, message: 'Bad Request', details: 'The triple (demandType, severity, software criticality) is not supported' }
           });
           done();
         }));
@@ -417,7 +417,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'the pair (software template, software version) is not supported' }
+            error: { code: 400, message: 'Bad Request', details: 'The pair (software template, software version) is not supported' }
           });
           done();
         }));

@@ -5,7 +5,7 @@ module.exports = (dependencies, lib, router) => {
   const { checkIdInParams } = dependencies('helperMw');
   const controller = require('./controller')(dependencies, lib);
   const {
-    loadTicketWithContractInfo,
+    loadTicketToUpdate,
     loadContract,
     canCreateTicket,
     canListTicket,
@@ -40,7 +40,7 @@ module.exports = (dependencies, lib, router) => {
     authorizationMW.requiresAPILogin,
     canUpdateTicket,
     checkIdInParams('id', 'Ticket'),
-    loadTicketWithContractInfo,
+    loadTicketToUpdate,
     validateTicketUpdate,
     controller.update
   );

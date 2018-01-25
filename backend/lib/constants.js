@@ -54,10 +54,21 @@ module.exports = {
       updated: 'ticketing:ticket:updated'
     }
   },
+  TICKET_ACTIONS: {
+    updateState: 'updateState',
+    set: 'set',
+    unset: 'unset'
+  },
+  TICKET_ABLE_TO_SETUP_FIELDS: {
+    workaroundTime: 'workaroundTime',
+    correctionTime: 'correctionTime'
+  },
   TICKET_ACTIVITY: {
     OBJECT_TYPE: 'ticket',
-    ACTIONS: {
-      update: 'update'
+    VERBS: {
+      update: 'update',
+      set: 'set',
+      unset: 'unset'
     }
   }
 };

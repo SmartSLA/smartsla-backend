@@ -2,14 +2,19 @@
 
 const Q = require('q');
 const composableMw = require('composable-middleware');
-const CONSTANTS = require('../../constants');
+const _ = require('lodash');
 
 module.exports = (dependencies, lib) => {
-  const { requireAdministrator, validateObjectIds } = require('../helpers')(dependencies, lib);
+  const {
+    buildUserDisplayName,
+    requireAdministrator,
+    validateObjectIds
+  } = require('../helpers')(dependencies, lib);
   const { send400Error, send404Error, send500Error } = require('../utils')(dependencies);
+  const UPDATE_METHODS = ['POST'];
 
   return {
-    loadTicketWithContractInfo,
+    loadTicketToUpdate,
     loadContract,
     canCreateTicket,
     canListTicket,
@@ -35,10 +40,31 @@ module.exports = (dependencies, lib) => {
     return requireAdministrator(req, res, next);
   }
 
-  function loadTicketWithContractInfo(req, res, next) {
+  function loadTicketToUpdate(req, res, next) {
     const populations = [
       {
-        path: 'contract'
+        path: 'contract',
+        select: 'software demands',
+        populate: {
+          path: 'software.template',
+          select: 'name'
+        }
+      },
+      {
+        path: 'requester',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'supportTechnicians',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'supportManager',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'software.template',
+        select: 'name'
       }
     ];
 
@@ -76,23 +102,11 @@ module.exports = (dependencies, lib) => {
   }
 
   function validateTicketCreation(req, res, next) {
-    const { attachments } = req.body;
-
-    if (attachments && (!Array.isArray(attachments) || !validateObjectIds(attachments))) {
-      return send400Error('attachments is invalid', res);
-    }
-
-    _validateTicketBasicInfo(req, res, next);
-  }
-
-  function _validateTicketBasicInfo(req, res, next) {
     const {
       title,
       demandType,
-      severity,
-      software,
       description,
-      environment
+      attachments
     } = req.body;
 
     if (!title) {
@@ -103,44 +117,103 @@ module.exports = (dependencies, lib) => {
       return send400Error('demandType is required', res);
     }
 
-    if (!description || typeof description !== 'string' || description.length < 50) {
-      return send400Error('description is required and must be a string with minimum length of 50', res);
+    if (!description) {
+      return send400Error('description is required', res);
+    }
+
+    if (attachments && (!Array.isArray(attachments) || !validateObjectIds(attachments))) {
+      return send400Error('Attachments are invalid', res);
+    }
+
+    return _validateTicketBasicInfo(req, res, next);
+  }
+
+  function validateTicketUpdate(req, res, next) {
+    if (!req.query.action) {
+      return composableMw(
+        _validateTicketBasicInfo,
+        _validateTicketRequester,
+        _validateTicketSupportManager,
+        _validateTicketSupportTechnicians
+       )(req, res, next);
+    }
+
+    if (Object.values(lib.constants.TICKET_ACTIONS).indexOf(req.query.action) === -1) {
+      return send400Error(`Action ${req.query.action} is not supported`, res);
+    }
+
+    if (req.query.action === lib.constants.TICKET_ACTIONS.updateState) {
+      return _validateTicketState(req, res, next);
+    }
+
+    if (Object.values(lib.constants.TICKET_ABLE_TO_SETUP_FIELDS).indexOf(req.query.field) === -1) {
+      return send400Error(`Field ${req.query.field} is not settable`, res);
+    }
+
+    if (req.query.action === lib.constants.TICKET_ACTIONS.set && req.ticket.times && req.ticket.times[req.query.field]) {
+      return send400Error(`Field ${req.query.field} already set`, res);
+    }
+
+    next();
+  }
+
+  function _validateTicketBasicInfo(req, res, next) {
+    const {
+      title,
+      demandType,
+      severity,
+      software,
+      description,
+      environment,
+      requester,
+      supportManager
+    } = req.body;
+    const contract = req.contract || req.ticket.contract;
+
+    if ('title' in req.body && !title) {
+      return send400Error('title is required', res);
+    }
+
+    if ('demandType' in req.body && !demandType) {
+      return send400Error('demandType is required', res);
+    }
+
+    if ('description' in req.body && !description) {
+      return send400Error('description is required', res);
+    }
+
+    if ('requester' in req.body && !requester) {
+      return send400Error('requester is required', res);
+    }
+
+    if ('supportManager' in req.body && !supportManager) {
+      return send400Error('supportManager is required', res);
+    }
+
+    if (description && (typeof description !== 'string' || description.length < 50)) {
+      return send400Error('description must be a string with minimum length of 50', res);
     }
 
     if (environment && typeof environment !== 'string') {
       return send400Error('environment must be a string', res);
     }
 
-    if (software && (!software.template || !software.version || !software.criticality)) {
-      return send400Error('software is invalid: template, version and criticality are required', res);
+    if (software && !_.isEmpty(software)) {
+      if (!software.template || !software.version || !software.criticality) {
+        return send400Error('software is invalid: template, version and criticality are required', res);
+      }
+
+      if (!_validateSoftware(software, contract.software)) {
+        return send400Error('The pair (software template, software version) is not supported', res);
+      }
     }
 
-    const softwareCriticality = software && software.criticality ? software.criticality : undefined;
-    const contract = req.contract || req.ticket.contract;
-
-    if (!_validateDemand({ demandType, severity, softwareCriticality }, contract.demands)) {
-      return send400Error('the triple (demandType, severity, software criticality) is not supported', res);
-    }
-
-    if (software && !_validateSoftware(software, contract.software)) {
-      return send400Error('the pair (software template, software version) is not supported', res);
-    }
-
-    next();
-  }
-
-  function validateTicketUpdate(req, res, next) {
-    if (!req.query.action) {
-      return composableMw(_validateTicketBasicInfo, _validateTicketRequester, _validateTicketSupportManager, _validateTicketSupportTechnicians)(req, res, next);
-    }
-
-    if (req.query.action === CONSTANTS.TICKET_ACTIONS.updateState) {
-      return _validateTicketState(req, res, next);
-    }
-
-    if ([CONSTANTS.TICKET_ACTIONS.set, CONSTANTS.TICKET_ACTIONS.unset].indexOf(req.query.action) === -1 ||
-        ['workaroundTime', 'correctionTime'].indexOf(req.query.field) === -1) {
-      return send400Error(`${req.query.action} is not a valid action on field ${req.query.field} of ticket`, res);
+    if (!_validateDemand({
+      demandType: demandType || req.ticket.demandType,
+      severity: severity || req.ticket.severity,
+      softwareCriticality: software && software.criticality ? software.criticality : req.ticket.severity
+    }, contract.demands)) {
+      return send400Error('The triple (demandType, severity, software criticality) is not supported', res);
     }
 
     next();
@@ -168,7 +241,7 @@ module.exports = (dependencies, lib) => {
     const { requester } = req.body;
 
     if (!requester) {
-      return send400Error('requester is required', res);
+      return next();
     }
 
     if (!validateObjectIds(requester)) {
@@ -181,6 +254,16 @@ module.exports = (dependencies, lib) => {
           return send400Error('requester not found', res);
         }
 
+        if (_isUpdateMethod(req.method) && String(requester) !== String(req.ticket.requester)) {
+          req.changeset = req.changeset || [];
+          req.changeset.push({
+            key: 'requester',
+            displayName: 'requester',
+            from: buildUserDisplayName(req.ticket.requester),
+            to: buildUserDisplayName(user)
+          });
+        }
+
         next();
       })
       .catch(err => send500Error('Unable to check requester', err, res));
@@ -190,7 +273,7 @@ module.exports = (dependencies, lib) => {
     const { supportManager } = req.body;
 
     if (!supportManager) {
-      return send400Error('supportManager is required', res);
+      return next();
     }
 
     if (!validateObjectIds(supportManager)) {
@@ -201,6 +284,16 @@ module.exports = (dependencies, lib) => {
       .then(user => {
         if (!user) {
           return send400Error('supportManager not found', res);
+        }
+
+        if (_isUpdateMethod(req.method) && String(supportManager) !== String(req.ticket.supportManager)) {
+          req.changeset = req.changeset || [];
+          req.changeset.push({
+            key: 'supportManager',
+            displayName: 'support manager',
+            from: buildUserDisplayName(req.ticket.supportManager),
+            to: buildUserDisplayName(user)
+          });
         }
 
         next();
@@ -224,6 +317,19 @@ module.exports = (dependencies, lib) => {
             return send400Error(`supportTechnicians ${notFoundUsers} are not found`, res);
           }
 
+          const buildUserDisplayNames = users => users.map(user => buildUserDisplayName(user));
+          const currentSupportTechnicians = req.ticket.supportTechnicians.map(supportTechnician => supportTechnician._id);
+
+          if (_isUpdateMethod(req.method) && _.differenceBy(currentSupportTechnicians, supportTechnicians, String).length > 0) {
+            req.changeset = req.changeset || [];
+            req.changeset.push({
+              key: 'supportTechnicians',
+              displayName: 'support technicians',
+              from: buildUserDisplayNames(req.ticket.supportTechnicians).join(', '),
+              to: buildUserDisplayNames(users).join(', ')
+            });
+          }
+
           next();
         })
         .catch(err => send500Error('Unable to check supportTechnicians', err, res));
@@ -239,8 +345,12 @@ module.exports = (dependencies, lib) => {
   }
 
   function _validateSoftware(software, availableSoftware) {
-    return availableSoftware.some(item => (String(item.template) === String(software.template)) &&
+    return availableSoftware.some(item => (String(item.template._id || item.template) === String(software.template)) &&
                                           (item.versions.indexOf(software.version) > -1) &&
                                           (item.type === software.criticality));
+  }
+
+  function _isUpdateMethod(method) {
+    return UPDATE_METHODS.indexOf(method) !== -1;
   }
 };
