@@ -2,7 +2,7 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingTicketActivitiesController', TicketingTicketActivitiesController);
 
-  function TicketingTicketActivitiesController(TicketingTicketClient, infiniteScrollHelper) {
+  function TicketingTicketActivitiesController(_, infiniteScrollHelper, esnI18nService, TicketingTicketClient) {
     var self = this;
     var DEFAULT_LIMIT = 20;
     var options = {
@@ -21,7 +21,15 @@
 
       return TicketingTicketClient.getActivities(self.ticketId, options)
         .then(function(response) {
-          return response.data;
+          return _.map(response.data, function(activity) {
+            activity.changeset = _.map(activity.changeset, function(change) {
+              change.displayName = esnI18nService.translate(change.displayName).toString();
+
+              return change;
+            });
+
+            return activity;
+          });
         });
     }
   }
