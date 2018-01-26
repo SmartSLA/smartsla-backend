@@ -12,38 +12,38 @@
     self.$onDestroy = $onDestroy;
 
     function $onInit() {
-      $scope.$watch(
-        function() { return self.stop; },
-        function(newValue) {
-          if (newValue) {
-            stop();
-          } else {
-            start();
-          }
-        }
-      );
-    }
-
-    function start() {
       if (self.countdown > 0) {
-        self.progress = self.passed * 100 / self.countdown;
-        self.label = _buildLabel(self.countdown - self.passed);
-
-        if (self.progress < 100) {
-          caculateProgress = setInterval(function() {
-            if (self.progress > 100) {
-              clearInterval(caculateProgress);
+        $scope.$watch(
+          function() { return self.stop; },
+          function(newValue) {
+            if (newValue) {
+              stop();
             } else {
-              self.passed ++;
-              self.progress = self.passed * 100 / self.countdown;
+              start();
             }
-
-            self.label = _buildLabel(self.countdown - self.passed);
-          }, self.interval);
-        }
+          }
+        );
       } else {
         self.progress = 0;
         self.label = '∞';
+      }
+    }
+
+    function start() {
+      self.progress = self.passed * 100 / self.countdown;
+      self.label = _buildLabel(self.countdown - self.passed);
+
+      if (self.progress < 100) {
+        caculateProgress = setInterval(function() {
+          if (self.progress > 100) {
+            clearInterval(caculateProgress);
+          } else {
+            self.passed ++;
+            self.progress = self.passed * 100 / self.countdown;
+          }
+
+          self.label = _buildLabel(self.countdown - self.passed);
+        }, self.interval);
       }
     }
 
