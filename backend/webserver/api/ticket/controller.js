@@ -173,6 +173,12 @@ module.exports = function(dependencies, lib) {
 
     switch (req.query.action) {
       case lib.constants.TICKET_ACTIONS.updateState:
+        activityData.changeset = [{
+          key: 'state',
+          displayName: 'state',
+          from: req.ticket.state,
+          to: req.body.state
+        }];
         updateTicket = lib.ticket.updateState(req.ticket, req.body.state);
         errorMessage = 'Failed to update state of ticket';
         break;
