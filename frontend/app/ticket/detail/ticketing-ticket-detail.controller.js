@@ -59,8 +59,8 @@
 
     function onStateChange() {
       TicketingTicketService.updateState(self.ticketId, self.state)
-        .then(function(updatedTicket) {
-          self.ticket = updatedTicket;
+        .then(function() {
+          self.ticket.state = self.state;
         })
         .catch(function() {
           // failed, keep state
