@@ -9,19 +9,10 @@
     $filter,
     _,
     esnI18nService,
-    TicketingTicketService
+    TicketingTicketService,
+    TICKETING_TICKET_STATES
   ) {
     var self = this;
-    var TICKET_STATES = {
-      NEW: 'New',
-      IN_PROGRESS: 'In progress',
-      AWAITING: 'Awaiting',
-      AWAITING_INFORMATION: 'Awaiting information',
-      AWAITING_VALIDATION: 'Awaiting validation',
-      CLOSED: 'Closed',
-      ABANDONED: 'Abandoned'
-    };
-    var originTicket;
 
     var originTicket;
 
@@ -30,8 +21,8 @@
     function $onInit() {
       self.ticketId = $stateParams.ticketId;
 
-      self.availableStates = Object.keys(TICKET_STATES).map(function(key) {
-        return TICKET_STATES[key];
+      self.availableStates = Object.keys(TICKETING_TICKET_STATES).map(function(key) {
+        return TICKETING_TICKET_STATES[key].value;
       });
 
       self.onStateChange = onStateChange;
@@ -125,10 +116,10 @@
     }
 
     function isSuspendedState(state) {
-      return [TICKET_STATES.AWAITING,
-              TICKET_STATES.AWAITING_INFORMATION,
-              TICKET_STATES.AWAITING_VALIDATION,
-              TICKET_STATES.CLOSED].indexOf(state) > -1;
+      return [TICKETING_TICKET_STATES.AWAITING.value,
+              TICKETING_TICKET_STATES.AWAITING_INFORMATION.value,
+              TICKETING_TICKET_STATES.AWAITING_VALIDATION.value,
+              TICKETING_TICKET_STATES.CLOSED.value].indexOf(state) > -1;
     }
 
     function _buildSupportTechnicianDisplayNames(supportTechnicians) {
