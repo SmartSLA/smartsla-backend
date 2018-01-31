@@ -12,8 +12,8 @@
         minTags: '<',
         newTags: '=',
         objectTypes: '@',
-        excludedIds: '<',
-        onChange: '&'
+        onChange: '&',
+        options: '<'
       }
     });
 })(angular);
