@@ -15,6 +15,14 @@ describe('The user lib', function() {
     moduleHelpers = this.moduleHelpers;
     ObjectId = mongoose.Types.ObjectId;
     userId = new ObjectId();
+    user = {
+      _id: userId,
+      email: 'foo@bar.org'
+    };
+    userRole = {
+      user: userId,
+      role: 'user'
+    };
 
     moduleHelpers.addDep('pubsub', {
       local: {
@@ -36,18 +44,11 @@ describe('The user lib', function() {
     }
 
     User.findByIdAndRemove = findByIdAndRemoveMock;
+    User.create = () => q.when(user);
 
     moduleHelpers.mockModels({
       User
     });
-
-    user = {
-      email: 'foo@bar.org'
-    };
-    userRole = {
-      user: userId,
-      role: 'user'
-    };
   });
 
   const getModule = () => require(moduleHelpers.backendPath + '/lib/user')(moduleHelpers.dependencies);
@@ -56,14 +57,13 @@ describe('The user lib', function() {
     const error = new Error('something wrong');
     const createUserRoleMock = sinon.stub().returns(q.reject(error));
 
-    mockery.registerMock('./ticketing-user-role', () => ({ create: createUserRoleMock }));
+    mockery.registerMock('../ticketing-user-role', () => ({ create: createUserRoleMock }));
 
     getModule().create(user)
       .catch(err => {
         expect(err.message).to.equal(error.message);
         expect(createUserRoleMock).to.have.been.calledWith(userRole);
         expect(findByIdAndRemoveMock).to.have.been.calledWith(userId);
-
         done();
       });
   });

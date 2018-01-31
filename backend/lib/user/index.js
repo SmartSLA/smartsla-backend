@@ -1,24 +1,26 @@
 'use strict';
 
 const Q = require('q');
-const { TICKETING_USER_ROLES } = require('./constants');
-const EVENTS = {
-  userDeleted: 'users:user:delete'
-};
+const { TICKETING_USER_ROLES, EVENTS } = require('../constants');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
-  const coreUser = dependencies('coreUser');
   const pubsub = dependencies('pubsub').local;
+
   const User = mongoose.model('User');
-  const ticketingUserRole = require('./ticketing-user-role')(dependencies);
-  const organization = require('./organization')(dependencies);
+  const ticketingUserRole = require('../ticketing-user-role')(dependencies);
+  const organization = require('../organization')(dependencies);
+  const search = require('./search')(dependencies);
+  const userCreatedTopic = pubsub.topic(EVENTS.USER.created);
+  const userUpdatedTopic = pubsub.topic(EVENTS.USER.updated);
+  const userDeletedTopic = pubsub.topic(EVENTS.USER.deleted);
 
   return {
     create,
     getById,
     updateById,
-    list
+    list,
+    search
   };
 
   /**
@@ -28,11 +30,14 @@ module.exports = dependencies => {
    * @return {Promise}     - Resolve with created user on success
    */
   function create(user) {
-    return Q.ninvoke(coreUser, 'recordUser', user)
+    const userAsModel = user instanceof User ? user : new User(user);
+    const role = user.role || TICKETING_USER_ROLES.USER;
+
+    return User.create(userAsModel)
       .then(createdUser => {
         const userRole = {
           user: createdUser._id,
-          role: TICKETING_USER_ROLES.USER
+          role
         };
 
         return ticketingUserRole.create(userRole)
@@ -57,6 +62,12 @@ module.exports = dependencies => {
                 );
             }
 
+            return createdUser.toObject();
+          })
+          .then(createdUserObject => {
+            createdUserObject.role = role;
+            userCreatedTopic.publish(createdUserObject);
+
             return createdUser;
           })
           .catch(err =>
@@ -78,12 +89,30 @@ module.exports = dependencies => {
 
   /**
    * Update user by ID.
-   * @param  {String} userId       - ID of user
-   * @param  {Object} modifiedUser - Modified information
-   * @return {Promise}             - Resolve on success
+   * @param  {String} userId   - ID of user
+   * @param  {Object} modified - Modified information
+   * @return {Promise}         - Resolve on success
    */
-  function updateById(userId, modifiedUser) {
-    return Q.ninvoke(coreUser, 'updateProfile', userId, modifiedUser);
+  function updateById(userId, modified = {}) {
+    // Don't try to use findOneAndUpdate or findByIdAndUpdate functions because they will trigger
+    // the patched function in core: findOneAndUpdate
+    // https://ci.linagora.com/linagora/lgs/openpaas/esn/blob/master/backend/core/db/mongo/plugins/helpers.js#L31
+    return User.findById(userId)
+      .exec()
+      .then(user => {
+        if (!user) {
+          return;
+        }
+
+        user = Object.assign(user, modified);
+
+        return user.save()
+          .then(updatedUser => {
+            userUpdatedTopic.publish(updatedUser);
+
+            return updatedUser;
+          });
+      });
   }
 
   /**
@@ -122,7 +151,7 @@ module.exports = dependencies => {
       .then(removedUser => {
         if (removedUser) {
           // remove data from ElasticSearch index
-          pubsub.topic(EVENTS.userDeleted).publish(removedUser);
+          userDeletedTopic.publish(removedUser);
         }
 
         return removedUser;
