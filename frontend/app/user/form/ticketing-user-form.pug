@@ -1,5 +1,5 @@
 ng-form(name="form")
-  .row.m-b-30(ng-if="$ctrl.entity.parent")
+  .row(ng-if="$ctrl.entity.parent")
     .col-md-12
       dl.dl-horizontal
         dt #{__('Organization')}
@@ -9,7 +9,18 @@ ng-form(name="form")
         dt #{__('Entity')}
         dd
           a(ui-sref="ticketing.admin.organization.detail({organizationId: $ctrl.user.entity._id})") {{::$ctrl.user.entity.fullName}}
-  .row
+  .row(ng-if="!$ctrl.updateMode")
+    .col-xs-12
+      label.checkbox.checkbox-inline
+        input(
+          type="checkbox",
+          ng-model="$ctrl.user.role",
+          ng-true-value="'supporter'",
+          ng-false-value="undefined"
+        )
+        i.input-helper
+      span #{__('Support user')}
+  .row.m-t-30
     .col-md-6
       esn-form-group(label=__('First name'))
         input.form-control(type="text", ng-model="$ctrl.user.firstname", name="firstname", required, ng-disabled="$ctrl.updateMode")
