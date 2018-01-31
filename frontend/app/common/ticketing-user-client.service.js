@@ -35,7 +35,7 @@
 
     /**
      * List Ticketing users.
-     * @param  {Object} options - Query option, possible attributes are limit and offset
+     * @param  {Object} options - Query option, possible attributes are limit, offset, search and role
      * @return {Promise}        - Resolve response with list of Ticketing users
      */
     function list(options) {

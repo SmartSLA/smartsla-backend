@@ -10,7 +10,6 @@
     $log,
     asyncAction,
     ticketingUserClient,
-    domainAPI,
     TICKETING_USER_EVENTS
   ) {
 
@@ -65,13 +64,13 @@
         });
     }
 
-    function getSearchProvider(domainId) {
+    function getSearchProvider() {
       return {
         objectType: 'user',
         templateUrl: '/views/modules/auto-complete/user-auto-complete',
         getDisplayName: buildDisplayName,
         search: function(options) {
-          return domainAPI.getMembers(domainId, options)
+          return ticketingUserClient.list(options)
             .then(function(response) {
               return response.data;
             }, function(err) {

@@ -4,7 +4,6 @@
   angular.module('linagora.esn.ticketing')
 
   .run(function(
-    session,
     TicketingSearchService,
     TicketingOrganizationService,
     TicketingSoftwareService,
@@ -18,17 +17,13 @@
     var entitySearchProvider = TicketingOrganizationService.getEntitySearchProvider();
     var softwareSearchProvider = TicketingSoftwareService.getSearchProvider();
     var contractSearchProvider = TicketingContractService.getSearchProvider();
+    var userSearchProvider = TicketingUserService.getSearchProvider();
 
     TicketingSearchService.addProvider(organiztionSearchProvider);
     TicketingSearchService.addProvider(entitySearchProvider);
     TicketingSearchService.addProvider(softwareSearchProvider);
     TicketingSearchService.addProvider(contractSearchProvider);
-
-    session.ready.then(function() {
-      var userSearchProvider = TicketingUserService.getSearchProvider(session.domain._id);
-
-      TicketingSearchService.addProvider(userSearchProvider);
-    });
+    TicketingSearchService.addProvider(userSearchProvider);
 
     TicketingTicketLiveUpdateInitializer.start();
 
