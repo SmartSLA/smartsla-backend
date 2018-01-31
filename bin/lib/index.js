@@ -6,6 +6,7 @@ const organization = require('./organization');
 const software = require('./software');
 const ticketingUserRole = require('./ticketing-user-role');
 const contract = require('./contract');
+const utils = require('./utils');
 
 module.exports = {
   contract,
@@ -13,5 +14,6 @@ module.exports = {
   db,
   organization,
   software,
-  ticketingUserRole
+  ticketingUserRole,
+  utils
 };

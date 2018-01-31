@@ -67,8 +67,19 @@ function loadMongooseModels() {
   });
 }
 
-function getESConfiguration(host = 'localhost', port = 9200) {
+function getESConfiguration(options) {
   const elasticsearchConfigPath = path.normalize(`${__dirname}/../../config/elasticsearch/`);
+  const esOptions = {
+    host: options.host || 'localhost',
+    port: options.port || 9200,
+    path: elasticsearchConfigPath
+  };
 
-  return new ESConfiguration({ path: elasticsearchConfigPath, host, port });
+  if (options.type) {
+    if (!fs.existsSync(path.resolve([elasticsearchConfigPath, options.type, '.json'].join('')))) {
+      delete esOptions.path;
+    }
+  }
+
+  return new ESConfiguration(esOptions);
 }

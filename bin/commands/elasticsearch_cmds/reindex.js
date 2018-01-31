@@ -6,13 +6,16 @@ const {
   contract,
   db,
   organization,
-  software
+  software,
+  ticketingUserRole,
+  utils
 } = require('../../lib');
-const { AVAILABLE_INDEX_TYPES } = require('./constants');
+const { INDICES } = require('../../../backend/lib/constants');
 const HANDLERS = {
   organizations: reindexOrganizations,
   software: reindexSoftware,
-  contracts: reindexContracts
+  contracts: reindexContracts,
+  users: reindexUsers
 };
 
 module.exports = {
@@ -33,7 +36,7 @@ module.exports = {
     type: {
       alias: 't',
       describe: 'the data type to reindex',
-      choices: AVAILABLE_INDEX_TYPES,
+      choices: Object.values(INDICES).map(index => index.type),
       demand: true
     }
   },
@@ -54,7 +57,7 @@ function exec(host, port, type) {
   }
 
   try {
-    const esConfig = commons.getESConfiguration(host, port);
+    const esConfig = commons.getESConfiguration({ host, port, type });
 
     return commons.loadMongooseModels()
       .then(() => handler(esConfig));
@@ -134,6 +137,31 @@ function reindexContracts(esConfig) {
   };
 
   commons.logInfo('Starting reindexing of contracts');
+
+  return db.connect(commons.getDBOptions())
+    .then(() => esConfig.reindexAll(options))
+    .finally(db.disconnect);
+}
+
+function reindexUsers(esConfig) {
+  const { denormalize } = require('../../../backend/lib/listeners/user/denormalize')(utils.dependencies);
+  const cursor = ticketingUserRole.listByCursor();
+  const options = {
+    type: 'users',
+    name: 'ticketing.users.idx',
+    denormalize: userRole => {
+      const user = userRole.user;
+
+      user.role = userRole.role;
+
+      return denormalize(user);
+    },
+    next: function() {
+      return cursor.next();
+    }
+  };
+
+  commons.logInfo('Starting reindexing of users');
 
   return db.connect(commons.getDBOptions())
     .then(() => esConfig.reindexAll(options))

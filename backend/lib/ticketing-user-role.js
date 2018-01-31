@@ -10,6 +10,7 @@ module.exports = dependencies => {
     create,
     deleteById,
     list,
+    listByCursor,
     getByUser,
     updateById,
     userIsAdministrator
@@ -84,5 +85,16 @@ module.exports = dependencies => {
    */
   function updateById(ticketingUserRoleId, modified) {
     return TicketingUserRole.update({ _id: ticketingUserRoleId }, { $set: modified }).exec();
+  }
+
+  /**
+   * List users using cursor
+   * @return {Promise} - Resolve on success with a cursor object
+   */
+  function listByCursor() {
+    return TicketingUserRole
+      .find()
+      .populate({ path: 'user' })
+      .cursor();
   }
 };

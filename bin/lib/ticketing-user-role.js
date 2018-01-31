@@ -7,10 +7,12 @@ const commons = require('./commons');
 const { dependencies } = require('./utils');
 
 require('../../backend/lib/db/ticketing-user-role')(dependencies);
+require('./user');
 const ticUserRoleLibModule = require('../../backend/lib/ticketing-user-role')(dependencies);
 
 module.exports = {
-  create
+  create,
+  listByCursor
 };
 
 function create(email, role) {
@@ -48,6 +50,10 @@ function create(email, role) {
         })
         .then(() => dbConnection.close());
     });
+}
+
+function listByCursor() {
+  return ticUserRoleLibModule.listByCursor();
 }
 
 function _buildFindByEmailQuery(email) {
