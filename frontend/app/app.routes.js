@@ -97,11 +97,11 @@
             }
           }
         })
-        .state('ticketing.admin.general', {
-          url: '/general',
+        .state('ticketing.admin.demands', {
+          url: '/demands',
           views: {
             'admin-root@ticketing.admin': {
-              template: '<ticketing-general />'
+              template: '<ticketing-demand />'
             }
           }
         })
@@ -150,6 +150,14 @@
           views: {
             'admin-root@ticketing.admin': {
               template: '<ticketing-contract-detail />'
+            }
+          }
+        })
+        .state('ticketing.admin.software', {
+          url: '/softwares',
+          views: {
+            'admin-root@ticketing.admin': {
+              template: '<ticketing-software />'
             }
           }
         });

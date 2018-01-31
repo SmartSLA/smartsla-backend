@@ -78,7 +78,6 @@ module.exports = function(grunt) {
             rules: [
               'all-keys-translated',
               'all-locales-present',
-              'default-locale-translate',
               'key-trimmed',
               'no-duplicate-among-modules',
               'no-duplicate-with-core',
