@@ -213,5 +213,6 @@
   "severity": "severity",
   "software": "software",
   "Set": "Set",
-  "Unset": "Unset"
+  "Unset": "Unset",
+  "Support user": "Support user"
 }

@@ -24,13 +24,11 @@ module.exports = (dependencies, lib) => {
   function create(req, res) {
     const user = req.body;
 
-    // setup accounts field
     user.accounts = [{
       type: 'email',
       emails: [user.email],
       hosted: true
     }];
-    // setup domains field
     user.domains = [{
       domain_id: req.domain._id
     }];
@@ -78,8 +76,8 @@ module.exports = (dependencies, lib) => {
     };
 
     lib.user.updateById(req.params.id, modifiedUser)
-      .then(updatedResult => {
-        if (!updatedResult) {
+      .then(updatedUser => {
+        if (!updatedUser) {
           return send404Error('User not found', res);
         }
 
@@ -95,26 +93,56 @@ module.exports = (dependencies, lib) => {
    * @param {Response} res
    */
   function list(req, res) {
-    const options = {
-      limit: +req.query.limit,
-      offset: +req.query.offset
-    };
+    let getUsers;
+    let errorMessage;
 
-    return lib.user.list(options)
-      .then(users => {
-        const denormalizedUsers = users.map(user => {
-          const denormalizedUser = coreUser.denormalize.denormalize(user);
+    if (req.query.search) {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset,
+        search: req.query.search,
+        role: req.query.role
+      };
 
-          // entity info
-          denormalizedUser.entity = user.entity;
+      errorMessage = 'Error while searching users';
+      getUsers = lib.user.search(options);
+    } else {
+      const options = {
+        limit: +req.query.limit,
+        offset: +req.query.offset
+      };
 
-          return denormalizedUser;
+      options.populations = [{ path: 'manager' }];
+
+      if (!req.query.organization) {
+        options.populations.push({ path: 'organization' });
+      }
+
+      errorMessage = 'Failed to list users';
+      getUsers = lib.user.list(options)
+        .then(users => {
+          const denormalizedUsers = users.map(user => {
+            const denormalizedUser = coreUser.denormalize.denormalize(user);
+
+            // entity info
+            denormalizedUser.entity = user.entity;
+
+            return denormalizedUser;
+          });
+
+          return {
+            total_count: denormalizedUsers.length,
+            list: denormalizedUsers
+          };
         });
+    }
 
-        res.header('X-ESN-Items-Count', denormalizedUsers.length);
-        res.status(200).json(denormalizedUsers);
+    return getUsers
+      .then(result => {
+        res.header('X-ESN-Items-Count', result.total_count);
+        res.status(200).json(result.list);
       })
-      .catch(err => send500Error('Failed to list users', err, res));
+      .catch(err => send500Error(errorMessage, err, res));
   }
 
   /**

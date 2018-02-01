@@ -5,6 +5,7 @@ module.exports = dependencies => {
   const software = require('./software')(dependencies);
   const contract = require('./contract')(dependencies);
   const ticket = require('./ticket')(dependencies);
+  const user = require('./user')(dependencies);
 
   return {
     init
@@ -15,5 +16,6 @@ module.exports = dependencies => {
     software.registerListener();
     contract.registerListener();
     ticket.registerListener();
+    user.registerListener();
   }
 };

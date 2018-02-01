@@ -2,7 +2,7 @@
 
 const Q = require('q');
 const { commons } = require('../../lib');
-const { AVAILABLE_INDEX_TYPES } = require('./constants');
+const { INDICES } = require('../../../backend/lib/constants');
 
 module.exports = {
   command: 'setup',
@@ -39,17 +39,17 @@ module.exports = {
 };
 
 function exec(host, port, type, index) {
-  const esConfig = commons.getESConfiguration(host, port);
-
   if (type) {
-    index = index || _getDefaultIndex(type);
+    const esConfig = commons.getESConfiguration({ host, port, type });
+
+    index = Object.values(INDICES).find(index => (index.type === type)).name;
 
     return esConfig.setup(index, type);
   }
 
-  return Q.all(AVAILABLE_INDEX_TYPES.map(type => esConfig.setup(_getDefaultIndex(type), type)));
-}
+  return Q.all(Object.values(INDICES).map(index => {
+    const esConfig = commons.getESConfiguration({ host, port, type: index.type });
 
-function _getDefaultIndex(type) {
-  return `${type}.idx`;
+    esConfig.setup(index.name, index.type);
+  }));
 }

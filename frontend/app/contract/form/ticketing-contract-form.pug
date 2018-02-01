@@ -33,6 +33,7 @@ ng-form(name="form")
         new-tags="$ctrl.defaultSupportManagers",
         max-tags="1",
         object-types="user",
-        on-change="$ctrl.onDefaultSupportManagerChange()"
+        on-change="$ctrl.onDefaultSupportManagerChange()",
+        options="{ role: 'supporter' }"
         placeholder=__('Type a name or email...')
       )

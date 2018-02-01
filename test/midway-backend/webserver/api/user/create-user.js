@@ -6,7 +6,7 @@ const expect = require('chai').expect;
 const API_PATH = '/ticketing/api/users';
 
 describe('The create Ticketing user API: POST /ticketing/api/users', function() {
-  let app, lib, helpers;
+  let app, lib, helpers, esIntervalIndex;
   let user1, user2;
   const password = 'secret';
 
@@ -14,6 +14,7 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
     helpers = this.helpers;
     app = this.app;
     lib = this.lib;
+    esIntervalIndex = this.testEnv.serversConfig.elasticsearch.interval_index;
 
     const deployOptions = {
       fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
@@ -124,7 +125,28 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
       req.expect(400)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 400, message: 'Bad Request', details: 'email is invalid' }
+            error: { code: 400, message: 'Bad Request', details: `Invalid email: ${newUser.email}` }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if given email already in use', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(API_PATH));
+      const newUser = {
+        firstname: 'foo',
+        lastname: 'bar',
+        email: user1.emails[0],
+        main_phone: '888'
+      };
+
+      req.send(newUser);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: `email \"${user1.emails[0]}\" is in use, checked by \"user\" checker` }
           });
           done();
         }));
@@ -145,6 +167,50 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
             error: { code: 400, message: 'Bad Request', details: 'main_phone is required' }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if given role is invalid', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(API_PATH));
+      const newUser = {
+        firstname: 'foo',
+        lastname: 'bar',
+        email: 'bar@tic.org',
+        main_phone: '888',
+        role: 'invalid_role'
+      };
+
+      req.send(newUser);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'role is invalid' }
+          });
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 400 if given role is administrator', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(API_PATH));
+      const newUser = {
+        firstname: 'foo',
+        lastname: 'bar',
+        email: 'bar@tic.org',
+        main_phone: '888',
+        role: 'administrator'
+      };
+
+      req.send(newUser);
+      req.expect(400)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.deep.equal({
+            error: { code: 400, message: 'Bad Request', details: 'Must not create administrator' }
           });
           done();
         }));
@@ -178,16 +244,35 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
       req.send(newUser);
       req.expect(201)
         .end(helpers.callbacks.noErrorAnd(res => {
-          newUser.emails = [newUser.email];
-          delete newUser.email;
-
-          expect(res.body).to.shallowDeepEqual(newUser);
+          expect(res.body).to.shallowDeepEqual({
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+            emails: [newUser.email],
+            main_phone: newUser.main_phone
+          });
 
           lib.ticketingUserRole.getByUser(res.body._id)
             .then(userRole => {
               expect(userRole).to.exist;
-              done();
-            });
+
+              setTimeout(function() {
+                lib.user.search({ search: newUser.firstname })
+                  .then(result => {
+                    expect(result.total_count).to.equal(1);
+                    expect(result.list[0]).to.shallowDeepEqual({
+                      firstname: newUser.firstname,
+                      lastname: newUser.lastname,
+                      emails: [newUser.email],
+                      main_phone: newUser.main_phone,
+                      preferredEmail: newUser.email,
+                      role: 'user'
+                    });
+                    done();
+                  })
+                  .catch(err => done(err || 'should resolve'));
+              }, esIntervalIndex);
+            })
+            .catch(err => done(err || 'should resolve'));
         }));
     }));
   });
@@ -221,13 +306,11 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
         req.send(newUser);
         req.expect(201)
           .end(helpers.callbacks.noErrorAnd(res => {
-            newUser.emails = [newUser.email];
-            delete newUser.email;
-
             expect(res.body).to.shallowDeepEqual({
               firstname: newUser.firstname,
               lastname: newUser.lastname,
               main_phone: newUser.main_phone,
+              emails: [newUser.email],
               entity: {
                 parent: {
                   shortName: organization.shortName
@@ -239,10 +322,74 @@ describe('The create Ticketing user API: POST /ticketing/api/users', function() 
             lib.ticketingUserRole.getByUser(res.body._id)
               .then(userRole => {
                 expect(userRole).to.exist;
-                done();
-              });
+
+                setTimeout(function() {
+                  lib.user.search({ search: newUser.firstname })
+                    .then(result => {
+                      expect(result.total_count).to.equal(1);
+                      expect(result.list[0]).to.shallowDeepEqual({
+                        firstname: newUser.firstname,
+                        lastname: newUser.lastname,
+                        emails: [newUser.email],
+                        main_phone: newUser.main_phone,
+                        preferredEmail: newUser.email,
+                        role: 'user'
+                      });
+                      done();
+                    })
+                    .catch(err => done(err || 'should resolve'));
+                }, esIntervalIndex);
+              })
+              .catch(err => done(err || 'should resolve'));
           }));
       });
+    }));
+  });
+
+  it('should respond 201 if create user with role successfully', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).post(API_PATH));
+      const newUser = {
+        firstname: 'foo',
+        lastname: 'bar',
+        email: 'bar@tic.org',
+        main_phone: '888',
+        role: 'supporter'
+      };
+
+      req.send(newUser);
+      req.expect(201)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.shallowDeepEqual({
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+            emails: [newUser.email],
+            main_phone: newUser.main_phone
+          });
+
+          lib.ticketingUserRole.getByUser(res.body._id)
+            .then(userRole => {
+              expect(userRole.role).to.equal(newUser.role);
+
+              setTimeout(function() {
+                lib.user.search({ search: newUser.firstname })
+                  .then(result => {
+                    expect(result.total_count).to.equal(1);
+                    expect(result.list[0]).to.shallowDeepEqual({
+                      firstname: newUser.firstname,
+                      lastname: newUser.lastname,
+                      emails: [newUser.email],
+                      main_phone: newUser.main_phone,
+                      preferredEmail: newUser.email,
+                      role: newUser.role
+                    });
+                    done();
+                  })
+                  .catch(err => done(err || 'should resolve'));
+              }, esIntervalIndex);
+            })
+            .catch(err => done(err || 'should resolve'));
+        }));
     }));
   });
 });

@@ -16,6 +16,7 @@
     var DEFAULT_SEARCH_LIMIT = 20;
     var DEFAULT_MAX_TAGS = 1000;
     var objectTypes;
+    var options;
 
     self.$onInit = $onInit;
 
@@ -28,6 +29,7 @@
       self.onTagAdded = onTagAdded;
       self.search = search;
       self.newTags = self.newTags || [];
+      options = _denormalizeOptions(self.options);
     }
 
     function search(query) {
@@ -35,17 +37,10 @@
         return $q.when([]);
       }
 
-      var options = {
-        search: query,
-        limit: DEFAULT_SEARCH_LIMIT
-      };
+      options.search = query;
 
       if (objectTypes) {
         options.objectTypes = objectTypes;
-      }
-
-      if (self.excludedIds) {
-        options['excludedIds[]'] = self.excludedIds;
       }
 
       return TicketingSearchService.search(options);
@@ -79,6 +74,26 @@
       });
 
       return objectTypes;
+    }
+
+    function _denormalizeOptions(options) {
+      var denormalizedOptions = {
+        limit: DEFAULT_SEARCH_LIMIT
+      };
+
+      if (!options) {
+        return denormalizedOptions;
+      }
+
+      angular.forEach(Object.keys(options), function(key) {
+        if (Array.isArray(options[key])) {
+          denormalizedOptions[key + '[]'] = options[key];
+        }
+
+        denormalizedOptions[key] = options[key];
+      });
+
+      return denormalizedOptions;
     }
   }
 })(angular);

@@ -1,10 +1,9 @@
 'use strict';
 
-const { parseOneAddress } = require('email-addresses');
-
 module.exports = (dependencies, lib) => {
+  const coreAvailability = dependencies('availability');
   const { requireAdministrator } = require('../helpers')(dependencies, lib);
-  const { send400Error } = require('../utils')(dependencies);
+  const { send400Error, send500Error } = require('../utils')(dependencies);
 
   return {
     canCreate,
@@ -32,7 +31,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function validateUserCreatePayload(req, res, next) {
-    const { firstname, lastname, email, main_phone } = req.body;
+    const { firstname, lastname, email, main_phone, role } = req.body;
 
     if (!firstname) {
       return send400Error('firstname is required', res);
@@ -46,15 +45,35 @@ module.exports = (dependencies, lib) => {
       return send400Error('email is required', res);
     }
 
-    if (parseOneAddress(email) === null) {
-      return send400Error('email is invalid', res);
-    }
-
     if (!main_phone) {
       return send400Error('main_phone is required', res);
     }
 
-    next();
+    if (role) {
+      if (!lib.helpers.validateUserRole(role)) {
+        return send400Error('role is invalid', res);
+      }
+
+      if (role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR) {
+        return send400Error('Must not create administrator', res);
+      }
+    }
+
+    return validateEmail(req, res, next);
+  }
+
+  function validateEmail(req, res, next) {
+    const { email } = req.body;
+
+    coreAvailability.email.isAvailable(email)
+      .then(result => {
+        if (!result.available) {
+          return send400Error(result.message, res);
+        }
+
+        next();
+      })
+      .catch(err => send500Error('Unable to validate email', err, res));
   }
 
   function validateUserUpdatePayload(req, res, next) {

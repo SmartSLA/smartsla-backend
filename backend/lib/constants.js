@@ -3,7 +3,8 @@
 module.exports = {
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
-    USER: 'user'
+    USER: 'user',
+    SUPPORTER: 'supporter'
   },
   DEFAULT_LIST_OPTIONS: {
     OFFSET: 0,
@@ -35,6 +36,10 @@ module.exports = {
     SOFTWARE: {
       name: 'software.idx',
       type: 'software'
+    },
+    USER: {
+      name: 'ticketing.users.idx',
+      type: 'users'
     }
   },
   EVENTS: {
@@ -52,6 +57,11 @@ module.exports = {
     },
     TICKET: {
       updated: 'ticketing:ticket:updated'
+    },
+    USER: {
+      created: 'ticketing:user:created',
+      updated: 'ticketing:user:updated',
+      deleted: 'ticketing:user:deleted'
     }
   },
   TICKET_ACTIONS: {

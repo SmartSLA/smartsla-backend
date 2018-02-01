@@ -2,14 +2,17 @@
 
 const chai = require('chai');
 const path = require('path');
-const EsnConfig = require('esn-elasticsearch-configuration');
+const EsConfig = require('esn-elasticsearch-configuration');
 const Q = require('q');
+const fs = require('fs');
+const _ = require('lodash');
 const testConfig = require('../config/servers-conf');
 const basePath = path.resolve(__dirname + '/../../node_modules/linagora-rse');
 const backendPath = path.normalize(__dirname + '/../../backend');
 const MODULE_NAME = 'linagora.esn.ticketing';
 const { INDICES } = require('../../backend/lib/constants');
 let rse;
+let getEsConfig;
 
 before(function(done) {
   chai.use(require('chai-shallow-deep-equal'));
@@ -74,11 +77,27 @@ before(function(done) {
   });
 });
 
-beforeEach(function(done) {
+before(function() {
   const esConfigPath = path.normalize(`${__dirname}/../../config/elasticsearch/`);
-  const esnConf = new EsnConfig({ host: testConfig.elasticsearch.host, port: testConfig.elasticsearch.port, path: esConfigPath });
+  const esConfigs = Object.values(INDICES).map(index => {
+    if (fs.existsSync(path.resolve([esConfigPath, index.type, '.json'].join('')))) {
+      return {
+        type: index.type,
+        esConfig: new EsConfig({ host: testConfig.elasticsearch.host, port: testConfig.elasticsearch.port, path: esConfigPath })
+      };
+    }
 
-  Q.all(Object.values(INDICES).map(index => esnConf.setup(index.name, index.type)))
+    return {
+      type: index.type,
+      esConfig: new EsConfig({ host: testConfig.elasticsearch.host, port: testConfig.elasticsearch.port })
+    };
+  });
+
+  getEsConfig = type => _.find(esConfigs, { type }).esConfig;
+});
+
+beforeEach(function(done) {
+  Q.all(Object.values(INDICES).map(index => getEsConfig(index.type).setup(index.name, index.type)))
     .then(() => done())
     .catch(err => {
       console.error('Error while creating ES configuration, but launching tests...', err);
@@ -87,7 +106,7 @@ beforeEach(function(done) {
 });
 
 afterEach(function(done) {
-  const esnConf = new EsnConfig(testConfig.elasticsearch);
+  const esnConf = new EsConfig(testConfig.elasticsearch);
 
   Q.all(Object.values(INDICES).map(index => esnConf.deleteIndex(index.name)))
     .then(() => done())

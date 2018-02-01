@@ -11,6 +11,7 @@
 
     function $onInit() {
       self.onSoftwareChange = onSoftwareChange;
+      self.softwareAutocompleteOptions = { excludedIds: self.existingSoftwareIds };
     }
 
     function onSoftwareChange() {

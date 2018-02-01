@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const API_PATH = '/ticketing/api/users';
 
 describe('The update Ticketing user API: PUT /ticketing/api/users/:id', function() {
-  let app, lib, helpers, ObjectId;
+  let app, lib, helpers, ObjectId, esIntervalIndex;
   let coreUser;
   let user1, user2;
   const password = 'secret';
@@ -17,6 +17,7 @@ describe('The update Ticketing user API: PUT /ticketing/api/users/:id', function
     ObjectId = mongoose.Types.ObjectId;
     app = this.app;
     lib = this.lib;
+    esIntervalIndex = this.testEnv.serversConfig.elasticsearch.interval_index;
     coreUser = require(this.testEnv.basePath + '/backend/core/user');
 
     const deployOptions = {
@@ -105,9 +106,7 @@ describe('The update Ticketing user API: PUT /ticketing/api/users/:id', function
     }));
   });
 
-  // skip this case cos we have error when indexing null data in ElasticSearch
-  // https://ci.linagora.com/linagora/lgs/openpaas/esn/merge_requests/88
-  it.skip('should respond 404 if user not found', function(done) {
+  it('should respond 404 if user not found', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).put(`${API_PATH}/${new ObjectId()}`));
       const modifiedUser = {
@@ -140,7 +139,19 @@ describe('The update Ticketing user API: PUT /ticketing/api/users/:id', function
           coreUser.get(user2._id, helpers.callbacks.noErrorAnd(result => {
             expect(result.main_phone).to.equal(modifiedUser.main_phone);
             expect(result.description).to.equal(modifiedUser.description);
-            done();
+
+            setTimeout(function() {
+              lib.user.search({ search: user2.firstname })
+                .then(result => {
+                  expect(result.total_count).to.equal(1);
+                  expect(result.list[0]).to.shallowDeepEqual({
+                    main_phone: modifiedUser.main_phone,
+                    description: modifiedUser.description
+                  });
+                  done();
+                })
+                .catch(err => done(err || 'should resolve'));
+            }, esIntervalIndex);
           }));
         }));
     }));
