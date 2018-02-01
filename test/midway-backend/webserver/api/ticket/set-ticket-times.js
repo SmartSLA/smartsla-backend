@@ -4,7 +4,7 @@ const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
 
-describe('POST /ticketing/api/tickets/:id', function() {
+describe('POST /ticketing/api/tickets/:id?action=(set/unset)&&field=(workaround/correction)', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers;
   let user1, user2, organization, demand1, demand2, software, contract, ticket;
@@ -133,10 +133,10 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('set/unset workaroundTime/correctionTime: should return 400 if action on field is not supported', function(done) {
+  it('should return 400 if action on time is not supported', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
-      const unsupportedAction = { action: 'unsupported-action', field: 'unsupported-field' };
+      const unsupportedAction = { action: 'unsupported-action', field: 'unsupported-time' };
 
       req.query(unsupportedAction);
       req.send();
@@ -150,57 +150,57 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('set/unset workaroundTime/correctionTime: should set workaroundTime if action="set" and field="workaroundTime"', function(done) {
+  it('should set workaround time if action="set" and field="workaround"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
-      req.query({ action: 'set', field: 'workaroundTime' });
+      req.query({ action: 'set', field: 'workaround' });
       req.send();
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body.times.workaroundTime).to.exist;
+          expect(res.body.times.workaround).to.exist;
           done();
         }));
     }));
   });
 
-  it('set/unset workaroundTime/correctionTime: should unset workaroundTime if action="unset" and field="workaroundTime"', function(done) {
+  it('should unset workaround time if action="unset" and field="workaround"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
-      req.query({ action: 'unset', field: 'workaroundTime' });
+      req.query({ action: 'unset', field: 'workaround' });
       req.send();
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body.times.workaroundTime).to.be.undefined;
+          expect(res.body.times.workaround).to.be.undefined;
           done();
         }));
     }));
   });
 
-  it('set/unset workaroundTime/correctionTime: should set correctionTime if action="set" and field="correctionTime"', function(done) {
+  it('should set correction time if action="set" and field="correction"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
-      req.query({ action: 'set', field: 'correctionTime' });
+      req.query({ action: 'set', field: 'correction' });
       req.send();
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body.times.correctionTime).to.exist;
+          expect(res.body.times.correction).to.exist;
           done();
         }));
     }));
   });
 
-  it('set/unset workaroundTime/correctionTime: should unset workaroundTime if action="unset" and field="correctionTime"', function(done) {
+  it('should unset workaround if action="unset" and field="correction"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
-      req.query({ action: 'unset', field: 'correctionTime' });
+      req.query({ action: 'unset', field: 'correction' });
       req.send();
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
-          expect(res.body.times.correctionTime).to.be.undefined;
+          expect(res.body.times.correction).to.be.undefined;
           done();
         }));
     }));

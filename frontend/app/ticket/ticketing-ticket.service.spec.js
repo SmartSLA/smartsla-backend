@@ -188,7 +188,7 @@ describe('The TicketingTicketService', function() {
     it('should resolve if success to set workaround time', function(done) {
       var ticket = {
         _id: '123',
-        times: { creation: '2017', workaroundTime: 6 }
+        times: { creation: '2017', workaround: 6 }
       };
 
       TicketingTicketClient.setWorkaroundTime = sinon.stub().returns($q.when({ data: ticket }));
@@ -282,7 +282,7 @@ describe('The TicketingTicketService', function() {
     it('should resolve if success to set correction time', function(done) {
       var ticket = {
         _id: '123',
-        times: { creation: '2017', correctionTime: 6 }
+        times: { creation: '2017', correction: 6 }
       };
 
       TicketingTicketClient.setCorrectionTime = sinon.stub().returns($q.when({ data: ticket }));

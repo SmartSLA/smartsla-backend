@@ -10,9 +10,9 @@ module.exports = dependencies => {
     demandType: { type: String, required: true },
     softwareType: { type: String },
     issueType: { type: String },
-    responseTime: { type: Number, default: 0 }, // unit: hours
-    workaroundTime: { type: Number, default: 0 }, // unit: hours
-    correctionTime: { type: Number, default: 0 }, // unit: hours
+    responseTime: { type: Number, default: 0 }, // unit: minute
+    workaroundTime: { type: Number, default: 0 }, // unit: minute
+    correctionTime: { type: Number, default: 0 }, // unit: minute
     timestamps: {
       creation: { type: Date, default: Date.now }
     }

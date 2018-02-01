@@ -4,7 +4,7 @@ const request = require('supertest');
 const path = require('path');
 const expect = require('chai').expect;
 
-describe('POST /ticketing/api/tickets/:id', function() {
+describe('POST /ticketing/api/tickets/:id?action="updateState"', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers;
   let user1, user2, organization, demand1, demand2, software, contract, ticket;
@@ -133,7 +133,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should respond 400 if state is not provied', function(done) {
+  it('should respond 400 if state is not provied', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {};
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -150,7 +150,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should respond 400 if state is invalid', function(done) {
+  it('should respond 400 if state is invalid', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'invalid-state' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -167,7 +167,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should respond 400 if change state to "New"', function(done) {
+  it('should respond 400 if change state to "New"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       lib.ticket.create({
         state: 'In progress',
@@ -203,7 +203,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should respond 200 with update ticket', function(done) {
+  it('should respond 200 with update ticket', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'Awaiting' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -218,7 +218,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set responseTime if it was not set and state changed to "In progress"', function(done) {
+  it('should set response time if it was not set and state changed to "In progress"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'In progress' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -228,13 +228,13 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body.state).to.equal(modifiedTicket.state);
-          expect(res.body.times.responseTime).to.exist;
+          expect(res.body.times.response).to.exist;
           done();
         }));
     }));
   });
 
-  it('update state: should set suspendedAt if state changed to "Awaiting"', function(done) {
+  it('should set suspendedAt if state changed to "Awaiting"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'Awaiting' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -250,7 +250,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendedAt if state changed to "Awaiting information"', function(done) {
+  it('should set suspendedAt if state changed to "Awaiting information"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'Awaiting information' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -266,7 +266,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendedAt if state changed to "Awaiting validation"', function(done) {
+  it('should set suspendedAt if state changed to "Awaiting validation"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'Awaiting validation' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -282,7 +282,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendedAt if state changed to "Closed"', function(done) {
+  it('should set suspendedAt if state changed to "Closed"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = { state: 'Closed' };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -298,7 +298,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendTime if state changed from "Awaiting" to "In progress"', function(done) {
+  it('should set suspend time if state changed from "Awaiting" to "In progress"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       lib.ticket.create({
         state: 'Awaiting',
@@ -328,7 +328,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
         req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body.state).to.equal(modifiedTicket.state);
-            expect(res.body.times.suspendTime).to.exist;
+            expect(res.body.times.suspend).to.exist;
             done();
           }));
       })
@@ -336,7 +336,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendTime if state changed from "Awaiting information" to "In progress"', function(done) {
+  it('should set suspend time if state changed from "Awaiting information" to "In progress"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       lib.ticket.create({
         state: 'Awaiting information',
@@ -366,7 +366,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
         req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body.state).to.equal(modifiedTicket.state);
-            expect(res.body.times.suspendTime).to.exist;
+            expect(res.body.times.suspend).to.exist;
             done();
           }));
       })
@@ -374,7 +374,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendTime if state changed from "Awaiting validation" to "In progress"', function(done) {
+  it('should set suspend time if state changed from "Awaiting validation" to "In progress"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       lib.ticket.create({
         state: 'Awaiting validation',
@@ -404,7 +404,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
         req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body.state).to.equal(modifiedTicket.state);
-            expect(res.body.times.suspendTime).to.exist;
+            expect(res.body.times.suspend).to.exist;
             done();
           }));
       })
@@ -412,7 +412,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
     }));
   });
 
-  it('update state: should set suspendTime if state changed from "Closed" to "In progress"', function(done) {
+  it('should set suspend time if state changed from "Closed" to "In progress"', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       lib.ticket.create({
         state: 'Closed',
@@ -442,7 +442,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
         req.expect(200)
           .end(helpers.callbacks.noErrorAnd(res => {
             expect(res.body.state).to.equal(modifiedTicket.state);
-            expect(res.body.times.suspendTime).to.exist;
+            expect(res.body.times.suspend).to.exist;
             done();
           }));
       })

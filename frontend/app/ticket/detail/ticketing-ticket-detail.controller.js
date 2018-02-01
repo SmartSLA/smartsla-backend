@@ -51,9 +51,9 @@
             return supportTechnician.displayName;
           });
 
-          self.responseTimer = _calculateTimer('responseTime');
-          self.workaroundTimer = _calculateTimer('workaroundTime');
-          self.correctionTimer = _calculateTimer('correctionTime');
+          self.responseTimer = _calculateTimer('response');
+          self.workaroundTimer = _calculateTimer('workaround');
+          self.correctionTimer = _calculateTimer('correction');
         });
     }
 
@@ -72,7 +72,7 @@
     function onWorkaroundCheckboxChange(event) {
       event.preventDefault();
 
-      var handleWorkaroundTime = (self.ticket.times && self.ticket.times.workaroundTime !== undefined) ? TicketingTicketService.unsetWorkaroundTime(self.ticketId) : TicketingTicketService.setWorkaroundTime(self.ticketId);
+      var handleWorkaroundTime = (self.ticket.times && self.ticket.times.workaround !== undefined) ? TicketingTicketService.unsetWorkaroundTime(self.ticketId) : TicketingTicketService.setWorkaroundTime(self.ticketId);
 
       handleWorkaroundTime
         .then(function(updatedTicket) {
@@ -84,7 +84,7 @@
     function onCorrectionCheckboxChange(event) {
       event.preventDefault();
 
-      var handleCorrectionTime = (self.ticket.times && self.ticket.times.correctionTime !== undefined) ? TicketingTicketService.unsetCorrectionTime(self.ticketId) : TicketingTicketService.setCorrectionTime(self.ticketId);
+      var handleCorrectionTime = (self.ticket.times && self.ticket.times.correction !== undefined) ? TicketingTicketService.unsetCorrectionTime(self.ticketId) : TicketingTicketService.setCorrectionTime(self.ticketId);
 
       handleCorrectionTime
         .then(function(updatedTicket) {
@@ -106,14 +106,14 @@
       }
 
       var creationDate = new Date(self.ticket.creation);
-      var theoryTime = self.demand[type];
+      var theoryTime = self.demand[type + 'Time'];
       var passedTime = ((new Date() - creationDate) / 60000); // in minutes
 
       if (isSuspendedState(self.ticket.state)) { // have to minus duration between now and last suspended moment
         passedTime -= (new Date() - new Date(self.ticket.times.suspendedAt)) / 60000;
       }
-      if (type !== 'responseTime' && self.ticket.times && self.ticket.times.suspendTime) {
-        passedTime -= self.ticket.times.suspendTime;
+      if (type !== 'response' && self.ticket.times && self.ticket.times.suspend) {
+        passedTime -= self.ticket.times.suspend;
       }
 
       return {
