@@ -128,7 +128,7 @@ module.exports = function(dependencies, lib) {
   }
 
   /**
-   * Update a ticket: update basic info, update state, set/unset workaroundTime/correctionTime.
+   * Update a ticket: update basic info, update state, set/unset workaround/correction time.
    *
    * @param {Request} req
    * @param {Response} res
@@ -186,11 +186,11 @@ module.exports = function(dependencies, lib) {
       case lib.constants.TICKET_ACTIONS.unset:
         activityData.verb = req.query.action;
 
-        if (req.query.field === lib.constants.TICKET_ABLE_TO_SETUP_FIELDS.workaroundTime) {
+        if (req.query.field === lib.constants.TICKET_SETTABLE_TIMES.workaround) {
           activityData.changeset = [{ key: req.query.field, displayName: 'workaround time' }];
           updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
         }
-        if (req.query.field === lib.constants.TICKET_ABLE_TO_SETUP_FIELDS.correctionTime) {
+        if (req.query.field === lib.constants.TICKET_SETTABLE_TIMES.correction) {
           activityData.changeset = [{ key: req.query.field, displayName: 'correction time' }];
           updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
         }

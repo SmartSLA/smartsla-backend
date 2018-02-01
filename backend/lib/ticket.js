@@ -120,12 +120,12 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (state === TICKET_STATES.IN_PROGRESS) {
-      if (ticket.times.responseTime === undefined) { // set responseTime
-        ticket.times.responseTime = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspendTime || 0)); // in minutes
+      if (ticket.times.response === undefined) { // set response time
+        ticket.times.response = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0)); // in minutes
       }
 
-      if (isSuspendedTicketState(state)) { // accumulate suspendTime
-        ticket.times.suspendTime = (ticket.times.suspendTime || 0) + Math.round((new Date() - ticket.suspendedAt) / (1000 * 60)); // in minutes
+      if (isSuspendedTicketState(state)) { // accumulate suspend time
+        ticket.times.suspend = (ticket.times.suspend || 0) + Math.round((new Date() - ticket.suspendedAt) / (1000 * 60)); // in minutes
       }
     } else if (isSuspendedTicketState(state) && !isSuspendedTicketState(ticket.state)) { // set suspendedAt
       ticket.times.suspendedAt = new Date();
@@ -146,9 +146,9 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (set) {
-      ticket.times.workaroundTime = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspendTime || 0));
+      ticket.times.workaround = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0));
     } else {
-      ticket.times.workaroundTime = undefined;
+      ticket.times.workaround = undefined;
     }
 
     return ticket.save();
@@ -164,9 +164,9 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (set) {
-      ticket.times.correctionTime = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspendTime || 0));
+      ticket.times.correction = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0));
     } else {
-      ticket.times.correctionTime = undefined;
+      ticket.times.correction = undefined;
     }
 
     return ticket.save();

@@ -13,13 +13,17 @@ module.exports = dependencies => {
     version: { type: String, required: true }
   }, { _id: false });
 
-  const TicketTimeSchema = new Schema({
-    responseTime: { type: Number, min: 0 }, // in minute
-    workaroundTime: { type: Number, min: 0 }, // in minute
-    correctionTime: { type: Number, min: 0 }, // in minute
+  // Unit time: minute
+  const TicketTimesSchema = new Schema({
+    response: { type: Number, min: 0 },
+    workaround: { type: Number, min: 0 },
+    correction: { type: Number, min: 0 },
+    responseSLA: { type: Number, min: 0 },
+    workaroundSLA: { type: Number, min: 0 },
+    correctionSLA: { type: Number, min: 0 },
     suspendedAt: Date, // moment when suspend ticket
-    suspendTime: { type: Number, min: 0, default: 0 } // in minute, cumulated when ticket is changed from suspended state to "In progress" state
-                                                      // used when calculate workaroundTime and correctionTime
+    suspend: { type: Number, min: 0, default: 0 } // cumulated when ticket is changed from suspended state to "In progress" state
+                                                  // used when calculate workaround and correction time
   }, { _id: false });
 
   const TicketSchema = new Schema({
@@ -36,7 +40,7 @@ module.exports = dependencies => {
     supportTechnicians: [{ type: Schema.ObjectId, ref: 'User' }],
     attachments: [Schema.ObjectId],
     state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
-    times: TicketTimeSchema,
+    times: TicketTimesSchema,
     schemaVersion: { type: Number, default: 1 }
   }, {
     timestamps: { createdAt: 'creation' }
@@ -45,16 +49,16 @@ module.exports = dependencies => {
   const TicketModel = mongoose.model('Ticket', TicketSchema);
 
   function _validateTimes(times) {
-    if (times && times.workaroundTime && times.responseTime && times.workaroundTime < times.responseTime) {
-      return new Error('workaroundTime can NOT be smaller than responseTime');
+    if (times && times.workaround && times.response && times.workaround < times.response) {
+      return new Error('workaround time can NOT be smaller than response time');
     }
 
-    if (times && times.correctionTime && times.responseTime && times.correctionTime < times.responseTime) {
-      return new Error('correctionTime can NOT be smaller than responseTime');
+    if (times && times.correction && times.response && times.correction < times.response) {
+      return new Error('correction time can NOT be smaller than response time');
     }
 
-    if (times && times.correctionTime && times.workaroundTime && times.correctionTime < times.workaroundTime) {
-      return new Error('correctionTime can NOT be smaller than workaroundTime');
+    if (times && times.correction && times.workaround && times.correction < times.workaround) {
+      return new Error('correction time can NOT be smaller than workaround time');
     }
   }
 

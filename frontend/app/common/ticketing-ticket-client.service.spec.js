@@ -73,7 +73,7 @@ describe('The TicketingTicketClient service', function() {
 
   describe('The setWorkaroundTime function', function() {
     it('should POST to right endpoint to set workaround time of ticket', function() {
-      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=workaroundTime').respond(200, {});
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=workaround').respond(200, {});
 
       TicketingTicketClient.setWorkaroundTime(ticketId);
       $httpBackend.flush();
@@ -82,7 +82,7 @@ describe('The TicketingTicketClient service', function() {
 
   describe('The unsetWorkaroundTime function', function() {
     it('should POST to right endpoint to unset workaround time of ticket', function() {
-      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=workaroundTime').respond(200, {});
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=workaround').respond(200, {});
 
       TicketingTicketClient.unsetWorkaroundTime(ticketId);
       $httpBackend.flush();
@@ -91,7 +91,7 @@ describe('The TicketingTicketClient service', function() {
 
   describe('The setCorrectionTime function', function() {
     it('should POST to right endpoint to set correction time of ticket', function() {
-      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=correctionTime').respond(200, {});
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=set&field=correction').respond(200, {});
 
       TicketingTicketClient.setCorrectionTime(ticketId);
       $httpBackend.flush();
@@ -100,7 +100,7 @@ describe('The TicketingTicketClient service', function() {
 
   describe('The unsetCorrectionTime function', function() {
     it('should POST to right endpoint to unset correction time of ticket', function() {
-      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=correctionTime').respond(200, {});
+      $httpBackend.expectPOST(API_PATH + '/' + ticketId + '?action=unset&field=correction').respond(200, {});
 
       TicketingTicketClient.unsetCorrectionTime(ticketId);
       $httpBackend.flush();

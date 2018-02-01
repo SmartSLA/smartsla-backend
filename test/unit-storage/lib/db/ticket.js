@@ -95,8 +95,8 @@ describe('The Ticket model', function() {
     });
   });
 
-  describe('The responseTime, workaroundTime, correctionTime fields', function() {
-    it('should not store the ticket which has workaroundTime < responseTime', function(done) {
+  describe('The response, workaround, correction times fields', function() {
+    it('should not store the ticket which has workaround time smaller than response time', function(done) {
       saveTicket({
         title: 'foo',
         contract: new ObjectId(),
@@ -106,17 +106,17 @@ describe('The Ticket model', function() {
         requester: new ObjectId(),
         supportManager: new ObjectId(),
         times: {
-          responseTime: 2,
-          workaroundTime: 1
+          response: 2,
+          workaround: 1
         }
       }, err => {
         expect(err).to.exist;
-        expect(err.message).to.equal('workaroundTime can NOT be smaller than responseTime');
+        expect(err.message).to.equal('workaround time can NOT be smaller than response time');
         done();
       });
     });
 
-    it('should not store the ticket which has correctionTime < responseTime', function(done) {
+    it('should not store the ticket which has correction smaller than response time', function(done) {
       saveTicket({
         title: 'foo',
         contract: new ObjectId(),
@@ -126,17 +126,17 @@ describe('The Ticket model', function() {
         requester: new ObjectId(),
         supportManager: new ObjectId(),
         times: {
-          responseTime: 2,
-          correctionTime: 1
+          response: 2,
+          correction: 1
         }
       }, err => {
         expect(err).to.exist;
-        expect(err.message).to.equal('correctionTime can NOT be smaller than responseTime');
+        expect(err.message).to.equal('correction time can NOT be smaller than response time');
         done();
       });
     });
 
-    it('should not store the ticket which has correctionTime < workaroundTime', function(done) {
+    it('should not store the ticket which has correction time smaller than workaround time', function(done) {
       saveTicket({
         title: 'foo',
         contract: new ObjectId(),
@@ -146,12 +146,12 @@ describe('The Ticket model', function() {
         requester: new ObjectId(),
         supportManager: new ObjectId(),
         times: {
-          workaroundTime: 2,
-          correctionTime: 1
+          workaround: 2,
+          correction: 1
         }
       }, err => {
         expect(err).to.exist;
-        expect(err.message).to.equal('correctionTime can NOT be smaller than workaroundTime');
+        expect(err.message).to.equal('correction time can NOT be smaller than workaround time');
         done();
       });
     });

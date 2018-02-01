@@ -146,8 +146,8 @@ module.exports = (dependencies, lib) => {
       return _validateTicketState(req, res, next);
     }
 
-    if (Object.values(lib.constants.TICKET_ABLE_TO_SETUP_FIELDS).indexOf(req.query.field) === -1) {
-      return send400Error(`Field ${req.query.field} is not settable`, res);
+    if (Object.values(lib.constants.TICKET_SETTABLE_TIMES).indexOf(req.query.field) === -1) {
+      return send400Error(`${req.query.field} time is not able to set`, res);
     }
 
     if (req.query.action === lib.constants.TICKET_ACTIONS.set && req.ticket.times && req.ticket.times[req.query.field]) {

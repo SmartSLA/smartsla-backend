@@ -69,9 +69,9 @@ module.exports = {
     set: 'set',
     unset: 'unset'
   },
-  TICKET_ABLE_TO_SETUP_FIELDS: {
-    workaroundTime: 'workaroundTime',
-    correctionTime: 'correctionTime'
+  TICKET_SETTABLE_TIMES: {
+    workaround: 'workaround',
+    correction: 'correction'
   },
   TICKET_ACTIVITY: {
     OBJECT_TYPE: 'ticket',

@@ -29,9 +29,9 @@
                   i.mdi.mdi-phone.m-r-5
                   | #{__('Response')}
               .col-xs-9
-                span(ng-if="$ctrl.ticket.times.responseTime !== undefined") {{$ctrl.ticket.times.responseTime | ticketingTime}}
+                span(ng-if="$ctrl.ticket.times.response !== undefined") {{$ctrl.ticket.times.response | ticketingTime}}
                 ticketing-ticket-timer-bar(
-                  ng-if="$ctrl.ticket.times.responseTime === undefined",
+                  ng-if="$ctrl.ticket.times.response === undefined",
                   countdown="$ctrl.responseTimer.countdown",
                   passed="$ctrl.responseTimer.passed",
                   interval="$ctrl.responseTimer.interval"
@@ -44,9 +44,9 @@
                   i.mdi.mdi-lightbulb-on-outline.m-r-5
                   | #{__('Workaround')}
               .col-xs-9
-                span(ng-if="$ctrl.ticket.times.workaroundTime !== undefined") {{$ctrl.ticket.times.workaroundTime | ticketingTime}}
+                span(ng-if="$ctrl.ticket.times.workaround !== undefined") {{$ctrl.ticket.times.workaround | ticketingTime}}
                 ticketing-ticket-timer-bar(
-                  ng-if="$ctrl.ticket.times.workaroundTime === undefined",
+                  ng-if="$ctrl.ticket.times.workaround === undefined",
                   countdown="$ctrl.workaroundTimer.countdown",
                   passed="$ctrl.workaroundTimer.passed",
                   interval="$ctrl.workaroundTimer.interval",
@@ -54,7 +54,7 @@
                 )
           .col-md-3
             label.checkbox.checkbox-inline(ng-click="$ctrl.onWorkaroundCheckboxChange($event)")
-              input(type="checkbox", ng-checked="$ctrl.ticket.times.workaroundTime !== undefined")
+              input(type="checkbox", ng-checked="$ctrl.ticket.times.workaround !== undefined")
               i.input-helper
             span #{__('Workaround')}
         .row.m-t-10
@@ -65,9 +65,9 @@
                   i.mdi.mdi-cube-outline.m-r-5
                   | #{__('Correction')}
               .col-xs-9
-                span(ng-if="$ctrl.ticket.times.correctionTime !== undefined") {{$ctrl.ticket.times.correctionTime | ticketingTime}}
+                span(ng-if="$ctrl.ticket.times.correction !== undefined") {{$ctrl.ticket.times.correction | ticketingTime}}
                 ticketing-ticket-timer-bar(
-                  ng-if="$ctrl.ticket.times.correctionTime === undefined",
+                  ng-if="$ctrl.ticket.times.correction === undefined",
                   countdown="$ctrl.correctionTimer.countdown",
                   passed="$ctrl.correctionTimer.passed",
                   interval="$ctrl.correctionTimer.interval",
@@ -75,7 +75,7 @@
                 )
           .col-md-3
             label.checkbox.checkbox-inline(ng-click="$ctrl.onCorrectionCheckboxChange($event)")
-              input(type="checkbox", ng-checked="$ctrl.ticket.times.correctionTime !== undefined")
+              input(type="checkbox", ng-checked="$ctrl.ticket.times.correction !== undefined")
               i.input-helper
             span #{__('Fixed')}
         .row.m-t-10

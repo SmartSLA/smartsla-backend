@@ -71,7 +71,7 @@
      * @return {Promise}          - Resolve on success
      */
     function setWorkaroundTime(ticketId) {
-      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'workaroundTime' });
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'workaround' });
     }
 
     /**
@@ -80,7 +80,7 @@
      * @return {Promise}          - Resolve on success
      */
     function unsetWorkaroundTime(ticketId) {
-      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'workaroundTime' });
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'workaround' });
     }
 
     /**
@@ -89,7 +89,7 @@
      * @return {Promise}          - Resolve on success
      */
     function setCorrectionTime(ticketId) {
-      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'correctionTime' });
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'set', field: 'correction' });
     }
 
     /**
@@ -98,7 +98,7 @@
      * @return {Promise}          - Resolve on success
      */
     function unsetCorrectionTime(ticketId) {
-      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'correctionTime' });
+      return ticketingRestangular.one('tickets', ticketId).customPOST({}, null, { action: 'unset', field: 'correction' });
     }
 
     /**
