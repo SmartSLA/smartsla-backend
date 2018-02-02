@@ -103,6 +103,63 @@ describe('The TicketingTicketService', function() {
     });
   });
 
+  describe('The update function', function() {
+    it('should reject if there is no ticket is provided', function(done) {
+      TicketingTicketService.update()
+        .catch(function(err) {
+          expect(err.message).to.equal('ticket is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if given ticket object does not have ID', function(done) {
+      TicketingTicketService.update({})
+        .catch(function(err) {
+          expect(err.message).to.equal('ticket ID is required');
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should reject if failed to update ticket', function(done) {
+      var error = new Error('something wrong');
+      var ticket = {
+        _id: '123'
+      };
+
+      TicketingTicketClient.update = sinon.stub().returns($q.reject(error));
+
+      TicketingTicketService.update(ticket)
+        .catch(function(err) {
+          expect(TicketingTicketClient.update).to.have.been.calledWith(ticket._id, ticket);
+          expect(err.message).to.equal(error.message);
+          done();
+        });
+      $rootScope.$digest();
+    });
+
+    it('should resolve if success to update ticket', function(done) {
+      var ticket = {
+        _id: '123'
+      };
+
+      TicketingTicketClient.update = sinon.stub().returns($q.when({ data: ticket }));
+
+      TicketingTicketService.update(ticket)
+        .then(function(result) {
+          expect(TicketingTicketClient.update).to.have.been.calledWith(ticket._id, ticket);
+          expect(result).to.deep.equal(ticket);
+          done();
+        })
+        .catch(function(err) {
+          done(err || 'should resolve');
+        });
+
+      $rootScope.$digest();
+    });
+  });
+
   describe('The updateState function', function() {
     it('should reject if there is no ticketId is provided', function(done) {
       TicketingTicketService.updateState()

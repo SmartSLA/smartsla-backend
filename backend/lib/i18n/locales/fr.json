@@ -214,5 +214,8 @@
   "software": "logiciel",
   "Set": "Défini",
   "Unset": "Supprimé",
-  "Support user": "Utilisateur de support"
+  "Support user": "Utilisateur de support",
+  "Updating issue...": "Mettre à jour la demande...",
+  "Issue updated": "La demande est mise à jour",
+  "Failed to update issue": "Impossible de mettre à jour la demande"
 }

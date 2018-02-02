@@ -214,5 +214,8 @@
   "software": "software",
   "Set": "Set",
   "Unset": "Unset",
-  "Support user": "Support user"
+  "Support user": "Support user",
+  "Updating issue...": "Updating issue...",
+  "Issue updated": "Issue updated",
+  "Failed to update issue": "Failed to update issue"
 }
