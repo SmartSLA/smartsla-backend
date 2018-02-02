@@ -109,7 +109,40 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function get(req, res) {
-    lib.ticket.getById(req.params.id, { populations: [...TICKET_POPULATIONS, { path: 'requester', select: 'firstname lastname' }] })
+    const populations = [
+      {
+        path: 'contract',
+        select: 'title organization demands software',
+        populate: [
+          {
+            path: 'organization',
+            select: 'shortName'
+          },
+          {
+            path: 'software.template',
+            select: 'name'
+          }
+        ]
+      },
+      {
+        path: 'requester',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'supportTechnicians',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'supportManager',
+        select: 'firstname lastname'
+      },
+      {
+        path: 'software.template',
+        select: 'name'
+      }
+    ];
+
+    lib.ticket.getById(req.params.id, { populations })
       .then(ticket => {
         if (!ticket) {
           return send404Error('Ticket not found', res);
