@@ -10,61 +10,13 @@ ng-form(name="form")
             min-tags="1",
             max-tags="10",
             place-holder="Type a contract name",
-            on-change="$ctrl.onContractChange()"
+            on-change="$ctrl.ticket.contract = $ctrl.contracts && $ctrl.contracts.length ? $ctrl.contracts[0] : null"
           )
       .row.m-b-30
         .col-xs-12
           h5 #{__('Organization')}
           input.form-control.p-l-5(ng-model="$ctrl.ticket.contract.organization.shortName", disabled)
-      .row
-        .col-xs-12
-          esn-form-group(label=__('Demand type'))
-            .select
-              select.form-control(
-                ng-model="$ctrl.ticket.demandType",
-                name="demandType",
-                ng-options="demandType for demandType in $ctrl.availableDemandTypes",
-                ng-change="$ctrl.onDemandTypeChange()",
-                ng-disabled="!$ctrl.ticket.contract",
-                required
-              )
-                option.empty-option
-      .row
-        .col-xs-12
-          esn-form-group(label=__('Severity'))
-            .select
-              select.form-control(
-                ng-model="$ctrl.severity",
-                name="severity",
-                ng-options="severity for severity in $ctrl.availableSeverities",
-                ng-change="$ctrl.onServerityChange()",
-                ng-disabled="!$ctrl.ticket.demandType"
-              )
-                option.empty-option
-      .row
-        .col-xs-12
-          esn-form-group(label=__('Software'))
-            .select
-              select.form-control(
-                ng-model="$ctrl.software",
-                name="software",
-                ng-options="item as item.label for item in $ctrl.availableSoftware",
-                ng-change="$ctrl.onSoftwareChange()",
-                ng-disabled="!$ctrl.ticket.demandType"
-              )
-                option.empty-option
-      .row
-        .col-xs-12
-          esn-form-group(label=__('Version'))
-            .select
-              select.form-control(
-                ng-model="$ctrl.ticket.software.version",
-                name="softwareVersion",
-                ng-options="version for version in $ctrl.availableSoftwareVersions",
-                ng-disabled="!$ctrl.ticket.software || !$ctrl.ticket.software.template",
-                ng-required="$ctrl.ticket.software"
-              )
-                option.empty-option
+      ticketing-ticket-form-demand(ticket="$ctrl.ticket", template="/ticketing/app/ticket/form/demand/templates/ticketing-ticket-form-create-demand.html")
       .row
         .col-xs-12
           esn-form-group(label=__('Environment'), helper=__('Operating system, architecture, ...'))
