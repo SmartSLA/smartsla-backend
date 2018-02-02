@@ -56,7 +56,8 @@ module.exports = function(dependencies, lib) {
       software: req.body.software,
       description: req.body.description,
       environment: req.body.environment,
-      attachments: req.body.attachments
+      attachments: req.body.attachments,
+      times: req.contractTimes
     };
 
     // requester = current user
@@ -167,6 +168,7 @@ module.exports = function(dependencies, lib) {
 
       if (softwareChange) activityData.changeset.push(softwareChange);
 
+      req.body.times = req.contractTimes;
       updateTicket = lib.ticket.updateById(req.params.id, req.body);
       errorMessage = 'Failed to update ticket';
     }

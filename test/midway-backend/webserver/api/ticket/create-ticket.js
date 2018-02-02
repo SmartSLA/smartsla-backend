@@ -38,7 +38,10 @@ describe('POST /ticketing/api/tickets', function() {
     demand = {
       demandType: 'Info',
       softwareType: 'Normal',
-      issueType: 'Blocking'
+      issueType: 'Blocking',
+      responseTime: 4,
+      workaroundTime: 60,
+      correctionTime: 120
     };
 
     lib.ticketingUserRole.create({
@@ -478,6 +481,11 @@ describe('POST /ticketing/api/tickets', function() {
           _id: user1._id,
           firstname: user1.firstname,
           lastname: user1.lastname
+        },
+        times: {
+          responseSLA: demand.responseTime,
+          workaroundSLA: demand.workaroundTime,
+          correctionTime: demand.correctionSLA
         }
       });
       const req = requestAsMember(request(app).post(API_PATH));
