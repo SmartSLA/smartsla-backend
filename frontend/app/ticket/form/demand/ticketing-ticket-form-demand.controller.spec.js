@@ -4,7 +4,7 @@
 
 var expect = chai.expect;
 
-describe('The TicketingTicketFormController', function() {
+describe('The TicketingTicketFormDemandController', function() {
   var $rootScope, $controller;
   var contract;
 
@@ -47,36 +47,13 @@ describe('The TicketingTicketFormController', function() {
   function initController() {
     var $scope = $rootScope.$new();
 
-    var controller = $controller('TicketingTicketFormController', { $scope: $scope });
+    var controller = $controller('TicketingTicketFormDemandController', { $scope: $scope });
 
     controller.$onInit();
     $scope.$digest();
 
     return controller;
   }
-
-  describe('The onContractChange function', function() {
-    it('should set availableDemandTypes array to empty if there is no contract', function() {
-      var controller = initController();
-
-      controller.onContractChange();
-
-      expect(controller.availableDemandTypes.length).to.equal(0);
-      expect(controller.ticket).to.deep.equal({ contract: null });
-      expect(controller.software).to.be.null;
-    });
-
-    it('should build availableDemandTypes when contract is provided', function() {
-      var controller = initController();
-
-      controller.contracts = [contract];
-      controller.onContractChange();
-
-      expect(controller.availableDemandTypes).to.deep.equal([contract.demands[0].demandType, contract.demands[1].demandType]);
-      expect(controller.ticket).to.deep.equal({ contract: contract });
-      expect(controller.software).to.be.null;
-    });
-  });
 
   describe('The onDemandTypeChange function', function() {
     it('should set availableSeverities and availableSoftware arrays to empty if there is no ticket\'s demandType', function() {
@@ -93,6 +70,7 @@ describe('The TicketingTicketFormController', function() {
         contract: contract
       });
       expect(controller.software).to.be.null;
+      expect(controller.severity).to.be.null;
     });
 
     it('should build availableSeverities array without \'No severity\' item when given demandType does not support no severity case', function() {
@@ -111,6 +89,7 @@ describe('The TicketingTicketFormController', function() {
         demandType: contract.demands[0].demandType
       });
       expect(controller.software).to.be.null;
+      expect(controller.severity).to.be.null;
     });
 
     it('should build availableSeverities array with \'No severity\' item at the top when given demandType supports no severity case', function() {
@@ -131,6 +110,7 @@ describe('The TicketingTicketFormController', function() {
         demandType: contract.demands[0].demandType
       });
       expect(controller.software).to.be.null;
+      expect(controller.severity).to.be.null;
     });
 
     it('should set availableSoftware to empty array when given demandType does not support no software and no severity case', function() {
@@ -148,6 +128,7 @@ describe('The TicketingTicketFormController', function() {
         demandType: contract.demands[0].demandType
       });
       expect(controller.software).to.be.null;
+      expect(controller.severity).to.be.null;
     });
 
     it('should build availableSoftware array with \'No software\' item at the top when given demandType supports no software but not no severity case', function() {
@@ -169,6 +150,7 @@ describe('The TicketingTicketFormController', function() {
         demandType: contract.demands[0].demandType
       });
       expect(controller.software).to.be.null;
+      expect(controller.severity).to.be.null;
     });
   });
 
