@@ -11,7 +11,6 @@ module.exports = (dependencies, lib) => {
     validateObjectIds
   } = require('../helpers')(dependencies, lib);
   const { send400Error, send404Error, send500Error } = require('../utils')(dependencies);
-  const UPDATE_METHODS = ['POST'];
 
   return {
     loadTicketToUpdate,
@@ -147,7 +146,7 @@ module.exports = (dependencies, lib) => {
     }
 
     if (Object.values(lib.constants.TICKET_SETTABLE_TIMES).indexOf(req.query.field) === -1) {
-      return send400Error(`${req.query.field} time is not able to set`, res);
+      return send400Error(`Field ${req.query.field} is not settable`, res);
     }
 
     if (req.query.action === lib.constants.TICKET_ACTIONS.set && req.ticket.times && req.ticket.times[req.query.field]) {
@@ -169,6 +168,8 @@ module.exports = (dependencies, lib) => {
       supportManager
     } = req.body;
     const contract = req.contract || req.ticket.contract;
+
+    delete req.body.times; // remove if user force to send times
 
     if ('title' in req.body && !title) {
       return send400Error('title is required', res);
@@ -208,15 +209,51 @@ module.exports = (dependencies, lib) => {
       }
     }
 
-    if (!_validateDemand({
-      demandType: demandType || req.ticket.demandType,
-      severity: severity || req.ticket.severity,
-      softwareCriticality: software && software.criticality ? software.criticality : req.ticket.severity
-    }, contract.demands)) {
-      return send400Error('The triple (demandType, severity, software criticality) is not supported', res);
+    if (req.contract) {
+      const demandSLA = _getDemandFromContract(contract, {
+        demandType: demandType,
+        severity: severity,
+        softwareCriticality: software && software.criticality
+      });
+
+      if (!demandSLA) {
+        return send400Error('The triple (demandType, severity, software criticality) is not supported', res);
+      }
+
+      req.contractTimes = {
+        responseSLA: demandSLA.responseTime,
+        workaroundSLA: demandSLA.workaroundTime,
+        correctionSLA: demandSLA.correctionTime
+      };
+
+      return next();
     }
 
-    next();
+    if (req.ticket) {
+      if (req.body.demandType !== req.ticket.demandType ||
+          req.body.severity !== req.ticket.severity ||
+          !_compareSoftwareCriticality(req.ticket.software, req.body.software)
+      ) {
+        const demandSLA = _getDemandFromContract(contract, {
+          demandType: demandType || req.ticket.demandType,
+          severity: severity || req.ticket.severity,
+          softwareCriticality: (software && software.criticality) || (req.ticket.software && req.ticket.software.criticality)
+        });
+
+        if (!demandSLA) {
+          return send400Error('The triple (demandType, severity, software criticality) is not supported', res);
+        }
+        req.contractTimes = Object.assign({}, req.ticket.times, {
+          responseSLA: demandSLA.responseTime,
+          workaroundSLA: demandSLA.workaroundTime,
+          correctionSLA: demandSLA.correctionTime
+        });
+
+        return next();
+      }
+
+      next();
+    }
   }
 
   function _validateTicketState(req, res, next) {
@@ -254,7 +291,7 @@ module.exports = (dependencies, lib) => {
           return send400Error('requester not found', res);
         }
 
-        if (_isUpdateMethod(req.method) && String(requester) !== String(req.ticket.requester)) {
+        if (req.ticket && String(requester) !== String(req.ticket.requester)) {
           req.changeset = req.changeset || [];
           req.changeset.push({
             key: 'requester',
@@ -286,7 +323,7 @@ module.exports = (dependencies, lib) => {
           return send400Error('supportManager not found', res);
         }
 
-        if (_isUpdateMethod(req.method) && String(supportManager) !== String(req.ticket.supportManager)) {
+        if (req.ticket && String(supportManager) !== String(req.ticket.supportManager)) {
           req.changeset = req.changeset || [];
           req.changeset.push({
             key: 'supportManager',
@@ -318,16 +355,19 @@ module.exports = (dependencies, lib) => {
           }
 
           const buildUserDisplayNames = users => users.map(user => buildUserDisplayName(user));
-          const currentSupportTechnicians = req.ticket.supportTechnicians.map(supportTechnician => supportTechnician._id);
 
-          if (_isUpdateMethod(req.method) && _.differenceBy(currentSupportTechnicians, supportTechnicians, String).length > 0) {
-            req.changeset = req.changeset || [];
-            req.changeset.push({
-              key: 'supportTechnicians',
-              displayName: 'support technicians',
-              from: buildUserDisplayNames(req.ticket.supportTechnicians).join(', '),
-              to: buildUserDisplayNames(users).join(', ')
-            });
+          if (req.ticket) {
+            const currentSupportTechnicians = req.ticket.supportTechnicians.map(supportTechnician => supportTechnician._id);
+
+            if (_.differenceBy(currentSupportTechnicians, supportTechnicians, String).length > 0) {
+              req.changeset = req.changeset || [];
+              req.changeset.push({
+                key: 'supportTechnicians',
+                displayName: 'support technicians',
+                from: buildUserDisplayNames(req.ticket.supportTechnicians).join(', '),
+                to: buildUserDisplayNames(users).join(', ')
+              });
+            }
           }
 
           next();
@@ -338,19 +378,29 @@ module.exports = (dependencies, lib) => {
     next();
   }
 
-  function _validateDemand(demand, availableDemands) {
-    return availableDemands.some(item => (item.demandType === demand.demandType) &&
-                                         (item.issueType === demand.severity) &&
-                                         (item.softwareType === demand.softwareCriticality));
-  }
-
   function _validateSoftware(software, availableSoftware) {
     return availableSoftware.some(item => (String(item.template._id || item.template) === String(software.template)) &&
                                           (item.versions.indexOf(software.version) > -1) &&
                                           (item.type === software.criticality));
   }
 
-  function _isUpdateMethod(method) {
-    return UPDATE_METHODS.indexOf(method) !== -1;
+  function _compareSoftwareCriticality(source, target) {
+    if (!source && target) return !!target.criticality;
+    if (source && !target) return !!source.criticality;
+    if (source && target) return source.criticality === target.criticality;
+
+    return true;
+  }
+
+  function _getDemandFromContract(contract, options) {
+    if (!contract || !contract.demands || contract.demands.length === 0) {
+      return;
+    }
+
+    return contract.demands.find(demand =>
+      demand.demandType === options.demandType &&
+      demand.issueType === options.severity &&
+      demand.softwareType === options.softwareCriticality
+    );
   }
 };

@@ -52,17 +52,23 @@ describe('POST /ticketing/api/tickets/:id', function() {
     demand1 = {
       demandType: 'Info1',
       softwareType: 'Normal1',
-      issueType: 'Blocking1'
+      issueType: 'Blocking1',
+      responseTime: 1,
+      workaroundTime: 2,
+      correctionTime: 3
     };
     demand2 = {
       demandType: 'Info2',
       softwareType: 'Normal2',
-      issueType: 'Blocking2'
+      issueType: 'Blocking2',
+      responseTime: 10,
+      workaroundTime: 20,
+      correctionTime: 30
     };
 
     lib.software.create({
-      name: 'software1',
-      category: 'category1',
+      name: 'software',
+      category: 'category',
       versions: ['1', '2', '3']
     })
     .then(createdSofware => { software = createdSofware; })
@@ -83,7 +89,11 @@ describe('POST /ticketing/api/tickets/:id', function() {
         software: [{
           template: software._id,
           type: demand1.softwareType,
-          versions: ['1', '2']
+          versions: software.versions
+        }, {
+          template: software._id,
+          type: demand2.softwareType,
+          versions: software.versions
         }]
       })
       .then(createdContract => (contract = createdContract))
@@ -607,7 +617,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
         software: {
           template: software._id,
           criticality: demand1.softwareType,
-          version: software.versions[1]
+          version: software.versions[0]
         },
         description,
         requester: user2._id,
@@ -620,6 +630,38 @@ describe('POST /ticketing/api/tickets/:id', function() {
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.shallowDeepEqual(getObjectFromModel(modifiedTicket));
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 200 if success to update ticket with updated SLA times if demand is modified', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const modifiedTicket = {
+        title: 'modified title',
+        demandType: demand2.demandType,
+        severity: demand2.issueType,
+        software: {
+          template: software._id,
+          criticality: demand2.softwareType,
+          version: software.versions[0]
+        },
+        description,
+        requester: user2._id,
+        supportManager: user2._id,
+        supportTechnicians: [user1._id, user2._id]
+      };
+      const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
+
+      req.send(modifiedTicket);
+      req.expect(200)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          expect(res.body).to.shallowDeepEqual(getObjectFromModel(modifiedTicket));
+          expect(res.body.times).to.shallowDeepEqual({
+            responseSLA: demand2.responseTime,
+            workaroundSLA: demand2.workaroundTime,
+            correctionTime: demand2.correctionSLA
+          });
           done();
         }));
     }));
