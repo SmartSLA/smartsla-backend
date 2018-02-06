@@ -2,16 +2,16 @@
   img.lv-img.m-r-10(ng-src="/api/users/{{::$ctrl.activity.actor._id}}/profile/avatar")
   div
     h5 {{::$ctrl.activity.actor.displayName}} ({{::$ctrl.activity.published | esnDatetime: 'mediumDate time'}})
-    .m-b-5(ng-if="$ctrl.activity.verb==='update'", ng-repeat="change in $ctrl.activity.changeset")
+    .m-b-5(ng-if="$ctrl.activity.verb === 'update'", ng-repeat="change in $ctrl.activity.changeset")
       span(ng-if="change.from && change.to") #{__('Updated')} 
       span(ng-if="change.from && !change.to") #{__('Removed')} 
       span(ng-if="!change.from && change.to") #{__('Added')} 
-      span.f-700 {{::change.displayName}}
-      span(ng-if="change.from && change.to")  #{__('from')} 
-      span.f-700 {{::change.from}}
-      span(ng-if="change.to")  #{__('to')} 
+      span.f-700 {{::change.displayName}} 
+      span(ng-if="change.from && change.to") #{__('from')} 
+      span.f-700 {{::change.from}} 
+      span(ng-if="change.to") #{__('to')} 
       span.f-700 {{::change.to}}
-    p(ng-if="$ctrl.activity.verb!=='update'")
-      span(ng-if="$ctrl.activity.verb==='set'") #{__('Set')} 
-      span(ng-if="$ctrl.activity.verb==='unset'") #{__('Unset')} 
+    p(ng-if="$ctrl.activity.verb !== 'update'")
+      span(ng-if="$ctrl.activity.verb === 'set'") #{__('Set')} 
+      span(ng-if="$ctrl.activity.verb === 'unset'") #{__('Unset')} 
       span.f-700 {{::$ctrl.activity.changeset[0].displayName}}
