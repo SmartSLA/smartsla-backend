@@ -258,13 +258,13 @@ module.exports = function(dependencies, lib) {
     }
 
     if (!ticket.software || String(software.template) !== String(ticket.software.template._id)) {
-      const softwareTemplate = _.find(ticket.contract.software, item => item.template._id === software.template);
+      const softwareTemplate = ticket.contract.software.find(item => String(item.template._id) === software.template);
 
       return {
         key: 'software',
         displayName: 'software',
         from: ticket.software ? `${ticket.software.template.name} ${ticket.software.version} - (${ticket.software.criticality})` : '',
-        to: `${softwareTemplate.name} ${software.version} - (${software.type})`
+        to: `${softwareTemplate.template.name} ${software.version} - (${software.criticality})`
       };
     }
 
