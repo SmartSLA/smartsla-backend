@@ -291,7 +291,7 @@ module.exports = (dependencies, lib) => {
           return send400Error('requester not found', res);
         }
 
-        if (req.ticket && String(requester) !== String(req.ticket.requester)) {
+        if (req.ticket && String(requester) !== String(req.ticket.requester._id)) {
           req.changeset = req.changeset || [];
           req.changeset.push({
             key: 'requester',
@@ -323,7 +323,7 @@ module.exports = (dependencies, lib) => {
           return send400Error('supportManager not found', res);
         }
 
-        if (req.ticket && String(supportManager) !== String(req.ticket.supportManager)) {
+        if (req.ticket && String(supportManager) !== String(req.ticket.supportManager._id)) {
           req.changeset = req.changeset || [];
           req.changeset.push({
             key: 'supportManager',
@@ -357,13 +357,13 @@ module.exports = (dependencies, lib) => {
           const buildUserDisplayNames = users => users.map(user => buildUserDisplayName(user));
 
           if (req.ticket) {
-            const currentSupportTechnicians = req.ticket.supportTechnicians.map(supportTechnician => supportTechnician._id);
+            const currentSupportTechnicians = req.ticket.supportTechnicians.map(supportTechnician => String(supportTechnician._id));
 
-            if (_.differenceBy(currentSupportTechnicians, supportTechnicians, String).length > 0) {
+            if ((currentSupportTechnicians.length !== supportTechnicians.length) || ((new Set([...currentSupportTechnicians, ...supportTechnicians])).size !== supportTechnicians.length)) {
               req.changeset = req.changeset || [];
               req.changeset.push({
                 key: 'supportTechnicians',
-                displayName: 'support technicians',
+                displayName: 'support engineers',
                 from: buildUserDisplayNames(req.ticket.supportTechnicians).join(', '),
                 to: buildUserDisplayNames(users).join(', ')
               });

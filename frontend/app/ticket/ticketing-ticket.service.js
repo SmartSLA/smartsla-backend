@@ -18,6 +18,7 @@
       create: create,
       get: get,
       list: list,
+      update: update,
       updateState: updateState,
       setWorkaroundTime: setWorkaroundTime,
       unsetWorkaroundTime: unsetWorkaroundTime,
@@ -77,6 +78,34 @@
 
           return ticket;
         });
+    }
+
+    function update(ticket) {
+      if (!ticket) {
+        return $q.reject(new Error('ticket is required'));
+      }
+
+      if (!ticket._id) {
+        return $q.reject(new Error('ticket ID is required'));
+      }
+
+      ticket = angular.copy(ticket);
+
+      TicketingService.depopulate(ticket, ['requester', 'supportManager', 'supportTechnicians']);
+      TicketingService.depopulate(ticket.software, ['template']);
+
+      var notificationMessages = {
+        progressing: 'Updating issue...',
+        success: 'Issue updated',
+        failure: 'Failed to update issue'
+      };
+
+      return asyncAction(notificationMessages, function() {
+        return TicketingTicketClient.update(ticket._id, ticket)
+          .then(function(response) {
+            return response.data;
+          });
+      });
     }
 
     function updateState(ticketId, state) {

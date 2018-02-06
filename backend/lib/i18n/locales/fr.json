@@ -208,11 +208,14 @@
   "correction time": "temps de correction",
   "requester": "demandeur",
   "support manager": "gestionnaire de support",
-  "support technicians": "techniciens de support",
+  "support engineers": "ingénieurs de support",
   "demand type": "type de demande",
   "severity": "sévérité",
   "software": "logiciel",
   "Set": "Défini",
   "Unset": "Supprimé",
-  "Support user": "Utilisateur de support"
+  "Support user": "Utilisateur de support",
+  "Updating issue...": "Mettre à jour la demande...",
+  "Issue updated": "La demande est mise à jour",
+  "Failed to update issue": "Impossible de mettre à jour la demande"
 }

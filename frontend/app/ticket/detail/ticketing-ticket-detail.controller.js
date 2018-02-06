@@ -21,6 +21,7 @@
       CLOSED: 'Closed',
       ABANDONED: 'Abandoned'
     };
+    var originTicket;
 
     self.$onInit = $onInit;
 
@@ -36,9 +37,13 @@
       self.onWorkaroundCheckboxChange = onWorkaroundCheckboxChange;
       self.onCorrectionCheckboxChange = onCorrectionCheckboxChange;
 
+      self.onCancelBtnClick = onCancelBtnClick;
+      self.onSaveBtnClick = onSaveBtnClick;
+
       TicketingTicketService.get(self.ticketId)
         .then(function(ticket) {
           self.ticket = ticket;
+          originTicket = angular.copy(self.ticket);
           self.state = self.ticket.state;
 
           self.demand = _.find(self.ticket.contract.demands, {
@@ -47,13 +52,13 @@
             softwareType: self.ticket.software ? self.ticket.software.criticality : undefined
           });
 
-          self.supportTechnicians = _.map(self.ticket.supportTechnicians, function(supportTechnician) {
-            return supportTechnician.displayName;
-          });
+          self.supportTechnicianDisplayNames = _buildSupportTechnicianDisplayNames(self.ticket.supportTechnicians);
 
           self.responseTimer = _calculateTimer('response');
           self.workaroundTimer = _calculateTimer('workaround');
           self.correctionTimer = _calculateTimer('correction');
+
+          _setupUserAutocompleteForms();
         });
     }
 
@@ -93,11 +98,41 @@
         });
     }
 
+    function onCancelBtnClick() {
+      if (self.isEditMode) {
+        self.isEditMode = false;
+        self.ticket = angular.copy(originTicket);
+        _setupUserAutocompleteForms();
+      }
+    }
+
+    function onSaveBtnClick() {
+      return TicketingTicketService.update(self.ticket)
+        .then(function() {
+          self.isEditMode = false;
+          // need populated software template for software name
+          self.ticket.software.template = self.ticket.software.template._id ? self.ticket.software.template :
+            _.find(self.ticket.contract.software, function(item) {
+              return item.template._id === self.ticket.software.template;
+            }).template;
+          // update originTicket
+          originTicket = angular.copy(self.ticket);
+
+          self.supportTechnicianDisplayNames = _buildSupportTechnicianDisplayNames(self.ticket.supportTechnicians);
+        });
+    }
+
     function isSuspendedState(state) {
       return [TICKET_STATES.AWAITING,
               TICKET_STATES.AWAITING_INFORMATION,
               TICKET_STATES.AWAITING_VALIDATION,
               TICKET_STATES.CLOSED].indexOf(state) > -1;
+    }
+
+    function _buildSupportTechnicianDisplayNames(supportTechnicians) {
+      return supportTechnicians.map(function(supportTechnician) {
+        return supportTechnician.displayName;
+      });
     }
 
     function _calculateTimer(type) {
@@ -121,6 +156,12 @@
         passed: passedTime,
         interval: 60000 // 1 minute
       };
+    }
+
+    function _setupUserAutocompleteForms() {
+      self.requesters = self.ticket.requester ? [self.ticket.requester] : [];
+      self.supportManagers = self.ticket.supportManager ? [self.ticket.supportManager] : [];
+      self.supportTechnicians = self.ticket.supportTechnicians ? self.ticket.supportTechnicians : [];
     }
   }
 })(angular);

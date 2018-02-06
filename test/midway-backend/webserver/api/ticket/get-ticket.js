@@ -175,7 +175,15 @@ describe('GET /ticketing/api/tickets/:id', function() {
                 _id: organization._id,
                 shortName: organization.shortName
               },
-              demands: contract.demands
+              demands: contract.demands,
+              software: [{
+                template: {
+                  _id: software._id,
+                  name: software.name
+                },
+                type: demand.softwareType,
+                versions: [software.versions[0], software.versions[1]]
+              }]
             },
             software: {
               template: {
