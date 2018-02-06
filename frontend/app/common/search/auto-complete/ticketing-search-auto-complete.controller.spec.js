@@ -8,7 +8,6 @@ var expect = chai.expect;
 describe('The TicketingSearchAutoCompleteController', function() {
   var $controller, $rootScope, $scope, $elementMock;
   var elementScrollService, TicketingSearchService;
-  var DEFAULT_MAX_TAGS;
 
   beforeEach(function() {
     module('linagora.esn.ticketing');
@@ -16,7 +15,6 @@ describe('The TicketingSearchAutoCompleteController', function() {
     $elementMock = {
       find: function() {}
     };
-    DEFAULT_MAX_TAGS = 1000;
 
     module(function($provide) {
       $provide.value('$element', $elementMock);
@@ -46,12 +44,6 @@ describe('The TicketingSearchAutoCompleteController', function() {
 
     return controller;
   }
-
-  it('should set maxTags to MAX_SAFE_INTEGER if there is no maxTags is provided', function() {
-    var controller = initController();
-
-    expect(controller.maxTags).to.equal(DEFAULT_MAX_TAGS);
-  });
 
   it('should set maxTags if it is provided', function() {
     var options = { maxTags: 1 };

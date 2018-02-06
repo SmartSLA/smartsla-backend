@@ -15,25 +15,27 @@
     var self = this;
     var DEFAULT_SEARCH_LIMIT = 20;
     var DEFAULT_MAX_TAGS = 1000;
-    var objectTypes;
+    var maxTags, objectTypes;
     var options;
 
     self.$onInit = $onInit;
+    self.search = search;
 
     function $onInit() {
-      self.maxTags = self.maxTags === '' || !self.maxTags ? DEFAULT_MAX_TAGS : self.maxTags; // http://mbenford.github.io/ngTagsInput/documentation/api
-      self.minTags = self.minTags === '' || !self.minTags ? 0 : self.minTags;
+      self.newTags = self.newTags || [];
+      maxTags = self.maxTags ? self.maxTags : DEFAULT_MAX_TAGS; // http://mbenford.github.io/ngTagsInput/documentation/api
       self.addFromAutocompleteOnly = self.addFromAutocompleteOnly || true;
       objectTypes = _determineObjectTypes(self.objectTypes);
+
       self.onTagAdding = onTagAdding;
       self.onTagAdded = onTagAdded;
       self.search = search;
-      self.newTags = self.newTags || [];
+
       options = _denormalizeOptions(self.options);
     }
 
     function search(query) {
-      if (self.newTags.length === self.maxTags) {
+      if (self.newTags.length === maxTags) {
         return $q.when([]);
       }
 
@@ -47,7 +49,7 @@
     }
 
     function onTagAdding($tag) {
-      return (self.newTags.length < self.maxTags) && !_isDuplicatedTag($tag, self.newTags);
+      return (self.newTags.length < maxTags) && !_isDuplicatedTag($tag, self.newTags);
     }
 
     function onTagAdded() {
