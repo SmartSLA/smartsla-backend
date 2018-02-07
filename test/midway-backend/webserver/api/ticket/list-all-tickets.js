@@ -1,14 +1,13 @@
 'use strict';
 
 const request = require('supertest');
-const path = require('path');
 const expect = require('chai').expect;
 const _ = require('lodash');
 
 describe('GET /ticketing/api/tickets', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers;
-  let user1, user2, software, contract, organization;
+  let admin, supporter, user1, user2, software, contract, organization;
   const password = 'secret';
   const description = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
@@ -17,20 +16,17 @@ describe('GET /ticketing/api/tickets', function() {
     app = this.app;
     lib = this.lib;
 
-    const deployOptions = {
-      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-    };
+    const fixtures = require('../../../fixtures/deployments');
 
-    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
-      if (err) {
-        return done(err);
-      }
-
-      user1 = models.users[1];
-      user2 = models.users[2];
-
-      done();
-    });
+    helpers.initUsers(fixtures.ticketingUsers())
+      .then(createdUsers => {
+        admin = createdUsers[0];
+        supporter = createdUsers[1];
+        user1 = createdUsers[2];
+        user2 = createdUsers[3];
+        done();
+      })
+      .catch(err => done(err));
   });
 
   beforeEach(function(done) {
@@ -63,7 +59,7 @@ describe('GET /ticketing/api/tickets', function() {
       lib.contract.create({
         title: 'contract',
         organization: organization._id,
-        defaultSupportManager: user1._id,
+        defaultSupportManager: supporter._id,
         startDate: new Date(),
         endDate: new Date(),
         demands: [{
@@ -101,9 +97,9 @@ describe('GET /ticketing/api/tickets', function() {
       }
     },
     supportManager: {
-      _id: options.user._id,
-      firstname: options.user.firstname,
-      lastname: options.user.lastname
+      _id: options.supporter._id,
+      firstname: options.supporter.firstname,
+      lastname: options.supporter.lastname
     }
   });
 
@@ -115,14 +111,14 @@ describe('GET /ticketing/api/tickets', function() {
     helpers.api.requireLogin(app, 'get', API_PATH, done);
   });
 
-  it('should respond 403 if user is not an administrator', function(done) {
-    helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+  it('should respond 403 if user does not have permission', function(done) {
+    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).get(API_PATH));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 403, message: 'Forbidden', details: 'User is not the administrator' }
+            error: { code: 403, message: 'Forbidden', details: 'User does not have permission to list all tickets' }
           });
 
           done();
@@ -144,7 +140,7 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const ticketBJSON = {
       state: 'Abandoned',
@@ -159,25 +155,27 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const expectTicketA = populateTicket(ticketAJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
     const expectTicketB = populateTicket(ticketBJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
       .then(() =>
-        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        helpers.api.loginAsUser(app, admin.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get(API_PATH));
 
           req.expect(200)
@@ -206,7 +204,7 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const ticketBJSON = {
       state: 'Awaiting',
@@ -221,19 +219,20 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const expectResult = populateTicket(ticketBJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
       .then(() =>
-        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        helpers.api.loginAsUser(app, admin.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get(API_PATH));
 
           req.query({ state: 'open' });
@@ -262,7 +261,7 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const ticketBJSON = {
       state: 'Abandoned',
@@ -277,19 +276,20 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const expectResult = populateTicket(ticketAJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
       .then(() =>
-        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get(API_PATH));
 
           req.query({ state: 'Closed' });
@@ -318,7 +318,7 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const ticketBJSON = {
       contract: contract._id,
@@ -332,19 +332,20 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const expectResult = populateTicket(ticketBJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
       .then(() => {
-        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get(API_PATH));
 
           req.query({ offset: 0, limit: 1 });
@@ -371,7 +372,7 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const ticketBJSON = {
       contract: contract._id,
@@ -385,19 +386,20 @@ describe('GET /ticketing/api/tickets', function() {
       },
       description,
       requester: user1._id,
-      supportManager: user1._id
+      supportManager: supporter._id
     };
     const expectResult = populateTicket(ticketAJSON, {
       contract,
       organization,
       software,
-      user: user1
+      user: user1,
+      supporter: supporter
     });
 
     lib.ticket.create(ticketAJSON)
       .then(() => lib.ticket.create(ticketBJSON))
       .then(() => {
-        helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+        helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
           const req = requestAsMember(request(app).get(API_PATH));
 
           req.query({ offset: 1 });

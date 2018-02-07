@@ -64,11 +64,6 @@ module.exports = {
       deleted: 'ticketing:user:deleted'
     }
   },
-  TICKET_ACTIONS: {
-    updateState: 'updateState',
-    set: 'set',
-    unset: 'unset'
-  },
   TICKET_SETTABLE_TIMES: {
     workaround: 'workaround',
     correction: 'correction'

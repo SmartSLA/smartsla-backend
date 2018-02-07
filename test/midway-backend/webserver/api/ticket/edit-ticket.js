@@ -1,13 +1,12 @@
 'use strict';
 
 const request = require('supertest');
-const path = require('path');
 const expect = require('chai').expect;
 
 describe('POST /ticketing/api/tickets/:id', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers, ObjectId;
-  let user1, user2, organization, demand1, demand2, software, contract, ticket;
+  let supporter, customSupporter, user1, organization, demand1, demand2, software, contract, ticket;
   const password = 'secret';
   const description = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
@@ -17,35 +16,29 @@ describe('POST /ticketing/api/tickets/:id', function() {
     helpers = this.helpers;
     ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
 
-    const deployOptions = {
-      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
+    const customSupporterJSON = {
+      firstname: 'supporter custom',
+      lastname: 'supporter custom',
+      accounts: [{
+        type: 'email',
+        emails: ['supportercustom@tic.org'],
+        hosted: true
+      }],
+      main_phone: '77777',
+      role: 'supporter',
+      password
     };
 
-    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
-      if (err) {
-        return done(err);
-      }
+    const fixtures = require('../../../fixtures/deployments');
 
-      user1 = models.users[1];
-      user2 = models.users[2];
-
-      done();
-    });
-  });
-
-  beforeEach(function(done) {
-    lib.ticketingUserRole.create({
-      user: user1._id,
-      role: 'administrator'
-    })
-    .then(() =>
-      lib.ticketingUserRole.create({
-        user: user2._id,
-        role: 'user'
+    helpers.initUsers([...fixtures.ticketingUsers(), customSupporterJSON])
+      .then(createdUsers => {
+        supporter = createdUsers[1];
+        user1 = createdUsers[2];
+        customSupporter = createdUsers[4];
+        done();
       })
-    )
-    .then(() => done())
-    .catch(err => done(err));
+      .catch(err => done(err));
   });
 
   beforeEach(function(done) {
@@ -82,7 +75,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
       lib.contract.create({
         title: 'contract',
         organization: organization._id,
-        defaultSupportManager: user1._id,
+        defaultSupportManager: supporter._id,
         startDate: new Date(),
         endDate: new Date(),
         demands: [demand1, demand2],
@@ -111,8 +104,8 @@ describe('POST /ticketing/api/tickets/:id', function() {
         },
         description,
         requester: user1._id,
-        supportManager: user1._id,
-        supportTechnicians: [user1._id]
+        supportManager: customSupporter._id,
+        supportTechnicians: [customSupporter._id]
       })
       .then(createdTicket => {
         ticket = createdTicket;
@@ -132,14 +125,14 @@ describe('POST /ticketing/api/tickets/:id', function() {
     helpers.api.requireLogin(app, 'post', `${API_PATH}/${ticket._id}`, done);
   });
 
-  it('should respond 403 if user is not an administrator', function(done) {
-    helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+  it('should respond 403 if user has supporter role but not contract\'s support manager of ticket', function(done) {
+    helpers.api.loginAsUser(app, customSupporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 403, message: 'Forbidden', details: 'User is not the administrator' }
+            error: { code: 403, message: 'Forbidden', details: `User does not have permission to edit ticket: ${ticket._id}` }
           });
           done();
         }));
@@ -147,7 +140,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if there is empty title in payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: '',
         demandType: demand1.demandType
@@ -166,7 +159,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if there is empty demandType in payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: ''
@@ -185,7 +178,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if there is empty description in payload', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -205,7 +198,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if description is not a string', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -225,7 +218,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if description is not a string with minimum length of 50', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: 'info',
@@ -245,7 +238,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if environment is not a string', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: 'info',
@@ -266,7 +259,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if software is provided but template is not provied', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -290,7 +283,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if software is provided but version is not provied', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         software: {
           template: software._id,
@@ -311,7 +304,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if software is provided but criticality is not provied', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         software: {
           template: software._id,
@@ -332,7 +325,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if the triple (demandType, severity, software criticality) is not supported', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -359,7 +352,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if the pair (software template, software version) is not supported', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -385,7 +378,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if there is a null requester', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -412,7 +405,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if requester is invalid', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -439,7 +432,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if requester is not found', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -466,7 +459,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if there is a null supportManager', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -494,7 +487,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if supportManager is invalid', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -505,7 +498,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[1]
         },
         description,
-        requester: user2._id,
+        requester: user1._id,
         supportManager: 'invalid ObjectId'
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -522,7 +515,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if supportManager is not found', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -533,7 +526,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[1]
         },
         description,
-        requester: user2._id,
+        requester: user1._id,
         supportManager: new ObjectId()
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -550,7 +543,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if supportTechnicians is invalid', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -561,8 +554,8 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[1]
         },
         description,
-        requester: user2._id,
-        supportManager: user2._id,
+        requester: user1._id,
+        supportManager: customSupporter._id,
         supportTechnicians: ['invalid ObjectId']
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
@@ -579,7 +572,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 400 if supportTechnicians are not found', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const notFoundTechnician = new ObjectId();
       const modifiedTicket = {
         title: 'modified title',
@@ -591,9 +584,9 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[1]
         },
         description,
-        requester: user2._id,
-        supportManager: user2._id,
-        supportTechnicians: [user2._id, notFoundTechnician]
+        requester: user1._id,
+        supportManager: customSupporter._id,
+        supportTechnicians: [customSupporter._id, notFoundTechnician]
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
@@ -609,7 +602,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 200 with updated ticket', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand1.demandType,
@@ -620,9 +613,9 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[0]
         },
         description,
-        requester: user2._id,
-        supportManager: user2._id,
-        supportTechnicians: [user1._id, user2._id]
+        requester: user1._id,
+        supportManager: customSupporter._id,
+        supportTechnicians: [supporter._id, customSupporter._id]
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 
@@ -636,7 +629,7 @@ describe('POST /ticketing/api/tickets/:id', function() {
   });
 
   it('should respond 200 if success to update ticket with updated SLA times if demand is modified', function(done) {
-    helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const modifiedTicket = {
         title: 'modified title',
         demandType: demand2.demandType,
@@ -647,9 +640,9 @@ describe('POST /ticketing/api/tickets/:id', function() {
           version: software.versions[0]
         },
         description,
-        requester: user2._id,
-        supportManager: user2._id,
-        supportTechnicians: [user1._id, user2._id]
+        requester: user1._id,
+        supportManager: customSupporter._id,
+        supportTechnicians: [supporter._id, customSupporter._id]
       };
       const req = requestAsMember(request(app).post(`${API_PATH}/${ticket._id}`));
 

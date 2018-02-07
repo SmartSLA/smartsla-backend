@@ -78,6 +78,14 @@ before(function(done) {
 });
 
 before(function() {
+  this.helpers.initUsers = (users = []) => {
+    const promises = users.map(user => this.lib.user.create(user));
+
+    return Q.all(promises);
+  };
+});
+
+before(function() {
   const esConfigPath = path.normalize(`${__dirname}/../../config/elasticsearch/`);
   const esConfigs = Object.values(INDICES).map(index => {
     if (fs.existsSync(path.resolve([esConfigPath, index.type, '.json'].join('')))) {

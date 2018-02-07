@@ -1,13 +1,12 @@
 'use strict';
 
 const request = require('supertest');
-const path = require('path');
 const expect = require('chai').expect;
 
 describe('GET /ticketing/api/tickets/:id', function() {
   const API_PATH = '/ticketing/api/tickets';
   let app, lib, helpers, ObjectId;
-  let user1, user2, organization, demand, software, contract, ticket;
+  let admin, supporter, user1, user2, organization, demand, software, contract, ticket;
   const password = 'secret';
   const description = 'fooooooooooooooooooooooooooooooooooooooooooooooooo';
 
@@ -17,35 +16,17 @@ describe('GET /ticketing/api/tickets/:id', function() {
     lib = this.lib;
     ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
 
-    const deployOptions = {
-      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-    };
+    const fixtures = require('../../../fixtures/deployments');
 
-    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
-      if (err) {
-        return done(err);
-      }
-
-      user1 = models.users[1];
-      user2 = models.users[2];
-
-      done();
-    });
-  });
-
-  beforeEach(function(done) {
-    lib.ticketingUserRole.create({
-      user: user1._id,
-      role: 'administrator'
-    })
-    .then(() =>
-      lib.ticketingUserRole.create({
-        user: user2._id,
-        role: 'user'
+    helpers.initUsers(fixtures.ticketingUsers())
+      .then(createdUsers => {
+        admin = createdUsers[0];
+        supporter = createdUsers[1];
+        user1 = createdUsers[2];
+        user2 = createdUsers[3];
+        done();
       })
-    )
-    .then(() => done())
-    .catch(err => done(err));
+      .catch(err => done(err));
   });
 
   beforeEach(function(done) {
@@ -71,7 +52,7 @@ describe('GET /ticketing/api/tickets/:id', function() {
       lib.contract.create({
         title: 'contract',
         organization: organization._id,
-        defaultSupportManager: user1._id,
+        defaultSupportManager: supporter._id,
         startDate: new Date(),
         endDate: new Date(),
         demands: [demand],
@@ -86,7 +67,7 @@ describe('GET /ticketing/api/tickets/:id', function() {
     .then(() =>
       lib.ticket.create({
         contract: contract._id,
-        title: 'ticket 1',
+        title: 'ticket',
         demandType: demand.demandType,
         severity: demand.issueType,
         software: {
@@ -96,8 +77,8 @@ describe('GET /ticketing/api/tickets/:id', function() {
         },
         description,
         requester: user1._id,
-        supportManager: user1._id,
-        supportTechnicians: [user1._id]
+        supportManager: supporter._id,
+        supportTechnicians: [supporter._id]
       })
       .then(createdTicket => {
         ticket = createdTicket;
@@ -112,19 +93,64 @@ describe('GET /ticketing/api/tickets/:id', function() {
   });
 
   const getObjectFromModel = document => JSON.parse(JSON.stringify(document)); // Because model object use original type like Bson, Date
+  const populateTicket = ticket => Object.assign(
+    getObjectFromModel(ticket),
+    {
+      contract: {
+        _id: contract._id,
+        title: contract.title,
+        organization: {
+          _id: organization._id,
+          shortName: organization.shortName
+        },
+        software: [{
+          template: {
+            _id: software._id,
+            name: software.name
+          },
+          type: demand.softwareType,
+          versions: [software.versions[0], software.versions[1]]
+        }],
+        demands: contract.demands
+      },
+      software: {
+        template: {
+          _id: software._id,
+          name: software.name
+        },
+        criticality: demand.softwareType,
+        version: software.versions[0]
+      },
+      requester: {
+        _id: user1._id,
+        firstname: user1.firstname,
+        lastname: user1.lastname
+      },
+      supportManager: {
+        _id: supporter._id,
+        firstname: supporter.firstname,
+        lastname: supporter.lastname
+      },
+      supportTechnicians: [{
+        _id: supporter._id,
+        firstname: supporter.firstname,
+        lastname: supporter.lastname
+      }]
+    }
+  );
 
   it('should respond 401 if not logged in', function(done) {
     helpers.api.requireLogin(app, 'get', `${API_PATH}/${ticket._id}`, done);
   });
 
-  it('should respond 403 if user is not an administrator', function(done) {
+  it('should respond 403 if user is not the ticket\'s requester', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).get(`${API_PATH}/${ticket._id}`));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 403, message: 'Forbidden', details: 'User is not the administrator' }
+            error: { code: 403, message: 'Forbidden', details: `User does not have permission to read ticket: ${ticket._id}` }
           });
           done();
         }));
@@ -161,54 +187,41 @@ describe('GET /ticketing/api/tickets/:id', function() {
     });
   });
 
-  it('should respond 200 with ticket object which contains populations info', function(done) {
+  it('should respond 200 when user is ticket\'s requester', function(done) {
     helpers.api.loginAsUser(app, user1.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).get(`${API_PATH}/${ticket._id}`));
 
       req.expect(200)
         .end(helpers.callbacks.noErrorAnd(res => {
-          const expectResult = Object.assign(getObjectFromModel(ticket), {
-            contract: {
-              _id: contract._id,
-              title: contract.title,
-              organization: {
-                _id: organization._id,
-                shortName: organization.shortName
-              },
-              demands: contract.demands,
-              software: [{
-                template: {
-                  _id: software._id,
-                  name: software.name
-                },
-                type: demand.softwareType,
-                versions: [software.versions[0], software.versions[1]]
-              }]
-            },
-            software: {
-              template: {
-                _id: software._id,
-                name: software.name
-              },
-              criticality: demand.softwareType,
-              version: software.versions[0]
-            },
-            requester: {
-              _id: user1._id,
-              firstname: user1.firstname,
-              lastname: user1.lastname
-            },
-            supportManager: {
-              _id: user1._id,
-              firstname: user1.firstname,
-              lastname: user1.lastname
-            },
-            supportTechnicians: [{
-              _id: user1._id,
-              firstname: user1.firstname,
-              lastname: user1.lastname
-            }]
-          });
+          const expectResult = populateTicket(ticket);
+
+          expect(res.body).to.shallowDeepEqual(getObjectFromModel(expectResult));
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 200 when user is supporter', function(done) {
+    helpers.api.loginAsUser(app, supporter.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).get(`${API_PATH}/${ticket._id}`));
+
+      req.expect(200)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          const expectResult = populateTicket(ticket);
+
+          expect(res.body).to.shallowDeepEqual(getObjectFromModel(expectResult));
+          done();
+        }));
+    }));
+  });
+
+  it('should respond 200 when user is administrator', function(done) {
+    helpers.api.loginAsUser(app, admin.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
+      const req = requestAsMember(request(app).get(`${API_PATH}/${ticket._id}`));
+
+      req.expect(200)
+        .end(helpers.callbacks.noErrorAnd(res => {
+          const expectResult = populateTicket(ticket);
 
           expect(res.body).to.shallowDeepEqual(getObjectFromModel(expectResult));
           done();
