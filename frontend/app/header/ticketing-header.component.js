@@ -3,6 +3,7 @@
 
   angular.module('linagora.esn.ticketing')
     .component('ticketingHeader', {
-      templateUrl: '/ticketing/app/header/ticketing-header.html'
+      templateUrl: '/ticketing/app/header/ticketing-header.html',
+      controller: 'TicketingHeaderController'
     });
 })(angular);

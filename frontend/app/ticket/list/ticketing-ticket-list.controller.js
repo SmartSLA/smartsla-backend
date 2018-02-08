@@ -7,9 +7,11 @@
   function TicketingTicketListController(
     $scope,
     $modal,
+    session,
     infiniteScrollHelper,
     TicketingTicketService,
-    TICKETING_TICKET_EVENTS
+    TICKETING_TICKET_EVENTS,
+    TICKETING_USER_ROLES
   ) {
     var self = this;
     var DEFAULT_STATE = 'open';
@@ -23,9 +25,11 @@
     self.$onInit = $onInit;
 
     function $onInit() {
+      options.scope = self.scope;
       options.state = self.state;
       self.loadMoreElements = infiniteScrollHelper(self, _loadNextItems);
       self.onCreateBtnClick = onCreateBtnClick;
+      self.canCreateTicket = canCreateTicket;
 
       $scope.$on(TICKETING_TICKET_EVENTS.CREATED, function(event, createdTicket) {
         _onTicketCreated(createdTicket);
@@ -40,6 +44,10 @@
         controllerAs: '$ctrl',
         controller: 'TicketingTicketCreateController'
       });
+    }
+
+    function canCreateTicket() {
+      return session.user.role === TICKETING_USER_ROLES.administrator && self.state === DEFAULT_STATE;
     }
 
     function _loadNextItems() {

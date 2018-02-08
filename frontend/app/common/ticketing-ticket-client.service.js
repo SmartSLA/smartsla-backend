@@ -29,7 +29,7 @@
 
     /**
      * List tickets.
-     * @param  {Object} options - Query option, possible attributes are state, limit, offset
+     * @param  {Object} options - Query option, possible attributes are scope, state, limit and offset
      * @return {Promise}        - Resolve response with list of tickets
      */
     function list(options) {

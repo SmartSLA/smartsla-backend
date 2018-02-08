@@ -4,43 +4,36 @@
   var MODULE_NAME = 'linagora.esn.ticketing';
 
   angular.module(MODULE_NAME)
-
-    .provider('ticketingProvider', function() {
-      this.$get = function($http) {
-        return {
-          userIsAdministrator: userIsAdministrator
-        };
-
-        function userIsAdministrator(userId) {
-          return $http({
-            method: 'GET',
-            url: '/ticketing/api/users/' + userId + '/isadministrator'
-          }).then(function(response) {
-            return response.data;
-          });
-        }
-      };
-    })
-    .config(function($stateProvider, $urlRouterProvider) {
-      $urlRouterProvider.when('/ticketing/issues', function($location, session, ticketingProvider) {
-        ticketingProvider.userIsAdministrator(session.user._id)
-          .then(function(isAdministrator) {
-            if (isAdministrator) {
-              return $location.path('/ticketing/issues/all');
-            }
-
-            return $location.path('/ticketing');
-          });
-      });
-
+    .config(function($stateProvider) {
       $stateProvider
         .state('ticketing', {
           url: '/ticketing',
-          templateUrl: '/ticketing/app/app.html'
+          templateUrl: '/ticketing/app/app.html',
+          deepStateRedirect: {
+            default: 'ticketing.tickets',
+            params: true,
+            fn: function() {
+              return true;
+            }
+          }
         })
         .state('ticketing.tickets', {
-          abstract: true,
-          url: '/issues'
+          url: '/issues',
+          deepStateRedirect: {
+            default: 'ticketing.tickets.mine',
+            params: true,
+            fn: function() {
+              return true;
+            }
+          }
+        })
+        .state('ticketing.tickets.mine', {
+          url: '/mine',
+          views: {
+            'root@ticketing': {
+              template: '<ticketing-ticket scope="mine" />'
+            }
+          }
         })
         .state('ticketing.tickets.all', {
           url: '/all',
@@ -50,15 +43,16 @@
             }
           },
           resolve: {
-            isAdministrator: function($location, session, ticketingProvider) {
-              return session.ready.then(function() {
-                return ticketingProvider.userIsAdministrator(session.user._id)
-                  .then(function(isAdministrator) {
-                    if (!isAdministrator) {
-                      $location.path('/ticketing');
-                    }
-                  });
-              });
+            hasPermission: function($state, session, ticketingUserClient, TICKETING_USER_ROLES) {
+              return ticketingUserClient.getRole()
+                .then(function(response) {
+                  if ([TICKETING_USER_ROLES.administrator, TICKETING_USER_ROLES.supporter].indexOf(response.data) === -1) {
+                    $state.go('ticketing');
+                  }
+                })
+                .catch(function() {
+                  $state.go('ticketing');
+                });
             }
           }
         })
@@ -85,15 +79,16 @@
             }
           },
           resolve: {
-            isAdministrator: function($location, session, ticketingProvider) {
-              return session.ready.then(function() {
-                return ticketingProvider.userIsAdministrator(session.user._id)
-                  .then(function(isAdministrator) {
-                    if (!isAdministrator) {
-                      $location.path('/ticketing');
-                    }
-                  });
-              });
+            hasPermission: function($state, ticketingUserClient, TICKETING_USER_ROLES) {
+              return ticketingUserClient.getRole()
+                .then(function(response) {
+                  if (response.data !== TICKETING_USER_ROLES.administrator) {
+                    $state.go('ticketing');
+                  }
+                })
+                .catch(function() {
+                  $state.go('ticketing');
+                });
             }
           }
         })

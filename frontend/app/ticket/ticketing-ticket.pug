@@ -1,4 +1,4 @@
 .card.m-b-0.m-t-25
   ticketing-ticket-tabs(selected-tab = "$ctrl.selectedTab")
-ticketing-ticket-tabs-open(ng-if='$ctrl.selectedTab === "open"')
-ticketing-ticket-tabs-closed(ng-if='$ctrl.selectedTab === "closed"')
+ticketing-ticket-tabs-open(ng-if='$ctrl.selectedTab === "open"', scope='$ctrl.scope')
+ticketing-ticket-tabs-closed(ng-if='$ctrl.selectedTab === "closed"', scope='$ctrl.scope')

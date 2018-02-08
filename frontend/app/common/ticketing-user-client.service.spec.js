@@ -59,4 +59,14 @@ describe('The ticketingUserClient service', function() {
       $httpBackend.flush();
     });
   });
+
+  describe('The getRole function', function() {
+    it('should GET to right endpoint to get user role', function() {
+      $httpBackend.expectGET('/ticketing/api/user/role').respond(200, {});
+
+      ticketingUserClient.getRole();
+
+      $httpBackend.flush();
+    });
+  });
 });

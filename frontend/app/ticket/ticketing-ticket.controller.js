@@ -4,8 +4,8 @@
   angular.module('linagora.esn.ticketing')
     .controller('TicketingTicketController', TicketingTicketController);
 
-  function TicketingTicketController() {
-    var DEFAULT_TAB = 'open';
+  function TicketingTicketController($stateParams) {
+    var DEFAULT_TAB = $stateParams.state || 'open';
     var self = this;
 
     self.$onInit = $onInit;
