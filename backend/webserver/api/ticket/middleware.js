@@ -3,17 +3,18 @@
 const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
+const { TICKET_ACTIONS, TICKET_SCOPES } = require('../constants');
 
 module.exports = (dependencies, lib) => {
   const {
     buildUserDisplayName,
-    requireAdministrator,
     validateObjectIds
   } = require('../helpers')(dependencies, lib);
-  const { send400Error, send404Error, send500Error } = require('../utils')(dependencies);
+  const { send400Error, send403Error, send404Error, send500Error } = require('../utils')(dependencies);
+  const RESOURCE_TYPE = 'ticket';
 
   return {
-    loadTicketToUpdate,
+    load,
     loadContract,
     canCreateTicket,
     canListTicket,
@@ -24,59 +25,58 @@ module.exports = (dependencies, lib) => {
   };
 
   function canCreateTicket(req, res, next) {
-    return requireAdministrator(req, res, next);
+    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'create')) {
+      return send403Error(`User does not have permission to create ${RESOURCE_TYPE}`, res);
+    }
+
+    next();
   }
 
   function canListTicket(req, res, next) {
-    return requireAdministrator(req, res, next);
+    if (req.user.role === 'user' && req.query.scope !== TICKET_SCOPES.MINE) {
+      return send403Error(`User does not have permission to list all ${RESOURCE_TYPE}s`, res);
+    }
+
+    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'list')) {
+      return send403Error(`User does not have permission to list ${RESOURCE_TYPE}s`, res);
+    }
+
+    next();
   }
 
   function canReadTicket(req, res, next) {
-    return requireAdministrator(req, res, next);
+    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'read', { ticket: req.ticket, user: req.user })) {
+      return send403Error(`User does not have permission to read ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
+    }
+
+    next();
   }
 
   function canUpdateTicket(req, res, next) {
-    return requireAdministrator(req, res, next);
+    if (req.query.action) {
+      if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'update', { ticket: req.ticket, user: req.user })) {
+        return send403Error(`User does not have permission to update ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
+      }
+    } else if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'edit', { ticket: req.ticket, user: req.user })) {
+      return send403Error(`User does not have permission to edit ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
+    }
+
+    next();
   }
 
-  function loadTicketToUpdate(req, res, next) {
-    const populations = [
-      {
-        path: 'contract',
-        select: 'software demands',
-        populate: {
-          path: 'software.template',
-          select: 'name'
-        }
-      },
-      {
-        path: 'requester',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'supportTechnicians',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'supportManager',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'software.template',
-        select: 'name'
-      }
-    ];
+  function load(idKey, options) {
+    return (req, res, next) => {
+      lib.ticket.getById(req.params[idKey], options)
+        .then(ticket => {
+          if (!ticket) {
+            return send404Error('Ticket not found', res);
+          }
 
-    lib.ticket.getById(req.params.id, { populations })
-      .then(ticket => {
-        if (!ticket) {
-          return send404Error('Ticket not found', res);
-        }
-
-        req.ticket = ticket;
-        next();
-      })
-      .catch(err => send500Error('Failed to load ticket', err, res));
+          req.ticket = ticket;
+          next();
+        })
+        .catch(err => send500Error('Failed to load ticket', err, res));
+    };
   }
 
   function loadContract(req, res, next) {
@@ -137,11 +137,11 @@ module.exports = (dependencies, lib) => {
        )(req, res, next);
     }
 
-    if (Object.values(lib.constants.TICKET_ACTIONS).indexOf(req.query.action) === -1) {
+    if (Object.values(TICKET_ACTIONS).indexOf(req.query.action) === -1) {
       return send400Error(`Action ${req.query.action} is not supported`, res);
     }
 
-    if (req.query.action === lib.constants.TICKET_ACTIONS.updateState) {
+    if (req.query.action === TICKET_ACTIONS.updateState) {
       return _validateTicketState(req, res, next);
     }
 
@@ -149,7 +149,7 @@ module.exports = (dependencies, lib) => {
       return send400Error(`Field ${req.query.field} is not settable`, res);
     }
 
-    if (req.query.action === lib.constants.TICKET_ACTIONS.set && req.ticket.times && req.ticket.times[req.query.field]) {
+    if (req.query.action === TICKET_ACTIONS.set && req.ticket.times && req.ticket.times[req.query.field]) {
       return send400Error(`Field ${req.query.field} already set`, res);
     }
 

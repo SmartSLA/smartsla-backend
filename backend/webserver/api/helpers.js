@@ -6,6 +6,7 @@ module.exports = (dependencies, lib) => {
   const ObjectId = mongoose.Types.ObjectId;
 
   return {
+    loadUserRole,
     validateObjectIds,
     requireAdministrator,
     buildUserDisplayName
@@ -25,6 +26,23 @@ module.exports = (dependencies, lib) => {
         next();
       })
       .catch(err => send500Error('Unable to check administrator permission', err, res));
+  }
+
+  function loadUserRole(req, res, next) {
+    if (!req.user || !req.user._id) {
+      return send400Error('Missing user', res);
+    }
+
+    return lib.ticketingUserRole.getByUser(req.user._id)
+      .then(ticketingUserRole => {
+        if (!ticketingUserRole) {
+          return send403Error('User not found', res);
+        }
+
+        req.user.role = ticketingUserRole.role;
+        next();
+      })
+      .catch(err => send500Error('Unable to load user\'s role', err, res));
   }
 
   function validateObjectIds(ids) {

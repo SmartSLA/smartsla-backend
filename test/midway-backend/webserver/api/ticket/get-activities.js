@@ -1,12 +1,11 @@
 'use strict';
 
 const request = require('supertest');
-const path = require('path');
 const expect = require('chai').expect;
 
 describe('GET /ticketing/api/tickets/:id/activities', function() {
   let app, lib, helpers, ObjectId, apiUrl;
-  let user1, user2, ticket;
+  let supporter, user1, user2, ticket;
   const password = 'secret';
 
   beforeEach(function(done) {
@@ -15,31 +14,16 @@ describe('GET /ticketing/api/tickets/:id/activities', function() {
     lib = this.lib;
     ObjectId = this.testEnv.core.db.mongo.mongoose.Types.ObjectId;
 
-    const deployOptions = {
-      fixtures: path.normalize(`${__dirname}/../../../fixtures/deployments`)
-    };
+    const fixtures = require('../../../fixtures/deployments');
 
-    helpers.api.applyDomainDeployment('ticketingModule', deployOptions, (err, models) => {
-      if (err) {
-        return done(err);
-      }
-
-      user1 = models.users[1];
-      user2 = models.users[2];
-
-      lib.ticketingUserRole.create({
-        user: user1._id,
-        role: 'administrator'
+    helpers.initUsers(fixtures.ticketingUsers())
+      .then(createdUsers => {
+        supporter = createdUsers[1];
+        user1 = createdUsers[2];
+        user2 = createdUsers[3];
+        done();
       })
-      .then(() =>
-        lib.ticketingUserRole.create({
-          user: user2._id,
-          role: 'user'
-        })
-      )
-      .then(() => done())
       .catch(err => done(err));
-    });
   });
 
   beforeEach(function(done) {
@@ -49,8 +33,8 @@ describe('GET /ticketing/api/tickets/:id/activities', function() {
       demandType: 'demandType',
       description: 'This is description of ticket with length is 58 characters',
       requester: user1._id,
-      supportManager: user1._id,
-      supportTechnicians: [user1._id]
+      supportManager: supporter._id,
+      supportTechnicians: [supporter._id]
     })
     .then(createdTicket => {
       ticket = createdTicket;
@@ -68,14 +52,14 @@ describe('GET /ticketing/api/tickets/:id/activities', function() {
     helpers.api.requireLogin(app, 'get', apiUrl, done);
   });
 
-  it('should respond 403 if user is not an administrator', function(done) {
+  it('should respond 403 if user is not the ticket\'s requester', function(done) {
     helpers.api.loginAsUser(app, user2.emails[0], password, helpers.callbacks.noErrorAnd(requestAsMember => {
       const req = requestAsMember(request(app).get(apiUrl));
 
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 403, message: 'Forbidden', details: 'User is not the administrator' }
+            error: { code: 403, message: 'Forbidden', details: `User does not have permission to read ticket: ${ticket._id}` }
           });
           done();
         }));

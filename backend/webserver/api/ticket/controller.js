@@ -2,12 +2,13 @@
 
 const Q = require('q');
 const _ = require('lodash');
+const { TICKET_ACTIONS, TICKET_SCOPES } = require('../constants');
 
 module.exports = function(dependencies, lib) {
   const filestore = dependencies('filestore');
   const activitystreams = dependencies('activitystreams');
   const pubsubLocal = dependencies('pubsub').local;
-  const { send404Error, send500Error } = require('../utils')(dependencies);
+  const { send500Error } = require('../utils')(dependencies);
 
   const ticketUpdateTopic = pubsubLocal.topic(lib.constants.EVENTS.TICKET.updated);
   const TICKET_POPULATIONS = [
@@ -77,24 +78,31 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    let listTickets;
     const options = {
       limit: +req.query.limit,
       offset: +req.query.offset,
-      state: req.query.state
+      populations: TICKET_POPULATIONS
     };
 
-    options.populations = TICKET_POPULATIONS;
-
-    // there is not "open" state of ticket
-    // list open tickets is list tickets with state is not either equal 'Closed' or 'Abandoned'
-    if (options.state === 'open') {
-      listTickets = lib.ticket.listOpenTickets(options);
-    } else {
-      listTickets = lib.ticket.list(options);
+    if (req.query.state === 'open') {
+      options.states = [
+        lib.constants.TICKET_STATES.NEW,
+        lib.constants.TICKET_STATES.IN_PROGRESS,
+        lib.constants.TICKET_STATES.AWAITING,
+        lib.constants.TICKET_STATES.AWAITING_INFORMATION,
+        lib.constants.TICKET_STATES.AWAITING_VALIDATION
+      ];
+    } else if (req.query.state) {
+      options.states = [req.query.state];
     }
 
-    return listTickets
+    if (req.query.scope === TICKET_SCOPES.MINE) {
+      options.requester = req.user._id;
+      options.supportManager = req.user._id;
+      options.supportTechnician = req.user._id;
+    }
+
+    return lib.ticket.list(options)
       .then(tickets => {
         res.header('X-ESN-Items-Count', tickets.length);
         res.status(200).json(tickets);
@@ -109,54 +117,15 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function get(req, res) {
-    const populations = [
-      {
-        path: 'contract',
-        select: 'title organization demands software',
-        populate: [
-          {
-            path: 'organization',
-            select: 'shortName'
-          },
-          {
-            path: 'software.template',
-            select: 'name'
-          }
-        ]
-      },
-      {
-        path: 'requester',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'supportTechnicians',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'supportManager',
-        select: 'firstname lastname'
-      },
-      {
-        path: 'software.template',
-        select: 'name'
-      }
-    ];
+    let ticket = req.ticket;
+    const promises = ticket.attachments.map(attachment => Q.ninvoke(filestore, 'getMeta', attachment));
 
-    lib.ticket.getById(req.params.id, { populations })
-      .then(ticket => {
-        if (!ticket) {
-          return send404Error('Ticket not found', res);
-        }
+    return Q.all(promises)
+      .then(result => {
+        ticket = ticket.toObject();
+        ticket.attachments = result;
 
-        const promises = ticket.attachments.map(attachment => Q.ninvoke(filestore, 'getMeta', attachment));
-
-        return Q.all(promises)
-          .then(result => {
-            ticket = ticket.toObject();
-            ticket.attachments = result;
-
-            res.status(200).json(ticket);
-          });
+        res.status(200).json(ticket);
       })
       .catch(err => send500Error('Failed to get ticket', err, res));
   }
@@ -207,7 +176,7 @@ module.exports = function(dependencies, lib) {
     }
 
     switch (req.query.action) {
-      case lib.constants.TICKET_ACTIONS.updateState:
+      case TICKET_ACTIONS.updateState:
         activityData.changeset = [{
           key: 'state',
           displayName: 'state',
@@ -217,17 +186,17 @@ module.exports = function(dependencies, lib) {
         updateTicket = lib.ticket.updateState(req.ticket, req.body.state);
         errorMessage = 'Failed to update state of ticket';
         break;
-      case lib.constants.TICKET_ACTIONS.set:
-      case lib.constants.TICKET_ACTIONS.unset:
+      case TICKET_ACTIONS.set:
+      case TICKET_ACTIONS.unset:
         activityData.verb = req.query.action;
 
         if (req.query.field === lib.constants.TICKET_SETTABLE_TIMES.workaround) {
           activityData.changeset = [{ key: req.query.field, displayName: 'workaround time' }];
-          updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
+          updateTicket = lib.ticket.setWorkaroundTime(req.ticket, req.query.action === TICKET_ACTIONS.set);
         }
         if (req.query.field === lib.constants.TICKET_SETTABLE_TIMES.correction) {
           activityData.changeset = [{ key: req.query.field, displayName: 'correction time' }];
-          updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === lib.constants.TICKET_ACTIONS.set);
+          updateTicket = lib.ticket.setCorrectionTime(req.ticket, req.query.action === TICKET_ACTIONS.set);
         }
 
         errorMessage = `Failed to ${req.query.action} ${req.query.field}`;

@@ -1,8 +1,60 @@
 'use strict';
 
 module.exports = {
-  ticketingModule
+  ticketingModule,
+  ticketingUsers
 };
+
+function ticketingUsers() {
+  return [
+    {
+      firstname: 'admin',
+      lastname: 'admin',
+      accounts: [{
+        type: 'email',
+        emails: ['admin@tic.org'],
+        hosted: true
+      }],
+      main_phone: '3333',
+      role: 'administrator',
+      password: 'secret'
+    },
+    {
+      firstname: 'supporter',
+      lastname: 'supporter',
+      accounts: [{
+        type: 'email',
+        emails: ['supporter@tic.org'],
+        hosted: true
+      }],
+      main_phone: '4444',
+      role: 'supporter',
+      password: 'secret'
+    },
+    {
+      firstname: 'user1',
+      lastname: 'user1',
+      accounts: [{
+        type: 'email',
+        emails: ['user1@tic.org'],
+        hosted: true
+      }],
+      main_phone: '5555',
+      password: 'secret'
+    },
+    {
+      firstname: 'user2',
+      lastname: 'user2',
+      accounts: [{
+        type: 'email',
+        emails: ['user2@tic.org'],
+        hosted: true
+      }],
+      main_phone: '6666',
+      password: 'secret'
+    }
+  ];
+}
 
 function ticketingModule() {
   return {

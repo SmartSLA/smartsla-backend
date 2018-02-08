@@ -13,6 +13,7 @@ module.exports = function(dependencies) {
   const software = require('./software')(dependencies);
   const glossary = require('./ticketing-glossary')(dependencies);
   const ticket = require('./ticket')(dependencies);
+  const AccessControl = require('./access-control');
 
   return {
     constants,
@@ -25,7 +26,8 @@ module.exports = function(dependencies) {
     start,
     user,
     ticketingUserRole,
-    ticket
+    ticket,
+    accessControl: new AccessControl()
   };
 
   function start(callback) {

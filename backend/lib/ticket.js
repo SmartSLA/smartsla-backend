@@ -10,7 +10,6 @@ module.exports = dependencies => {
   return {
     create,
     list,
-    listOpenTickets,
     getById,
     updateById,
     updateState,
@@ -39,44 +38,50 @@ module.exports = dependencies => {
 
   /**
    * List tickets.
-   * @param {Object}   options  - The options object, may contain state of ticket, offset and limit
-   * @param {Promise}           - Resolve on success
+   * @param {Object}  options - The options object, may contain states of ticket, requester, supportManager, supportTechnician, offset and limit
+   * @param {Promise}         - Resolve on success
    */
   function list(options = {}) {
-    if (options.state && !validateTicketState(options.state)) {
-      return Promise.resolve([]);
+    const findOptions = {};
+
+    if (options.states && options.states.length > 0) {
+      const states = options.states.filter(state => validateTicketState(state));
+
+      if (states.length === 0) {
+        return Promise.resolve([]);
+      }
+
+      findOptions.state = { $in: states };
     }
 
-    const findOptions = options.state ? { state: options.state } : {};
+    const orFilter = [];
 
-    const query = Ticket
-      .find(findOptions)
-      .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-      .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .sort('-updatedAt');
+    if (options.requester) {
+      orFilter.push({ requester: options.requester });
+    }
+
+    if (options.supportManager) {
+      orFilter.push({ supportManager: options.supportManager });
+    }
+
+    if (options.supportTechnician) {
+      orFilter.push({ supportTechnicians: options.supportTechnician });
+    }
+
+    const query = Ticket.find(findOptions);
 
     if (options.populations) {
       query.populate(options.populations);
     }
 
-    return query.exec();
-  }
+    if (orFilter.length > 0) {
+      query.or(orFilter);
+    }
 
-  /**
-   * List tickets with state is not either equal 'Closed' or 'Abandoned'.
-   * @param {Object}   options  - The options object, may contain offset and limit
-   * @param {Promise}           - Resolve on success
-   */
-  function listOpenTickets(options = {}) {
-    const query = Ticket
-      .find({ state: { $nin: [TICKET_STATES.CLOSED, TICKET_STATES.ABANDONED] } })
+    query
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-updatedAt');
-
-    if (options.populations) {
-      query.populate(options.populations);
-    }
 
     return query.exec();
   }

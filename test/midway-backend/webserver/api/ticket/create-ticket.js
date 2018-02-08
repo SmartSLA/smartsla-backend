@@ -438,7 +438,7 @@ describe('POST /ticketing/api/tickets', function() {
       req.expect(403)
         .end(helpers.callbacks.noErrorAnd(res => {
           expect(res.body).to.deep.equal({
-            error: { code: 403, message: 'Forbidden', details: 'User is not the administrator' }
+            error: { code: 403, message: 'Forbidden', details: 'User does not have permission to create ticket' }
           });
           done();
         }));
