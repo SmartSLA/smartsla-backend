@@ -4,6 +4,7 @@
   angular.module('linagora.esn.ticketing')
 
   .run(function(
+    session,
     TicketingSearchService,
     TicketingOrganizationService,
     TicketingSoftwareService,
@@ -11,6 +12,7 @@
     TicketingContractService,
     esnModuleRegistry,
     TicketingTicketLiveUpdateInitializer,
+    ticketingUserClient,
     TICKETING_MODULE_METADATA
   ) {
     var organiztionSearchProvider = TicketingOrganizationService.getOrganizationSearchProvider();
@@ -26,6 +28,13 @@
     TicketingSearchService.addProvider(userSearchProvider);
 
     TicketingTicketLiveUpdateInitializer.start();
+
+    session.ready.then(function() {
+      ticketingUserClient.getRole()
+        .then(function(response) {
+          session.user.role = response.data;
+        });
+    });
 
     esnModuleRegistry.add(TICKETING_MODULE_METADATA);
   });

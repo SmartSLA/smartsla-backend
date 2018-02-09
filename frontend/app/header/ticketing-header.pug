@@ -5,12 +5,12 @@ header#header
         a(ui-sref='ticketing')
           img(src="/ticketing/images/ossa-logo.png")
       li
-        a.btn.btn-link(ui-sref-active="selected") #{__('My issues')}
-      li
+        a.btn.btn-link(ui-sref='ticketing.tickets.mine', ui-sref-active="selected") #{__('My issues')}
+      li(ng-if="$ctrl.canAccessAllIssuesPage()")
         a.btn.btn-link(ui-sref='ticketing.tickets.all', ui-sref-active="selected") #{__('All issues')}
       li
         a.btn.btn-link(ui-sref-active="selected") #{__('Reporting')}
-      li
+      li(ng-if="$ctrl.canAccessAdminPage()")
         a.btn.btn-link(href="", ui-sref='ticketing.admin', ui-sref-active="selected") #{__('Admin')}
 
     ul.list-inline.all-centered.header-actions

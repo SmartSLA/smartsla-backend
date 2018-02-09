@@ -20,12 +20,6 @@ module.exports = (dependencies, lib, router) => {
     controller.get
   );
 
-  router.get('/users/:id/isadministrator',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'User'),
-    controller.userIsAdministrator
-  );
-
   router.post('/users',
     authorizationMW.requiresAPILogin,
     loadDomainByHostname,
@@ -40,5 +34,10 @@ module.exports = (dependencies, lib, router) => {
     checkIdInParams('id', 'User'),
     middleware.validateUserUpdatePayload,
     controller.update
+  );
+
+  router.get('/user/role',
+    authorizationMW.requiresAPILogin,
+    controller.getRole
   );
 };

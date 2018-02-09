@@ -31,5 +31,10 @@
         name: 'day',
         ratio: 1440
       }
-    ]);
+    ])
+    .constant('TICKETING_USER_ROLES', {
+      administrator: 'administrator',
+      supporter: 'supporter',
+      user: 'user'
+    });
 })(angular);

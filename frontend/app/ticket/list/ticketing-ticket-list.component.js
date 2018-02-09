@@ -6,6 +6,7 @@
       templateUrl: '/ticketing/app/ticket/list/ticketing-ticket-list.html',
       controller: 'TicketingTicketListController',
       bindings: {
+        scope: '<',
         state: '@'
       }
     });

@@ -3,7 +3,6 @@
 module.exports = (dependencies, lib) => {
   const coreUser = dependencies('coreUser');
   const {
-    send403Error,
     send404Error,
     send500Error
   } = require('../utils')(dependencies);
@@ -11,9 +10,9 @@ module.exports = (dependencies, lib) => {
   return {
     create,
     get,
+    getRole,
     update,
-    list,
-    userIsAdministrator
+    list
   };
 
   /**
@@ -146,20 +145,20 @@ module.exports = (dependencies, lib) => {
   }
 
   /**
-   * Check a user is administrator
+   * Get user role
    *
    * @param {Request} req
    * @param {Response} res
    */
-  function userIsAdministrator(req, res) {
-    return lib.ticketingUserRole.getByUser(req.params.id)
+  function getRole(req, res) {
+    return lib.ticketingUserRole.getByUser(req.user._id)
       .then(result => {
         if (!result) {
-          return send403Error('User does not have permission to access Ticketing', res);
+          return send404Error('User not found', res);
         }
 
-        return res.status(200).json(result.role === lib.constants.TICKETING_USER_ROLES.ADMINISTRATOR);
+        return res.status(200).json(result.role);
       })
-      .catch(err => send500Error('Failed to get role', err, res));
+      .catch(err => send500Error('Unable to get role', err, res));
   }
 };

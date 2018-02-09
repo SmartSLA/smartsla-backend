@@ -3,6 +3,9 @@
 
   angular.module('linagora.esn.ticketing')
     .component('ticketingTicketTabsOpen', {
-      templateUrl: '/ticketing/app/ticket/tabs/open/ticketing-ticket-tabs-open.html'
+      templateUrl: '/ticketing/app/ticket/tabs/open/ticketing-ticket-tabs-open.html',
+      bindings: {
+        scope: '<'
+      }
     });
 })(angular);

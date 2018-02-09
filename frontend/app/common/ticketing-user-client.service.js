@@ -11,7 +11,8 @@
       create: create,
       get: get,
       update: update,
-      list: list
+      list: list,
+      getRole: getRole
     };
 
     /**
@@ -49,6 +50,14 @@
      */
     function get(userId) {
       return ticketingRestangular.one('users', userId).get();
+    }
+
+    /**
+     * Get user's role
+     * @return {Promise} - Resolve response with user's role
+     */
+    function getRole() {
+      return ticketingRestangular.all('user').one('role').get();
     }
   }
 })(angular);
