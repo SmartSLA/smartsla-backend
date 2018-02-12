@@ -4,11 +4,15 @@ const chai = require('chai');
 const expect = chai.expect;
 
 describe('The Ticket model', function() {
-  let Ticket, ObjectId, mongoose;
+  let Ticket, ObjectId, mongoose, collaborationMock;
 
   beforeEach(function(done) {
     mongoose = this.moduleHelpers.dependencies('db').mongo.mongoose;
     ObjectId = mongoose.Types.ObjectId;
+    collaborationMock = {
+      registerCollaborationModel: (name, modelName, schema) => mongoose.model(modelName, schema)
+    };
+    this.moduleHelpers.addDep('collaboration', collaborationMock);
 
     require(this.testEnv.backendPath + '/lib/db/ticket')(this.moduleHelpers.dependencies);
     Ticket = mongoose.model('Ticket');

@@ -4,8 +4,12 @@ const { TICKET_STATES } = require('../constants');
 const { validateTicketState } = require('../helpers');
 
 module.exports = dependencies => {
+  const baseCollaboration = dependencies('db').mongo.models['base-collaboration'];
+  const collaborationModule = dependencies('collaboration');
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
+  const OBJECT_TYPE = 'ticket',
+        MODEL_NAME = 'Ticket';
 
   const TicketSoftwareSchema = new Schema({
     template: { type: Schema.ObjectId, ref: 'Software', required: true },
@@ -26,7 +30,7 @@ module.exports = dependencies => {
                                                   // used when calculate workaround and correction time
   }, { _id: false });
 
-  const TicketSchema = new Schema({
+  const ticketSchemaJSON = {
     title: { type: String, required: true, trim: true },
     number: { type: Number, unique: true },
     contract: { type: Schema.ObjectId, ref: 'Contract', required: true },
@@ -42,11 +46,12 @@ module.exports = dependencies => {
     state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
     times: TicketTimesSchema,
     schemaVersion: { type: Number, default: 1 }
-  }, {
-    timestamps: { createdAt: 'creation' }
-  });
+  };
 
-  const TicketModel = mongoose.model('Ticket', TicketSchema);
+  const TicketSchema = baseCollaboration(ticketSchemaJSON, OBJECT_TYPE);
+
+  TicketSchema.set('timestamps', { createdAt: 'creation' });
+  const TicketModel = collaborationModule.registerCollaborationModel(OBJECT_TYPE, MODEL_NAME, TicketSchema);
 
   function _validateTimes(times) {
     if (times && times.workaround && times.response && times.workaround < times.response) {

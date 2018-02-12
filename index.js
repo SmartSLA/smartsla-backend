@@ -15,6 +15,7 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.wrapper', 'webserver-wrapper'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.db', 'db'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.user', 'coreUser'),
+    new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.collaboration', 'collaboration'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.elasticsearch', 'coreElasticsearch'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.pubsub', 'pubsub'),
     new Dependency(Dependency.TYPE_NAME, 'linagora.esn.core.webserver.middleware.authorization', 'authorizationMW'),
