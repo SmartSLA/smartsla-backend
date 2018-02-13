@@ -67,7 +67,12 @@ beforeEach(function() {
     return depsStore[name];
   };
 
+  const addDep = (name, dep) => {
+    depsStore[name] = dep;
+  };
+
   this.moduleHelpers = {
-    dependencies
+    dependencies,
+    addDep
   };
 });
