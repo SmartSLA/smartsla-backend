@@ -218,6 +218,6 @@
   "Updating issue...": "Đang cập nhật vấn đề...",
   "Issue updated": "Đã cập nhật vấn đề",
   "Failed to update issue": "Cập nhật vấn đề thất bại",
-  "entities have permission":"entities have permission",
-  "entity has permission":"entity has permission"
+  "entities have permission":"tổ chức con có quyền",
+  "entity has permission":"tổ chức con có quyền"
 }
