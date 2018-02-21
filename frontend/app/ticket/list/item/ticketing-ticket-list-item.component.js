@@ -5,7 +5,8 @@
     .component('ticketingTicketListItem', {
       templateUrl: '/ticketing/app/ticket/list/item/ticketing-ticket-list-item.html',
       bindings: {
-        ticket: '<'
+        ticket: '<',
+        stateIcon: '<'
       }
     });
 })(angular);
