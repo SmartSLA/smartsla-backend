@@ -1,8 +1,0 @@
-form(name="form")
-  .row.m-0.p-t-25
-    .col-md-10
-      esn-form-group(label="{{$ctrl.glossary.category | esnI18n}}", validator="$ctrl.uniqueWord", validator-error-message=__('Type already exists'))
-        input.form-control(type="text", ng-model="$ctrl.glossary.word", required, name="word")
-    .col-md-2
-      button.btn.btn-primary(type="submit", esn-submit="$ctrl.onAddBtnClick(form)", ng-disabled="form.$invalid")
-        | #{__('Add')}

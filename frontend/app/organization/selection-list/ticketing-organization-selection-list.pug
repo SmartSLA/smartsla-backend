@@ -1,9 +1,0 @@
-.card
-  .card-header(esn-header-sticky)
-    ticketing-selection-select-all(ng-show="$ctrl.organizations.length", items="$ctrl.organizations", form="$ctrl.form")
-    ticketing-organization-selection-list-subheader(organizations="$ctrl.organizations", total="$ctrl.organizations.length")
-  .card-body
-    .listview.lv-bordered.lv-lg(ng-if="$ctrl.organizations.length > 0")
-      .lv-body
-        .lv-item.p-0(ng-repeat="organization in $ctrl.organizations track by organization._id")
-          ticketing-organization-selection-list-item.flex-vertical-centered(organization="organization")

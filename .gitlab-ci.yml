@@ -16,7 +16,6 @@ test:
   script:
     - npm i
     - npm update
-    - bower i --allow-root
     - grunt --chunk=1 --ci
 deploy_dev:
   stage: deploy_dev
@@ -34,14 +33,10 @@ deploy_dev:
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
-    - bower install --production
-    - bower prune
     - git checkout -- .
     - cd /srv/esn
     - git pull origin master
     - npm install --ignore-scripts --production
     - npm update --production
-    - bower install --production
-    - bower prune
     - git checkout -- .
     - sudo /etc/init.d/ticketing restart

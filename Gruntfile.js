@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         }
       },
       all: {
-        src: ['Gruntfile.js', 'Gruntfile-tests.js', 'tasks/**/*.js', 'test/**/*.js', 'test/**/**/*.js', 'backend/**/*.js', 'frontend/app/**/*.js']
+        src: ['Gruntfile.js', 'Gruntfile-tests.js', 'tasks/**/*.js', 'test/**/*.js', 'test/**/**/*.js', 'backend/**/*.js']
       }
     },
 
@@ -30,62 +30,8 @@ module.exports = function(grunt) {
       all: {
         src: ['<%= eslint.all.src %>']
       },
-      css: {
-        options: {
-          rules: [
-            { pattern: /important;(\s*$|(?=\s+[^\/]))/, message: 'CSS important rules only allowed with explanatory comment' }
-          ]
-        },
-        src: [
-          'frontend/app/**/*.less'
-        ]
-      },
       quick: {
         src: ['<%= eslint.quick.src %>']
-      }
-    },
-
-    puglint: {
-      all: {
-        options: {
-          config: {
-            disallowAttributeInterpolation: true,
-            disallowLegacyMixinCall: true,
-            validateExtensions: true,
-            validateIndentation: 2
-          }
-        },
-        src: [
-          'frontend/**/*.pug'
-        ]
-      }
-    },
-
-    i18n_checker: {
-      all: {
-        options: {
-          baseDir: __dirname,
-          dirs: [{
-            localeDir: 'backend/lib/i18n/locales',
-            templateSrc: [
-              'frontend/app/**/*.pug'
-            ],
-            core: true
-          }],
-          verifyOptions: {
-            defaultLocale: 'en',
-            locales: ['en', 'fr', 'vi'],
-            rules: [
-              'all-keys-translated',
-              'all-locales-present',
-              'key-trimmed',
-              'no-duplicate-among-modules',
-              'no-duplicate-with-core',
-              'no-untranslated-key',
-              'valid-json-file'
-            ]
-          }
-        }
       }
     },
 
@@ -160,8 +106,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test-midway-backend', ['splitfiles:midway']);
   grunt.registerTask('test-unit-storage', ['splitfiles:storage']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['mochacli:backend']);
-  grunt.registerTask('test-unit-frontend', 'Test frontend code', ['karma:unit']);
 
-  grunt.registerTask('test', ['linters', 'test-unit-frontend', 'test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
+  grunt.registerTask('test', ['linters', 'test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
   grunt.registerTask('default', ['test']);
 };

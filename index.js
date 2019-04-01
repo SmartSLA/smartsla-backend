@@ -2,10 +2,7 @@
 
 const AwesomeModule = require('awesome-module');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
-const path = require('path');
-const glob = require('glob-all');
 
-const FRONTEND_JS_PATH = __dirname + '/frontend/app/';
 const MODULE_NAME = 'ticketing';
 const AWESOME_MODULE_NAME = 'linagora.esn.' + MODULE_NAME;
 
@@ -51,31 +48,6 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
 
       // Register every exposed endpoints
       app.use('/api', this.api.module);
-
-      // Register every exposed frontend scripts
-      const frontendJsFilesFullPath = glob.sync([
-        FRONTEND_JS_PATH + '**/*.module.js',
-        FRONTEND_JS_PATH + '**/!(*spec).js'
-      ]);
-
-      const frontendJsFilesUri = frontendJsFilesFullPath.map(function(filepath) {
-        return filepath.replace(FRONTEND_JS_PATH, '');
-      });
-
-      webserverWrapper.injectAngularAppModules(MODULE_NAME, frontendJsFilesUri, AWESOME_MODULE_NAME, ['esn'], {
-        localJsFiles: frontendJsFilesFullPath
-      });
-
-      const lessFile = path.join(FRONTEND_JS_PATH, 'app.less');
-
-      webserverWrapper.injectLess(MODULE_NAME, [lessFile], 'esn');
-
-      const jsResourceFiles = [
-        '../components/angular-ui-select/dist/select.min.js',
-        '../components/angular-sanitize/angular-sanitize.min.js'
-      ];
-
-      webserverWrapper.injectJS(MODULE_NAME, jsResourceFiles, 'esn');
 
       webserverWrapper.addApp(MODULE_NAME, app);
 

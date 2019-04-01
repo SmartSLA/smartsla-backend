@@ -43,8 +43,7 @@
     "@linagora/i18n-checker": "2.0.3"
   },
   "scripts": {
-    "test": "grunt test",
-    "postinstall": "./node_modules/bower/bin/bower install --allow-root"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
