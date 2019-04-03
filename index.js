@@ -48,11 +48,6 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
 
       // Register every exposed endpoints
       app.use('/api', this.api.module);
-      app.use(function(req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-        next();
-      });
       webserverWrapper.addApp(MODULE_NAME, app);
 
       return callback();
