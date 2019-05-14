@@ -126,7 +126,7 @@ module.exports = (dependencies, lib) => {
             // entity info
             denormalizedUser.entity = user.entity;
 
-            return denormalizedUser;
+            return user;
           });
 
           return {

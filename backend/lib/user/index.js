@@ -66,7 +66,7 @@ module.exports = dependencies => {
       populations: [{ path: 'user' }]
     };
 
-    return ticketingUserRole.getByUser(userId, options);
+    return ticketingUser.getByUser(userId, options);
   }
 
   /**
@@ -106,7 +106,7 @@ module.exports = dependencies => {
     options = options || {};
 
     return ticketingUser.list(options)
-      .then(userRoles => Q.all(userRoles));
+      .then(users => Q.all(users));
   }
 
   function _deleteById(userId) {
