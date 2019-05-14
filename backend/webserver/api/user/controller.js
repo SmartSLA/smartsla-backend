@@ -29,7 +29,7 @@ module.exports = (dependencies, lib) => {
       hosted: true
     }];
     user.domains = [{
-      domain_id: ''
+      domain_id: '5c61a521a90d02008de24ba6'
     }];
 
     const denormalizeCreatedUser = createdUser => {
