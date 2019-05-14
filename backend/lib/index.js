@@ -27,6 +27,7 @@ module.exports = function(dependencies) {
     start,
     user,
     ticketingUserRole,
+    ticketingUser,
     ticket,
     accessControl: new AccessControl()
   };

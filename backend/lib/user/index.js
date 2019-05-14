@@ -10,7 +10,6 @@ module.exports = dependencies => {
   const User = mongoose.model('User');
   const ticketingUserRole = require('../ticketing-user-role')(dependencies);
   const ticketingUser = require('../ticketing-user')(dependencies);
-  const organization = require('../organization')(dependencies);
   const search = require('./search')(dependencies);
   const userCreatedTopic = pubsub.topic(EVENTS.USER.created);
   const userUpdatedTopic = pubsub.topic(EVENTS.USER.updated);
