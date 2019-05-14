@@ -9,6 +9,7 @@ module.exports = dependencies => {
 
   const User = mongoose.model('User');
   const ticketingUserRole = require('../ticketing-user-role')(dependencies);
+  const ticketingUser = require('../ticketing-user')(dependencies);
   const organization = require('../organization')(dependencies);
   const search = require('./search')(dependencies);
   const userCreatedTopic = pubsub.topic(EVENTS.USER.created);
@@ -35,35 +36,13 @@ module.exports = dependencies => {
 
     return User.create(userAsModel)
       .then(createdUser => {
-        const userRole = {
+        const newTicketingUser = {
           user: createdUser._id,
           role
         };
 
-        return ticketingUserRole.create(userRole)
-          .then(createdUserRole => {
-            // add user into entity
-            if (user.entity) {
-              return organization.addUsersById(user.entity._id, [createdUser._id])
-                .then(() => {
-                  createdUser = createdUser.toObject();
-
-                  return organization.getById(user.entity.parent)
-                    .then(organization => {
-                      user.entity.parent = organization;
-                      createdUser.entity = user.entity;
-                    });
-                })
-                .then(() => createdUser)
-                .catch(err =>
-                  // remove createdUserRole if failed to add user into entity
-                  ticketingUserRole.deleteById(createdUserRole._id)
-                    .then(() => Q.reject(err))
-                );
-            }
-
-            return createdUser.toObject();
-          })
+        return ticketingUser.create(newTicketingUser)
+          .then(createdUser => createdUser.toObject())
           .then(createdUserObject => {
             createdUserObject.role = role;
             userCreatedTopic.publish(createdUserObject);
@@ -83,8 +62,7 @@ module.exports = dependencies => {
       populations: [{ path: 'user' }]
     };
 
-    return ticketingUserRole.getByUser(userId, options)
-      .then(userRole => _buildUserFromUserRole(userRole));
+    return ticketingUserRole.getByUser(userId, options);
   }
 
   /**
@@ -123,27 +101,8 @@ module.exports = dependencies => {
   function list(options) {
     options = options || {};
 
-    return ticketingUserRole.list(options)
-      .then(userRoles => {
-        const usersPromises = userRoles.map(userRole => _buildUserFromUserRole(userRole));
-
-        return Q.all(usersPromises);
-      });
-  }
-
-  function _buildUserFromUserRole(userRole) {
-    if (!userRole) {
-      return null;
-    }
-
-    return organization.getEntityByUserId(userRole.user._id)
-      .then(entity => {
-        if (entity) {
-          userRole.user.entity = entity;
-        }
-
-        return userRole.user;
-      });
+    return ticketingUser.list(options)
+      .then(userRoles => Q.all(userRoles));
   }
 
   function _deleteById(userId) {

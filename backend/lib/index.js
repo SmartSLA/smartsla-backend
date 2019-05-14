@@ -6,6 +6,7 @@ module.exports = function(dependencies) {
   const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
+  const ticketingUser = require('./ticketing-user')(dependencies);
   const contract = require('./contract')(dependencies);
   const helpers = require('./helpers');
   const constants = require('./constants');
