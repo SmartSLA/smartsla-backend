@@ -37,7 +37,12 @@ module.exports = dependencies => {
       .then(createdUser => {
         const newTicketingUser = {
           user: createdUser._id,
-          role
+          role,
+          type: user.type || '',
+          name: user.name || '',
+          phone: user.phone || '',
+          position: user.position || '',
+          identifier: user.identifier || ''
         };
 
         return ticketingUser.create(newTicketingUser)
