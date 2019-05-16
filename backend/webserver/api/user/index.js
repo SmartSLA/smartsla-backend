@@ -2,7 +2,6 @@
 
 module.exports = (dependencies, lib, router) => {
   const authorizationMW = dependencies('authorizationMW');
-  const { loadDomainByHostname } = dependencies('domainMW');
   const { checkIdInParams } = dependencies('helperMw');
   const middleware = require('./middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
@@ -22,6 +21,8 @@ module.exports = (dependencies, lib, router) => {
 
   router.post('/users',
     authorizationMW.requiresAPILogin,
+    middleware.canCreate,
+    middleware.validateUserCreatePayload,
     controller.create
   );
 
