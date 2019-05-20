@@ -19,24 +19,24 @@ test:
     - grunt --chunk=1 --ci
 deploy_dev:
   stage: deploy_dev
+  except:
+    - triggers
   tags:
-    - ticketing.linagora.com
+    - dev.open-paas.org
     - deployment
   environment:
     name: dev
-    url: http://ticketing.linagora.com
+    url: https://dev.open-paas.org
   only:
-    - master@linagora/lgs/openpaas/linagora.esn.ticketing
+    - master@linagora/lps/studio/ticketing08000linux.backend
   script:
-    - cd /srv/linagora.esn.ticketing
-    - git pull origin master
+    - cd /srv/${CI_PROJECT_NAME}
+    - git fetch --all
+    - git checkout ${CI_COMMIT_SHA}
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
+    - bower install --production
+    - bower prune
     - git checkout -- .
-    - cd /srv/esn
-    - git pull origin master
-    - npm install --ignore-scripts --production
-    - npm update --production
-    - git checkout -- .
-    - sudo /etc/init.d/ticketing restart
+    - sudo /etc/init.d/rse.dev restart
