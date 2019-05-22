@@ -8,7 +8,6 @@ module.exports = dependencies => {
   const pubsub = dependencies('pubsub').local;
 
   const User = mongoose.model('User');
-  const ticketingUserRole = require('../ticketing-user-role')(dependencies);
   const ticketingUser = require('../ticketing-user')(dependencies);
   const search = require('./search')(dependencies);
   const userCreatedTopic = pubsub.topic(EVENTS.USER.created);
