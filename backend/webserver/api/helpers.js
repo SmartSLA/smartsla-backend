@@ -26,7 +26,7 @@ module.exports = (dependencies, lib) => {
         next();
       })
       .catch(err => send500Error('Unable to check administrator permission', err, res));*/
-      next ();
+      next();
   }
 
   function loadUserRole(req, res, next) {
