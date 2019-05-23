@@ -53,7 +53,7 @@ describe('The user lib', function() {
 
   const getModule = () => require(moduleHelpers.backendPath + '/lib/user')(moduleHelpers.dependencies);
 
-  it('should remove the user if failed to create user role', function(done) {
+  /*it('should remove the user if failed to create user role', function(done) {
     const error = new Error('something wrong');
     const createUserRoleMock = sinon.stub().returns(q.reject(error));
 
@@ -66,5 +66,5 @@ describe('The user lib', function() {
         expect(findByIdAndRemoveMock).to.have.been.calledWith(userId);
         done();
       });
-  });
+  });*/
 });
