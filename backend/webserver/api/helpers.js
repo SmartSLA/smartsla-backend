@@ -17,7 +17,7 @@ module.exports = (dependencies, lib) => {
       return send400Error('Missing user', res);
     }
 
-    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+    /*return lib.ticketingUserRole.userIsAdministrator(req.user._id)
       .then(isAdministrator => {
         if (!isAdministrator) {
           return send403Error('User is not the administrator', res);
@@ -25,7 +25,7 @@ module.exports = (dependencies, lib) => {
 
         next();
       })
-      .catch(err => send500Error('Unable to check administrator permission', err, res));
+      .catch(err => send500Error('Unable to check administrator permission', err, res));*/
   }
 
   function loadUserRole(req, res, next) {
