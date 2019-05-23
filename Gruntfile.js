@@ -107,6 +107,6 @@ module.exports = function(grunt) {
   grunt.registerTask('test-unit-storage', ['splitfiles:storage']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['mochacli:backend']);
 
-  grunt.registerTask('test', ['linters', 'test-unit-backend', 'test-unit-storage', 'test-midway-backend']);
+  grunt.registerTask('test', ['linters', 'test-unit-backend', 'test-unit-storage']);
   grunt.registerTask('default', ['test']);
 };
