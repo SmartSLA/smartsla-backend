@@ -22,7 +22,6 @@ module.exports = (dependencies, lib, router) => {
   router.post('/users',
     authorizationMW.requiresAPILogin,
     middleware.canCreate,
-    middleware.validateUserCreatePayload,
     controller.create
   );
 
