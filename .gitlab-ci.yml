@@ -36,7 +36,5 @@ deploy_dev:
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
-    - bower install --production
-    - bower prune
     - git checkout -- .
     - sudo /etc/init.d/rse.dev restart
