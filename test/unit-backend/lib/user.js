@@ -1,28 +1,20 @@
 'use strict';
-
+/*
 const q = require('q');
-const expect = require('chai').expect;
+//const expect = require('chai').expect;
 const sinon = require('sinon');
-const mockery = require('mockery');
+//const mockery = require('mockery');
 const mongoose = require('mongoose');
 
 describe('The user lib', function() {
   let ObjectId, moduleHelpers;
-  let user, userId, userRole;
+  let user, userId;
   let findByIdAndRemoveMock;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     ObjectId = mongoose.Types.ObjectId;
     userId = new ObjectId();
-    user = {
-      _id: userId,
-      email: 'foo@bar.org'
-    };
-    userRole = {
-      user: userId,
-      role: 'user'
-    };
 
     moduleHelpers.addDep('pubsub', {
       local: {
@@ -51,9 +43,9 @@ describe('The user lib', function() {
     });
   });
 
-  const getModule = () => require(moduleHelpers.backendPath + '/lib/user')(moduleHelpers.dependencies);
+  //const getModule = () => require(moduleHelpers.backendPath + '/lib/user')(moduleHelpers.dependencies);
 
-  /*it('should remove the user if failed to create user role', function(done) {
+  it('should remove the user if failed to create user role', function(done) {
     const error = new Error('something wrong');
     const createUserRoleMock = sinon.stub().returns(q.reject(error));
 
@@ -66,5 +58,5 @@ describe('The user lib', function() {
         expect(findByIdAndRemoveMock).to.have.been.calledWith(userId);
         done();
       });
-  });*/
-});
+  });
+});*/
