@@ -8,7 +8,6 @@ module.exports = function(dependencies, lib, router) {
     canCreateSoftware,
     canListSoftware,
     canUpdateSoftware,
-    validateSoftwareCreatePayload,
     validateSoftwareUpdatePayload
   } = require('./middleware')(dependencies, lib);
 
@@ -21,7 +20,6 @@ module.exports = function(dependencies, lib, router) {
   router.post('/software',
     authorizationMW.requiresAPILogin,
     canCreateSoftware,
-    validateSoftwareCreatePayload,
     controller.create
   );
 
