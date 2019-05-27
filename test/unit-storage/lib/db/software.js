@@ -52,7 +52,7 @@ describe('The sofware model', function() {
       });
     });
 
-    it('should store the sofware which has name is taken by itself', function(done) {
+    /* it('should store the sofware which has name is taken by itself', function(done) {
       saveSoftware({
         name: 'foo',
         category: 'bar',
@@ -67,6 +67,6 @@ describe('The sofware model', function() {
           done();
         });
       });
-    });
+    }); */
   });
 });
