@@ -4,10 +4,14 @@ module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
 
   const SoftwareSchema = new mongoose.Schema({
-    active: { type: Boolean, default: true },
+    private: { type: Boolean, default: false },
     name: { type: String, required: true, unique: true },
-    category: { type: String, required: true },
-    versions: [{ type: String, unique: true }],
+    summary: { type: String },
+    description: { type: String },
+    licence: { type: String },
+    technology: { type: String },
+    group: { type: String },
+    logo: mongoose.Schema.Types.ObjectId,
     timestamps: {
       creation: { type: Date, default: Date.now }
     },
