@@ -12,6 +12,8 @@ module.exports = function(dependencies) {
   const constants = require('./constants');
   const listeners = require('./listeners')(dependencies);
   const software = require('./software')(dependencies);
+  const team = require('./team')(dependencies);
+  const client = require('./client')(dependencies);
   const glossary = require('./ticketing-glossary')(dependencies);
   const ticket = require('./ticket')(dependencies);
   const AccessControl = require('./access-control');
@@ -23,6 +25,8 @@ module.exports = function(dependencies) {
     models,
     organization,
     software,
+    team,
+    client,
     glossary,
     start,
     user,
