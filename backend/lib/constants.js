@@ -40,6 +40,14 @@ module.exports = {
     USER: {
       name: 'ticketing.users.idx',
       type: 'users'
+    },
+    TEAM: {
+      name: 'ticketing.teams.idx',
+      type: 'teams'
+    },
+    CLIENT: {
+      name: 'ticketing.clients.idx',
+      type: 'clients'
     }
   },
   EVENTS: {
@@ -54,6 +62,14 @@ module.exports = {
     SOFTWARE: {
       created: 'ticketing:software:created',
       updated: 'ticketing:software:updated'
+    },
+    TEAM: {
+      created: 'ticketing:team:created',
+      updated: 'ticketing:team:updated'
+    },
+    CLIENT: {
+      created: 'ticketing:client:created',
+      updated: 'ticketing:client:updated'
     },
     TICKET: {
       updated: 'ticketing:ticket:updated'
