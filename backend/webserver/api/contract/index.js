@@ -8,8 +8,7 @@ module.exports = function(dependencies, lib, router) {
     canCreateContract,
     canListContract,
     canUpdateContract,
-    canReadContract,
-    validateContractPayload
+    canReadContract
   } = require('./middleware')(dependencies, lib);
 
   router.get('/contracts',
@@ -28,7 +27,6 @@ module.exports = function(dependencies, lib, router) {
   router.post('/contracts',
     authorizationMW.requiresAPILogin,
     canCreateContract,
-    validateContractPayload,
     controller.create
   );
 
@@ -36,7 +34,6 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canUpdateContract,
     checkIdInParams('id', 'Contract'),
-    validateContractPayload,
     controller.update
   );
 };
