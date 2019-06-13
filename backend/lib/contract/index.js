@@ -1,8 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-const Q = require('q');
-
 const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
 
 module.exports = dependencies => {
@@ -26,15 +23,12 @@ module.exports = dependencies => {
   ];
 
   return {
-    addDemands,
-    addSoftware,
     create,
     getById,
     list,
     listByCursor,
     search,
-    updateById,
-    updateSoftware
+    updateById
   };
 
   /**
@@ -47,14 +41,9 @@ module.exports = dependencies => {
 
     return Contract.create(contract)
       .then(createdContract => {
-        const contractToIndex = _.cloneDeep(createdContract);
+        contractCreatedTopic.publish(createdContract);
 
-        return Q.ninvoke(contractToIndex, 'populate', POPULATION_FOR_ELASTICSEARCH)
-          .then(populatedContract => {
-            contractCreatedTopic.publish(populatedContract);
-
-            return createdContract;
-          });
+        return createdContract;
       });
   }
 
@@ -66,14 +55,11 @@ module.exports = dependencies => {
   function list(options) {
     options = options || {};
 
-    const findOptions = options.organization ? { organization: options.organization } : {};
-
     return Contract
-      .find(findOptions)
-      .populate(options.populations)
+      .find()
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .sort('-creation')
+      .sort('-timestamps.creation')
       .exec();
   }
 
@@ -90,65 +76,14 @@ module.exports = dependencies => {
         { $set: modified },
         { new: true }
       )
-      .populate(POPULATION_FOR_ELASTICSEARCH)
       .exec()
-        .then(modified => {
-          if (modified) {
-            contractUpdatedTopic.publish(modified);
-          }
+      .then(modified => {
+        if (modified) {
+          contractUpdatedTopic.publish(modified);
+        }
 
-          return modified;
-        });
-  }
-
-  /**
-   * Add a software for a contract
-   * @param {String}   contractId    - The contract ID
-   * @param {Object}   softwareToAdd - The an array or a object of software to add
-   * @param {Promise}                - Resolve on success with modified contract
-   */
-  function addSoftware(contractId, softwareToAdd) {
-    softwareToAdd = Array.isArray(softwareToAdd) ? softwareToAdd : [softwareToAdd];
-
-    return Contract
-      .findByIdAndUpdate(
-        contractId,
-        { $addToSet: { software: { $each: softwareToAdd } } },
-        { new: true }
-      )
-      .populate(POPULATION_FOR_ELASTICSEARCH)
-      .exec()
-        .then(modified => {
-          if (modified) {
-            contractUpdatedTopic.publish(modified);
-          }
-
-          return modified;
-        });
-  }
-
-  /**
-   * Add demands for a contract
-   * @param {String}   contractId  - The contract ID
-   * @param {Object}   demands     - The array of demands to add
-   * @param {Promise}              - Resolve on success with modified contract
-   */
-  function addDemands(contractId, demands) {
-    return Contract
-      .findByIdAndUpdate(
-        contractId,
-        { $addToSet: { demands: { $each: demands } } },
-        { new: true }
-      )
-      .populate(POPULATION_FOR_ELASTICSEARCH)
-      .exec()
-        .then(modified => {
-          if (modified) {
-            contractUpdatedTopic.publish(modified);
-          }
-
-          return modified;
-        });
+        return modified;
+      });
   }
 
   /**
@@ -177,21 +112,4 @@ module.exports = dependencies => {
       .cursor();
   }
 
-  /**
-   * Update a software of contract
-   * @param {Promise} - Resolve on success
-   */
-  function updateSoftware(contract, template, modified) {
-    const index = _.findIndex(contract.software, item => (String(item.template) === template));
-
-    contract.software[index].versions = modified.versions;
-
-    return contract.save()
-      .then(savedContract =>
-        savedContract.populate(POPULATION_FOR_ELASTICSEARCH)
-        .execPopulate()
-          .then(populatedContract => {
-            contractUpdatedTopic.publish(populatedContract);
-          }));
-  }
 };

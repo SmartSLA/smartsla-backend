@@ -5,16 +5,11 @@ module.exports = function(dependencies, lib, router) {
   const authorizationMW = dependencies('authorizationMW');
   const controller = require('./controller')(dependencies, lib);
   const {
-    load,
     canCreateContract,
     canListContract,
     canUpdateContract,
     canReadContract,
-    validateContractPayload,
-    validateDemand,
-    validatePermissions,
-    validateSoftwareToAdd,
-    validateSoftwareToUpdate
+    validateContractPayload
   } = require('./middleware')(dependencies, lib);
 
   router.get('/contracts',
@@ -43,42 +38,5 @@ module.exports = function(dependencies, lib, router) {
     checkIdInParams('id', 'Contract'),
     validateContractPayload,
     controller.update
-  );
-
-  router.post('/contracts/:id/permissions',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canUpdateContract,
-    load,
-    validatePermissions,
-    controller.updatePermissions
-  );
-
-  router.post('/contracts/:id/software',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canUpdateContract,
-    load,
-    validateSoftwareToAdd,
-    controller.addSoftware
-  );
-
-  router.post('/contracts/:id/software/:softwareId',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    checkIdInParams('softwareId', 'Software'),
-    canUpdateContract,
-    load,
-    validateSoftwareToUpdate,
-    controller.updateSoftware
-  );
-
-  router.post('/contracts/:id/demands',
-    authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Contract'),
-    canUpdateContract,
-    load,
-    validateDemand,
-    controller.addDemand
   );
 };
