@@ -1,62 +1,72 @@
 'use strict';
 
-const { uniqueDemands } = require('../helpers');
-
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
 
-  const ContractDemandSchema = new Schema({
-    demandType: { type: String, required: true },
-    softwareType: { type: String },
-    issueType: { type: String },
-    responseTime: { type: Number, default: 0 }, // unit: minute
-    workaroundTime: { type: Number, default: 0 }, // unit: minute
-    correctionTime: { type: Number, default: 0 }, // unit: minute
-    timestamps: {
-      creation: { type: Date, default: Date.now }
-    }
-  }, { _id: false });
+  const ContactSchema = new Schema({
+    commercial: { type: String},
+    technical: { type: String}
+  }, { _id: false});
 
-  const ContractSoftwareSchema = new Schema({
-    active: { type: Boolean, default: true },
-    template: { type: Schema.ObjectId, ref: 'Software', required: true },
-    versions: [{ type: String, unique: true }],
-    type: { type: String, required: true },
-    timestamps: {
-      creation: { type: Date, default: Date.now }
-    }
-  }, { _id: false });
+  const MailingListSchema = new Schema({
+    internal: [String],
+    external: [String]
+  }, { _id: false});
+
+  const ScheduleSchema = new Schema({
+    start: { type: String },
+    end: { type: String }
+  }, { _id: false});
+
+  const HumanResourcesSchema = new Schema({
+    teams: [Schema.Types.Mixed],
+    beneficiaries: [Schema.Types.Mixed]
+  }, { _id: false});
+
+  const SoftwareSchema = new Schema({
+    name: { type: String },
+    critical: { type: Boolean, default: true },
+    generic: Schema.Types.Mixed,
+    technicalReferent: { type: String },
+    os: { type: String },
+    version: { type: String },
+    SupportDate: ScheduleSchema
+  }, { _id: false});
+
+  const EngagementsSchema = new Schema({
+    request: { type: String },
+    severity: { type: String },
+    idOssa: { type: String },
+    sensible: { type: Boolean, default: false },
+    schedule: Schema.Types.Mixed,
+    bypassed: Schema.Types.Mixed,
+    fix: Schema.Types.Mixed,
+    supported: { type: String}
+  }, { _id: false});
 
   const ContractSchema = new Schema({
-    active: { type: Boolean, default: true },
-    number: { type: String },
-    title: { type: String, required: true },
-    organization: { type: Schema.ObjectId, ref: 'Organization', required: true },
-    manager: { type: Schema.ObjectId, ref: 'User' },
-    defaultSupportManager: { type: Schema.ObjectId, ref: 'User' },
+    name: { type: String, required: true},
+    contact: ContactSchema,
+    mailingList: MailingListSchema,
+    client: { type: String, required: true },
+    status: { type: Boolean, default: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    openingHours: { type: String },
-    // available value of permissions:
-    // 1 if all entities of contract's organization have permission
-    // array of some entities of contract's organization which have permission
-    permissions: { type: Schema.Types.Mixed, default: [] },
-    demands: [ContractDemandSchema],
-    software: [ContractSoftwareSchema],
-    creation: { type: Date, default: Date.now },
+    schedule: ScheduleSchema,
+    type: { type: String, default: 'credit'},
+    govern: { type: String},
+    domain: { type: String},
+    humanResources: HumanResourcesSchema,
+    software: [SoftwareSchema],
+    Engagements: [EngagementsSchema],
+    timestamps: {
+      creation: { type: Date, default: Date.now }
+    },
     schemaVersion: { type: Number, default: 1 }
   });
 
   const ContractModel = mongoose.model('Contract', ContractSchema);
-
-  ContractSchema.pre('save', function(next) {
-    if (!uniqueDemands(this.demands)) {
-      next(new Error('Invalid contract demands'));
-    }
-
-    return next();
-  });
 
   return ContractModel;
 };
