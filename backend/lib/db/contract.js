@@ -33,7 +33,7 @@ module.exports = dependencies => {
     version: { type: String },
     SupportDate: ScheduleSchema
   }, { _id: false});
-  
+
   const EngagementSectionSchema = new Schema({
     schedule: ScheduleSchema,
     engagements: [Schema.Types.Mixed]
