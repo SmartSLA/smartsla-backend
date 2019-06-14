@@ -26,7 +26,7 @@ module.exports = dependencies => {
 
   const SoftwareSchema = new Schema({
     name: { type: String },
-    critical: { type: Boolean, default: true },
+    critical: { type: String, default: 'standard' },
     generic: Schema.Types.Mixed,
     technicalReferent: { type: String },
     os: { type: String },
