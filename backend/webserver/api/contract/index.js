@@ -33,7 +33,6 @@ module.exports = function(dependencies, lib, router) {
   router.post('/contracts/:id',
     authorizationMW.requiresAPILogin,
     canUpdateContract,
-    checkIdInParams('id', 'Contract'),
     controller.update
   );
 };
