@@ -33,16 +33,16 @@ module.exports = dependencies => {
     version: { type: String },
     SupportDate: ScheduleSchema
   }, { _id: false});
+  
+  const EngagementSectionSchema = new Schema({
+    schedule: ScheduleSchema,
+    engagements: [Schema.Types.Mixed]
+  }, { _id: false});
 
   const EngagementsSchema = new Schema({
-    request: { type: String },
-    severity: { type: String },
-    idOssa: { type: String },
-    sensible: { type: Boolean, default: false },
-    schedule: Schema.Types.Mixed,
-    bypassed: Schema.Types.Mixed,
-    fix: Schema.Types.Mixed,
-    supported: { type: String}
+      critical: EngagementSectionSchema,
+      sensible: EngagementSectionSchema,
+      standard: EngagementSectionSchema
   }, { _id: false});
 
   const ContractSchema = new Schema({
@@ -59,7 +59,7 @@ module.exports = dependencies => {
     domain: { type: String},
     humanResources: HumanResourcesSchema,
     software: [SoftwareSchema],
-    Engagements: [EngagementsSchema],
+    Engagements: EngagementsSchema,
     timestamps: {
       creation: { type: Date, default: Date.now }
     },
