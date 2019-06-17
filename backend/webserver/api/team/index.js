@@ -13,6 +13,12 @@ module.exports = function(dependencies, lib, router) {
   router.get('/team',
     authorizationMW.requiresAPILogin,
     canListTeam,
+    controller.list
+  );
+
+  router.get('/team/:id',
+    authorizationMW.requiresAPILogin,
+    canListTeam,
     controller.get
   );
 

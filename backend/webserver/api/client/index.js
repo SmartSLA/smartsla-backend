@@ -13,6 +13,12 @@ module.exports = function(dependencies, lib, router) {
   router.get('/client',
     authorizationMW.requiresAPILogin,
     canListClient,
+    controller.list
+  );
+
+  router.get('/client/:id',
+    authorizationMW.requiresAPILogin,
+    canListClient,
     controller.get
   );
 
