@@ -6,6 +6,7 @@ module.exports = function(dependencies, lib) {
   return {
     create,
     get,
+    list,
     update
   };
 
@@ -22,12 +23,12 @@ module.exports = function(dependencies, lib) {
   }
 
   /**
-   * Get client
+   * List clients
    *
    * @param {Request} req
    * @param {Response} res
    */
-  function get(req, res) {
+  function list(req, res) {
     let getClient;
     let errorMessage;
 
@@ -72,6 +73,23 @@ module.exports = function(dependencies, lib) {
         res.status(200).json(result.list);
       })
       .catch(err => send500Error(errorMessage, err, res));
+  }
+
+  /**
+   * Get a client
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function get(req, res) {
+    return lib.client.getById(req.params.id)
+      .then(client => {
+        client = client.toObject();
+
+        return res.status(200).json(client);
+
+      })
+      .catch(err => send500Error('Failed to get client', err, res));
   }
 
   /**

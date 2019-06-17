@@ -14,6 +14,12 @@ module.exports = function(dependencies, lib, router) {
   router.get('/software',
     authorizationMW.requiresAPILogin,
     canListSoftware,
+    controller.list
+  );
+
+  router.get('/software/:id',
+    authorizationMW.requiresAPILogin,
+    canListSoftware,
     controller.get
   );
 
