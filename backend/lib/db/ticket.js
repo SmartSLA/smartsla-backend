@@ -1,96 +1,45 @@
 'use strict';
 
-const { TICKET_STATES } = require('../constants');
-const { validateTicketState } = require('../helpers');
-
 module.exports = dependencies => {
-  const baseCollaboration = dependencies('db').mongo.models['base-collaboration'];
-  const collaborationModule = dependencies('collaboration');
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
-  const OBJECT_TYPE = 'ticket',
-        MODEL_NAME = 'Ticket';
 
-  const TicketSoftwareSchema = new Schema({
-    template: { type: Schema.ObjectId, ref: 'Software', required: true },
-    criticality: { type: String, required: true },
-    version: { type: String, required: true }
+  const ScheduleSchema = new Schema({
+    start: { type: String },
+    end: { type: String }
   }, { _id: false });
 
-  // Unit time: minute
-  const TicketTimesSchema = new Schema({
-    response: { type: Number, min: 0 },
-    workaround: { type: Number, min: 0 },
-    correction: { type: Number, min: 0 },
-    responseSLA: { type: Number, min: 0 },
-    workaroundSLA: { type: Number, min: 0 },
-    correctionSLA: { type: Number, min: 0 },
-    suspendedAt: Date, // moment when suspend ticket
-    suspend: { type: Number, min: 0, default: 0 } // cumulated when ticket is changed from suspended state to "In progress" state
-                                                  // used when calculate workaround and correction time
+  const SoftwareSchema = new Schema({
+    name: { type: String },
+    critical: { type: String, default: 'standard' },
+    generic: Schema.Types.Mixed,
+    technicalReferent: { type: String },
+    os: { type: String },
+    version: { type: String },
+    SupportDate: ScheduleSchema
   }, { _id: false });
 
-  const ticketSchemaJSON = {
-    title: { type: String, required: true, trim: true },
-    number: { type: Number, unique: true },
-    contract: { type: Schema.ObjectId, ref: 'Contract', required: true },
-    demandType: { type: String, required: true },
-    severity: String,
-    software: TicketSoftwareSchema,
-    description: { type: String, required: true, trim: true, minlength: 50 },
-    environment: { type: String, trim: true },
-    requester: { type: Schema.ObjectId, ref: 'User', required: true },
-    supportManager: { type: Schema.ObjectId, ref: 'User', required: true },
-    supportTechnicians: [{ type: Schema.ObjectId, ref: 'User' }],
-    attachments: [Schema.ObjectId],
-    state: { type: String, default: TICKET_STATES.NEW, validate: [validateTicketState, 'Invalid ticket state'] },
-    times: TicketTimesSchema,
+  const ticketSchema = new mongoose.Schema({
+    title: { type: String, required: true, unique: true },
+    contract: Schema.Types.Mixed,
+    participants: [String],
+    type: { type: String },
+    severity: { type: String },
+    description: { type: String },
+    software: SoftwareSchema,
+    relatedRequests: [Schema.Types.Mixed],
+    status: { type: String},
+    responsible: Schema.Types.Mixed,
+    author: Schema.Types.Mixed,
+    comments: [Schema.Types.Mixed],
+    files: [Schema.Types.Mixed],
+    timestamps: {
+      creation: { type: Date, default: Date.now }
+    },
     schemaVersion: { type: Number, default: 1 }
-  };
-
-  const TicketSchema = baseCollaboration(ticketSchemaJSON, OBJECT_TYPE);
-
-  TicketSchema.set('timestamps', { createdAt: 'creation' });
-  const TicketModel = collaborationModule.registerCollaborationModel(OBJECT_TYPE, MODEL_NAME, TicketSchema);
-
-  function _validateTimes(times) {
-    if (times && times.workaround && times.response && times.workaround < times.response) {
-      return new Error('workaround time can NOT be smaller than response time');
-    }
-
-    if (times && times.correction && times.response && times.correction < times.response) {
-      return new Error('correction time can NOT be smaller than response time');
-    }
-
-    if (times && times.correction && times.workaround && times.correction < times.workaround) {
-      return new Error('correction time can NOT be smaller than workaround time');
-    }
-  }
-
-  TicketSchema.pre('save', function(next) {
-    const self = this;
-
-    const timesError = _validateTimes(self.times);
-
-    if (timesError) {
-      return next(timesError);
-    }
-
-    if (!self.isNew) {
-      return next();
-    }
-
-    // ticket number auto-increment
-    TicketModel.findOne({}, {}, { sort: { number: -1 } }, (err, ticket) => {
-      if (err) {
-        return next(err);
-      }
-
-      self.number = ticket ? ticket.number + 1 : 1;
-
-      next();
-    });
   });
+
+  const TicketModel = mongoose.model('Ticket', ticketSchema);
 
   return TicketModel;
 };
