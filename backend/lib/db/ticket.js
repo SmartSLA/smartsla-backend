@@ -20,7 +20,7 @@ module.exports = dependencies => {
   }, { _id: false });
 
   const ticketSchema = new mongoose.Schema({
-    title: { type: String, required: true, unique: true },
+    title: { type: String, required: true },
     contract: Schema.Types.Mixed,
     participants: [String],
     type: { type: String },
