@@ -18,7 +18,7 @@ module.exports = function(dependencies, lib) {
    */
   function create(req, res) {
     return lib.ticket.create(req.body)
-      .then(ticket => res.status(201).json(ticket))
+      .then(createdTicket => res.status(201).json(createdTicket))
       .catch(err => send500Error('Failed to create ticket', err, res));
   }
 
