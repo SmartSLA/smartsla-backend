@@ -2,6 +2,7 @@
 
 module.exports = (dependencies, lib, router) => {
   const authorizationMW = dependencies('authorizationMW');
+  const { checkIdInParams } = dependencies('helperMw');
   const controller = require('./controller')(dependencies, lib);
 
   router.post('/tickets',
@@ -16,6 +17,7 @@ module.exports = (dependencies, lib, router) => {
 
   router.get('/tickets/:id',
     authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Ticket'),
     controller.get
   );
 
