@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(dependencies) {
+module.exports = function (dependencies) {
 
   const models = require('./db')(dependencies);
   const user = require('./user')(dependencies);
@@ -16,6 +16,7 @@ module.exports = function(dependencies) {
   const client = require('./client')(dependencies);
   const glossary = require('./ticketing-glossary')(dependencies);
   const ticket = require('./ticket')(dependencies);
+  const filter = require('./filter')(dependencies);
   const AccessControl = require('./access-control');
 
   return {
@@ -33,6 +34,7 @@ module.exports = function(dependencies) {
     ticketingUserRole,
     ticketingUser,
     ticket,
+    filter,
     accessControl: new AccessControl()
   };
 
