@@ -5,34 +5,30 @@ module.exports = function (dependencies, lib, router) {
     const authorizationMW = dependencies('authorizationMW');
     const controller = require('./controller')(dependencies, lib);
     const {
-        canCreateFilter,
-        canListFilter,
-        canUpdateFilter
+        validateFilterCreatePayload,
+        validateFilterUpdatePayload
     } = require('./middleware')(dependencies, lib);
 
     router.get('/filters',
         authorizationMW.requiresAPILogin,
-        canListFilter,
         controller.list
     );
 
     router.get('/filters/:id',
         authorizationMW.requiresAPILogin,
-        canListFilter,
         controller.get
     );
 
     router.post('/filters',
         authorizationMW.requiresAPILogin,
-        canCreateFilter,
+        validateFilterCreatePayload,
         controller.create
     );
 
     router.put('/filters/:id',
         authorizationMW.requiresAPILogin,
-        canUpdateFilter,
         checkIdInParams('id', 'filter'),
-        canUpdateFilter,
+        validateFilterUpdatePayload,
         controller.update
     );
 };

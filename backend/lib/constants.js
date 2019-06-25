@@ -71,6 +71,10 @@ module.exports = {
       created: 'ticketing:client:created',
       updated: 'ticketing:client:updated'
     },
+    FILTER: {
+      created: 'ticketing:filter:created',
+      updated: 'ticketing:filter:updated'
+    },
     TICKET: {
       updated: 'ticketing:ticket:updated'
     },
