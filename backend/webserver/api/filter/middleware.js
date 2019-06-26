@@ -2,7 +2,7 @@
 
 const composableMw = require('composable-middleware');
 
-module.exports = (dependencies) => {
+module.exports = function(dependencies) {
     const { send400Error } = require('../utils')(dependencies);
 
     return {
