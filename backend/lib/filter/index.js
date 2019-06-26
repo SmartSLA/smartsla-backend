@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (dependencies) {
+module.exports = function(dependencies) {
     const mongoose = dependencies('db').mongo.mongoose;
     const pubsubLocal = dependencies('pubsub').local;
     const Filter = mongoose.model('TicketFilter');
