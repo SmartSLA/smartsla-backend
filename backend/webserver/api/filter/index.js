@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (dependencies, lib, router) {
+module.exports = function(dependencies, lib, router) {
     const { checkIdInParams } = dependencies('helperMw');
     const authorizationMW = dependencies('authorizationMW');
     const controller = require('./controller')(dependencies, lib);
