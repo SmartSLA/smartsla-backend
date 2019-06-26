@@ -5,7 +5,6 @@ module.exports = function (dependencies) {
     const pubsubLocal = dependencies('pubsub').local;
     const Filter = mongoose.model('TicketFilter');
     const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
-
     const filterCreatedTopic = pubsubLocal.topic(EVENTS.FILTER.created);
     const filterUpdatedTopic = pubsubLocal.topic(EVENTS.FILTER.updated);
 
@@ -69,7 +68,6 @@ module.exports = function (dependencies) {
             });
     }
 
-
     /**
      * Get a filter by ID
      * @param {String}   filterId - The filter ID
@@ -88,5 +86,4 @@ module.exports = function (dependencies) {
     function listByCursor() {
         return Filter.find().cursor();
     }
-
 };
