@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (dependencies, lib) {
+module.exports = function(dependencies, lib) {
     const { send404Error, send500Error } = require('../utils')(dependencies);
 
     return {
