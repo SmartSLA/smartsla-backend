@@ -14,6 +14,7 @@ module.exports = (dependencies, lib) => {
   require('./ticket')(dependencies, lib, router);
   require('./team')(dependencies, lib, router);
   require('./client')(dependencies, lib, router);
+  require('./filter')(dependencies, lib, router);
 
   return router;
 };
