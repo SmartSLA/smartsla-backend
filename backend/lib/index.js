@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (dependencies) {
+module.exports = function(dependencies) {
 
   const models = require('./db')(dependencies);
   const user = require('./user')(dependencies);
