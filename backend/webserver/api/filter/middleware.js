@@ -2,14 +2,13 @@
 
 const composableMw = require('composable-middleware');
 
-module.exports = (dependencies) => {
+module.exports = dependencies => {
     const { send400Error } = require('../utils')(dependencies);
 
     return {
         validateFilterCreatePayload,
         validateFilterUpdatePayload
     };
-
 
     function validateFilterCreatePayload(req, res, next) {
         const middlewares = [
