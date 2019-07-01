@@ -25,4 +25,10 @@ module.exports = (dependencies, lib, router) => {
     authorizationMW.requiresAPILogin,
     controller.update
   );
+
+  router.delete('/tickets/:id',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'Ticket'),
+    controller.remove
+  );
 };

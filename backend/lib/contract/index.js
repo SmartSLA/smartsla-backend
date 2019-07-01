@@ -10,6 +10,7 @@ module.exports = dependencies => {
 
   const contractCreatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.created);
   const contractUpdatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.updated);
+  const contractDeletedTopic = pubsubLocal.topic(EVENTS.CONTRACT.deleted);
 
   const POPULATION_FOR_ELASTICSEARCH = [
     {
@@ -28,7 +29,8 @@ module.exports = dependencies => {
     list,
     listByCursor,
     search,
-    updateById
+    updateById,
+    removeById
   };
 
   /**
@@ -99,6 +101,23 @@ module.exports = dependencies => {
     }
 
     return query.exec();
+  }
+
+  /**
+  * Remove contract by ID
+  * @param {String}   contractId - The software ID
+  * @param {Promise}             - Resolve on success
+  */
+  function removeById(contractId) {
+    return Contract
+      .findByIdAndRemove(contractId)
+      .then(deletedContract => {
+        if (deletedContract) {
+          contractDeletedTopic.publish(deletedContract);
+        }
+
+        return deletedContract;
+      });
   }
 
   /**

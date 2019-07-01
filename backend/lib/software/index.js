@@ -11,6 +11,7 @@ module.exports = function(dependencies) {
 
   const softwareCreatedTopic = pubsubLocal.topic(EVENTS.SOFTWARE.created);
   const softwareUpdatedTopic = pubsubLocal.topic(EVENTS.SOFTWARE.updated);
+  const softwareDeletedTopic = pubsubLocal.topic(EVENTS.SOFTWARE.deleted);
 
   return {
     create,
@@ -21,7 +22,8 @@ module.exports = function(dependencies) {
     list,
     listByCursor,
     search,
-    updateById
+    updateById,
+    removeById
   };
 
   /**
@@ -102,6 +104,23 @@ module.exports = function(dependencies) {
    */
   function listByCursor() {
     return Software.find().cursor();
+  }
+
+  /**
+ * Remove Software by ID
+ * @param {String}   softwareId - The software ID
+ * @param {Promise}             - Resolve on success
+ */
+  function removeById(teamId) {
+    return Software
+      .findByIdAndRemove(teamId)
+      .then(deletedSoftware => {
+        if (deletedSoftware) {
+          softwareDeletedTopic.publish(deletedSoftware);
+        }
+
+        return deletedSoftware;
+      });
   }
 
   /**

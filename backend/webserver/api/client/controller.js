@@ -7,7 +7,8 @@ module.exports = function(dependencies, lib) {
     create,
     get,
     list,
-    update
+    update,
+    remove
   };
 
   /**
@@ -108,5 +109,23 @@ module.exports = function(dependencies, lib) {
         return send404Error('client not found', res);
       })
       .catch(err => send500Error('Failed to update client', err, res));
+  }
+
+  /**
+   * Delete a client
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function remove(req, res) {
+    return lib.client.removeById(req.params.id)
+      .then(deletedClient => {
+        if (deletedClient) {
+          return res.status(204).end();
+        }
+
+        return send404Error('client not found', res);
+      })
+      .catch(err => send500Error('Failed to delete client', err, res));
   }
 };

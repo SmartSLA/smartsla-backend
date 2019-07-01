@@ -1,13 +1,14 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
-  const { send500Error } = require('../utils')(dependencies);
+  const { send500Error, send404Error } = require('../utils')(dependencies);
 
   return {
     create,
     list,
     get,
-    update
+    update,
+    remove
   };
 
   /**
@@ -71,5 +72,23 @@ module.exports = function(dependencies, lib) {
         res.status(200).json(updatedTicket);
       })
       .catch(err => send500Error('failed to update ticket', err, res));
+  }
+
+/**
+ * Delete a ticket
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+  function remove(req, res) {
+    return lib.ticket.removeById(req.params.id)
+      .then(deletedTicket => {
+        if (deletedTicket) {
+          return res.status(204).end();
+        }
+
+        return send404Error('ticket not found', res);
+      })
+      .catch(err => send500Error('Failed to delete ticket', err, res));
   }
 };

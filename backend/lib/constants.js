@@ -53,7 +53,8 @@ module.exports = {
   EVENTS: {
     CONTRACT: {
       created: 'ticketing:contract:created',
-      updated: 'ticketing:contract:updated'
+      updated: 'ticketing:contract:updated',
+      deleted: 'ticketing:contract:deleted'
     },
     ORGANIZATION: {
       created: 'ticketing:organization:created',
@@ -61,18 +62,23 @@ module.exports = {
     },
     SOFTWARE: {
       created: 'ticketing:software:created',
-      updated: 'ticketing:software:updated'
+      updated: 'ticketing:software:updated',
+      deleted: 'ticketing:software:deleted'
     },
     TEAM: {
       created: 'ticketing:team:created',
-      updated: 'ticketing:team:updated'
+      updated: 'ticketing:team:updated',
+      deleted: 'ticketing:team:deleted'
     },
     CLIENT: {
       created: 'ticketing:client:created',
-      updated: 'ticketing:client:updated'
+      updated: 'ticketing:client:updated',
+      deleted: 'ticketing:client:deleted'
     },
     TICKET: {
-      updated: 'ticketing:ticket:updated'
+      created: 'ticketing:ticket:created',
+      updated: 'ticketing:ticket:updated',
+      deleted: 'ticketing:ticket:deleted'
     },
     USER: {
       created: 'ticketing:user:created',

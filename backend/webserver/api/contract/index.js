@@ -35,4 +35,12 @@ module.exports = function(dependencies, lib, router) {
     canUpdateContract,
     controller.update
   );
+
+  router.delete('/contracts/:id',
+    authorizationMW.requiresAPILogin,
+    canUpdateContract,
+    checkIdInParams('id', 'Contract'),
+    controller.remove
+  );
+
 };

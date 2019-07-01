@@ -28,11 +28,17 @@ module.exports = function(dependencies, lib, router) {
     controller.create
   );
 
-  router.put('/client/:id',
+  router.post('/client/:id',
     authorizationMW.requiresAPILogin,
-    canUpdateClient,
     checkIdInParams('id', 'client'),
     canUpdateClient,
     controller.update
+  );
+
+  router.delete('/client/:id',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'client'),
+    canUpdateClient,
+    controller.remove
   );
 };

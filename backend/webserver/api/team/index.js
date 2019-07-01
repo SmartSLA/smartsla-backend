@@ -35,4 +35,11 @@ module.exports = function(dependencies, lib, router) {
     canUpdateTeam,
     controller.update
   );
+
+  router.delete('/team/:id',
+    authorizationMW.requiresAPILogin,
+    canUpdateTeam,
+    checkIdInParams('id', 'team'),
+    controller.remove
+  );
 };

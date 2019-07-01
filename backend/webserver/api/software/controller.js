@@ -7,7 +7,8 @@ module.exports = function(dependencies, lib) {
     create,
     get,
     list,
-    update
+    update,
+    remove
   };
 
   /**
@@ -108,5 +109,23 @@ module.exports = function(dependencies, lib) {
         return send404Error('Software not found', res);
       })
       .catch(err => send500Error('Failed to update software', err, res));
+  }
+
+  /**
+   * Delete a software
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function remove(req, res) {
+    return lib.software.removeById(req.params.id)
+      .then(deletedSoftware => {
+        if (deletedSoftware) {
+          return res.status(204).end();
+        }
+
+        return send404Error('software not found', res);
+      })
+      .catch(err => send500Error('Failed to delete software', err, res));
   }
 };

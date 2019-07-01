@@ -1,17 +1,20 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATES } = require('./constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATES, EVENTS } = require('./constants');
 const { validateTicketState, isSuspendedTicketState } = require('./helpers');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Ticket = mongoose.model('Ticket');
+  const pubsubLocal = dependencies('pubsub').local;
+  const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
 
   return {
     create,
     list,
     getById,
     updateById,
+    removeById,
     updateState,
     setWorkaroundTime,
     setCorrectionTime
@@ -175,5 +178,22 @@ module.exports = dependencies => {
     }
 
     return ticket.save();
+  }
+
+  /**
+  * Remove ticket by ID
+  * @param {String}   ticketId - The software ID
+  * @param {Promise}             - Resolve on success
+  */
+  function removeById(ticketId) {
+    return Ticket
+      .findByIdAndRemove(ticketId)
+      .then(deletedTicket => {
+        if (deletedTicket) {
+          ticketDeletedTopic.publish(deletedTicket);
+        }
+
+        return deletedTicket;
+      });
   }
 };
