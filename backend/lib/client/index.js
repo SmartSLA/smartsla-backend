@@ -8,6 +8,7 @@ module.exports = function(dependencies) {
 
   const clientCreatedTopic = pubsubLocal.topic(EVENTS.CLIENT.created);
   const clientUpdatedTopic = pubsubLocal.topic(EVENTS.CLIENT.updated);
+  const clientDeletedTopic = pubsubLocal.topic(EVENTS.CLIENT.deleted);
 
   return {
     create,
@@ -15,7 +16,8 @@ module.exports = function(dependencies) {
     getByName,
     list,
     listByCursor,
-    updateById
+    updateById,
+    removeById
   };
 
   /**
@@ -96,6 +98,23 @@ module.exports = function(dependencies) {
    */
   function listByCursor() {
     return Client.find().cursor();
+  }
+
+  /**
+  * Remove client by ID
+  * @param {String}   clientId - The software ID
+  * @param {Promise}             - Resolve on success
+  */
+  function removeById(clientId) {
+    return Client
+      .findByIdAndRemove(clientId)
+      .then(deletedClient => {
+        if (deletedClient) {
+          clientDeletedTopic.publish(deletedClient);
+        }
+
+        return deletedClient;
+      });
   }
 
 };

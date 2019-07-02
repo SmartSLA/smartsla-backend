@@ -8,7 +8,8 @@ module.exports = function(dependencies, lib) {
     create,
     get,
     list,
-    update
+    update,
+    remove
   };
 
   /**
@@ -112,4 +113,21 @@ module.exports = function(dependencies, lib) {
       .catch(err => send500Error('Failed to update contract', err, res));
   }
 
+  /**
+   * Delete a contract
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function remove(req, res) {
+    return lib.contract.removeById(req.params.id)
+      .then(deletedContract => {
+        if (deletedContract) {
+          return res.status(204).end();
+        }
+
+        return send404Error('contract not found', res);
+      })
+      .catch(err => send500Error('Failed to delete contract', err, res));
+  }
 };

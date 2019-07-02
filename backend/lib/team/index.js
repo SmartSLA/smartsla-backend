@@ -8,6 +8,7 @@ module.exports = function(dependencies) {
 
   const teamCreatedTopic = pubsubLocal.topic(EVENTS.TEAM.created);
   const teamUpdatedTopic = pubsubLocal.topic(EVENTS.TEAM.updated);
+  const teamDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
 
   return {
     create,
@@ -15,7 +16,8 @@ module.exports = function(dependencies) {
     getByName,
     list,
     listByCursor,
-    updateById
+    updateById,
+    removeById
   };
 
   /**
@@ -96,6 +98,21 @@ module.exports = function(dependencies) {
    */
   function listByCursor() {
     return Team.find().cursor();
+  }
+
+  /**
+   * Remove team by ID
+   */
+  function removeById(teamId) {
+    return Team
+    .findByIdAndRemove(teamId)
+    .then(deletedTeam => {
+      if (deletedTeam) {
+        teamDeletedTopic.publish(deletedTeam);
+      }
+
+      return deletedTeam;
+    });
   }
 
 };

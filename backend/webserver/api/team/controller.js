@@ -7,7 +7,8 @@ module.exports = function(dependencies, lib) {
     create,
     get,
     list,
-    update
+    update,
+    remove
   };
 
   /**
@@ -108,5 +109,23 @@ module.exports = function(dependencies, lib) {
         return send404Error('team not found', res);
       })
       .catch(err => send500Error('Failed to update team', err, res));
+  }
+
+  /**
+   * Delete a team
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function remove(req, res) {
+    return lib.team.removeById(req.params.id)
+    .then(deletedTeam => {
+      if (deletedTeam) {
+        return res.status(204).end();
+      }
+
+      return send404Error('team not found', res);
+    })
+    .catch(err => send500Error('Failed to delete team', err, res));
   }
 };

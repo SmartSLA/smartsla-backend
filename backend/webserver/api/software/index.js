@@ -36,4 +36,11 @@ module.exports = function(dependencies, lib, router) {
     validateSoftwareUpdatePayload,
     controller.update
   );
+
+  router.delete('/software/:id',
+    authorizationMW.requiresAPILogin,
+    canUpdateSoftware,
+    checkIdInParams('id', 'Software'),
+    controller.remove
+  );
 };
