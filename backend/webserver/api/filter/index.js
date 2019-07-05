@@ -31,4 +31,10 @@ module.exports = function(dependencies, lib, router) {
         validateFilterUpdatePayload,
         controller.update
     );
+
+    router.delete('/filters/:id',
+        authorizationMW.requiresAPILogin,
+        checkIdInParams('id', 'filter'),
+        controller.remove
+    );
 };
