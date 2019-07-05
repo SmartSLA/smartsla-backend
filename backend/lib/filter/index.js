@@ -8,13 +8,15 @@ module.exports = function(dependencies) {
 
     const filterCreatedTopic = pubsubLocal.topic(EVENTS.FILTER.created);
     const filterUpdatedTopic = pubsubLocal.topic(EVENTS.FILTER.updated);
+    const filterDeletedTopic = pubsubLocal.topic(EVENTS.FILTER.deleted);
 
     return {
         create,
         getById,
         list,
         listByCursor,
-        updateById
+        updateById,
+        removeById
     };
 
     /**
@@ -41,7 +43,7 @@ module.exports = function(dependencies) {
     function list(options = {}) {
 
         return Filter
-            .find()
+            .find({user: options.user})
             .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
             .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
             .sort('-timestamps.creation')
@@ -86,5 +88,22 @@ module.exports = function(dependencies) {
      */
     function listByCursor() {
         return Filter.find().cursor();
+    }
+
+    /**
+    * Remove filter by ID
+    * @param {String}   filterId - The software ID
+    * @param {Promise}             - Resolve on success
+    */
+    function removeById(filterId) {
+        return Filter
+            .findByIdAndRemove(filterId)
+            .then(deletedFilter => {
+                if (deletedFilter) {
+                    filterDeletedTopic.publish(deletedFilter);
+                }
+
+                return deletedFilter;
+            });
     }
 };

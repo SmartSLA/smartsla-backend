@@ -1,13 +1,14 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
-    const { send404Error, send500Error } = require('../utils')(dependencies);
+    const { send404Error, send500Error, send403Error } = require('../utils')(dependencies);
 
     return {
         create,
         get,
         list,
-        update
+        update,
+        remove
     };
 
     /**
@@ -45,7 +46,8 @@ module.exports = function(dependencies, lib) {
         } else {
             const options = {
                 limit: +req.query.limit,
-                offset: +req.query.offset
+                offset: +req.query.offset,
+                user: req.user._id
             };
 
             errorMessage = 'Failed to list filter';
@@ -87,7 +89,16 @@ module.exports = function(dependencies, lib) {
      * @param {Request} req
      * @param {Response} res
      */
-    function update(req, res) {
+    async function update(req, res) {
+        const filter = await lib.filter.getById(req.params.id);
+
+        if (!filter) {
+            return send404Error('filter not found', res);
+        }
+        if (!validateFilterOwner(filter, req.user._id)) {
+            return send403Error('Your are not permitted to update this filter', res);
+        }
+
         return lib.filter.updateById(req.params.id, req.body)
             .then(numberOfUpdatedDocs => {
                 if (numberOfUpdatedDocs) {
@@ -97,5 +108,36 @@ module.exports = function(dependencies, lib) {
                 return send404Error('filter not found', res);
             })
             .catch(err => send500Error('Failed to update filter', err, res));
+    }
+
+    /**
+     * Delete a filter
+     *
+     * @param {Request} req
+     * @param {Response} res
+     */
+    async function remove(req, res) {
+       const filter = await lib.filter.getById(req.params.id);
+
+       if (!filter) {
+           return send404Error('filter not found', res);
+       }
+       if (!validateFilterOwner(filter, req.user._id)) {
+           return send403Error('Your are not permitted to delete this filter', res);
+       }
+
+        return lib.filter.removeById(req.params.id)
+             .then(deletedFilter => {
+                 if (deletedFilter) {
+                     return res.status(204).end();
+                 }
+
+                 return send404Error('filter not found', res);
+             })
+             .catch(err => send500Error('Failed to delete filter', err, res));
+    }
+
+    function validateFilterOwner(filter, userId) {
+        return filter.user.toString() === userId.toString();
     }
 };
