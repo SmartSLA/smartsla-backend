@@ -33,6 +33,7 @@ module.exports = dependencies => {
     author: Schema.Types.Mixed,
     comments: [Schema.Types.Mixed],
     files: [Schema.Types.Mixed],
+    logs: [Schema.Types.Mixed],
     timestamps: {
       creation: { type: Date, default: Date.now }
     },
