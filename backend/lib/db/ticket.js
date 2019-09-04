@@ -3,6 +3,7 @@
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
+  const CounterModel = mongoose.model('Counter');
 
   const ticketSchema = new mongoose.Schema({
     assignTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
@@ -28,6 +29,24 @@ module.exports = dependencies => {
     title: { type: String, required: true },
     type: Schema.Types.Mixed,
     schemaVersion: { type: Number, default: 1 }
+  });
+
+  ticketSchema.pre('save', function(next) {
+    const self = this;
+
+    CounterModel.findOneAndUpdate(
+      { _id: 'ticket' },
+      { $inc: { seq: 1 }},
+      { upsert: true, new: true },
+      (err, sequence) => {
+        if (err) {
+          return next(err);
+        }
+
+        self.ticketNumber = sequence.seq;
+
+        next();
+      });
   });
 
   const TicketModel = mongoose.model('Ticket', ticketSchema);
