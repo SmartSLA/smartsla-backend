@@ -12,7 +12,7 @@ module.exports = dependencies => {
     comments: [Schema.Types.Mixed],
     description: { type: String },
     files: [Schema.Types.Mixed],
-    idOssas: { type: Number, default: 1 },
+    idOssa: Schema.Types.Mixed,
     logs: [Schema.Types.Mixed],
     participants: [String],
     relatedRequests: [Schema.Types.Mixed],

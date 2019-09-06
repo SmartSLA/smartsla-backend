@@ -3,7 +3,7 @@
 const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
-const { TICKET_ACTIONS, TICKET_SCOPES } = require('../constants');
+const { TICKET_ACTIONS, TICKET_SCOPES, ID_OSSA_CONVERTION } = require('../constants');
 
 module.exports = (dependencies, lib) => {
   const {
@@ -21,8 +21,32 @@ module.exports = (dependencies, lib) => {
     canReadTicket,
     canUpdateTicket,
     validateTicketCreation,
-    validateTicketUpdate
+    validateTicketUpdate,
+    transformTicket
   };
+
+  function transformTicket(req, res, next) {
+    const ticket = req.body;
+    const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
+    const OssaDescription = ticket.contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
+
+    let idOssa = {
+      // We might has well save the two infos
+      id: ID_OSSA_CONVERTION[OssaDescription],
+      OssaDescription
+    };
+
+    if (!critical || !OssaDescription) {
+      idOssa = {
+        id: 0,
+        OssaDescription: 'Not found'
+      };
+    }
+
+    res.locals.newTicket = { ...ticket, idOssa };
+
+    next();
+  }
 
   function canCreateTicket(req, res, next) {
     if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'create')) {

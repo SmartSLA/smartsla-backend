@@ -1,7 +1,7 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATES, EVENTS } = require('./constants');
-const { validateTicketState, isSuspendedTicketState } = require('./helpers');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATES, EVENTS } = require('../constants');
+const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
