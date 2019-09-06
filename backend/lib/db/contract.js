@@ -46,23 +46,25 @@ module.exports = dependencies => {
   }, { _id: false});
 
   const ContractSchema = new Schema({
-    name: { type: String, required: true},
+    domain: { type: String},
+    endDate: { type: Date, required: true },
+    Engagements: EngagementsSchema,
     contact: ContactSchema,
-    mailingList: MailingListSchema,
     client: { type: String, required: true },
+    clientId: { type: Schema.Types.ObjectId, required: true},
+    govern: { type: String},
+    humanResources: HumanResourcesSchema,
+    mailingList: MailingListSchema,
+    name: { type: String, required: true},
+    schedule: ScheduleSchema,
     status: { type: Boolean, default: true },
     startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    schedule: ScheduleSchema,
-    type: { type: String, default: 'credit'},
-    govern: { type: String},
-    domain: { type: String},
-    humanResources: HumanResourcesSchema,
     software: [SoftwareSchema],
-    Engagements: EngagementsSchema,
     timestamps: {
-      creation: { type: Date, default: Date.now }
+      createdAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now }
     },
+    type: { type: String, default: 'credit'},
     schemaVersion: { type: Number, default: 1 }
   });
 
