@@ -39,9 +39,14 @@ module.exports = dependencies => {
    * @param {Promise}          - Resolve on success
    */
   function create(contract) {
-    contract = contract instanceof Contract ? contract : new Contract(contract);
+    const { clientId } = contract.client;
+    const client = contract.client.name;
 
-    return Contract.create(contract)
+    let contractNormalized = { ...contract, clientId, client };
+
+    contractNormalized = contractNormalized instanceof Contract ? contractNormalized : new Contract(contractNormalized);
+
+    return Contract.create(contractNormalized)
       .then(createdContract => {
         contractCreatedTopic.publish(createdContract);
 
