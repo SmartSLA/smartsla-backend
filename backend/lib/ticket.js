@@ -29,14 +29,13 @@ module.exports = dependencies => {
   function create(ticket, options = {}) {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
 
-    return Ticket.create(ticket)
-      .then(createdTicket => {
-        if (options.populations) {
-          return createdTicket.populate(options.populations).execPopulate();
-        }
+    return Ticket.create(ticket).then(createdTicket => {
+      if (options.populations) {
+        return createdTicket.populate(options.populations).execPopulate();
+      }
 
-        return createdTicket._id;
-      });
+      return createdTicket._id;
+    });
   }
 
   /**
@@ -128,14 +127,20 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (state === TICKET_STATES.IN_PROGRESS) {
-      if (ticket.times.response === undefined) { // set response time
-        ticket.times.response = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0)); // in minutes
+      if (ticket.times.response === undefined) {
+        // set response time
+        ticket.times.response = Math.round(
+          (new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0)
+        ); // in minutes
       }
 
-      if (isSuspendedTicketState(state)) { // accumulate suspend time
-        ticket.times.suspend = (ticket.times.suspend || 0) + Math.round((new Date() - ticket.suspendedAt) / (1000 * 60)); // in minutes
+      if (isSuspendedTicketState(state)) {
+        // accumulate suspend time
+        ticket.times.suspend =
+          (ticket.times.suspend || 0) + Math.round((new Date() - ticket.suspendedAt) / (1000 * 60)); // in minutes
       }
-    } else if (isSuspendedTicketState(state) && !isSuspendedTicketState(ticket.state)) { // set suspendedAt
+    } else if (isSuspendedTicketState(state) && !isSuspendedTicketState(ticket.state)) {
+      // set suspendedAt
       ticket.times.suspendedAt = new Date();
     }
 
@@ -154,7 +159,9 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (set) {
-      ticket.times.workaround = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0));
+      ticket.times.workaround = Math.round(
+        (new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0)
+      );
     } else {
       ticket.times.workaround = undefined;
     }
@@ -172,7 +179,9 @@ module.exports = dependencies => {
     ticket.times = ticket.times || {};
 
     if (set) {
-      ticket.times.correction = Math.round((new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0));
+      ticket.times.correction = Math.round(
+        (new Date() - ticket.creation) / (1000 * 60) - (ticket.times.suspend || 0)
+      );
     } else {
       ticket.times.correction = undefined;
     }
@@ -186,14 +195,12 @@ module.exports = dependencies => {
   * @param {Promise}             - Resolve on success
   */
   function removeById(ticketId) {
-    return Ticket
-      .findByIdAndRemove(ticketId)
-      .then(deletedTicket => {
-        if (deletedTicket) {
-          ticketDeletedTopic.publish(deletedTicket);
-        }
+    return Ticket.findByIdAndRemove(ticketId).then(deletedTicket => {
+      if (deletedTicket) {
+        ticketDeletedTopic.publish(deletedTicket);
+      }
 
-        return deletedTicket;
-      });
+      return deletedTicket;
+    });
   }
 };
