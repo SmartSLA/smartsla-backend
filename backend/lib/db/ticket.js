@@ -19,7 +19,7 @@ module.exports = dependencies => {
     responsible: Schema.Types.Mixed, // FIXME Use real schema or Ref
     severity: Schema.Types.Mixed, // FIXME Use real schema or Ref
     software: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    status: { type: String },
+    status: { type: String, default: 'New' },
     team: Schema.Types.Mixed, // FIXME Use real schema or Ref
     ticketNumber: { type: Number },
     timestamps: {
