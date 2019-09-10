@@ -18,7 +18,13 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function create(req, res) {
-    return lib.ticket.create(req.body)
+    const ticket = res.locals.newTicket;
+
+    if (!res.locals.newTicket) {
+      return res.status(500).json('Something went wrong');
+    }
+
+    return lib.ticket.create(ticket)
       .then(createdTicket => res.status(201).json(createdTicket))
       .catch(err => send500Error('Failed to create ticket', err, res));
   }
