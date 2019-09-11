@@ -6,7 +6,7 @@ module.exports = dependencies => {
   const CounterModel = mongoose.model('Counter');
 
   const ticketSchema = new mongoose.Schema({
-    assignTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
+    assignedTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
     author: Schema.Types.Mixed, // FIXME Use real schema or Ref
     contract: Schema.Types.Mixed, // FIXME Use real schema or Ref
     comments: [Schema.Types.Mixed],
