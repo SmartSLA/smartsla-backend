@@ -73,10 +73,10 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function update(req, res) {
-    const ticketUpdate = { ...req.body, updatedAt: Date.now() };
+    const ticket = res.locals.ticketUpdate;
     const ticketId = req.params.id;
 
-    lib.ticket.updateById(ticketId, ticketUpdate)
+    lib.ticket.updateById(ticketId, ticket)
       .then(updatedTicket => {
         res.status(200).json(updatedTicket);
       })

@@ -48,6 +48,17 @@ module.exports = (dependencies, lib) => {
     next();
   }
 
+  function transformTicketBeforeUpdate(req, res, next) {
+    const ticket = req.body;
+    const lastLog = ticket.logs.length - 1;
+
+    const assignedTo = ticket.logs[lastLog].assignedTo;
+
+    res.locals.ticketUpdate = { ...ticket, updatedAt: Date.now(), assignedTo};
+
+    next();
+  }
+
   function canCreateTicket(req, res, next) {
     if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'create')) {
       return send403Error(`User does not have permission to create ${RESOURCE_TYPE}`, res);
