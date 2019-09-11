@@ -34,19 +34,23 @@ module.exports = dependencies => {
   ticketSchema.pre('save', function(next) {
     const self = this;
 
-    CounterModel.findOneAndUpdate(
-      { _id: 'ticket' },
-      { $inc: { seq: 1 }},
-      { upsert: true, new: true },
-      (err, sequence) => {
-        if (err) {
-          return next(err);
-        }
+    if (!this.ticketNumber) {
+      CounterModel.findOneAndUpdate(
+          { _id: 'ticket' },
+          { $inc: { seq: 1 }},
+          { upsert: true, new: true },
+          (err, sequence) => {
+            if (err) {
+              return next(err);
+            }
 
-        self.ticketNumber = sequence.seq;
+            self.ticketNumber = sequence.seq;
 
-        next();
-      });
+            next();
+          });
+    } else {
+      next();
+    }
   });
 
   const TicketModel = mongoose.model('Ticket', ticketSchema);
