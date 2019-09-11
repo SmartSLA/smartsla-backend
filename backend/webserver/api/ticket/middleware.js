@@ -22,7 +22,8 @@ module.exports = (dependencies, lib) => {
     canUpdateTicket,
     validateTicketCreation,
     validateTicketUpdate,
-    transformTicket
+    transformTicket,
+    transformTicketBeforeUpdate
   };
 
   function transformTicket(req, res, next) {
@@ -53,8 +54,9 @@ module.exports = (dependencies, lib) => {
     const lastLog = ticket.logs.length - 1;
 
     const assignedTo = ticket.logs[lastLog].assignedTo;
+    const responsible = assignedTo.type === 'expert' ? assignedTo : ticket.responsible;
 
-    res.locals.ticketUpdate = { ...ticket, updatedAt: Date.now(), assignedTo};
+    res.locals.ticketUpdate = { ...ticket, updatedAt: Date.now(), assignedTo, responsible };
 
     next();
   }
