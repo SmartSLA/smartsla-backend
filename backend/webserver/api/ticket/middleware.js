@@ -30,6 +30,9 @@ module.exports = (dependencies, lib) => {
     const ticket = req.body;
     const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
     const OssaDescription = ticket.contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
+    // For now the beneficiary is by default the author
+    // Later we should had it in the ticket creation
+    const beneficiary = ticket.author;
 
     let idOssa = {
       // We might has well save the two infos
@@ -44,7 +47,7 @@ module.exports = (dependencies, lib) => {
       };
     }
 
-    res.locals.newTicket = { ...ticket, idOssa };
+    res.locals.newTicket = { ...ticket, beneficiary, idOssa };
 
     next();
   }
