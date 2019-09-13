@@ -38,6 +38,7 @@ module.exports = dependencies => {
           user: createdUser._id,
           role,
           type: user.type || '',
+          email: user.email || '',
           name: user.name || '',
           phone: user.phone || '',
           position: user.position || '',

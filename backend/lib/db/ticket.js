@@ -8,6 +8,7 @@ module.exports = dependencies => {
   const ticketSchema = new mongoose.Schema({
     assignedTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
     author: Schema.Types.Mixed, // FIXME Use real schema or Ref
+    beneficiary: Schema.Types.Mixed,
     contract: Schema.Types.Mixed, // FIXME Use real schema or Ref
     comments: [Schema.Types.Mixed],
     description: { type: String },
