@@ -10,8 +10,8 @@ module.exports = {
     unset: 'unset'
   },
   ID_OSSA_CONVERTION: {
-    blocking: 3,
+    Blocking: 3,
     'Non-blocking': 2,
-    information: 1
+    Information: 1
   }
 };
