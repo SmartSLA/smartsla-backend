@@ -18,10 +18,12 @@ module.exports = function(dependencies) {
   const ticket = require('./ticket')(dependencies);
   const filter = require('./filter')(dependencies);
   const AccessControl = require('./access-control');
+  const email = require('./email')(dependencies);
 
   return {
     constants,
     contract,
+    email,
     helpers,
     models,
     organization,

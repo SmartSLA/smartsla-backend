@@ -1,6 +1,14 @@
 'use strict';
 
 module.exports = {
+  EMAIL_NOTIFICATIONS: {
+    DEFAULT_FROM: 'ossa@linagora.com',
+    DEFAULT_RESPONSIBLE_EMAIL: 'ossa@linagora.com',
+    TYPES: {
+      CREATED: 'CREATED',
+      UPDATED: 'UPDATED'
+    }
+  },
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
     USER: 'user',
