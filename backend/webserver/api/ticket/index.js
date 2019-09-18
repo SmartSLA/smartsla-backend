@@ -2,7 +2,6 @@
 
 module.exports = (dependencies, lib, router) => {
   const authorizationMW = dependencies('authorizationMW');
-  const { checkIdInParams } = dependencies('helperMw');
   const controller = require('./controller')(dependencies, lib);
   const middlewares = require('./middleware')(dependencies, lib);
 
@@ -19,7 +18,7 @@ module.exports = (dependencies, lib, router) => {
 
   router.get('/tickets/:id',
     authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Ticket'),
+    middlewares.checkTicketIdInParams,
     controller.get
   );
 
@@ -31,7 +30,7 @@ module.exports = (dependencies, lib, router) => {
 
   router.delete('/tickets/:id',
     authorizationMW.requiresAPILogin,
-    checkIdInParams('id', 'Ticket'),
+    middlewares.checkTicketIdInParams,
     controller.remove
   );
 };

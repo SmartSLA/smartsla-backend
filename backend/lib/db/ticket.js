@@ -6,6 +6,7 @@ module.exports = dependencies => {
   const CounterModel = mongoose.model('Counter');
 
   const ticketSchema = new mongoose.Schema({
+    _id: Number,
     assignedTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
     author: Schema.Types.Mixed, // FIXME Use real schema or Ref
     beneficiary: Schema.Types.Mixed,
@@ -35,7 +36,7 @@ module.exports = dependencies => {
   ticketSchema.pre('save', function(next) {
     const self = this;
 
-    if (!this.ticketNumber) {
+    if (this.isNew) {
       CounterModel.findOneAndUpdate(
           { _id: 'ticket' },
           { $inc: { seq: 1 }},
@@ -45,7 +46,7 @@ module.exports = dependencies => {
               return next(err);
             }
 
-            self.ticketNumber = sequence.seq;
+            self._id = sequence.seq;
 
             next();
           });

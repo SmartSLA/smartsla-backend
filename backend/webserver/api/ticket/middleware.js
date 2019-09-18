@@ -14,6 +14,7 @@ module.exports = (dependencies, lib) => {
   const RESOURCE_TYPE = 'ticket';
 
   return {
+    checkTicketIdInParams,
     load,
     loadContract,
     canCreateTicket,
@@ -25,6 +26,20 @@ module.exports = (dependencies, lib) => {
     transformTicket,
     transformTicketBeforeUpdate
   };
+
+  function checkTicketIdInParams(req, res, next) {
+    if (isNaN(req.params.id)) {
+      return res.status(404).json({
+        error: {
+          code: 404,
+          message: 'Not Found',
+          details: 'Ticket Id not valid'
+        }
+      });
+    }
+
+    next();
+  }
 
   function transformTicket(req, res, next) {
     const ticket = req.body;
