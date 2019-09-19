@@ -54,6 +54,15 @@ module.exports = dependencies => {
     }
   });
 
+  ticketSchema.pre('findOneAndUpdate', function(next) {
+    const self = this;
+    const ticket = self._update.$set;
+
+    ticket.timestamps.updatedAt = Date.now();
+
+    next();
+  });
+
   const TicketModel = mongoose.model('Ticket', ticketSchema);
 
   return TicketModel;
