@@ -8,11 +8,12 @@ module.exports = dependencies => {
 
   return {
     create,
-    list
+    list,
+    getByUser
   };
 
   /**
-   * Create a TicketingUserRole
+   * Create a TicketingUser
    * @param {Object}   ticketingUserRole - The ticketingUserRole object
    * @param {Promise}                    - Resolve on success
    */
@@ -23,7 +24,7 @@ module.exports = dependencies => {
   }
 
   /**
-   * List TicketingUserRole.
+   * List TicketingUser
    * @param {Object}   options  - The options object, may contain offset and limit
    * @param {Promise}           - Resolve on success
    */
@@ -35,5 +36,15 @@ module.exports = dependencies => {
       .populate('user')
       .sort('-timestamps.creation')
       .exec();
+  }
+
+  /**
+   * Get TicketingUser by user ID
+   * @param  {String}  userId  - ID of user object
+   * @return {Promise}         - Resolve on success
+   */
+  function getByUser(userId) {
+    return TicketingUser
+      .findOne({ user: userId });
   }
 };

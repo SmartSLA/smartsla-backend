@@ -54,11 +54,7 @@ module.exports = (dependencies, lib) => {
   function get(req, res) {
     lib.user.getById(req.params.id)
       .then(user => {
-        const denormalizedUser = coreUser.denormalize.denormalize(user);
-
-        // entity info
-        denormalizedUser.entity = user.entity;
-        res.status(201).json(denormalizedUser);
+        res.status(201).json(user);
       })
       .catch(err => send500Error('Failed to get user', err, res));
   }
