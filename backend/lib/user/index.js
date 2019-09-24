@@ -62,11 +62,7 @@ module.exports = dependencies => {
   }
 
   function getById(userId) {
-    const options = {
-      populations: [{ path: 'user' }]
-    };
-
-    return ticketingUser.getByUser(userId, options);
+    return ticketingUser.getByUser(userId);
   }
 
   /**
