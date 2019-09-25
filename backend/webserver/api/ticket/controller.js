@@ -42,9 +42,9 @@ module.exports = function(dependencies, lib) {
     };
 
     return lib.ticket.list(options)
-      .then(tickets => {
-        res.header('X-ESN-Items-Count', tickets.length);
-        res.status(200).json(tickets);
+      .then(({ size, list }) => {
+        res.header('X-ESN-Items-Count', size);
+        res.status(200).json(list);
       })
       .catch(err => send500Error('Failed to list tickets', err, res));
   }
