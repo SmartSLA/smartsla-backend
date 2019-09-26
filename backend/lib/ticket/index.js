@@ -44,48 +44,66 @@ module.exports = dependencies => {
    * @param {Promise}         - Resolve on success
    */
   function list(options = {}) {
-    const findOptions = {};
+    return Promise.all([
+      count(options),
+      list(options)
+    ]).then(result => ({
+      size: result[0],
+      list: result[1]
+    }));
 
-    if (options.states && options.states.length > 0) {
-      const states = options.states.filter(state => validateTicketState(state));
+    function count(options) {
+      return buildQuery(options).count().exec();
+    }
 
-      if (states.length === 0) {
-        return Promise.resolve([]);
+    function list(options) {
+      const query = buildQuery(options)
+        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+        .sort('-updatedAt');
+
+        return query.exec();
+    }
+
+    function buildQuery(options) {
+      const findOptions = {};
+
+      if (options.states && options.states.length > 0) {
+        const states = options.states.filter(state => validateTicketState(state));
+
+        if (states.length === 0) {
+          return Promise.resolve([]);
+        }
+
+        findOptions.state = { $in: states };
       }
 
-      findOptions.state = { $in: states };
+      const orFilter = [];
+
+      if (options.requester) {
+        orFilter.push({ requester: options.requester });
+      }
+
+      if (options.supportManager) {
+        orFilter.push({ supportManager: options.supportManager });
+      }
+
+      if (options.supportTechnician) {
+        orFilter.push({ supportTechnicians: options.supportTechnician });
+      }
+
+      const query = Ticket.find(findOptions);
+
+      if (options.populations) {
+        query.populate(options.populations);
+      }
+
+      if (orFilter.length > 0) {
+        query.or(orFilter);
+      }
+
+      return query;
     }
-
-    const orFilter = [];
-
-    if (options.requester) {
-      orFilter.push({ requester: options.requester });
-    }
-
-    if (options.supportManager) {
-      orFilter.push({ supportManager: options.supportManager });
-    }
-
-    if (options.supportTechnician) {
-      orFilter.push({ supportTechnicians: options.supportTechnician });
-    }
-
-    const query = Ticket.find(findOptions);
-
-    if (options.populations) {
-      query.populate(options.populations);
-    }
-
-    if (orFilter.length > 0) {
-      query.or(orFilter);
-    }
-
-    query
-      .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-      .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .sort('-updatedAt');
-
-    return query.exec();
   }
 
   /**
