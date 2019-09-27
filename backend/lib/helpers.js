@@ -30,12 +30,10 @@ function uniqueDemands(demands) {
 }
 
 function validateTicketState(state) {
-  return Object.values(CONSTANTS.TICKET_STATES).indexOf(state) > -1;
+  return Object.values(CONSTANTS.TICKET_STATUS).indexOf(state) > -1;
 }
 
 function isSuspendedTicketState(state) {
-  return [CONSTANTS.TICKET_STATES.AWAITING,
-          CONSTANTS.TICKET_STATES.AWAITING_INFORMATION,
-          CONSTANTS.TICKET_STATES.AWAITING_VALIDATION,
-          CONSTANTS.TICKET_STATES.CLOSED].indexOf(state) > -1;
+  return [CONSTANTS.TICKET_STATUS.BYPASSED,
+          CONSTANTS.TICKET_STATUS.CLOSED].indexOf(state) > -1;
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATES, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 
 module.exports = dependencies => {
@@ -143,6 +143,8 @@ module.exports = dependencies => {
    * @param  {Object}   ticket  - The ticket object
    * @param  {String}   state   - New state
    * @return {Promise}          - Resolve the updated ticket
+   *
+   * @deprecated The times computing aren't relevent anymore, needs update !!!
    */
   function updateState(ticket, state) {
     if (ticket.state === state) {
@@ -151,7 +153,7 @@ module.exports = dependencies => {
 
     ticket.times = ticket.times || {};
 
-    if (state === TICKET_STATES.IN_PROGRESS) {
+    if (state === TICKET_STATUS.SUPPORTED) {
       if (ticket.times.response === undefined) {
         // set response time
         ticket.times.response = Math.round(

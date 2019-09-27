@@ -23,14 +23,12 @@ module.exports = {
     SOFTWARE_TYPE: 'Software type',
     ISSUE_TYPE: 'Issue type'
   },
-  TICKET_STATES: {
-    NEW: 'New',
-    IN_PROGRESS: 'In progress',
-    AWAITING: 'Awaiting',
-    AWAITING_INFORMATION: 'Awaiting information',
-    AWAITING_VALIDATION: 'Awaiting validation',
-    CLOSED: 'Closed',
-    ABANDONED: 'Abandoned'
+  TICKET_STATUS: {
+    NEW: 'new',
+    SUPPORTED: 'supported',
+    BYPASSED: 'bypassed',
+    RESOLVED: 'resolved',
+    CLOSED: 'closed'
   },
   INDICES: {
     CONTRACT: {

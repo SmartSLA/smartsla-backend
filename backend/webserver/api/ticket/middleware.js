@@ -322,7 +322,7 @@ module.exports = (dependencies, lib) => {
       return send400Error('state is invalid', res);
     }
 
-    if (req.ticket.state !== lib.constants.TICKET_STATES.NEW && state === lib.constants.TICKET_STATES.NEW) {
+    if (req.ticket.state !== lib.constants.TICKET_STATUS.NEW && state === lib.constants.TICKET_STATUS.NEW) {
       return send400Error('change state of ticket to New is not supported', res);
     }
 
