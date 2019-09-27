@@ -3,6 +3,7 @@ module.exports = dependencies => {
   const userModule = dependencies('coreUser');
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS } = require('../constants');
+  const i18n = require('../i18n')(dependencies);
 
   return {
     send
@@ -10,34 +11,48 @@ module.exports = dependencies => {
 
   function formatMessage(type, data) {
     switch (type) {
-      case EMAIL_NOTIFICATIONS.TYPES.CREATED:
+      case EMAIL_NOTIFICATIONS.TYPES.CREATED: {
+        const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been created',
+          { id: data._id, title: data.title });
+
         return {
-          subject: `#${data._id} ${data.title}: La demande ${data._id} vient d‘être créée`,
-          text: `#${data._id} ${data.title}: La demande ${data._id} vient d‘être créée`
+          subject: subject,
+          text: subject
         };
+      }
       case EMAIL_NOTIFICATIONS.TYPES.UPDATED: {
         const comment = data.comments[data.comments.length - 1];
         const action = getChange(data.logs, 'action');
         const assignedTo = getChange(data.logs, 'assignedTo');
 
         if (action) {
+          const translatedAction = i18n.__(action);
+          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}',
+            { id: data._id, title: data.title, status: translatedAction });
+
           return {
-            subject: `#${data._id} ${data.title}: Le statut de la demande ${data._id} est passé à  ${action}`,
-            text: `#${data._id} ${data.title}: Le statut de la demande ${data._id} est passé à  ${action}`
+            subject: subject,
+            text: subject
           };
         }
 
         if (assignedTo) {
+          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}',
+            { id: data._id, title: data.title, assignee: data.assignedTo.name });
+
           return {
-            subject: `#${data._id} ${data.title}: La demande ${data._id} a été assignée à ${data.assignedTo.name}`,
-            text: `#${data._id} ${data.title}: La demande ${data._id} a été assignée à ${data.assignedTo.name}`
+            subject: subject,
+            text: subject
           };
         }
 
         if (comment) {
+          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}',
+            { id: data._id, title: data.title, commenter: comment.author.name });
+
           return {
-            subject: `#${data._id} ${data.title}: La demande ${data._id} vient d‘être commentée par ${comment.author.name}`,
-            text: `#${data._id} ${data.title}: La demande ${data._id} vient d‘être commentée par ${comment.author.name}`
+            subject: subject,
+            text: subject
           };
         }
       }

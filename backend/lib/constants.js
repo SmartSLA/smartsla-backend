@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+  DEFAULT_LOCALE: 'fr',
   EMAIL_NOTIFICATIONS: {
     DEFAULT_FROM: 'ossa@linagora.com',
     DEFAULT_RESPONSIBLE_EMAIL: 'ossa@linagora.com',

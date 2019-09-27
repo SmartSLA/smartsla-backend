@@ -1,4 +1,8 @@
 {
+  "#{{id}} {{title}}: issue #{{id}} has been created": "#{{id}} {{title}}: issue #{{id}} has been created",
+  "#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}": "#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}",
+  "#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}":   "#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}",
+  "#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}": "#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}",
   "Active": "Hiệu lực",
   "Activities": "Hoạt động",
   "Add a version": "Thêm phiên bản",
