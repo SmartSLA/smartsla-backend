@@ -23,7 +23,6 @@ module.exports = dependencies => {
     software: Schema.Types.Mixed, // FIXME Use real schema or Ref
     status: { type: String, default: 'New' },
     team: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    ticketNumber: { type: Number },
     timestamps: {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
