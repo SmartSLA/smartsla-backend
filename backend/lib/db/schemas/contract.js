@@ -36,7 +36,7 @@ module.exports = dependencies => {
     bypassed: { type: String },
     description: { type: String }, // FIXME Send by frontend but useless (not in UI)
     idOssa: { type: String },
-    requestType: { type: String },
+    request: { type: String },
     resolved: { type: String },
     severity: { type: String },
     supported: { type: String }
