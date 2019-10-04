@@ -8,7 +8,6 @@ module.exports = dependencies => {
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     phone: { type: String },
-    position: { type: String },
     role: { type: String },
     timestamps: {
       createdAt: { type: Date, default: Date.now }

@@ -41,7 +41,6 @@ module.exports = dependencies => {
           email: user.email || '',
           name: user.name || '',
           phone: user.phone || '',
-          position: user.position || '',
           identifier: user.identifier || ''
         };
 
