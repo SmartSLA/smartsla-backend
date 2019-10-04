@@ -4,7 +4,6 @@ module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
 
   const SoftwareSchema = new mongoose.Schema({
-    private: { type: Boolean, default: false },
     name: { type: String, required: true, unique: true },
     summary: { type: String },
     description: { type: String },
