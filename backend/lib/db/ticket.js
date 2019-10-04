@@ -4,31 +4,38 @@ module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
   const CounterModel = mongoose.model('Counter');
+  const { ContractSchema, ContractSoftwareSchema } = require('./schemas/contract')(dependencies);
+
+  const IdNameEmail = {
+    id: { type: String }, // ObjectId in string version
+    name: { type: String }, // Display name
+    email: { type: String }
+  };
 
   const ticketSchema = new mongoose.Schema({
     _id: Number,
-    assignedTo: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    author: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    beneficiary: Schema.Types.Mixed,
-    contract: Schema.Types.Mixed, // FIXME Use real schema or Ref
+    assignedTo: IdNameEmail, // TODO Consider denormalizing
+    author: IdNameEmail, // TODO Consider denormalizing
+    beneficiary: IdNameEmail, // TODO Consider denormalizing
+    contract: ContractSchema, // TODO Consider denormalizing
     comments: [Schema.Types.Mixed],
     description: { type: String },
     files: [Schema.Types.Mixed],
     idOssa: Schema.Types.Mixed,
     logs: [Schema.Types.Mixed],
     participants: [String],
-    relatedRequests: [Schema.Types.Mixed],
-    responsible: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    severity: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    software: Schema.Types.Mixed, // FIXME Use real schema or Ref
-    status: { type: String, default: 'New' },
+    relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
+    responsible: IdNameEmail, // TODO Consider denormalizing
+    severity: { type: String }, // TODO add enum validator
+    software: ContractSoftwareSchema, // TODO Consider normalizing
+    status: { type: String, default: 'new' }, // TODO add enum validator
     team: Schema.Types.Mixed, // FIXME Use real schema or Ref
     timestamps: {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     },
     title: { type: String, required: true },
-    type: Schema.Types.Mixed,
+    type: { type: String }, // TODO add enum validator
     schemaVersion: { type: Number, default: 1 }
   });
 
