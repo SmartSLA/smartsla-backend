@@ -13,6 +13,7 @@ module.exports = dependencies => {
   return {
     create,
     list,
+    listForContracts,
     getById,
     updateById,
     removeById,
@@ -104,6 +105,38 @@ module.exports = dependencies => {
       if (orFilter.length > 0) {
         query.or(orFilter);
       }
+
+      return query;
+    }
+  }
+
+  function listForContracts(contracts, options) {
+    return Promise.all([
+      count(contracts, options),
+      list(contracts, options)
+    ]).then(result => ({
+      size: result[0],
+      list: result[1]
+    }));
+
+    function count(contracts, options) {
+      return buildQuery(contracts, options).count().exec();
+    }
+
+    function list(contracts, options) {
+      const query = buildQuery(contracts, options)
+        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+        .sort('-updatedAt');
+
+        return query.exec();
+    }
+
+    function buildQuery(contracts) {
+      const findOptions = {
+        contract: { $in: contracts }
+      };
+      const query = Ticket.find(findOptions);
 
       return query;
     }

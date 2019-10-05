@@ -6,6 +6,7 @@ module.exports = (dependencies, lib) => {
   const { send400Error, send500Error } = require('../utils')(dependencies);
 
   return {
+    loadTicketingUser,
     canCreate,
     canRead,
     canUpdate,
@@ -13,6 +14,19 @@ module.exports = (dependencies, lib) => {
     validateUserCreatePayload,
     validateUserUpdatePayload
   };
+
+  function loadTicketingUser(req, res, next) {
+    lib.user.getById(req.user._id)
+      .then(ticketingUser => {
+        if (ticketingUser) {
+          req.ticketingUser = ticketingUser;
+        }
+        next();
+      })
+      .catch(err => {
+        send500Error('Can not load ticketing user', err, res);
+      });
+  }
 
   function canCreate(req, res, next) {
     return requireAdministrator(req, res, next);
