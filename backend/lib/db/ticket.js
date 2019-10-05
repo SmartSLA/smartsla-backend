@@ -27,7 +27,7 @@ module.exports = dependencies => {
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
     responsible: IdNameEmail, // TODO Consider denormalizing
     severity: { type: String }, // TODO add enum validator
-    software: ContractSoftwareSchema, // TODO Consider normalizing
+    software: ContractSoftwareSchema, // TODO Consider normalizing and rename field to supportedSoftware
     status: { type: String, default: 'new' }, // TODO add enum validator
     team: Schema.Types.Mixed, // FIXME Use real schema or Ref
     timestamps: {

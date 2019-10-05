@@ -1,6 +1,7 @@
 'use strict';
 
 const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
+const DEFAULT_CONTRACT_POPULATE = 'software.software';
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -64,6 +65,7 @@ module.exports = dependencies => {
 
     return Contract
       .find()
+      .populate(DEFAULT_CONTRACT_POPULATE)
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-timestamps.creation')
@@ -99,7 +101,9 @@ module.exports = dependencies => {
    * @param {Promise}             - Resolve on success
    */
   function getById(contractId, options = {}) {
-    const query = Contract.findById(contractId);
+    const query = Contract.findById(contractId).populate(DEFAULT_CONTRACT_POPULATE);
+
+    query.populate(DEFAULT_CONTRACT_POPULATE);
 
     if (options.populations) {
       query.populate(options.populations);
