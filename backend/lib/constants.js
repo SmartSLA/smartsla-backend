@@ -1,6 +1,15 @@
 'use strict';
 
 module.exports = {
+  DEFAULT_LOCALE: 'fr',
+  EMAIL_NOTIFICATIONS: {
+    DEFAULT_FROM: 'ossa@linagora.com',
+    DEFAULT_RESPONSIBLE_EMAIL: 'ossa@linagora.com',
+    TYPES: {
+      CREATED: 'CREATED',
+      UPDATED: 'UPDATED'
+    }
+  },
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
     USER: 'user',
@@ -15,14 +24,12 @@ module.exports = {
     SOFTWARE_TYPE: 'Software type',
     ISSUE_TYPE: 'Issue type'
   },
-  TICKET_STATES: {
-    NEW: 'New',
-    IN_PROGRESS: 'In progress',
-    AWAITING: 'Awaiting',
-    AWAITING_INFORMATION: 'Awaiting information',
-    AWAITING_VALIDATION: 'Awaiting validation',
-    CLOSED: 'Closed',
-    ABANDONED: 'Abandoned'
+  TICKET_STATUS: {
+    NEW: 'new',
+    SUPPORTED: 'supported',
+    BYPASSED: 'bypassed',
+    RESOLVED: 'resolved',
+    CLOSED: 'closed'
   },
   INDICES: {
     CONTRACT: {

@@ -1,11 +1,12 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATES, EVENTS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Ticket = mongoose.model('Ticket');
+  const email = require('../email')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
 
@@ -33,6 +34,8 @@ module.exports = dependencies => {
       if (options.populations) {
         return createdTicket.populate(options.populations).execPopulate();
       }
+
+      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, createdTicket);
 
       return createdTicket._id;
     });
@@ -128,7 +131,11 @@ module.exports = dependencies => {
    * @return {Promise}            - Resolve the updated ticket
    */
   function updateById(ticketId, modified) {
-    return Ticket.findByIdAndUpdate(ticketId, { $set: modified }, { new: true }).exec();
+    return Ticket.findByIdAndUpdate(ticketId, { $set: modified }, { new: true })
+      .exec()
+      .then(() => {
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modified);
+      });
   }
 
   /**
@@ -136,6 +143,8 @@ module.exports = dependencies => {
    * @param  {Object}   ticket  - The ticket object
    * @param  {String}   state   - New state
    * @return {Promise}          - Resolve the updated ticket
+   *
+   * @deprecated The times computing aren't relevent anymore, needs update !!!
    */
   function updateState(ticket, state) {
     if (ticket.state === state) {
@@ -144,7 +153,7 @@ module.exports = dependencies => {
 
     ticket.times = ticket.times || {};
 
-    if (state === TICKET_STATES.IN_PROGRESS) {
+    if (state === TICKET_STATUS.SUPPORTED) {
       if (ticket.times.response === undefined) {
         // set response time
         ticket.times.response = Math.round(
