@@ -42,9 +42,9 @@ module.exports = function(dependencies, lib) {
       offset: +req.query.offset
     };
 
-    const isAdmin = true;
-
-    (isAdmin ? _listAll() : _listForUser(req.ticketingUser._id))
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canViewAll => (canViewAll ? _listAll() : _listForUser(req.user._id)))
       .then(({ size, list }) => {
         res.header('X-ESN-Items-Count', size);
         res.status(200).json(list);
@@ -58,7 +58,7 @@ module.exports = function(dependencies, lib) {
     function _listForUser(_id) {
       return lib.contract.listForUser(_id)
         .then(contracts => {
-          if (!contracts) {
+          if (!contracts || !contracts.length) {
             logger.info('No contracts for user', req.user._id);
 
             return res.status(200).json([]);
@@ -68,7 +68,7 @@ module.exports = function(dependencies, lib) {
         })
         .then(contracts => lib.ticket.listForContracts(contracts, options));
       }
-    }
+  }
 
   /**
    * Get a ticket
