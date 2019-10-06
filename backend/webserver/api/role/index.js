@@ -21,4 +21,11 @@ module.exports = (dependencies, lib, router) => {
     middleware.canUpdateRole,
     controller.updateRole
   );
+
+  router.delete('/roles/:id',
+    authorizationMW.requiresAPILogin,
+    middleware.loadRole,
+    middleware.canDeleteRole,
+    controller.deleteRole
+  );
 };

@@ -5,6 +5,7 @@ module.exports = (dependencies, lib) => {
   return {
     list,
     updateRole,
+    deleteRole,
     createRoles
   };
 
@@ -36,5 +37,11 @@ module.exports = (dependencies, lib) => {
     lib.ticketingUserRole.updateRoleById(req.ticketingUserRole._id, req.body.role)
       .then(() => res.status(200).send())
       .catch(err => send500Error('Failed to update role', err, res));
+  }
+
+  function deleteRole(req, res) {
+    lib.ticketingUserRole.deleteById(req.ticketingUserRole._id)
+      .then(() => res.status(204).send())
+      .catch(err => send500Error('Failed to delete role', err, res));
   }
 };

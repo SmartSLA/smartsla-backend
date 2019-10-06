@@ -5,6 +5,7 @@ module.exports = (dependencies, lib) => {
   return {
     canUpdateRole,
     canCreateRoles,
+    canDeleteRole,
     canSetRoles,
     canList,
     loadRole
@@ -15,6 +16,10 @@ module.exports = (dependencies, lib) => {
   }
 
   function canUpdateRole(req, res, next) {
+    requireAdministrator(req, res, next);
+  }
+
+  function canDeleteRole(req, res, next) {
     requireAdministrator(req, res, next);
   }
 
