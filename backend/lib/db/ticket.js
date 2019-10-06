@@ -6,17 +6,18 @@ module.exports = dependencies => {
   const CounterModel = mongoose.model('Counter');
   const { ContractSchema, ContractSoftwareSchema } = require('./schemas/contract')(dependencies);
 
-  const IdNameEmail = {
+  const IdNameEmailType = {
     id: { type: String }, // ObjectId in string version
     name: { type: String }, // Display name
-    email: { type: String }
+    email: { type: String },
+    type: { type: String }
   };
 
   const ticketSchema = new mongoose.Schema({
     _id: Number,
-    assignedTo: IdNameEmail, // TODO Consider denormalizing
-    author: IdNameEmail, // TODO Consider denormalizing
-    beneficiary: IdNameEmail, // TODO Consider denormalizing
+    assignedTo: IdNameEmailType, // TODO Consider denormalizing
+    author: IdNameEmailType, // TODO Consider denormalizing
+    beneficiary: IdNameEmailType, // TODO Consider denormalizing
     contract: ContractSchema, // TODO Consider denormalizing
     comments: [Schema.Types.Mixed],
     description: { type: String },
@@ -25,7 +26,7 @@ module.exports = dependencies => {
     logs: [Schema.Types.Mixed],
     participants: [String],
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
-    responsible: IdNameEmail, // TODO Consider denormalizing
+    responsible: IdNameEmailType, // TODO Consider denormalizing
     severity: { type: String }, // TODO add enum validator
     software: ContractSoftwareSchema, // TODO Consider normalizing and rename field to supportedSoftware
     status: { type: String, default: 'new' }, // TODO add enum validator
