@@ -26,12 +26,24 @@ module.exports = dependencies => {
   /**
    * Add event to a ticket
    *
+   * Update ticket status and/or assignedTo if modified by event
+   *
    * @param {Object}  ticketId - The ticket Id
    * @param {Object}  event    - The event to add
    * @param {Promise}          - Resolve on success
    */
   function addEvent(ticketId, event) {
-    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: { 'timestamps.updatedAt': Date.now() } }, { new: true })
+    const set = {};
+
+    if (event.status) {
+      set.status = event.status;
+    }
+
+    if (event.target) {
+      set.assignedTo = event.target;
+    }
+
+    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
       .then(() => {
         email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, event);

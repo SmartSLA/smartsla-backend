@@ -84,10 +84,12 @@ module.exports = dependencies => {
 
   ticketSchema.pre('findOneAndUpdate', function(next) {
     const self = this;
-    const ticket = self._update.$set;
+    const set = self._update.$set || {};
 
-    if (ticket.timestamps) {
-      ticket.timestamps.updatedAt = Date.now();
+    if (set.timestamps) {
+      set.timestamps.updatedAt = Date.now();
+    } else {
+      self._update.$set = Object.assign(set, { 'timestamps.updatedAt': Date.now() });
     }
 
     next();
