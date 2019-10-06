@@ -2,6 +2,7 @@
 
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
+const DEFAULT_TICKET_POPULATE = 'software.software';
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -65,7 +66,9 @@ module.exports = dependencies => {
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
         .sort('-updatedAt');
 
-        return query.exec();
+      query.populate(DEFAULT_TICKET_POPULATE);
+
+      return query.exec();
     }
 
     function buildQuery(options) {
@@ -116,6 +119,8 @@ module.exports = dependencies => {
    */
   function getById(ticketId, options = {}) {
     const query = Ticket.findById(ticketId);
+
+    query.populate(DEFAULT_TICKET_POPULATE);
 
     if (options.populations) {
       query.populate(options.populations);

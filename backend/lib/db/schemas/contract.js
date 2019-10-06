@@ -8,7 +8,7 @@ module.exports = dependencies => {
   }, { _id: false});
 
   const ContractSoftwareSchema = new Schema({
-    name: { type: String },
+    software: { type: mongoose.Schema.ObjectId, ref: 'Software', required: true },
     critical: { type: String, default: 'standard' },
     generic: Schema.Types.Mixed,
     technicalReferent: { type: String }, // FIXME Store User instead of name
@@ -67,7 +67,7 @@ module.exports = dependencies => {
     schedule: ContractScheduleSchema,
     status: { type: Boolean, default: true },
     startDate: { type: Date, required: true },
-    software: [ContractSoftwareSchema],
+    software: [ContractSoftwareSchema], // TODO rename field to supportedSoftware
     timestamps: {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
