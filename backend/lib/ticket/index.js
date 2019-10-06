@@ -41,6 +41,10 @@ module.exports = dependencies => {
 
     if (event.target) {
       set.assignedTo = event.target;
+
+      if (event.target.type === 'expert') {
+        set.responsible = event.target;
+      }
     }
 
     return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })

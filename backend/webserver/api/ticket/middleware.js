@@ -23,8 +23,7 @@ module.exports = (dependencies, lib) => {
     canUpdateTicket,
     validateTicketCreation,
     validateTicketUpdate,
-    transformTicket,
-    transformTicketBeforeUpdate
+    transformTicket
   };
 
   function checkTicketIdInParams(req, res, next) {
@@ -63,20 +62,6 @@ module.exports = (dependencies, lib) => {
     }
 
     res.locals.newTicket = { ...ticket, beneficiary, idOssa };
-
-    next();
-  }
-
-  function transformTicketBeforeUpdate(req, res, next) {
-    // FIXME A corriger
-    
-    const ticket = req.body;
-    const lastLog = ticket.logs.length - 1;
-
-    const assignedTo = ticket.logs[lastLog].assignedTo;
-    const responsible = assignedTo.type === 'expert' ? assignedTo : ticket.responsible;
-
-    res.locals.ticketUpdate = { ...ticket, updatedAt: Date.now(), assignedTo, responsible };
 
     next();
   }

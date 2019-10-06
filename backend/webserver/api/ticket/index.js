@@ -30,7 +30,6 @@ module.exports = (dependencies, lib, router) => {
 
   router.post('/tickets/:id',
     authorizationMW.requiresAPILogin,
-    middlewares.transformTicketBeforeUpdate,
     controller.update
   );
 
