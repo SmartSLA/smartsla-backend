@@ -68,6 +68,8 @@ module.exports = (dependencies, lib) => {
   }
 
   function transformTicketBeforeUpdate(req, res, next) {
+    // FIXME A corriger
+    
     const ticket = req.body;
     const lastLog = ticket.logs.length - 1;
 

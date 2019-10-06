@@ -4,12 +4,24 @@ module.exports = function(dependencies, lib) {
   const { send500Error, send404Error } = require('../utils')(dependencies);
 
   return {
+    addEvent,
     create,
     list,
     get,
     update,
     remove
   };
+
+  function addEvent(req, res) {
+    const event = req.body;
+    const ticketId = req.params.id;
+
+    lib.ticket.addEvent(ticketId, event)
+      .then(updatedTicket => {
+        res.status(200).json(updatedTicket);
+      })
+      .catch(err => send500Error('failed to add event', err, res));
+  }
 
   /**
    * Create a ticket.

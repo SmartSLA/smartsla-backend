@@ -17,10 +17,26 @@ module.exports = dependencies => {
     getById,
     updateById,
     removeById,
+    addEvent,
     updateState,
     setWorkaroundTime,
     setCorrectionTime
   };
+
+  /**
+   * Add event to a ticket
+   *
+   * @param {Object}  ticketId - The ticket Id
+   * @param {Object}  event    - The event to add
+   * @param {Promise}          - Resolve on success
+   */
+  function addEvent(ticketId, event) {
+    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: { 'timestamps.updatedAt': Date.now() } }, { new: true })
+      .exec()
+      .then(() => {
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, event);
+      });
+  }
 
   /**
    * Create ticket.

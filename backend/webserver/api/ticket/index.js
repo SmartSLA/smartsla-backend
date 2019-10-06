@@ -22,6 +22,12 @@ module.exports = (dependencies, lib, router) => {
     controller.get
   );
 
+  router.put('/tickets/:id/events',
+    authorizationMW.requiresAPILogin,
+    middlewares.checkTicketIdInParams,
+    controller.addEvent
+  );
+
   router.post('/tickets/:id',
     authorizationMW.requiresAPILogin,
     middlewares.transformTicketBeforeUpdate,
