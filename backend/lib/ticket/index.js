@@ -49,8 +49,8 @@ module.exports = dependencies => {
 
     return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
-      .then(() => {
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, event);
+      .then(modifiedTicket => {
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket, event);
       });
   }
 
