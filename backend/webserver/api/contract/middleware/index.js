@@ -22,6 +22,7 @@ module.exports = (dependencies, lib) => {
     canListContract,
     canUpdateContract,
     canReadContract,
+    canAddUsersToContract,
     validateContractPayload,
     validateDemand,
     validatePermissions,
@@ -40,6 +41,11 @@ module.exports = (dependencies, lib) => {
         next();
       })
       .catch(err => send500Error('Unable to load contract', err, res));
+  }
+
+  function canAddUsersToContract(req, res, next) {
+    // TODO: Needs to be able to add users when expert?
+    return requireAdministrator(req, res, next);
   }
 
   function canCreateContract(req, res, next) {

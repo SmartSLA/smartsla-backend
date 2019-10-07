@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies, lib) {
   const { send500Error, send404Error } = require('../utils')(dependencies);
+  const logger = dependencies('logger');
 
   return {
     create,
@@ -41,12 +42,32 @@ module.exports = function(dependencies, lib) {
       offset: +req.query.offset
     };
 
-    return lib.ticket.list(options)
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canViewAll => (canViewAll ? _listAll() : _listForUser(req.user._id)))
       .then(({ size, list }) => {
         res.header('X-ESN-Items-Count', size);
         res.status(200).json(list);
       })
-      .catch(err => send500Error('Failed to list tickets', err, res));
+      .catch(err => send500Error('Error while getting tickets', err, res));
+
+    function _listAll() {
+      return lib.ticket.list();
+    }
+
+    function _listForUser(_id) {
+      return lib.contract.listForUser(_id)
+        .then(contracts => {
+          if (!contracts || !contracts.length) {
+            logger.info('No contracts for user', req.user._id);
+
+            return res.status(200).json([]);
+          }
+
+          return contracts.map(contract => contract.contract);
+        })
+        .then(contracts => lib.ticket.listForContracts(contracts, options));
+      }
   }
 
   /**

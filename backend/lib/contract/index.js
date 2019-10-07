@@ -6,6 +6,7 @@ const DEFAULT_CONTRACT_POPULATE = 'software.software';
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Contract = mongoose.model('Contract');
+  const TicketingUserContract = mongoose.model('TicketingUserContract');
   const pubsubLocal = dependencies('pubsub').local;
   const search = require('./search')(dependencies);
 
@@ -31,7 +32,10 @@ module.exports = dependencies => {
     listByCursor,
     search,
     updateById,
-    removeById
+    removeById,
+    addUsers,
+    getUsers,
+    listForUser
   };
 
   /**
@@ -140,4 +144,26 @@ module.exports = dependencies => {
       .cursor();
   }
 
+  function addUsers(contractId, users) {
+    return TicketingUserContract.insertMany(users.map(user => ({
+      user: user.user,
+      contract: contractId,
+      role: user.role || 'reader'
+    })));
+  }
+
+  /**
+   * Get all the contracts for a given user
+   * @param {ObjectId} userId
+   * @returns Array of {user, contract, role}
+   */
+  function listForUser(userId) {
+    return TicketingUserContract.find({ user: userId })
+      .exec();
+  }
+
+  function getUsers(contractId) {
+    return TicketingUserContract.find({ contract: contractId })
+      .exec();
+  }
 };

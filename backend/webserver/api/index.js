@@ -15,6 +15,7 @@ module.exports = (dependencies, lib) => {
   require('./team')(dependencies, lib, router);
   require('./client')(dependencies, lib, router);
   require('./filter')(dependencies, lib, router);
+  require('./role')(dependencies, lib, router);
 
   return router;
 };

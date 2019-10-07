@@ -9,7 +9,9 @@ module.exports = function(dependencies, lib) {
     get,
     list,
     update,
-    remove
+    remove,
+    addUsers,
+    getUsers
   };
 
   /**
@@ -129,5 +131,23 @@ module.exports = function(dependencies, lib) {
         return send404Error('contract not found', res);
       })
       .catch(err => send500Error('Failed to delete contract', err, res));
+  }
+
+  function addUsers(req, res) {
+    if (!req.body) {
+      return res.status(400);
+    }
+
+    return lib.contract.addUsers(req.params.id, req.body)
+      .then(() => res.status(200).send())
+      .catch(err => send500Error('Failed to update contract', err, res));
+  }
+
+  function getUsers(req, res) {
+    return lib.contract.getUsers(req.params.id)
+      .then(users => {
+        res.status(200).json(users);
+      })
+      .catch(err => send500Error('Failed to get user for contracts', err, res));
   }
 };

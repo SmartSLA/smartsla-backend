@@ -2,9 +2,11 @@
 
 module.exports = (dependencies, lib, router) => {
   const authorizationMW = dependencies('authorizationMW');
+  const domainMW = dependencies('domainMW');
   const { checkIdInParams } = dependencies('helperMw');
   const middleware = require('./middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
+  const userMiddleware = require('../user/middleware')(dependencies, lib);
 
   router.get('/users',
     authorizationMW.requiresAPILogin,
@@ -22,6 +24,7 @@ module.exports = (dependencies, lib, router) => {
   router.post('/users',
     authorizationMW.requiresAPILogin,
     middleware.canCreate,
+    domainMW.loadSessionDomain,
     controller.create
   );
 
@@ -31,6 +34,12 @@ module.exports = (dependencies, lib, router) => {
     checkIdInParams('id', 'User'),
     middleware.validateUserUpdatePayload,
     controller.update
+  );
+
+  router.get('/user',
+    authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
+    controller.getCurrentUser
   );
 
   router.get('/user/role',

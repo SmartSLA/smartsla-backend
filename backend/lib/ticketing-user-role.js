@@ -7,14 +7,21 @@ module.exports = dependencies => {
   const TicketingUserRole = mongoose.model('TicketingUserRole');
 
   return {
+    get,
     create,
+    createMultiple,
     deleteById,
     list,
     listByCursor,
     getByUser,
     updateById,
+    updateRoleById,
     userIsAdministrator
   };
+
+  function get(roleId) {
+    return TicketingUserRole.findById(roleId).exec();
+  }
 
   /**
    * Check a user is the administrator
@@ -37,6 +44,15 @@ module.exports = dependencies => {
     ticketingUserRole = ticketingUserRole instanceof TicketingUserRole ? ticketingUserRole : new TicketingUserRole(ticketingUserRole);
 
     return TicketingUserRole.create(ticketingUserRole);
+  }
+
+  /**
+   * Create multiple roles ar once
+   *
+   * @param {Array} ticketUserRoles - Array of {user, role} where user is userId, role is a string
+   */
+  function createMultiple(ticketUserRoles) {
+    return TicketingUserRole.insertMany(ticketUserRoles);
   }
 
   /**
@@ -85,6 +101,15 @@ module.exports = dependencies => {
    */
   function updateById(ticketingUserRoleId, modified) {
     return TicketingUserRole.update({ _id: ticketingUserRoleId }, { $set: modified }).exec();
+  }
+
+  /**
+   * Update the role value for the given role ID
+   * @param {String} _id  - The role Id
+   * @param {String} role    - The new value to set
+   */
+  function updateRoleById(_id, role) {
+    return TicketingUserRole.update({ _id }, { role }).exec();
   }
 
   /**

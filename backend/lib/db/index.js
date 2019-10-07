@@ -13,6 +13,7 @@ module.exports = dependencies => {
   const TicketingGlossary = require('./ticketing-glossary')(dependencies);
   const TicketingUserRole = require('./ticketing-user-role')(dependencies);
   const Ticket = require('./ticket')(dependencies);
+  const TicketUserContract = require('./ticketing-user-contract')(dependencies);
 
   return {
     Client,
@@ -25,6 +26,7 @@ module.exports = dependencies => {
     Ticket,
     TicketingGlossary,
     TicketingUser,
-    TicketingUserRole
+    TicketingUserRole,
+    TicketUserContract
   };
 };

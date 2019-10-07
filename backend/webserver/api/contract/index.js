@@ -5,9 +5,11 @@ module.exports = function(dependencies, lib, router) {
   const authorizationMW = dependencies('authorizationMW');
   const controller = require('./controller')(dependencies, lib);
   const {
+    load,
     canCreateContract,
     canListContract,
     canUpdateContract,
+    canAddUsersToContract,
     canReadContract
   } = require('./middleware')(dependencies, lib);
 
@@ -34,6 +36,19 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canUpdateContract,
     controller.update
+  );
+
+  router.post('/contracts/:id/users',
+    authorizationMW.requiresAPILogin,
+    load,
+    canAddUsersToContract,
+    controller.addUsers
+  );
+
+  router.get('/contracts/:id/users',
+    authorizationMW.requiresAPILogin,
+    load,
+    controller.getUsers
   );
 
   router.delete('/contracts/:id',

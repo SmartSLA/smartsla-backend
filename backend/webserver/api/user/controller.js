@@ -10,6 +10,7 @@ module.exports = (dependencies, lib) => {
   return {
     create,
     get,
+    getCurrentUser,
     getRole,
     update,
     list
@@ -29,20 +30,30 @@ module.exports = (dependencies, lib) => {
       hosted: true
     }];
     user.domains = [{
-      domain_id: '5c61a521a90d02008de24ba6'
+      domain_id: req.domain._id
     }];
 
-    const denormalizeCreatedUser = createdUser => {
-      const denormalizedUser = coreUser.denormalize.denormalize(createdUser);
+    lib.user.create(user)
+      .then(createdUser => addUserToContracts(createdUser, req.body.contracts || []))
+      .then(createdUser => res.status(201).json(denormalize(createdUser)))
+      .catch(err => send500Error('Failed to create Ticketing user', err, res));
 
-      denormalizedUser.entity = createdUser.entity;
+    function addUserToContracts(user, contracts) {
+      if (!contracts || !contracts.length) {
+        return Promise.resolve(user);
+      }
+
+      return Promise.all(contracts.map(contract => lib.contract.addUsers(contract, [{ user: user._id, role: user.role}])))
+        .then(() => user);
+    }
+
+    function denormalize(user) {
+      const denormalizedUser = coreUser.denormalize.denormalize(user);
+
+      denormalizedUser.entity = user.entity;
 
       return denormalizedUser;
-    };
-
-    lib.user.create(user)
-      .then(createdUser => res.status(201).json(denormalizeCreatedUser(createdUser)))
-      .catch(err => send500Error('Failed to create Ticketing user', err, res));
+    }
   }
 
   /**
@@ -57,6 +68,20 @@ module.exports = (dependencies, lib) => {
         res.status(201).json(user);
       })
       .catch(err => send500Error('Failed to get user', err, res));
+  }
+
+  function getCurrentUser(req, res) {
+    Promise.all([
+      lib.user.getById(req.user._id),
+      lib.contract.listForUser(req.user._id)
+    ])
+    .then(result => {
+      const [user, contracts] = result;
+
+      // TODO: Denormalize
+      res.status(200).json({ user, contracts });
+    })
+    .catch(err => send500Error('Failed to get user', err, res));
   }
 
   /**
