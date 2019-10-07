@@ -144,9 +144,14 @@ module.exports = function(dependencies, lib) {
   }
 
   function getUsers(req, res) {
-    return lib.contract.getUsers(req.params.id)
+    return lib.contract.getUsers(req.params.id, ['user'])
       .then(users => {
-        res.status(200).json(users);
+        const result = users.map(userContract => ({
+          user: coreUser.denormalize.denormalize(userContract.user),
+          role: userContract.role
+        }));
+
+        res.status(200).json(result);
       })
       .catch(err => send500Error('Failed to get user for contracts', err, res));
   }

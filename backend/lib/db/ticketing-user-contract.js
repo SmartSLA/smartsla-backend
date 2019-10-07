@@ -3,7 +3,7 @@ module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
 
   const TicketingUserContractSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.ObjectId, required: true, ref: 'TicketingUser' },
+    user: { type: mongoose.Schema.ObjectId, required: true, ref: 'User' },
     contract: { type: mongoose.Schema.ObjectId, required: true, ref: 'Contract' },
     role: { type: String, default: 'reader' },
     timestamps: {
