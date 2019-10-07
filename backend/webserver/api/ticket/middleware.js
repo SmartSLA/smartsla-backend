@@ -1,9 +1,7 @@
-'use strict';
-
 const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
-const { TICKET_ACTIONS, TICKET_SCOPES, ID_OSSA_CONVERTION } = require('../constants');
+const { TICKET_ACTIONS, ID_OSSA_CONVERTION } = require('../constants');
 
 module.exports = (dependencies, lib) => {
   const {
@@ -11,15 +9,16 @@ module.exports = (dependencies, lib) => {
     validateObjectIds
   } = require('../helpers')(dependencies, lib);
   const { send400Error, send403Error, send404Error, send500Error } = require('../utils')(dependencies);
-  const RESOURCE_TYPE = 'ticket';
 
   return {
     checkTicketIdInParams,
     load,
+    loadTicket,
     loadContract,
     canCreateTicket,
     canListTicket,
     canReadTicket,
+    canDeleteTicket,
     canUpdateTicket,
     validateTicketCreation,
     validateTicketUpdate,
@@ -80,43 +79,63 @@ module.exports = (dependencies, lib) => {
   }
 
   function canCreateTicket(req, res, next) {
-    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'create')) {
-      return send403Error(`User does not have permission to create ${RESOURCE_TYPE}`, res);
-    }
-
+    // TODO: Check that the ticket can be created in the given contract
     next();
   }
 
   function canListTicket(req, res, next) {
-    if (req.user.role === 'user' && req.query.scope !== TICKET_SCOPES.MINE) {
-      return send403Error(`User does not have permission to list all ${RESOURCE_TYPE}s`, res);
-    }
-
-    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'list')) {
-      return send403Error(`User does not have permission to list ${RESOURCE_TYPE}s`, res);
-    }
-
+    // TODO
     next();
   }
 
   function canReadTicket(req, res, next) {
-    if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'read', { ticket: req.ticket, user: req.user })) {
-      return send403Error(`User does not have permission to read ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
-    }
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canViewAll => {
+        if (canViewAll) {
+          return next();
+        }
 
-    next();
+        return userCanReadTicket(req.user, req.ticket)
+          .then(canRead => (canRead ? next() : send403Error('User does not have permission to read ticket', res)));
+      })
+      .catch(err => send500Error('Unable to check ticket rights', err, res));
+
+    function userCanReadTicket(user, ticket) {
+      return lib.contract.listForUser(user._id)
+        .then(contracts => {
+          if (!contracts || !contracts.length) {
+            return false;
+          }
+
+          const contractIds = contracts.map(contract => String(contract.contract));
+
+          return contractIds.includes(String(ticket.contract._id));
+        });
+    }
   }
 
   function canUpdateTicket(req, res, next) {
-    if (req.query.action) {
-      if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'update', { ticket: req.ticket, user: req.user })) {
-        return send403Error(`User does not have permission to update ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
-      }
-    } else if (!lib.accessControl.can(req.user.role, RESOURCE_TYPE, 'edit', { ticket: req.ticket, user: req.user })) {
-      return send403Error(`User does not have permission to edit ${RESOURCE_TYPE}: ${req.ticket._id}`, res);
-    }
-
+    // TODO: Check that the user is admin, expert or part of the ticket contract
     next();
+  }
+
+  function canDeleteTicket(req, res) {
+    // TODO
+    return send403Error('User does not have permission to delete ticket', res);
+  }
+
+  function loadTicket(req, res, next) {
+    lib.ticket.getById(req.params.id)
+      .then(ticket => {
+        if (!ticket) {
+          return send404Error('Ticket not found', res);
+        }
+
+        req.ticket = ticket;
+        next();
+      })
+      .catch(err => send500Error('Failed to load ticket', err, res));
   }
 
   function load(idKey, options) {
