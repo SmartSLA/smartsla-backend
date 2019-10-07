@@ -134,7 +134,7 @@ module.exports = dependencies => {
 
     function buildQuery(contracts) {
       const findOptions = {
-        contract: { $in: contracts }
+        'contract._id': { $in: contracts }
       };
       const query = Ticket.find(findOptions);
 
