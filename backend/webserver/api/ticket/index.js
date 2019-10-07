@@ -21,6 +21,8 @@ module.exports = (dependencies, lib, router) => {
   router.get('/tickets/:id',
     authorizationMW.requiresAPILogin,
     middlewares.checkTicketIdInParams,
+    middlewares.loadTicket,
+    middlewares.canReadTicket,
     controller.get
   );
 
@@ -33,6 +35,8 @@ module.exports = (dependencies, lib, router) => {
   router.delete('/tickets/:id',
     authorizationMW.requiresAPILogin,
     middlewares.checkTicketIdInParams,
+    middlewares.loadTicket,
+    middlewares.canDeleteTicket,
     controller.remove
   );
 };
