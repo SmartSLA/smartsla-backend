@@ -61,13 +61,18 @@ module.exports = dependencies => {
    * @param {Promise}           - Resolve on success
    */
   function list(options = {}) {
-    return TicketingUserRole
-      .find()
-      .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-      .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+    const query = TicketingUserRole
       .populate('user')
-      .sort('-timestamps.creation')
-      .exec();
+      .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+      .sort('-timestamps.creation');
+
+    const limit = options.limit || DEFAULT_LIST_OPTIONS.OFFSET;
+
+    if (limit !== -1) {
+      query.limit(limit);
+    }
+
+    return query.exec();
   }
 
   /**
