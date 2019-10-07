@@ -162,8 +162,11 @@ module.exports = dependencies => {
       .exec();
   }
 
-  function getUsers(contractId) {
-    return TicketingUserContract.find({ contract: contractId })
-      .exec();
+  function getUsers(contractId, populates = []) {
+    const query = TicketingUserContract.find({ contract: contractId });
+
+    populates.forEach(populate => query.populate(populate));
+
+    return query.exec();
   }
 };
