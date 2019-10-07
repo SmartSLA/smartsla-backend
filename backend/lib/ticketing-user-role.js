@@ -62,6 +62,7 @@ module.exports = dependencies => {
    */
   function list(options = {}) {
     const query = TicketingUserRole
+      .find()
       .populate('user')
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .sort('-timestamps.creation');
