@@ -144,15 +144,54 @@ module.exports = function(dependencies, lib) {
   }
 
   function getUsers(req, res) {
-    return lib.contract.getUsers(req.params.id, ['user'])
-      .then(users => {
-        const result = users.map(userContract => ({
-          user: coreUser.denormalize.denormalize(userContract.user),
-          role: userContract.role
-        }));
+    return Promise.all([
+      lib.ticketingUser.listByType('expert'),
+      _getCustomers(req.params.id)
+    ])
+    .then(([experts, customers]) => {
+      const expertsResult = experts.map(expert => ({
+        user: coreUser.denormalize.denormalize(expert.user),
+        type: expert.type,
+        role: expert.role
+      }));
+      const customersResult = customers.map(customerType => ({
+        user: coreUser.denormalize.denormalize(customerType.customer.user),
+        role: customerType.customer.role,
+        type: customerType.type
+      }));
 
-        res.status(200).json(result);
-      })
-      .catch(err => send500Error('Failed to get user for contracts', err, res));
+      res.status(200).json([...expertsResult, ...customersResult]);
+    })
+    .catch(err => send500Error('Failed to get user for contracts', err, res));
+
+    function _getCustomers(contractId) {
+      return lib.contract.getUsers(contractId, ['user'])
+        .then(users => getCustomersTypes(users));
+    }
+
+    function getCustomersTypes(customers = []) {
+      const ids = customers
+        .filter(customer => !!customer.user)
+        .map(customer => customer.user._id);
+
+      return lib.ticketingUser.listByUserIds(ids)
+        .then(ticketingUsers => customers.map(customer => ({
+          type: findType(customer, ticketingUsers),
+          customer
+        })));
+    }
+
+    function findType(customer, ticketingUsers) {
+      // TODO: Default type from role
+      const defaultType = 'beneficiary';
+
+      if (!customer.user) {
+        return defaultType;
+      }
+
+      const ticketingUser = ticketingUsers.find(ticketingUser => ticketingUser.user.equals(customer.user._id));
+
+      return ticketingUser !== -1 ? ticketingUser.type : defaultType;
+    }
   }
 };
