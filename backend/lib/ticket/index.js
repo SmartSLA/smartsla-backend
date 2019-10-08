@@ -18,10 +18,42 @@ module.exports = dependencies => {
     getById,
     updateById,
     removeById,
+    addEvent,
     updateState,
     setWorkaroundTime,
     setCorrectionTime
   };
+
+  /**
+   * Add event to a ticket
+   *
+   * Update ticket status and/or assignedTo if modified by event
+   *
+   * @param {Object}  ticketId - The ticket Id
+   * @param {Object}  event    - The event to add
+   * @param {Promise}          - Resolve on success
+   */
+  function addEvent(ticketId, event) {
+    const set = {};
+
+    if (event.status) {
+      set.status = event.status;
+    }
+
+    if (event.target) {
+      set.assignedTo = event.target;
+
+      if (event.target.type === 'expert') {
+        set.responsible = event.target;
+      }
+    }
+
+    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
+      .exec()
+      .then(modifiedTicket => {
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket, event);
+      });
+  }
 
   /**
    * Create ticket.

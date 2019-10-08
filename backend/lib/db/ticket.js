@@ -6,11 +6,33 @@ module.exports = dependencies => {
   const CounterModel = mongoose.model('Counter');
   const { ContractSchema, ContractSoftwareSchema } = require('./schemas/contract')(dependencies);
 
+  const Attachment = {
+    id: { type: Schema.Types.ObjectId },
+    mimeType: { type: String },
+    name: { type: String }
+  };
+
   const IdNameEmailType = {
+    _id: Schema.Types.Mixed, // FIXME ids are inconsistant in UI, should be fixed
     id: { type: String }, // ObjectId in string version
     name: { type: String }, // Display name
     email: { type: String },
     type: { type: String }
+  };
+
+  const Event = {
+    author: {
+      id: { type: String },
+      name: { type: String },
+      image: { type: String }
+    },
+    target: IdNameEmailType, // this can be assigned to a Team, a Group, a User, anything...
+    status: { type: String },
+    comment: { type: String },
+    timestamps: {
+      createdAt: {type: Date, default: Date.now}
+    },
+    attachments: [Attachment]
   };
 
   const ticketSchema = new mongoose.Schema({
@@ -19,11 +41,9 @@ module.exports = dependencies => {
     author: IdNameEmailType, // TODO Consider denormalizing
     beneficiary: IdNameEmailType, // TODO Consider denormalizing
     contract: ContractSchema, // TODO Consider denormalizing
-    comments: [Schema.Types.Mixed],
     description: { type: String },
-    files: [Schema.Types.Mixed],
+    events: [Event],
     idOssa: Schema.Types.Mixed,
-    logs: [Schema.Types.Mixed],
     participants: [String],
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
     responsible: IdNameEmailType, // TODO Consider denormalizing
@@ -64,9 +84,13 @@ module.exports = dependencies => {
 
   ticketSchema.pre('findOneAndUpdate', function(next) {
     const self = this;
-    const ticket = self._update.$set;
+    const set = self._update.$set || {};
 
-    ticket.timestamps.updatedAt = Date.now();
+    if (set.timestamps) {
+      set.timestamps.updatedAt = Date.now();
+    } else {
+      self._update.$set = Object.assign(set, { 'timestamps.updatedAt': Date.now() });
+    }
 
     next();
   });

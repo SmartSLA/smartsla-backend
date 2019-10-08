@@ -9,11 +9,11 @@ module.exports = dependencies => {
     send
   };
 
-  function formatMessage(type, data) {
+  function formatMessage(type, ticket, event) {
     switch (type) {
       case EMAIL_NOTIFICATIONS.TYPES.CREATED: {
         const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been created',
-          { id: data._id, title: data.title });
+          { id: ticket._id, title: ticket.title });
 
         return {
           subject: subject,
@@ -21,14 +21,10 @@ module.exports = dependencies => {
         };
       }
       case EMAIL_NOTIFICATIONS.TYPES.UPDATED: {
-        const comment = data.comments[data.comments.length - 1];
-        const action = getChange(data.logs, 'action');
-        const assignedTo = getChange(data.logs, 'assignedTo');
-
-        if (action) {
-          const translatedAction = i18n.__(action);
+        if (event.status) {
+          const translatedStatus = i18n.__(event.status);
           const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}',
-            { id: data._id, title: data.title, status: translatedAction });
+            { id: ticket._id, title: ticket.title, status: translatedStatus });
 
           return {
             subject: subject,
@@ -36,9 +32,9 @@ module.exports = dependencies => {
           };
         }
 
-        if (assignedTo) {
+        if (event.target) {
           const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}',
-            { id: data._id, title: data.title, assignee: data.assignedTo.name });
+            { id: ticket._id, title: ticket.title, assignee: ticket.assignedTo.name });
 
           return {
             subject: subject,
@@ -46,30 +42,15 @@ module.exports = dependencies => {
           };
         }
 
-        if (comment) {
+        if (event.comment) {
           const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}',
-            { id: data._id, title: data.title, commenter: comment.author.name });
+            { id: ticket._id, title: ticket.title, commenter: event.comment.author.name });
 
           return {
             subject: subject,
             text: subject
           };
         }
-      }
-    }
-
-    function getChange(arr, field) {
-      let previousValue;
-      const arrayLength = arr.length;
-
-      if (arrayLength > 1) {
-        previousValue = arr[arrayLength - 2][field];
-      }
-
-      const latestValue = arr[arrayLength - 1][field];
-
-      if (previousValue !== latestValue) {
-        return latestValue;
       }
     }
   }
