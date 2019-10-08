@@ -4,6 +4,8 @@ const Q = require('q');
 const { TICKETING_USER_ROLES, EVENTS } = require('../constants');
 
 module.exports = dependencies => {
+  const userModule = dependencies('coreUser');
+  const logger = dependencies('logger');
   const mongoose = dependencies('db').mongo.mongoose;
   const pubsub = dependencies('pubsub').local;
 
@@ -29,13 +31,40 @@ module.exports = dependencies => {
    * @return {Promise}     - Resolve with created user on success
    */
   function create(user) {
+    logger.debug('Creating user', user);
     const userAsModel = user instanceof User ? user : new User(user);
     const role = user.role || TICKETING_USER_ROLES.USER;
 
-    return User.create(userAsModel)
-      .then(createdUser => {
+    return new Promise((resolve, reject) => {
+      userModule.findByEmail(user.email, (err, opUser) => {
+        if (err) {
+          return reject('Problem while searching user by email');
+        }
+
+        if (!opUser) {
+          logger.info('User is not an openpaas user, creating it', user);
+
+          return userModule.recordUser(userAsModel, (err, result) => {
+            if (err) {
+              return reject('Problem while recording openpaas user');
+            }
+
+            if (!result) {
+              return reject('Can not record user');
+            }
+
+            _provisionTicketingUser(result, user, true);
+          });
+        }
+
+        _provisionTicketingUser(opUser, user);
+      });
+
+      function _provisionTicketingUser(opUser, user, isNewUser) {
+        logger.info('Creating the ticketing user for OP user', opUser._id);
+
         const newTicketingUser = {
-          user: createdUser._id,
+          user: opUser._id,
           role,
           type: user.type || '',
           email: user.email || '',
@@ -44,20 +73,23 @@ module.exports = dependencies => {
           identifier: user.identifier || ''
         };
 
-        return ticketingUser.create(newTicketingUser)
+        ticketingUser.create(newTicketingUser)
           .then(createdUser => createdUser.toObject())
           .then(createdUserObject => {
             createdUserObject.role = role;
             userCreatedTopic.publish(createdUserObject);
 
-            return createdUser;
+            resolve(opUser);
           })
-          .catch(err =>
-            // remove createdUser if failed to create user role
-            _deleteById(createdUser._id)
-              .then(() => Q.reject(err))
-          );
-      });
+          .catch(err => {
+            if (!isNewUser) {
+              return reject(err);
+            }
+
+            _deleteById(opUser._id).then(() => reject(err));
+        });
+      }
+    });
   }
 
   function getById(userId) {
