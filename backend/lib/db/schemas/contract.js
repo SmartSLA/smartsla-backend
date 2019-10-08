@@ -54,7 +54,7 @@ module.exports = dependencies => {
   }, { _id: false});
 
   const ContractSchema = new Schema({
-    domain: { type: String},
+    description: { type: String},
     endDate: { type: Date, required: true },
     Engagements: EngagementsSchema,
     contact: ContactSchema,
