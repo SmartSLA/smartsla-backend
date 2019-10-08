@@ -40,8 +40,7 @@ module.exports = dependencies => {
           type: user.type || '',
           email: user.email || '',
           name: user.name || '',
-          phone: user.phone || '',
-          identifier: user.identifier || ''
+          phone: user.phone || ''
         };
 
         return ticketingUser.create(newTicketingUser)
