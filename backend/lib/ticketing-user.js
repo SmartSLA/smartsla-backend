@@ -9,7 +9,9 @@ module.exports = dependencies => {
   return {
     create,
     list,
-    getByUser
+    getByUser,
+    listByType,
+    listByUserIds
   };
 
   /**
@@ -36,6 +38,14 @@ module.exports = dependencies => {
       .populate('user')
       .sort('-timestamps.creation')
       .exec();
+  }
+
+  function listByType(type) {
+    return TicketingUser.find({ type }).populate('user').exec();
+  }
+
+  function listByUserIds(userIds) {
+    return TicketingUser.find({ user: { $in: userIds }}).exec();
   }
 
   /**

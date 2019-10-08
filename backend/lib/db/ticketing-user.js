@@ -8,10 +8,7 @@ module.exports = dependencies => {
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     phone: { type: String },
-    // TODO: Must be moved to user-contract link
-    // Value depends on this.type
-    // if (type === "beneficiary") => "customer" or "viewer"
-    // if (type === "expert") => "manager" or "expert"
+    // The role must be kept here in case the type is "expert" just because we do not have any other place to store it
     role: { type: String },
     timestamps: {
       createdAt: { type: Date, default: Date.now }
