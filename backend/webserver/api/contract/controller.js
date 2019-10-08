@@ -150,12 +150,12 @@ module.exports = function(dependencies, lib) {
     ])
     .then(([experts, customers]) => {
       const expertsResult = experts.map(expert => ({
-        user: coreUser.denormalize.denormalize(expert.user),
+        user: { ...coreUser.denormalize.denormalize(expert.user), ...{ displayName: expert.name } },
         type: expert.type,
         role: expert.role
       }));
       const customersResult = customers.map(customerType => ({
-        user: coreUser.denormalize.denormalize(customerType.customer.user),
+        user: { ...coreUser.denormalize.denormalize(customerType.customer.user), ...{ displayName: customerType.displayName } },
         role: customerType.customer.role,
         type: customerType.type
       }));
@@ -177,8 +177,19 @@ module.exports = function(dependencies, lib) {
       return lib.ticketingUser.listByUserIds(ids)
         .then(ticketingUsers => customers.map(customer => ({
           type: findType(customer, ticketingUsers),
-          customer
+          customer,
+          displayName: findDisplayName(customer, ticketingUsers)
         })));
+    }
+
+    function findDisplayName(customer, ticketingUsers) {
+      if (!customer.user) {
+        return;
+      }
+
+      const ticketingUser = ticketingUsers.find(ticketingUser => ticketingUser.user.equals(customer.user._id));
+
+      return ticketingUser && ticketingUser.name;
     }
 
     function findType(customer, ticketingUsers) {
