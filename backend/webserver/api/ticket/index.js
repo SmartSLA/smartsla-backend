@@ -21,6 +21,7 @@ module.exports = (dependencies, lib, router) => {
   router.get('/tickets/:id',
     authorizationMW.requiresAPILogin,
     middlewares.checkTicketIdInParams,
+    userMiddleware.loadTicketingUser,
     middlewares.loadTicket,
     middlewares.canReadTicket,
     controller.get
