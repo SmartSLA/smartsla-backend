@@ -38,6 +38,7 @@ module.exports = (dependencies, lib, router) => {
 
   router.get('/user',
     authorizationMW.requiresAPILogin,
+    domainMW.loadSessionDomain,
     userMiddleware.loadTicketingUser,
     controller.getCurrentUser
   );

@@ -2,6 +2,9 @@
 
 module.exports = (dependencies, lib) => {
   const coreUser = dependencies('coreUser');
+  const domainModule = dependencies('coreDomain');
+  const coreUserDenormalizer = dependencies('coreUserDenormalizer');
+
   const {
     send404Error,
     send500Error
@@ -73,16 +76,26 @@ module.exports = (dependencies, lib) => {
 
   function getCurrentUser(req, res) {
     Promise.all([
+      coreUserDenormalizer.denormalize(req.user, { includeIsPlatformAdmin: true }),
       lib.user.getById(req.user._id),
-      lib.contract.listForUser(req.user._id)
-    ])
-    .then(result => {
-      const [user, contracts] = result;
-
-      // TODO: Denormalize
-      res.status(200).json({ user, contracts });
+      lib.contract.listForUser(req.user._id),
+      lib.ticketingUserRole.userIsAdministrator(req.user._id),
+      isDomainAdmin(req.user, req.domain)
+    ]).then(([user, ticketingUser, contracts, isApplicationAdmin, isDomainAdmin]) => {
+      res.status(200).json({
+        ...user,
+        ...{ roles: { isApplicationAdmin, isPlatformAdmin: user.isPlatformAdmin, isDomainAdmin }, ticketing: ticketingUser, contracts: contracts || [] }
+      });
     })
     .catch(err => send500Error('Failed to get user', err, res));
+
+    function isDomainAdmin(user, domain) {
+      return new Promise(resolve => {
+        domainModule.userIsDomainAdministrator(user, domain, (err, isDomainAdministrator) => {
+          resolve(!err && isDomainAdministrator);
+        });
+      });
+    }
   }
 
   /**
