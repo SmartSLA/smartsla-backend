@@ -164,6 +164,8 @@ module.exports = dependencies => {
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
         .sort('-updatedAt');
 
+        query.populate(DEFAULT_TICKET_POPULATE);
+
         return query.exec();
     }
 
