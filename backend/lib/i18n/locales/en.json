@@ -94,6 +94,7 @@
   "Full name": "Full name",
   "General": "General",
   "Image / PDF / Video / Doc (Maximum 5MB each)": "Image / PDF / Video / Doc (Maximum 5MB each)",
+  "Issue #{{id}} is available here: ": "Issue #{{id}} is available here: ",
   "Issue created": "Issue created",
   "Issue is changed": "Issue is changed",
   "Issue type added": "Issue type added",

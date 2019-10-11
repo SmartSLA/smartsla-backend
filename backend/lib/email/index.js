@@ -1,6 +1,8 @@
 module.exports = dependencies => {
   const emailModule = dependencies('email');
   const userModule = dependencies('coreUser');
+  const esnConfig = dependencies('esn-config');
+
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS } = require('../constants');
   const i18n = require('../i18n')(dependencies);
@@ -9,7 +11,10 @@ module.exports = dependencies => {
     send
   };
 
-  function formatMessage(type, ticket, event) {
+  function formatMessage(type, ticket, event, frontendUrl) {
+    const ticketUrl = new URL(`requests/${ticket._id}`, frontendUrl).toString();
+    const messageBody = i18n.__('Issue #{{id}} is available here: ', { id: ticket._id }) + ticketUrl;
+
     switch (type) {
       case EMAIL_NOTIFICATIONS.TYPES.CREATED: {
         const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been created',
@@ -17,7 +22,7 @@ module.exports = dependencies => {
 
         return {
           subject: subject,
-          text: subject
+          text: messageBody
         };
       }
       case EMAIL_NOTIFICATIONS.TYPES.UPDATED: {
@@ -28,7 +33,7 @@ module.exports = dependencies => {
 
           return {
             subject: subject,
-            text: subject
+            text: messageBody
           };
         }
 
@@ -38,17 +43,17 @@ module.exports = dependencies => {
 
           return {
             subject: subject,
-            text: subject
+            text: messageBody
           };
         }
 
         if (event.comment) {
           const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}',
-            { id: ticket._id, title: ticket.title, commenter: event.comment.author.name });
+            { id: ticket._id, title: ticket.title, commenter: event.author.name });
 
           return {
             subject: subject,
-            text: subject
+            text: messageBody
           };
         }
       }
@@ -72,26 +77,29 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function send(type, ticket) {
-    userModule.get(ticket.author.id, function(err, user) {
-      if (!err && user) {
-        const message = formatMessage(type, ticket);
+  function send(type, ticket, event) {
+    esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get()
+      .then(frontendUrl => {
+        userModule.get(ticket.author.id, (err, user) => {
+          if (!err && user) {
+            const message = formatMessage(type, ticket, event, frontendUrl);
 
-        if (!message) {
-          return;
-        }
+            if (!message) {
+              return;
+            }
 
-        const recipents = getRecipients(ticket);
+            const recipents = getRecipients(ticket);
 
-        message.to = recipents.to;
-        message.cc = recipents.cc;
-        message.from = EMAIL_NOTIFICATIONS.DEFAULT_FROM;
+            message.to = recipents.to;
+            message.cc = recipents.cc;
+            message.from = EMAIL_NOTIFICATIONS.DEFAULT_FROM;
 
-        emailModule.getMailer(user).send(message, logError);
-      }
+            emailModule.getMailer(user).send(message, logError);
+          }
 
-      return logError(err);
-    });
+          return logError(err);
+        });
+      });
   }
 
   function logError(err) {
