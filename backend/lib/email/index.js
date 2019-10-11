@@ -44,7 +44,7 @@ module.exports = dependencies => {
 
         if (event.comment) {
           const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}',
-            { id: ticket._id, title: ticket.title, commenter: event.comment.author.name });
+            { id: ticket._id, title: ticket.title, commenter: event.author.name });
 
           return {
             subject: subject,
@@ -72,10 +72,10 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function send(type, ticket) {
+  function send(type, ticket, event) {
     userModule.get(ticket.author.id, function(err, user) {
       if (!err && user) {
-        const message = formatMessage(type, ticket);
+        const message = formatMessage(type, ticket, event);
 
         if (!message) {
           return;
