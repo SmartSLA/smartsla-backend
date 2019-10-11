@@ -94,6 +94,7 @@
   "Full name": "Nom complet",
   "General": "Générale",
   "Image / PDF / Video / Doc (Maximum 5MB each)": "Image / PDF / Vidéo / Doc (Maximum 5 MB chacun)",
+  "Issue #{{id}} is available here: ": "La demande #{{id}} est disponible ici : ",
   "Issue created": "Demande créé",
   "Issue is changed": "La demande est modifiée",
   "Issue type added": "Type de problème ajouté",
