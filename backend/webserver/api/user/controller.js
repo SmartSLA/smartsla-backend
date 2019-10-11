@@ -148,6 +148,10 @@ module.exports = (dependencies, lib) => {
 
       options.populations = [{ path: 'manager' }];
 
+      if (req.query.type) {
+        options.type = req.query.type;
+      }
+
       if (!req.query.organization) {
         options.populations.push({ path: 'organization' });
       }
