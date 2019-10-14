@@ -72,8 +72,6 @@ module.exports = function(dependencies, lib) {
         .then(contracts => {
           if (!contracts || !contracts.length) {
             logger.info('No contracts for user', req.user._id);
-
-            return res.status(200).json([]);
           }
 
           return contracts.map(contract => contract.contract);
