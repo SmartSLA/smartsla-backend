@@ -17,7 +17,7 @@ module.exports = {
   },
   DEFAULT_LIST_OPTIONS: {
     OFFSET: 0,
-    LIMIT: 50
+    LIMIT: 1000
   },
   GLOSSARY_CATEGORIES: {
     DEMAND_TYPE: 'Demand type',
