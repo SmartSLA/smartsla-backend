@@ -42,6 +42,9 @@ module.exports = function(dependencies) {
 
   function start(callback) {
     listeners.init();
+
+    require('./config')(dependencies).register();
+
     callback();
   }
 };

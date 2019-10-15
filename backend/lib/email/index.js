@@ -12,7 +12,13 @@ module.exports = dependencies => {
   };
 
   function formatMessage(type, ticket, event, frontendUrl) {
-    const ticketUrl = new URL(`requests/${ticket._id}`, frontendUrl).toString();
+    let ticketUrl = '';
+
+    try {
+      ticketUrl = new URL(`requests/${ticket._id}`, frontendUrl).toString();
+    } catch (e) {
+      logger.warn(`Invalid ticket url, please check that linagora.esn.ticketing.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
+    }
     const messageBody = i18n.__('Issue #{{id}} is available here: ', { id: ticket._id }) + ticketUrl;
 
     switch (type) {
@@ -78,33 +84,34 @@ module.exports = dependencies => {
   }
 
   function send(type, ticket, event) {
-    esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get()
+    return esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get()
       .then(frontendUrl => {
         userModule.get(ticket.author.id, (err, user) => {
-          if (!err && user) {
-            const message = formatMessage(type, ticket, event, frontendUrl);
-
-            if (!message) {
-              return;
-            }
-
-            const recipents = getRecipients(ticket);
-
-            message.to = recipents.to;
-            message.cc = recipents.cc;
-            message.from = EMAIL_NOTIFICATIONS.DEFAULT_FROM;
-
-            emailModule.getMailer(user).send(message, logError);
+          if (err || !user) {
+            return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          return logError(err);
+          const message = formatMessage(type, ticket, event, frontendUrl);
+
+          if (!message) {
+            return;
+          }
+
+          const recipents = getRecipients(ticket);
+
+          message.to = recipents.to;
+          message.cc = recipents.cc;
+          message.from = EMAIL_NOTIFICATIONS.DEFAULT_FROM;
+
+          return emailModule.getMailer(user).send(message, logError);
         });
-      });
+      })
+      .catch(logError);
   }
 
   function logError(err) {
     if (err) {
-      logger.error('Unable to send notification email.', err);
+      logger.error('Unable to send notification email', err);
     }
   }
 };
