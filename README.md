@@ -32,7 +32,7 @@ Set the frontend Url (needed to add link to request in email)
 
 Use Curl to set configuration:
 ```
-curl -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
     "name": "linagora.esn.ticketing",
     "configurations": [
@@ -44,6 +44,8 @@ curl -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0
   }
 ]'
 ```
+
+> **PS**  You need to use ``` \n ``` to attach the lines.
 
 ### Accessing the ticketing module
 
