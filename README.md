@@ -26,6 +26,25 @@ In the `esn` folder
 npm start
 ```
 
+### Configuration
+
+Set the frontend Url (needed to add link to request in email)
+
+Use Curl to set configuration:
+```
+curl -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "linagora.esn.ticketing",
+    "configurations": [
+      {
+        "name": "frontendUrl",
+        "value": "http://ticketingServeur:port"
+      }
+    ]
+  }
+]'
+```
+
 ### Accessing the ticketing module
 
 The ticketing module can be accessed at the adress : [Ticketing module](http://localhost:8080/#/ticketing) (/#/ticketing)
