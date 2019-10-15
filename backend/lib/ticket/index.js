@@ -65,11 +65,11 @@ module.exports = dependencies => {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
 
     return Ticket.create(ticket).then(createdTicket => {
+      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, createdTicket);
+
       if (options.populations) {
         return createdTicket.populate(options.populations).execPopulate();
       }
-
-      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, createdTicket);
 
       return createdTicket._id;
     });
