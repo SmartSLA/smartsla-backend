@@ -45,26 +45,10 @@ module.exports = (dependencies, lib) => {
   }
 
   function validateBasicInfo(req, res, next) {
-    const { name, category, versions } = req.body;
+    const { name } = req.body;
 
     if (!name) {
       return send400Error('name is required', res);
-    }
-
-    if (!category) {
-      return send400Error('category is required', res);
-    }
-
-    if (!versions) {
-      return send400Error('versions is required', res);
-    }
-
-    if (!Array.isArray(versions)) {
-      return send400Error('versions must be an array', res);
-    }
-
-    if (!versions.length) {
-      return send400Error('versions must not be empty', res);
     }
 
     next();
