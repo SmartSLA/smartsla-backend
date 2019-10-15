@@ -11,7 +11,8 @@ module.exports = dependencies => {
     list,
     getByUser,
     listByType,
-    listByUserIds
+    listByUserIds,
+    removeById
   };
 
   /**
@@ -55,6 +56,13 @@ module.exports = dependencies => {
    */
   function getByUser(userId) {
     return TicketingUser
-      .findOne({ user: userId });
+      .findOne({ _id: userId });
+  }
+
+  /**
+   * Remove user by ID
+   */
+  function removeById(userId) {
+      return TicketingUser.remove({ _id: userId }).exec();
   }
 };

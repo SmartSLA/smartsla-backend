@@ -47,4 +47,11 @@ module.exports = (dependencies, lib, router) => {
     authorizationMW.requiresAPILogin,
     controller.getRole
   );
+
+  router.delete('/users/:id',
+    authorizationMW.requiresAPILogin,
+    checkIdInParams('id', 'User'),
+    userMiddleware.canUpdate,
+    controller.remove
+  );
 };
