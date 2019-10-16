@@ -33,7 +33,7 @@ module.exports = function(dependencies, lib) {
   function create(req, res) {
     const ticket = res.locals.newTicket;
 
-    if (!res.locals.newTicket) {
+    if (!ticket) {
       return res.status(500).json('Something went wrong');
     }
 
