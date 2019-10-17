@@ -102,24 +102,12 @@ module.exports = dependencies => {
    * @return {Promise}         - Resolve on success
    */
   function updateById(userId, modified = {}) {
-    // Don't try to use findOneAndUpdate or findByIdAndUpdate functions because they will trigger
-    // the patched function in core: findOneAndUpdate
-    // https://ci.linagora.com/linagora/lgs/openpaas/esn/blob/master/backend/core/db/mongo/plugins/helpers.js#L31
-    return User.findById(userId)
-      .exec()
-      .then(user => {
-        if (!user) {
-          return;
+    return ticketingUser.updateUserById(userId, modified)
+      .then(modified => {
+        if (modified) {
+          userUpdatedTopic.publish(modified);
         }
-
-        user = Object.assign(user, modified);
-
-        return user.save()
-          .then(updatedUser => {
-            userUpdatedTopic.publish(updatedUser);
-
-            return updatedUser;
-          });
+        return modified;
       });
   }
 

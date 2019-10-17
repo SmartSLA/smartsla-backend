@@ -105,12 +105,9 @@ module.exports = (dependencies, lib) => {
    * @param  {Object} res
    */
   function update(req, res) {
-    const modifiedUser = {
-      main_phone: req.body.main_phone,
-      description: req.body.description
-    };
+    const user = req.body;
 
-    lib.user.updateById(req.params.id, modifiedUser)
+    lib.user.updateById(req.params.id, user)
       .then(updatedUser => {
         if (!updatedUser) {
           return send404Error('User not found', res);

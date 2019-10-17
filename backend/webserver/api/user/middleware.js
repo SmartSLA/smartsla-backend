@@ -11,8 +11,7 @@ module.exports = (dependencies, lib) => {
     canRead,
     canUpdate,
     canList,
-    validateUserCreatePayload,
-    validateUserUpdatePayload
+    validateUserCreatePayload
   };
 
   function loadTicketingUser(req, res, next) {
@@ -88,15 +87,5 @@ module.exports = (dependencies, lib) => {
         next();
       })
       .catch(err => send500Error('Unable to validate email', err, res));
-  }
-
-  function validateUserUpdatePayload(req, res, next) {
-    const { main_phone } = req.body;
-
-    if (!main_phone) {
-      return send400Error('main_phone is required', res);
-    }
-
-    next();
   }
 };
