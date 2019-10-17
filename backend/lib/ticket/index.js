@@ -31,7 +31,7 @@ module.exports = dependencies => {
    *
    * @param {Object}  ticketId - The ticket Id
    * @param {Object}  event    - The event to add
-   * @param {Promise}          - Resolve on success
+   * @return {Promise}          - Resolve on success
    */
   function addEvent(ticketId, event) {
     const set = {};
@@ -59,7 +59,7 @@ module.exports = dependencies => {
    * Create ticket.
    * @param {Object}  ticket  - The ticket object
    * @param {Object}  options - The options object may contain population options
-   * @param {Promise}         - Resolve on success
+   * @return {Promise}         - Resolve on success
    */
   function create(ticket, options = {}) {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
@@ -78,7 +78,7 @@ module.exports = dependencies => {
   /**
    * List tickets.
    * @param {Object}  options - The options object, may contain states of ticket, requester, supportManager, supportTechnician, offset and limit
-   * @param {Promise}         - Resolve on success
+   * @return {Promise}         - Resolve on success
    */
   function list(options = {}) {
     return Promise.all([
@@ -180,7 +180,8 @@ module.exports = dependencies => {
   /**
    * Get ticket by ID.
    * @param  {String}   ticketId - The ticket ID
-   * @return {Promise}           - Resolve the found ticket
+   * @param {Object}    options - Db query options
+   * @return {Promise}  - Resolve the found ticket
    */
   function getById(ticketId, options = {}) {
     options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
@@ -287,7 +288,7 @@ module.exports = dependencies => {
   /**
   * Remove ticket by ID
   * @param {String}   ticketId - The software ID
-  * @param {Promise}             - Resolve on success
+  * @return {Promise}             - Resolve on success
   */
   function removeById(ticketId) {
     return Ticket.findByIdAndRemove(ticketId).then(deletedTicket => {
