@@ -17,7 +17,10 @@ module.exports = {
   },
   DEFAULT_LIST_OPTIONS: {
     OFFSET: 0,
-    LIMIT: 1000
+    LIMIT: 1000,
+    SORT: {
+      SOFTWARE: '-timestamps.creation'
+    }
   },
   GLOSSARY_CATEGORIES: {
     DEMAND_TYPE: 'Demand type',

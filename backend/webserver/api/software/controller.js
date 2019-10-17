@@ -57,7 +57,8 @@ module.exports = function(dependencies, lib) {
     } else {
       const options = {
         limit: +req.query.limit,
-        offset: +req.query.offset
+        offset: +req.query.offset,
+        sortBy: req.query.sortBy
       };
 
       errorMessage = 'Failed to list software';
