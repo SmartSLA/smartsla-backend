@@ -69,7 +69,7 @@ module.exports = dependencies => {
 
     return Contract
       .find()
-      .populate(DEFAULT_CONTRACT_POPULATE)
+      .populate({path: DEFAULT_CONTRACT_POPULATE, options: {sort: 'name' }})
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-timestamps.creation')

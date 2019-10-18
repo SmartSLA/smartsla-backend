@@ -53,7 +53,7 @@ module.exports = function(dependencies) {
       .find()
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .sort('-timestamps.creation')
+      .sort(options.sortBy || DEFAULT_LIST_OPTIONS.SORT.SOFTWARE)
       .exec();
   }
 
