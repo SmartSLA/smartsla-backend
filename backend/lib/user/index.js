@@ -131,8 +131,7 @@ module.exports = dependencies => {
   function list(options) {
     options = options || {};
 
-    return ticketingUser.list(options)
-      .then(users => Q.all(users));
+    return options.type ? ticketingUser.listByType(options.type).then(users => Q.all(users)) : ticketingUser.list(options).then(users => Q.all(users));
   }
 
   function _deleteById(userId) {
