@@ -16,7 +16,8 @@ module.exports = (dependencies, lib) => {
     getCurrentUser,
     getRole,
     update,
-    list
+    list,
+    remove
   };
 
   /**
@@ -199,5 +200,23 @@ module.exports = (dependencies, lib) => {
         return res.status(200).json(result.role);
       })
       .catch(err => send500Error('Unable to get role', err, res));
+  }
+
+  /**
+   * Delete a user
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function remove(req, res) {
+    return lib.ticketingUser.removeById(req.params.id)
+    .then(deletedUser => {
+      if (deletedUser) {
+        return res.status(204).end();
+      }
+
+      return send404Error('user not found', res);
+    })
+    .catch(err => send500Error('Failed to delete the user', err, res));
   }
 };
