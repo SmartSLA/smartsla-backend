@@ -56,13 +56,13 @@ module.exports = dependencies => {
    */
   function getByUser(userId) {
     return TicketingUser
-      .findOne({ _id: userId });
+      .findOne({ user: userId });
   }
 
   /**
    * Remove user by ID
    */
   function removeById(userId) {
-      return TicketingUser.remove({ _id: userId }).exec();
+      return TicketingUser.remove({ user: userId }).exec();
   }
 };
