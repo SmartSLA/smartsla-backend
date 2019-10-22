@@ -32,7 +32,6 @@ module.exports = (dependencies, lib, router) => {
     authorizationMW.requiresAPILogin,
     middleware.canUpdate,
     checkIdInParams('id', 'User'),
-    middleware.validateUserUpdatePayload,
     controller.update
   );
 

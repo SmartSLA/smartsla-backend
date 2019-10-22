@@ -12,7 +12,8 @@ module.exports = dependencies => {
     getByUser,
     listByType,
     listByUserIds,
-    removeById
+    removeById,
+    updateUserById
   };
 
   /**
@@ -63,6 +64,21 @@ module.exports = dependencies => {
    * Remove user by ID
    */
   function removeById(userId) {
-      return TicketingUser.remove({ user: userId }).exec();
+    return TicketingUser.remove({ user: userId }).exec();
+  }
+
+  /**
+   * Update TicketingUser by Id
+   * @param {String}   userId  - The user identifier
+   * @param {Object}   user    - The user object
+   */
+  function updateUserById(userId, user) {
+    return TicketingUser
+      .findByIdAndUpdate(
+        userId,
+        { $set: user },
+        { new: true }
+      )
+      .exec();
   }
 };
