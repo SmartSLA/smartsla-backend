@@ -40,20 +40,22 @@ module.exports = (dependencies, lib) => {
   }
 
   function transformTicket(req, res, next) {
+    let idOssa;
     const ticket = req.body;
-    const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
-    const OssaDescription = ticket.contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
+    const beneficiary = ticket.author;
     // For now the beneficiary is by default the author
     // Later we should had it in the ticket creation
-    const beneficiary = ticket.author;
 
-    let idOssa = {
-      // We might has well save the two infos
-      id: ID_OSSA_CONVERTION[OssaDescription],
-      OssaDescription
-    };
+    if (ticket.software && ticket.software.critical) {
+      const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
+      const OssaDescription = ticket.contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
 
-    if (!critical || !OssaDescription) {
+      idOssa = {
+        // We might has well save the two infos
+        id: ID_OSSA_CONVERTION[OssaDescription],
+        OssaDescription
+      };
+    } else {
       idOssa = {
         id: 0,
         OssaDescription: 'Not found'
@@ -226,7 +228,8 @@ module.exports = (dependencies, lib) => {
       description,
       environment,
       requester,
-      supportManager
+      supportManager,
+      type
     } = req.body;
     const contract = req.contract || req.ticket.contract;
 
@@ -267,6 +270,16 @@ module.exports = (dependencies, lib) => {
 
       if (!_validateSoftware(software, contract.software)) {
         return send400Error('The pair (software template, software version) is not supported', res);
+      }
+    }
+
+    if (type && type.length) {
+      if (type.toLowerCase() !== 'information' && (!software || _.isEmpty(software))) {
+        return send400Error('The software is required', res);
+      }
+
+      if (type.toLowerCase() !== 'information' && (!severity || !severity.length)) {
+        return send400Error('Severity is required', res);
       }
     }
 
