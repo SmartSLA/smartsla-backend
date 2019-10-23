@@ -42,19 +42,25 @@ module.exports = (dependencies, lib) => {
   function transformTicket(req, res, next) {
     let idOssa;
     const ticket = req.body;
-    const beneficiary = ticket.author;
     // For now the beneficiary is by default the author
     // Later we should had it in the ticket creation
+    const beneficiary = ticket.author;
 
     if (ticket.software && ticket.software.critical) {
-      const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
-      const OssaDescription = ticket.contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
+      return lib.contract.getById(ticket.contract)
+        .then(contract => {
+          const { critical } = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
+          const OssaDescription = contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
 
-      idOssa = {
-        // We might has well save the two infos
-        id: ID_OSSA_CONVERTION[OssaDescription],
-        OssaDescription
-      };
+          idOssa = {
+            // We might has well save the two infos
+            id: ID_OSSA_CONVERTION[OssaDescription],
+            OssaDescription
+          };
+
+          return next();
+        })
+        .catch(err => send500Error('Unable to compute ticket OssaId', err, res));
     } else {
       idOssa = {
         id: 0,

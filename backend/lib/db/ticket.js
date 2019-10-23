@@ -4,7 +4,7 @@ module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
   const CounterModel = mongoose.model('Counter');
-  const { ContractSchema, ContractSoftwareSchema } = require('./schemas/contract')(dependencies);
+  const { ContractSoftwareSchema } = require('./schemas/contract')(dependencies);
 
   const Attachment = {
     id: { type: Schema.Types.ObjectId },
@@ -41,7 +41,7 @@ module.exports = dependencies => {
     assignedTo: IdNameEmailType, // TODO Consider denormalizing
     author: IdNameEmailType, // TODO Consider denormalizing
     beneficiary: IdNameEmailType, // TODO Consider denormalizing
-    contract: ContractSchema, // TODO Consider denormalizing
+    contract: { type: mongoose.Schema.ObjectId, ref: 'Contract', required: true }, // TODO Consider denormalizing
     description: { type: String },
     events: [Event],
     idOssa: Schema.Types.Mixed,

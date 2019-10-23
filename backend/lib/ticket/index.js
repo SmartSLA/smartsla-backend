@@ -2,7 +2,7 @@
 
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
-const DEFAULT_TICKET_POPULATE = 'software.software';
+const DEFAULT_TICKET_POPULATES = [{ path: 'contract'}, { path: 'software.software' }];
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -31,7 +31,7 @@ module.exports = dependencies => {
    *
    * @param {Object}  ticketId - The ticket Id
    * @param {Object}  event    - The event to add
-   * @param {Promise}          - Resolve on success
+   * @return {Promise}          - Resolve on success
    */
   function addEvent(ticketId, event) {
     const set = {};
@@ -59,7 +59,7 @@ module.exports = dependencies => {
    * Create ticket.
    * @param {Object}  ticket  - The ticket object
    * @param {Object}  options - The options object may contain population options
-   * @param {Promise}         - Resolve on success
+   * @return {Promise}         - Resolve on success
    */
   function create(ticket, options = {}) {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
@@ -78,7 +78,7 @@ module.exports = dependencies => {
   /**
    * List tickets.
    * @param {Object}  options - The options object, may contain states of ticket, requester, supportManager, supportTechnician, offset and limit
-   * @param {Promise}         - Resolve on success
+   * @return {Promise}         - Resolve on success
    */
   function list(options = {}) {
     return Promise.all([
@@ -93,13 +93,13 @@ module.exports = dependencies => {
       return buildQuery(options).count().exec();
     }
 
-    function list(options) {
+    function list(options = {}) {
+      options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
+
       const query = buildQuery(options)
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
         .sort('-updatedAt');
-
-      query.populate(DEFAULT_TICKET_POPULATE);
 
       return query.exec();
     }
@@ -147,24 +147,23 @@ module.exports = dependencies => {
 
   function listForContracts(contracts, options) {
     return Promise.all([
-      count(contracts, options),
+      count(contracts),
       list(contracts, options)
     ]).then(result => ({
       size: result[0],
       list: result[1]
     }));
 
-    function count(contracts, options) {
-      return buildQuery(contracts, options).count().exec();
+    function count(contracts) {
+      return buildQuery(contracts).count().exec();
     }
 
     function list(contracts, options) {
-      const query = buildQuery(contracts, options)
+      const query = buildQuery(contracts)
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-updatedAt');
-
-        query.populate(DEFAULT_TICKET_POPULATE);
+        .sort('-updatedAt')
+        .populate(DEFAULT_TICKET_POPULATES);
 
         return query.exec();
     }
@@ -173,25 +172,23 @@ module.exports = dependencies => {
       const findOptions = {
         'contract._id': { $in: contracts }
       };
-      const query = Ticket.find(findOptions);
 
-      return query;
+      return Ticket.find(findOptions);
     }
   }
 
   /**
    * Get ticket by ID.
    * @param  {String}   ticketId - The ticket ID
-   * @return {Promise}           - Resolve the found ticket
+   * @param {Object}    options - Db query options
+   * @return {Promise}  - Resolve the found ticket
    */
   function getById(ticketId, options = {}) {
-    const query = Ticket.findById(ticketId);
+    options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
-    query.populate(DEFAULT_TICKET_POPULATE);
-
-    if (options.populations) {
-      query.populate(options.populations);
-    }
+    const query = Ticket
+      .findById(ticketId)
+      .populate(options.populations);
 
     return query.exec();
   }
@@ -291,7 +288,7 @@ module.exports = dependencies => {
   /**
   * Remove ticket by ID
   * @param {String}   ticketId - The software ID
-  * @param {Promise}             - Resolve on success
+  * @return {Promise}             - Resolve on success
   */
   function removeById(ticketId) {
     return Ticket.findByIdAndRemove(ticketId).then(deletedTicket => {
