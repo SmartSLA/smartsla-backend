@@ -170,7 +170,7 @@ module.exports = dependencies => {
 
     function buildQuery(contracts) {
       const findOptions = {
-        'contract._id': { $in: contracts }
+        contract: { $in: contracts }
       };
 
       return Ticket.find(findOptions);
