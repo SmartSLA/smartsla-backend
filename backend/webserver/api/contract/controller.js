@@ -3,6 +3,7 @@
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
   const coreUser = dependencies('coreUser');
+  const logger = dependencies('logger');
 
   return {
     create,
@@ -50,51 +51,40 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    let getContracts;
-    let errorMessage;
+    const options = {
+      limit: +req.query.limit,
+      offset: +req.query.offset
+    };
 
-    if (req.query.search) {
-      const options = {
-        limit: +req.query.limit,
-        offset: +req.query.offset,
-        search: req.query.search
-      };
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canViewAll => (canViewAll ? _listAll() : _listUserContracts(req.user._id)))
+      .then(({ size, list }) => {
+        res.header('X-ESN-Items-Count', size);
+        res.status(200).json(list);
+      })
+      .catch(err => send500Error('Error while getting contracts', err, res));
 
-      errorMessage = 'Error while searching contracts';
-      getContracts = lib.contract.search(options);
-    } else {
-      const options = {
-        limit: +req.query.limit,
-        offset: +req.query.offset,
-        organization: req.query.organization
-      };
+    function _listAll() {
+      return lib.contract.list(options).then(contracts => ({
+        size: contracts.length,
+        list: contracts
+      }));
+    }
 
-      errorMessage = 'Failed to list contracts';
-      getContracts = lib.contract.list(options)
-        .then(contracts => {
-          const denormalizeManager = manager => coreUser.denormalize.denormalize(manager);
-
-          contracts = contracts.map(contract => {
-            if (contract.manager) {
-              contract.manager = denormalizeManager(contract.manager);
-            }
-
-            return contract;
-          });
+    function _listUserContracts(userId) {
+      return lib.contract.listForUser(userId, ['contract'])
+        .then(userContracts => {
+          if (!userContracts || !userContracts.length) {
+            logger.info('No contracts for user', req.user._id);
+          }
 
           return {
-            total_count: contracts.length,
-            list: contracts
+            size: userContracts.length,
+            list: userContracts.map(userContract => userContract.contract)
           };
         });
     }
-
-    return getContracts
-      .then(result => {
-        res.header('X-ESN-Items-Count', result.total_count);
-        res.status(200).json(result.list);
-      })
-      .catch(err => send500Error(errorMessage, err, res));
   }
 
   /**

@@ -4,6 +4,8 @@ module.exports = function(dependencies, lib, router) {
   const { checkIdInParams } = dependencies('helperMw');
   const authorizationMW = dependencies('authorizationMW');
   const controller = require('./controller')(dependencies, lib);
+  const userMiddleware = require('../user/middleware')(dependencies, lib);
+
   const {
     load,
     canCreateContract,
@@ -15,6 +17,7 @@ module.exports = function(dependencies, lib, router) {
 
   router.get('/contracts',
     authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
     canListContract,
     controller.list
   );

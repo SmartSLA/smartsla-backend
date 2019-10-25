@@ -155,11 +155,15 @@ module.exports = dependencies => {
   /**
    * Get all the contracts for a given user
    * @param {ObjectId} userId
+   * @param {Array} populates
    * @returns Array of {user, contract, role}
    */
-  function listForUser(userId) {
-    return TicketingUserContract.find({ user: userId })
-      .exec();
+  function listForUser(userId, populates = []) {
+    const query = TicketingUserContract.find({ user: userId });
+
+    populates.forEach(populate => query.populate(populate));
+
+    return query.exec();
   }
 
   function getUsers(contractId, populates = []) {
