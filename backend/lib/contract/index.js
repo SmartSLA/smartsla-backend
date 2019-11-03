@@ -155,13 +155,15 @@ module.exports = dependencies => {
   /**
    * Get all the contracts for a given user
    * @param {ObjectId} userId
-   * @param {Array} populates
+   * @param {Object} populate (Mongoose populate options)
    * @returns Array of {user, contract, role}
    */
-  function listForUser(userId, populates = []) {
+  function listForUser(userId, populate) {
     const query = TicketingUserContract.find({ user: userId });
 
-    populates.forEach(populate => query.populate(populate));
+    if (populate) {
+      query.populate(populate);
+    }
 
     return query.exec();
   }

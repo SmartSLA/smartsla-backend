@@ -73,7 +73,10 @@ module.exports = function(dependencies, lib) {
     }
 
     function _listUserContracts(userId) {
-      return lib.contract.listForUser(userId, ['contract'])
+      return lib.contract.listForUser(userId, {
+          path: 'contract',
+          populate: { path: 'software.software' }
+        })
         .then(userContracts => {
           if (!userContracts || !userContracts.length) {
             logger.info('No contracts for user', req.user._id);
