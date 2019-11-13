@@ -2,7 +2,14 @@
 
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
-const DEFAULT_TICKET_POPULATES = [{ path: 'contract'}, { path: 'software.software' }];
+const DEFAULT_TICKET_POPULATES = [
+  { path: 'contract',
+    populate: {
+      path: 'software.software'
+    }
+  },
+  { path: 'software.software' }
+];
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -202,8 +209,10 @@ module.exports = dependencies => {
   function updateById(ticketId, modified) {
     return Ticket.findByIdAndUpdate(ticketId, { $set: modified }, { new: true })
       .exec()
-      .then(() => {
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modified);
+      .then(updatedTicket => {
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modified);
+
+        return updatedTicket;
       });
   }
 
