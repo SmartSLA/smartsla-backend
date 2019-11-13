@@ -104,7 +104,7 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function update(req, res) {
-    const ticket = res.locals.ticketUpdate;
+    const ticket = req.body;
     const ticketId = req.params.id;
 
     lib.ticket.updateById(ticketId, ticket)
