@@ -32,14 +32,25 @@ module.exports = dependencies => {
     beneficiaries: [Schema.Types.Mixed]
   }, { _id: false});
 
+  const BusinessHoursSchema = new Schema({
+    businessHours: {
+      days: { type: Number },
+      hours: { type: Number }
+    },
+    nonBusinessHours: {
+      days: { type: Number },
+      hours: { type: Number }
+    }
+  }, { _id: false });
+
   const EngagementDetailSchema = {
-    bypassed: { type: String },
+    bypassed: BusinessHoursSchema,
     description: { type: String }, // FIXME Send by frontend but useless (not in UI)
     idOssa: { type: String },
     request: { type: String },
-    resolved: { type: String },
+    resolved: BusinessHoursSchema,
     severity: { type: String },
-    supported: { type: String }
+    supported: BusinessHoursSchema
   };
 
   const EngagementSectionSchema = new Schema({
