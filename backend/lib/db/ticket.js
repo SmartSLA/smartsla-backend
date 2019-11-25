@@ -20,6 +20,13 @@ module.exports = dependencies => {
     type: { type: String }
   };
 
+  const Changes = {
+    field: {type: String},
+    oldValue: {type: String},
+    newValue: {type: String},
+    action: {type: String}
+  };
+
   const Event = {
     author: {
       id: { type: String },
@@ -33,7 +40,8 @@ module.exports = dependencies => {
     timestamps: {
       createdAt: {type: Date, default: Date.now}
     },
-    attachments: [Attachment]
+    attachments: [Attachment],
+    changes: [Changes]
   };
 
   const ticketSchema = new mongoose.Schema({

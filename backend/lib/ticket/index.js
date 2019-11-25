@@ -2,6 +2,8 @@
 
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
+const { diff } = require('deep-object-diff');
+
 const DEFAULT_TICKET_POPULATES = [
   { path: 'contract',
     populate: {
@@ -16,6 +18,8 @@ module.exports = dependencies => {
   const Ticket = mongoose.model('Ticket');
   const email = require('../email')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
+  const esnConfig = dependencies('esn-config');
+  const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
 
   return {
@@ -206,14 +210,146 @@ module.exports = dependencies => {
    * @param  {Object}   modified  - The modified ticket object
    * @return {Promise}            - Resolve the updated ticket
    */
-  function updateById(ticketId, modified) {
-    return Ticket.findByIdAndUpdate(ticketId, { $set: modified }, { new: true })
-      .exec()
-      .then(updatedTicket => {
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modified);
+  function updateById(ticketId, modified, ticketingUser) {
+    return getById(ticketId)
+    .then(ticket => _pushEvent(ticket, modified, ticketingUser))
+    .then(({unsetValues, modified}) => {
+      //Need this because we can't pass an empty object to $unset
+      const updateSet = Object.keys(unsetValues).length !== 0 ? {$set: modified, $unset: unsetValues} : { $set: modified };
 
-        return updatedTicket;
+      return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true })
+        .exec()
+        .then(updatedTicket => {
+          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modified);
+
+          return updatedTicket;
+        });
+    })
+    .catch(err => logger.error(`Error while updating the ticket: ${ticketId}`, err));
+
+    function _pushEvent(ticket, modified, ticketingUser) {
+      ticket = ticket.toObject();
+      const ticketFields = _getTicketFields(ticket);
+      const modifiedTicketFields = _getTicketFields(modified);
+      const changes = _getChanges(ticketFields, modifiedTicketFields);
+
+      const unsetValues = {};
+
+      return new Promise(resolve => {
+
+        if (!modified.hasOwnProperty('software')) {
+          unsetValues.software = 1;
+        }
+
+        if (!modified.hasOwnProperty('severity')) {
+          unsetValues.severity = 1;
+        }
+
+        if (changes.length !== 0) {
+          const { events } = modified;
+
+          return esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get().then(frontendUrl => {
+            const event = {
+              author: {
+                id: ticketingUser._id,
+                name: ticketingUser.name,
+                image: `${frontendUrl}/api/users/${ticketingUser.user}/profile/avatar`,
+                type: ticketingUser.type
+              },
+              changes: changes
+            };
+
+            events.push(event);
+            modified.events = events;
+
+            resolve({unsetValues, modified});
+          });
+        }
+        resolve({unsetValues, modified});
       });
+
+    }
+
+    function _getTicketFields(ticket) {
+      const {
+        title,
+        beneficiary,
+        responsible,
+        callNumber,
+        meetingId,
+        type,
+        severity,
+        description
+      } = ticket;
+
+      //TODO: Add participants, related request
+      let ticketFields = Object.assign({}, {title, beneficiary, responsible, callNumber, meetingId, type, severity, description: description});
+
+      if (ticket.software && Object.keys(ticket.software).length && ticket.software.software) {
+        const software = {
+          ...ticket.software,
+          software: {
+            _id: ticket.software.software._id.toString(),
+            name: `${ticket.software.software.name} ${ticket.software.version} ${ticket.software.os}`
+          }
+        };
+
+        ticketFields = {
+          ...ticketFields,
+          software
+        };
+      }
+
+      return ticketFields;
+    }
+
+    function _getChanges(ticketFields, modifiedTicketFields) {
+      const changes = [];
+      const diffs = Object.entries(diff(ticketFields, modifiedTicketFields));
+      const config = {
+        software: 'software.name',
+        beneficiary: 'name',
+        responsible: 'name'
+      };
+
+      let oldValue = '';
+      let newValue = '';
+      let action = 'changed';
+
+      for (const [field, value] of diffs) {
+        switch (true) {
+
+          case typeof value === 'string':
+          case typeof value === 'undefined' && field === 'severity':
+            oldValue = ticketFields[field] ? ticketFields[field] : '';
+            newValue = value || '';
+            break;
+
+          case typeof value === 'object':
+          case typeof value === 'undefined' && field === 'software':
+            if (ticketFields[field]) {
+              oldValue = config[field].split('.').reduce((o, i) => o[i], ticketFields[field]);
+            }
+            newValue = value ? config[field].split('.').reduce((o, i) => o[i], value) : '';
+            break;
+        }
+
+        if (oldValue.length !== 0 && newValue.length === 0) {
+          action = 'removed';
+        } else if (oldValue.length === 0 && newValue.length !== 0) {
+          action = 'added';
+        }
+
+        changes.push({
+          field: field,
+          oldValue: oldValue,
+          newValue: newValue,
+          action: action
+        });
+      }
+
+      return changes;
+    }
   }
 
   /**
