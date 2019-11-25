@@ -68,11 +68,23 @@ module.exports = (dependencies, lib) => {
    * @param {Response} res
    */
   function get(req, res) {
-    lib.user.getById(req.params.id)
-      .then(user => {
-        res.status(201).json(user);
-      })
-      .catch(err => send500Error('Failed to get user', err, res));
+    Promise.all([
+      lib.user.getById(req.params.id),
+      lib.contract.listForUser(
+        req.params.id,
+        {
+          path: 'contract',
+          select: 'name _id client clientId'
+        }
+      )
+    ]).then(([user, contracts]) => {
+      user = user.toObject();
+      res.status(200).json({
+        ...user,
+        contracts: contracts || []
+      });
+    })
+    .catch(err => send500Error('Failed to get user', err, res));
   }
 
   function getCurrentUser(req, res) {
