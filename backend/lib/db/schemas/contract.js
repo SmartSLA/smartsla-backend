@@ -43,7 +43,6 @@ module.exports = dependencies => {
   };
 
   const EngagementSectionSchema = new Schema({
-    schedule: ContractScheduleSchema,
     engagements: [EngagementDetailSchema]
   }, { _id: false});
 
@@ -57,6 +56,10 @@ module.exports = dependencies => {
     description: { type: String},
     endDate: { type: Date, required: true },
     Engagements: EngagementsSchema,
+    businessHours: ContractScheduleSchema,
+    features: {
+      nonBusinessHours: { type: Boolean, default: false }
+    },
     contact: ContactSchema,
     client: { type: String, required: true },
     clientId: { type: Schema.Types.ObjectId, required: true},
