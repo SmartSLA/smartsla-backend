@@ -73,11 +73,12 @@ module.exports = dependencies => {
     },
     contact: ContactSchema,
     client: { type: String, required: true },
-    clientId: { type: Schema.Types.ObjectId, required: true},
-    govern: { type: String},
+    clientId: { type: Schema.Types.ObjectId, required: true },
+    credits: { type: Number },
+    govern: { type: String },
     humanResources: HumanResourcesSchema,
     mailingList: MailingListSchema,
-    name: { type: String, required: true},
+    name: { type: String, required: true },
     schedule: ContractScheduleSchema,
     status: { type: Boolean, default: true },
     startDate: { type: Date, required: true },
@@ -86,7 +87,7 @@ module.exports = dependencies => {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     },
-    type: { type: String, default: 'credit'},
+    type: { type: String, default: 'credit' },
     schemaVersion: { type: Number, default: 1 }
   });
 
