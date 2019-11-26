@@ -1,7 +1,7 @@
 module.exports = dependencies => {
   const emailModule = dependencies('email');
   const userModule = dependencies('coreUser');
-  const esnConfig = dependencies('esn-config');
+  const EsnConfig = dependencies('esn-config').EsnConfig;
 
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS } = require('../constants');
@@ -66,7 +66,7 @@ module.exports = dependencies => {
     }
   }
 
-  function getRecipients(ticket) {
+  function getRecipients(ticket, defaultResponsibleEmail) {
     const to = [];
     const cc = [];
 
@@ -75,7 +75,7 @@ module.exports = dependencies => {
     if (ticket.responsible && ticket.responsible.email) {
       to.push(ticket.responsible.email);
     } else {
-      to.push(EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
+      to.push(defaultResponsibleEmail && defaultResponsibleEmail.value || EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
     }
 
     cc.concat(ticket.participants);
@@ -84,8 +84,9 @@ module.exports = dependencies => {
   }
 
   function send(type, ticket, event) {
-    return esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get()
-      .then(frontendUrl => {
+    return new EsnConfig('linagora.esn.ticketing')
+      .getMultiple(['frontendUrl', 'mail'])
+      .then(([frontendUrl, mail]) => {
         userModule.get(ticket.author.id, (err, user) => {
           if (err || !user) {
             return logError(err || `User ${ticket.author.id} not found`);
@@ -97,11 +98,12 @@ module.exports = dependencies => {
             return;
           }
 
-          const recipents = getRecipients(ticket);
+          const recipients = getRecipients(ticket, mail.support);
 
-          message.to = recipents.to;
-          message.cc = recipents.cc;
-          message.from = EMAIL_NOTIFICATIONS.DEFAULT_FROM;
+          message.to = recipients.to;
+          message.cc = recipients.cc;
+          message.from = mail.noreply;
+          message.replyTo = mail.support;
 
           return emailModule.getMailer(user).send(message, logError);
         });

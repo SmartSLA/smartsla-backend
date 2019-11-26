@@ -4,7 +4,14 @@ const config = {
     admin: 'rw'
   },
   configurations: {
-    frontendUrl: 'http://localhost:8080'
+    frontendUrl: 'http://localhost:8080',
+    mail: {
+      value: {
+        replyto: 'ossa-dev@linagora.com',
+        noreply: 'noreply-dev@linagora.com',
+        support: 'ossa-dev@linagora.com'
+      }
+    }
   }
 };
 
