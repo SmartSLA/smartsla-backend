@@ -2,6 +2,10 @@ const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
 const { TICKET_ACTIONS, ID_OSSA_CONVERTION } = require('../constants');
+const moment = require('moment-timezone');
+const business = require('moment-business');
+
+moment.tz.setDefault('Europe/Paris');
 
 module.exports = (dependencies, lib) => {
   const {
@@ -65,12 +69,33 @@ module.exports = (dependencies, lib) => {
           };
         }
 
-        res.locals.newTicket = { ...ticket, beneficiary, idOssa };
+        const createdDuringBusinessHours = isInBusinessHours(ticket.contract);
+
+        res.locals.newTicket = { ...ticket, beneficiary, idOssa, createdDuringBusinessHours };
 
         return next();
+
+        function isInBusinessHours(contract) {
+          if (contract.features && contract.features.nonBusinessHours) {
+            const currentDate = moment();
+            const currentHour = currentDate.hour();
+
+            if (business.isWeekendDay(currentDate)) {
+              return false;
+            }
+
+            if (contract.businessHours && contract.businessHours.start && contract.businessHours.end) {
+              return (currentHour >= contract.businessHours.start && currentHour <= contract.businessHours.end);
+            }
+
+            return false;
+          }
+
+          return true;
+        }
       })
       .catch(err => send500Error('Unable to compute ticket OssaId', err, res));
- }
+  }
 
   function canCreateTicket(req, res, next) {
     // TODO: Check that the ticket can be created in the given contract

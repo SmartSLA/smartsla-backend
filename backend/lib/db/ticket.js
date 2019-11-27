@@ -42,6 +42,7 @@ module.exports = dependencies => {
     author: IdNameEmailType, // TODO Consider denormalizing
     beneficiary: IdNameEmailType, // TODO Consider denormalizing
     contract: { type: mongoose.Schema.ObjectId, ref: 'Contract', required: true }, // TODO Consider denormalizing
+    createdDuringBusinessHours: { type: Boolean, default: false },
     description: { type: String },
     events: [Event],
     idOssa: Schema.Types.Mixed,

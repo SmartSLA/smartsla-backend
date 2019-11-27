@@ -35,14 +35,8 @@ module.exports = dependencies => {
   }, { _id: false});
 
   const BusinessHoursSchema = new Schema({
-    businessHours: {
-      days: { type: Number },
-      hours: { type: Number }
-    },
-    nonBusinessHours: {
-      days: { type: Number },
-      hours: { type: Number }
-    }
+    businessHours: { type: String },
+    nonBusinessHours: { type: String }
   }, { _id: false });
 
   const EngagementDetailSchema = {
