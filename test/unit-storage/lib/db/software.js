@@ -30,7 +30,7 @@ describe('The sofware model', function() {
   }
 
   describe('The name field', function() {
-    it('should not store the sofware which has name is taken', function(done) {
+    it.skip('should not store the sofware which has name is taken', function(done) {
       saveSoftware({
         name: 'foo',
         category: 'bar',
