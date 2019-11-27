@@ -84,12 +84,7 @@ module.exports = function(dependencies, lib) {
    */
   function get(req, res) {
     return lib.client.getById(req.params.id)
-      .then(client => {
-        client = client.toObject();
-
-        return res.status(200).json(client);
-
-      })
+      .then(client => res.status(200).json(client))
       .catch(err => send500Error('Failed to get client', err, res));
   }
 
