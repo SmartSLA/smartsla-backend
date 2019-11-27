@@ -117,7 +117,7 @@ module.exports = (dependencies, lib) => {
    * @param  {Object} res
    */
   function update(req, res) {
-    const user = req.body;
+    const {contracts, ...user} = req.body;
 
     lib.user.updateById(req.params.id, user)
       .then(updatedUser => {
@@ -125,7 +125,7 @@ module.exports = (dependencies, lib) => {
           return send404Error('User not found', res);
         }
 
-        res.status(204).end();
+        lib.contract.updateUser(user, contracts).then(() => res.status(204).end());
       })
       .catch(err => send500Error('Failed to update Ticketing user', err, res));
   }

@@ -35,7 +35,8 @@ module.exports = dependencies => {
     removeById,
     addUsers,
     getUsers,
-    listForUser
+    listForUser,
+    updateUser
   };
 
   /**
@@ -174,5 +175,25 @@ module.exports = dependencies => {
     populates.forEach(populate => query.populate(populate));
 
     return query.exec();
+  }
+
+  function updateUser(user, contracts) {
+    const userId = user.user;
+    const { role } = user || 'reader';
+
+    if (!contracts || !contracts.length) {
+      return Promise.resolve(user);
+    }
+
+    return _removeUser(user).then(() => {
+      Promise.all(contracts.map(contract => addUsers(contract, [{ user: userId, role }])))
+        .then(() => user);
+    });
+  }
+
+  function _removeUser(user) {
+    const userId = user.user;
+
+    return TicketingUserContract.remove({ user: userId }).exec();
   }
 };
