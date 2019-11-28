@@ -69,7 +69,7 @@ module.exports = (dependencies, lib) => {
           };
         }
 
-        const createdDuringBusinessHours = isInBusinessHours(ticket.contract);
+        const createdDuringBusinessHours = isInBusinessHours(contract);
 
         res.locals.newTicket = { ...ticket, beneficiary, idOssa, createdDuringBusinessHours };
 
