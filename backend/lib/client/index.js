@@ -4,6 +4,7 @@ module.exports = function(dependencies) {
   const mongoose = dependencies('db').mongo.mongoose;
   const pubsubLocal = dependencies('pubsub').local;
   const Client = mongoose.model('Client');
+  const Contract = mongoose.model('Contract');
   const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
 
   const clientCreatedTopic = pubsubLocal.topic(EVENTS.CLIENT.created);
@@ -89,7 +90,17 @@ module.exports = function(dependencies) {
   function getById(clientId) {
     return Client
       .findById(clientId)
-      .exec();
+      .lean()
+      .exec()
+      .then(client =>
+        Contract.find({ clientId: clientId })
+          .exec()
+          .then(contracts => {
+            client.contracts = contracts.map(contract => ({_id: contract._id, name: contract.name}));
+
+            return client;
+          })
+      );
   }
 
   /**
