@@ -2,6 +2,10 @@
 
 module.exports = {
   DEFAULT_LOCALE: 'fr',
+  CONTRACTS_TYPES: {
+    CREDIT: 'credit',
+    UNLIMITED: 'unlimited'
+  },
   EMAIL_NOTIFICATIONS: {
     DEFAULT_FROM: 'ossa@linagora.com',
     DEFAULT_RESPONSIBLE_EMAIL: 'ossa@linagora.com',

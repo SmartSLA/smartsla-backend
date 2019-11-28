@@ -1,3 +1,5 @@
+const { CONTRACTS_TYPES } = require('../../constants');
+
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
@@ -87,7 +89,7 @@ module.exports = dependencies => {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     },
-    type: { type: String, default: 'credit' },
+    type: { type: String, default: CONTRACTS_TYPES.UNLIMITED },
     schemaVersion: { type: Number, default: 1 }
   });
 
