@@ -85,7 +85,7 @@ module.exports = (dependencies, lib) => {
             }
 
             if (contract.businessHours && contract.businessHours.start && contract.businessHours.end) {
-              return (currentHour >= contract.businessHours.start && currentHour <= contract.businessHours.end);
+              return (currentHour >= contract.businessHours.start && currentHour < contract.businessHours.end);
             }
 
             return false;
