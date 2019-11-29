@@ -41,11 +41,13 @@ module.exports = dependencies => {
     assignedTo: IdNameEmailType, // TODO Consider denormalizing
     author: IdNameEmailType, // TODO Consider denormalizing
     beneficiary: IdNameEmailType, // TODO Consider denormalizing
+    callNumber: { type: String },
     contract: { type: mongoose.Schema.ObjectId, ref: 'Contract', required: true }, // TODO Consider denormalizing
     createdDuringBusinessHours: { type: Boolean, default: true },
     description: { type: String },
     events: [Event],
     idOssa: Schema.Types.Mixed,
+    meetingId: { type: String },
     participants: [String],
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
     responsible: IdNameEmailType, // TODO Consider denormalizing
