@@ -49,7 +49,7 @@ Set the _from_ and default responsible addresses for email
 
 Use Curl to set configuration:
 ```
-curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
     "name": "linagora.esn.ticketing",
     "configurations": [
