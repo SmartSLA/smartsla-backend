@@ -75,7 +75,7 @@ module.exports = dependencies => {
     if (ticket.responsible && ticket.responsible.email) {
       to.push(ticket.responsible.email);
     } else {
-      to.push(defaultResponsibleEmail && defaultResponsibleEmail.value || EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
+      to.push(defaultResponsibleEmail || EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
     }
 
     cc.concat(ticket.participants);
@@ -92,18 +92,18 @@ module.exports = dependencies => {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const message = formatMessage(type, ticket, event, frontendUrl);
+          const message = formatMessage(type, ticket, event, frontendUrl && frontendUrl.value);
 
           if (!message) {
             return;
           }
 
-          const recipients = getRecipients(ticket, mail.support);
+          const recipients = getRecipients(ticket, mail && mail.value && mail.value.support);
 
           message.to = recipients.to;
           message.cc = recipients.cc;
-          message.from = mail.noreply;
-          message.replyTo = mail.support;
+          message.from = mail && mail.value && mail.value.noreply;
+          message.replyTo = mail && mail.value && mail.value.replyto;
 
           return emailModule.getMailer(user).send(message, logError);
         });
