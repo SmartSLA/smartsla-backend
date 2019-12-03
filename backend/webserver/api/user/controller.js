@@ -27,7 +27,6 @@ module.exports = (dependencies, lib) => {
    */
   function create(req, res) {
     const user = req.body;
-    const role = req.body.role;
 
     user.accounts = [{
       type: 'email',
@@ -39,16 +38,16 @@ module.exports = (dependencies, lib) => {
     }];
 
     lib.user.create(user)
-      .then(createdUser => addUserToContracts(createdUser, role, req.body.contracts || []))
+      .then(createdUser => addUserToContracts(createdUser, req.body.contracts || []))
       .then(createdUser => res.status(201).json(denormalize(createdUser)))
       .catch(err => send500Error('Failed to create Ticketing user', err, res));
 
-    function addUserToContracts(user, role, contracts) {
+    function addUserToContracts(user, contracts) {
       if (!contracts || !contracts.length) {
         return Promise.resolve(user);
       }
 
-      return Promise.all(contracts.map(contract => lib.contract.addUsers(contract, [{ user: user._id, role }])))
+      return Promise.all(contracts.map(({contract_id, role}) => lib.contract.addUsers(contract_id, [{ user: user._id, role }])))
         .then(() => user);
     }
 

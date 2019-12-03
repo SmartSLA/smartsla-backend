@@ -179,14 +179,9 @@ module.exports = dependencies => {
 
   function updateUser(user, contracts) {
     const userId = user.user;
-    const { role } = user || 'viewer';
-
-    if (!contracts || !contracts.length) {
-      return Promise.resolve(user);
-    }
 
     return _removeUser(user).then(() => {
-      Promise.all(contracts.map(contract => addUsers(contract, [{ user: userId, role }])))
+      Promise.all(contracts.map(contract => addUsers(contract.contract_id, [{ user: userId, role: contract.role }])))
         .then(() => user);
     });
   }
