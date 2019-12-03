@@ -149,7 +149,7 @@ module.exports = dependencies => {
     return TicketingUserContract.insertMany(users.map(user => ({
       user: user.user,
       contract: contractId,
-      role: user.role || 'reader'
+      role: user.role || 'viewer'
     })));
   }
 
@@ -179,7 +179,7 @@ module.exports = dependencies => {
 
   function updateUser(user, contracts) {
     const userId = user.user;
-    const { role } = user || 'reader';
+    const { role } = user || 'viewer';
 
     if (!contracts || !contracts.length) {
       return Promise.resolve(user);
