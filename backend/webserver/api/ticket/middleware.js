@@ -1,11 +1,11 @@
 const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
-const { TICKET_ACTIONS, ID_OSSA_CONVERTION } = require('../constants');
+const { TICKET_ACTIONS, ID_OSSA_CONVERTION, DEFAULT_TIMEZONE } = require('../constants');
 const moment = require('moment-timezone');
 const business = require('moment-business');
 
-moment.tz.setDefault('Europe/Paris');
+moment.tz.setDefault(DEFAULT_TIMEZONE);
 
 module.exports = (dependencies, lib) => {
   const {
@@ -78,6 +78,11 @@ module.exports = (dependencies, lib) => {
         function isInBusinessHours(contract) {
           if (contract.features && contract.features.nonBusinessHours) {
             const currentDate = moment();
+
+            if (contract.timezone) {
+              currentDate.tz(contract.timezone);
+            }
+
             const currentHour = currentDate.hour();
 
             if (business.isWeekendDay(currentDate)) {
