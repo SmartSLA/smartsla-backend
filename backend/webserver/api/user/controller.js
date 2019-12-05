@@ -91,7 +91,10 @@ module.exports = (dependencies, lib) => {
     Promise.all([
       coreUserDenormalizer.denormalize(req.user, { includeIsPlatformAdmin: true }),
       lib.user.getById(req.user._id),
-      lib.contract.listForUser(req.user._id),
+      lib.contract.listForUser(req.user._id, {
+        path: 'contract',
+        select: 'name'
+      }),
       lib.ticketingUserRole.userIsAdministrator(req.user._id),
       isDomainAdmin(req.user, req.domain)
     ]).then(([user, ticketingUser, contracts, isApplicationAdmin, isDomainAdmin]) => {
