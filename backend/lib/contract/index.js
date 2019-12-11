@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, EVENTS, TICKETING_CONTRACT_ROLES } = require('../constants');
 const DEFAULT_CONTRACT_POPULATE = 'software.software';
 
 module.exports = dependencies => {
@@ -149,7 +149,7 @@ module.exports = dependencies => {
     return TicketingUserContract.insertMany(users.map(user => ({
       user: user.user,
       contract: contractId,
-      role: user.role || 'reader'
+      role: user.role || TICKETING_CONTRACT_ROLES.VIEWER
     })));
   }
 
@@ -179,14 +179,9 @@ module.exports = dependencies => {
 
   function updateUser(user, contracts) {
     const userId = user.user;
-    const { role } = user || 'reader';
-
-    if (!contracts || !contracts.length) {
-      return Promise.resolve(user);
-    }
 
     return _removeUser(user).then(() => {
-      Promise.all(contracts.map(contract => addUsers(contract, [{ user: userId, role }])))
+      Promise.all(contracts.map(contract => addUsers(contract.contract_id, [{ user: userId, role: contract.role }])))
         .then(() => user);
     });
   }
