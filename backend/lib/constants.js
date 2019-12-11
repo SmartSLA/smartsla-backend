@@ -119,5 +119,8 @@ module.exports = {
   },
   NOTIFICATIONS: {
     updated: 'ticketing:notification:ticket:updated'
+  },
+  TICKETING_CONTRACT_ROLES: {
+    VIEWER: 'viewer'
   }
 };

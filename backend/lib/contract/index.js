@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, EVENTS, TICKETING_CONTRACT_ROLES } = require('../constants');
 const DEFAULT_CONTRACT_POPULATE = 'software.software';
 
 module.exports = dependencies => {
@@ -149,7 +149,7 @@ module.exports = dependencies => {
     return TicketingUserContract.insertMany(users.map(user => ({
       user: user.user,
       contract: contractId,
-      role: user.role || 'viewer'
+      role: user.role || TICKETING_CONTRACT_ROLES.VIEWER
     })));
   }
 
