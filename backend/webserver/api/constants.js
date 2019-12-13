@@ -13,5 +13,6 @@ module.exports = {
     Blocking: 3,
     'Non-blocking': 2,
     Information: 1
-  }
+  },
+  DEFAULT_TIMEZONE: 'Europe/Paris'
 };

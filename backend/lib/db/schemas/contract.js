@@ -83,6 +83,7 @@ module.exports = dependencies => {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     },
+    timezone: { type: String, required: true, default: 'Europe/Paris' },
     type: { type: String, default: CONTRACTS_TYPES.UNLIMITED },
     schemaVersion: { type: Number, default: 1 }
   });
