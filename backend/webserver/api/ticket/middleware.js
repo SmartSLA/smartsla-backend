@@ -26,7 +26,8 @@ module.exports = (dependencies, lib) => {
     canUpdateTicket,
     validateTicketCreation,
     validateTicketUpdate,
-    transformTicket
+    transformTicket,
+    canPutPrivateComment
   };
 
   function checkTicketIdInParams(req, res, next) {
@@ -533,5 +534,17 @@ module.exports = (dependencies, lib) => {
       demand.issueType === options.severity &&
       demand.softwareType === options.softwareCriticality
     );
+  }
+
+  function canPutPrivateComment(req, res, next) {
+    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canComment => {
+        if (canComment) {
+          return next();
+        }
+
+        send403Error('User does not have permission to write private comments', res);
+      });
   }
 };

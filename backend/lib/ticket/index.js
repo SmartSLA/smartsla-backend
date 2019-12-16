@@ -176,7 +176,14 @@ module.exports = dependencies => {
         .sort('-updatedAt')
         .populate(DEFAULT_TICKET_POPULATES);
 
-        return query.exec();
+        return query.exec()
+        .then(tickets => {
+          tickets.forEach(ticket => {
+            ticket.events = ticket.events.filter(event => !event.isPrivate);
+          });
+
+          return tickets;
+        });
     }
 
     function buildQuery(contracts) {
