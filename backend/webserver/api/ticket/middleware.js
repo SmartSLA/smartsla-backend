@@ -140,8 +140,30 @@ module.exports = (dependencies, lib) => {
   }
 
   function canUpdateTicket(req, res, next) {
-    // TODO: Check that the user is admin, expert or part of the ticket contract
-    next();
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+    .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+    .then(canUpdateAll => {
+      if (canUpdateAll) {
+        return next();
+      }
+
+      return userCanUpdateTicket(req.user, req.ticket)
+        .then(canUpdate => (canUpdate ? next() : send403Error('User does not have permission to update the ticket', res)));
+    })
+    .catch(err => send500Error('Unable to check ticket rights', err, res));
+
+    function userCanUpdateTicket(user, ticket) {
+      return lib.contract.listForUser(user._id)
+      .then(contracts => {
+        if (!contracts || !contracts.length) {
+          return false;
+        }
+
+        const contractIds = contracts.map(contract => String(contract.contract));
+
+        return contractIds.includes(String(ticket.contract._id));
+      });
+    }
   }
 
   function canDeleteTicket(req, res) {

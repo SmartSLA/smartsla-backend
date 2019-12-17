@@ -106,8 +106,9 @@ module.exports = function(dependencies, lib) {
   function update(req, res) {
     const ticket = req.body;
     const ticketId = req.params.id;
+    const ticketingUser = req.ticketingUser;
 
-    lib.ticket.updateById(ticketId, ticket)
+    lib.ticket.updateById(ticketId, ticket, ticketingUser)
       .then(updatedTicket => {
         res.status(200).json(updatedTicket);
       })

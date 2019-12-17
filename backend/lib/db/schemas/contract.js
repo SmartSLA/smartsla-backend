@@ -11,7 +11,7 @@ module.exports = dependencies => {
 
   const ContractSoftwareSchema = new Schema({
     software: { type: mongoose.Schema.ObjectId, ref: 'Software', required: true },
-    critical: { type: String, default: 'standard' },
+    critical: { type: String },
     generic: Schema.Types.Mixed,
     technicalReferent: { type: String }, // FIXME Store User instead of name
     os: { type: String },
