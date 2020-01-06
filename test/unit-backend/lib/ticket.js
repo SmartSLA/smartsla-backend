@@ -141,9 +141,8 @@ describe('The ticket lib', function() {
 
       eventAuthor = {
         type: ticketingUser.type,
-        image: `http://localhost:8080/api/users/${ticketingUser.user}/profile/avatar`,
         name: ticketingUser.name,
-        id: ticketingUser._id
+        id: ticketingUser.user
       };
     });
 

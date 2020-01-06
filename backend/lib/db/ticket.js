@@ -31,7 +31,6 @@ module.exports = dependencies => {
     author: {
       id: { type: String },
       name: { type: String },
-      image: { type: String },
       type: { type: String }
     },
     target: IdNameEmailType, // this can be assigned to a Team, a Group, a User, anything...
