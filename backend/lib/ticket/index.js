@@ -18,7 +18,6 @@ module.exports = dependencies => {
   const Ticket = mongoose.model('Ticket');
   const email = require('../email')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
-  const esnConfig = dependencies('esn-config');
   const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
 
@@ -248,22 +247,19 @@ module.exports = dependencies => {
         if (changes.length !== 0) {
           const { events } = modified;
 
-          return esnConfig('frontendUrl').inModule('linagora.esn.ticketing').get().then(frontendUrl => {
-            const event = {
-              author: {
-                id: ticketingUser._id,
-                name: ticketingUser.name,
-                image: `${frontendUrl}/api/users/${ticketingUser.user}/profile/avatar`,
-                type: ticketingUser.type
-              },
-              changes: changes
-            };
+          const event = {
+            author: {
+              id: ticketingUser.user,
+              name: ticketingUser.name,
+              type: ticketingUser.type
+            },
+            changes: changes
+          };
 
-            events.push(event);
-            modified.events = events;
+          events.push(event);
+          modified.events = events;
 
-            resolve({unsetValues, modified});
-          });
+          resolve({unsetValues, modified});
         }
         resolve({unsetValues, modified});
       });
