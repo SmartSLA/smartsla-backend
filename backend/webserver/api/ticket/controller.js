@@ -91,8 +91,15 @@ module.exports = function(dependencies, lib) {
       .then(ticket => {
         ticket = ticket.toObject();
 
-        return res.status(200).json(ticket);
+        lib.ticketingUserRole.userIsAdministrator(req.user._id)
+        .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+        .then(canReadPrivateComment => {
+          if (!canReadPrivateComment) {
+            ticket.events = ticket.events.filter(event => !event.isPrivate);
+          }
 
+          return res.status(200).json(ticket);
+        });
       })
       .catch(err => send500Error('Failed to get ticket', err, res));
   }

@@ -40,7 +40,8 @@ module.exports = dependencies => {
       createdAt: {type: Date, default: Date.now}
     },
     attachments: [Attachment],
-    changes: [Changes]
+    changes: [Changes],
+    isPrivate: {type: Boolean, default: false}
   };
 
   const ticketSchema = new mongoose.Schema({
