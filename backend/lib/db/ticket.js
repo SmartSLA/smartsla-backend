@@ -41,7 +41,13 @@ module.exports = dependencies => {
     },
     attachments: [Attachment],
     changes: [Changes],
-    isPrivate: {type: Boolean, default: false}
+    isPrivate: {type: Boolean, default: false},
+    isSurvey: {type: Boolean, default: false}
+  };
+
+  const Survey = {
+    id: { type: Number },
+    token: { type: String }
   };
 
   const ticketSchema = new mongoose.Schema({
@@ -63,6 +69,7 @@ module.exports = dependencies => {
     severity: { type: String }, // TODO add enum validator
     software: ContractSoftwareSchema, // TODO Consider normalizing and rename field to supportedSoftware
     status: { type: String, default: 'new' }, // TODO add enum validator
+    survey: Survey,
     team: Schema.Types.Mixed, // FIXME Use real schema or Ref
     timestamps: {
       createdAt: { type: Date, default: Date.now },
