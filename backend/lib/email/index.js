@@ -71,6 +71,7 @@ module.exports = dependencies => {
     const cc = [];
 
     ticket.author && ticket.author.email && to.push(ticket.author.email);
+    ticket.assignedTo && ticket.assignedTo.email && to.push(ticket.assignedTo.email);
 
     if (ticket.responsible && ticket.responsible.email) {
       to.push(ticket.responsible.email);
