@@ -8,6 +8,7 @@ module.exports = function(dependencies) {
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
   const ticketingUser = require('./ticketing-user')(dependencies);
   const contract = require('./contract')(dependencies);
+  const contribution = require('./contribution')(dependencies);
   const helpers = require('./helpers');
   const constants = require('./constants');
   const listeners = require('./listeners')(dependencies);
@@ -23,6 +24,7 @@ module.exports = function(dependencies) {
   return {
     constants,
     contract,
+    contribution,
     email,
     helpers,
     models,
