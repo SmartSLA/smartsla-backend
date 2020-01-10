@@ -59,6 +59,11 @@ module.exports = dependencies => {
     standard: EngagementSectionSchema
   }, { _id: false});
 
+  const ExternalLinksSchema = new Schema({
+    name: {type: String},
+    url: {type: String}
+  }, {_id: false});
+
   const ContractSchema = new Schema({
     description: { type: String},
     endDate: { type: Date, required: true },
@@ -85,7 +90,8 @@ module.exports = dependencies => {
     },
     timezone: { type: String, required: true, default: 'Europe/Paris' },
     type: { type: String, default: CONTRACTS_TYPES.UNLIMITED },
-    schemaVersion: { type: Number, default: 1 }
+    schemaVersion: { type: Number, default: 1 },
+    externalLinks: [ExternalLinksSchema]
   });
 
   return {
