@@ -3,6 +3,7 @@
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
+const { createSurvey } = require('../limesurvey/limesurvey');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' }
@@ -61,11 +62,25 @@ module.exports = dependencies => {
       }
     }
 
-    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
+    return Promise.resolve()
+      .then(() => {
+        if (event.isSurvey) return createSurvey(ticketId);
+      })
+      .then(survey => _updateTicket(survey));
+
+    function _updateTicket(survey) {
+        if (survey) {
+          set.survey = survey;
+        }
+
+      return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
       .then(modifiedTicket => {
         email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket, event);
+
+        return modifiedTicket;
       });
+    }
   }
 
   /**

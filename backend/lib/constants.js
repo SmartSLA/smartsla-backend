@@ -131,5 +131,13 @@ module.exports = {
   },
   TICKETING_CONTRACT_ROLES: {
     VIEWER: 'viewer'
+  },
+  LIMESURVEY: {
+    API_URL: 'http://localhost/index.php/admin/remotecontrol/',
+    SURVEY_ID: 158386,
+    CREDENTIALS: {
+        username: 'admin',
+        password: 'password'
+    }
   }
 };
