@@ -9,6 +9,7 @@ module.exports = (dependencies, lib, router) => {
   router.post('/tickets',
     authorizationMW.requiresAPILogin,
     middlewares.transformTicket,
+    middlewares.canCreateTicket,
     controller.create
   );
 
