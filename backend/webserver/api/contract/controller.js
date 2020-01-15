@@ -12,7 +12,8 @@ module.exports = function(dependencies, lib) {
     update,
     remove,
     addUsers,
-    getUsers
+    getUsers,
+    getTicketsByContract
   };
 
   /**
@@ -40,6 +41,25 @@ module.exports = function(dependencies, lib) {
 
         return res.status(200).json(contract);
 
+      })
+      .catch(err => send500Error('Failed to get contract', err, res));
+  }
+
+  /**
+   * Get a contract tickets
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function getTicketsByContract(req, res) {
+    lib.contract
+      .getById(req.params.id)
+      .then(contract => {
+        contract = contract.toObject();
+
+        lib.ticket.listForContracts(contract).then(tickets => {
+          res.status(200).send(tickets);
+        });
       })
       .catch(err => send500Error('Failed to get contract', err, res));
   }

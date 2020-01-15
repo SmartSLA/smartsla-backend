@@ -54,6 +54,12 @@ module.exports = function(dependencies, lib, router) {
     controller.getUsers
   );
 
+  router.get('/contract/:id/tickets',
+    authorizationMW.requiresAPILogin,
+    load,
+    controller.getTicketsByContract
+  );
+
   router.delete('/contracts/:id',
     authorizationMW.requiresAPILogin,
     canUpdateContract,
