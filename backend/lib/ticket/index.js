@@ -155,7 +155,7 @@ module.exports = dependencies => {
     }
   }
 
-  function listForContracts(contracts, options) {
+  function listForContracts(contracts, options = {}) {
     return Promise.all([
       count(contracts),
       list(contracts, options)
