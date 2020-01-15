@@ -68,7 +68,7 @@ module.exports = dependencies => {
 
   function getRecipients(ticket, defaultResponsibleEmail) {
     const to = [];
-    const cc = [];
+    const cc = ticket.participants && [...ticket.participants];
 
     ticket.author && ticket.author.email && to.push(ticket.author.email);
     ticket.assignedTo && ticket.assignedTo.email && to.push(ticket.assignedTo.email);
@@ -78,8 +78,6 @@ module.exports = dependencies => {
     } else {
       to.push(defaultResponsibleEmail || EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
     }
-
-    cc.concat(ticket.participants);
 
     return { to: to, cc: cc };
   }
