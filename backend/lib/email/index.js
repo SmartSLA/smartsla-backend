@@ -23,7 +23,7 @@ module.exports = dependencies => {
 
     switch (type) {
       case EMAIL_NOTIFICATIONS.TYPES.CREATED: {
-        const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been created',
+        const subject = i18n.__('#{{id}} {{{title}}}: issue #{{id}} has been created',
           { id: ticket._id, title: ticket.title });
 
         return {
