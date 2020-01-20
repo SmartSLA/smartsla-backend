@@ -70,6 +70,11 @@ module.exports = {
       updated: 'ticketing:contract:updated',
       deleted: 'ticketing:contract:deleted'
     },
+    CONTRIBUTION: {
+      created: 'ticketing:contribution:created',
+      updated: 'ticketing:contribution:updated',
+      deleted: 'ticketing:contribution:deleted'
+    },
     ORGANIZATION: {
       created: 'ticketing:organization:created',
       updated: 'ticketing:organization:updated'
