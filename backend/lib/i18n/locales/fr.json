@@ -1,5 +1,5 @@
 {
-  "#{{id}} {{title}}: issue #{{id}} has been created": "n°{{id}} {{title}}: La demande n°{{id}} vient d‘être créée",
+  "#{{id}} {{{title}}}: issue #{{id}} has been created": "n°{{id}} {{{title}}}: La demande n°{{id}} vient d‘être créée",
   "#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}": "n°{{id}} {{title}}: La demande n°{{id}} vient d‘être assignée à {{assignee}}",
   "#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}": "n°{{id}} {{title}}: Le statut de la demande n°{{id}} est passé à {{status}}",
   "#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}": "n°{{id}} {{title}}: La demande n°{{id}} vient d‘être commentée par {{commenter}}",
