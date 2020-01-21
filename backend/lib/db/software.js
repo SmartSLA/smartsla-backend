@@ -2,6 +2,12 @@
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
+  const Schema = mongoose.Schema;
+
+  const ExternalLinksSchema = new Schema({
+    name: {type: String},
+    url: {type: String}
+  }, {_id: false});
 
   const SoftwareSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
@@ -11,6 +17,7 @@ module.exports = dependencies => {
     technology: { type: String },
     group: { type: String },
     logo: mongoose.Schema.Types.ObjectId,
+    externalLinks: [ExternalLinksSchema],
     timestamps: {
       creation: { type: Date, default: Date.now }
     },
