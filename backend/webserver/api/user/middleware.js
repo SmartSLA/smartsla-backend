@@ -2,7 +2,7 @@
 
 module.exports = (dependencies, lib) => {
   const coreAvailability = dependencies('availability');
-  const { requireAdministrator } = require('../helpers')(dependencies, lib);
+  const { requireAdministrator, requireCurrentUserOrAdministrator } = require('../helpers')(dependencies, lib);
   const { send400Error, send500Error } = require('../utils')(dependencies);
 
   return {
@@ -32,7 +32,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canRead(req, res, next) {
-    return requireAdministrator(req, res, next);
+    return requireCurrentUserOrAdministrator(req, res, next);
   }
 
   function canUpdate(req, res, next) {

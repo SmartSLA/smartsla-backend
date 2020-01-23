@@ -9,7 +9,8 @@ module.exports = (dependencies, lib) => {
     loadUserRole,
     validateObjectIds,
     requireAdministrator,
-    buildUserDisplayName
+    buildUserDisplayName,
+    requireCurrentUserOrAdministrator
   };
 
   function requireAdministrator(req, res, next) {
@@ -17,16 +18,15 @@ module.exports = (dependencies, lib) => {
       return send400Error('Missing user', res);
     }
 
-    /*return lib.ticketingUserRole.userIsAdministrator(req.user._id)
-      .then(isAdministrator => {
-        if (!isAdministrator) {
-          return send403Error('User is not the administrator', res);
-        }
+    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+    .then(isAdmin => {
+      if (isAdmin) {
+        return next();
+      }
 
-        next();
-      })
-      .catch(err => send500Error('Unable to check administrator permission', err, res));*/
-      next();
+      send403Error('User does not have the necessary permission', res);
+    })
+    .catch(err => send500Error('Unable to check administrator permission', err, res));
   }
 
   function loadUserRole(req, res, next) {
@@ -58,5 +58,22 @@ module.exports = (dependencies, lib) => {
 
   function buildUserDisplayName(user) {
     return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
+  }
+
+  function requireCurrentUserOrAdministrator(req, res, next) {
+    if (!req.user || !req.user._id) {
+      return send400Error('Missing user', res);
+    }
+
+    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.user._id.toString() === req.params.id)))
+      .then(canViewProfile => {
+        if (canViewProfile) {
+          return next();
+        }
+
+        send403Error('User does not have the necessary permission', res);
+      })
+      .catch(err => send500Error('Unable to check administrator permission', err, res));
   }
 };
