@@ -539,6 +539,10 @@ module.exports = (dependencies, lib) => {
   }
 
   function canPutPrivateComment(req, res, next) {
+    const { isPrivate } = req.body;
+
+    if (!isPrivate) next();
+
     return lib.ticketingUserRole.userIsAdministrator(req.user._id)
       .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
       .then(canComment => {
