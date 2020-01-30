@@ -550,7 +550,7 @@ module.exports = (dependencies, lib) => {
           return next();
         }
 
-        send403Error('User does not have permission to write private comments', res);
+        return send403Error('User does not have permission to write private comments', res);
       });
   }
 };

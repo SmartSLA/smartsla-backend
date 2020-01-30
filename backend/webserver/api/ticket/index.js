@@ -31,6 +31,7 @@ module.exports = (dependencies, lib, router) => {
   router.put('/tickets/:id/events',
     authorizationMW.requiresAPILogin,
     middlewares.checkTicketIdInParams,
+    userMiddleware.loadTicketingUser,
     middlewares.canPutPrivateComment,
     controller.addEvent
   );
