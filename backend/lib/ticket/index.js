@@ -177,11 +177,10 @@ module.exports = dependencies => {
 
         return query.exec()
         .then(tickets => {
-          tickets.forEach(ticket => {
-            ticket.events = ticket.events.filter(event => !event.isPrivate);
-          });
-
-          return tickets;
+          if (options.userType && options.userType === 'expert') {
+            return tickets;
+          }
+          return (tickets.events || []).filter(event => !event.isPrivate);
         });
     }
 

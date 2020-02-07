@@ -49,13 +49,14 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    const options = {
+    const userType = req.ticketingUser && req.ticketingUser.type;
+    let options = {
       limit: +req.query.limit,
       offset: +req.query.offset
     };
 
     lib.ticketingUserRole.userIsAdministrator(req.user._id)
-      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(isAdmin => (isAdmin || (userType === 'expert')))
       .then(canViewAll => (canViewAll ? _listAll() : _listForUser(req.user._id)))
       .then(({ size, list }) => {
         res.header('X-ESN-Items-Count', size);
@@ -68,6 +69,8 @@ module.exports = function(dependencies, lib) {
     }
 
     function _listForUser(_id) {
+      options = {...options, userType};
+
       return lib.contract.listForUser(_id)
         .then(contracts => {
           if (!contracts || !contracts.length) {
