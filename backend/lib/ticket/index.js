@@ -175,13 +175,21 @@ module.exports = dependencies => {
         .sort('-updatedAt')
         .populate(DEFAULT_TICKET_POPULATES);
 
-        return query.exec()
+        return query.lean()
         .then(tickets => {
           if (options.userType && options.userType === 'expert') {
             return tickets;
           }
-          return (tickets.events || []).filter(event => !event.isPrivate);
+
+          return ticketsWithPublicComments(tickets);
         });
+    }
+
+    function ticketsWithPublicComments(tickets) {
+      return (tickets || []).map(({events, ...ticket}) => ({
+          ...ticket,
+          events: (events || []).filter(event => !event.isPrivate)
+      }));
     }
 
     function buildQuery(contracts) {
