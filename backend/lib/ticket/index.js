@@ -5,11 +5,6 @@ const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 
 const DEFAULT_TICKET_POPULATES = [
-  { path: 'contract',
-    populate: {
-      path: 'software.software'
-    }
-  },
   { path: 'software.software' }
 ];
 
