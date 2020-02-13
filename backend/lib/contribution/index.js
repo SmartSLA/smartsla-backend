@@ -18,13 +18,14 @@ module.exports = function(dependencies) {
     getById,
     list,
     updateById,
+    updateStatus,
     removeById
   };
 
   /**
    * Create a contribution
    * @param {Object} contribution - the contribution object
-   * @param {Pormise}             - resolve on success
+   * @return {Promise}             - resolve on success
    */
   function create(contribution) {
     contribution = contribution instanceof Contribution ? contribution : new Contribution(contribution);
@@ -40,7 +41,7 @@ module.exports = function(dependencies) {
   /**
    * Fetch a contribution
    * @param {String} contributionId - the contribution id
-   * @param {Promise}               - resolve on success
+   * @return {Promise}              - resolve on success
    */
   function getById(contributionId) {
     return Contribution
@@ -53,7 +54,7 @@ module.exports = function(dependencies) {
    * Update a contribution
    * @param {String} contributionId - the contribution id
    * @param {Object} modified       - the modified contribution
-   * @param {Promise}               - resolve on success
+   * @return {Promise}              - resolve on success
    */
   function updateById(contributionId, modified) {
     return Contribution
@@ -72,7 +73,7 @@ module.exports = function(dependencies) {
   /**
    * Remove a contribution
    * @param {String} contributionId - the contribution id
-   * @param {resolve}               - resolve on success
+   * @return {resolve}               - resolve on success
    */
   function removeById(contributionId) {
     return Contribution
@@ -89,7 +90,7 @@ module.exports = function(dependencies) {
   /**
    * List contributions
    * @param {Object} Options  - the options object (offset and limit)
-   * @param {resolve}         - resolve on success
+   * @return {resolve}         - resolve on success
    */
   function list(options = {}) {
     return Contribution
@@ -98,6 +99,20 @@ module.exports = function(dependencies) {
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-timestamps.creation')
+      .exec();
+  }
+
+  /**
+   * Update contribution status
+   * @param {String} contributionId - the contribution id
+   * @param {Object} option         - the { stepName, stepValue } value
+   * @return {Promise}             - resolve on success
+   */
+  function updateStatus(contributionId, {stepName, stepValue = ''}) {
+    const statusKey = `status.${stepName}`;
+
+    return Contribution
+      .findByIdAndUpdate(contributionId, { $set: { [statusKey]: stepValue}})
       .exec();
   }
 };

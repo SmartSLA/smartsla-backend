@@ -7,7 +7,15 @@ module.exports = dependencies => {
   const LinkSchema = new Schema({
     name: { type: String },
     url: { type: String }
-  }, { id: false });
+  }, { _id: false });
+
+  const StatusSchema = new Schema({
+    develop: { type: Date, default: null },
+    reversed: { type: Date, default: null },
+    published: { type: Date, default: null },
+    integrated: { type: Date, default: null },
+    rejected: { type: Date, default: null }
+  }, { _id: false });
 
   const ContributionSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -16,7 +24,7 @@ module.exports = dependencies => {
     type: { type: String},
     version: { type: String },
     fixedInVersion: { type: String },
-    staus: { type: String },
+    status: { type: StatusSchema, default: StatusSchema},
     description: { type: String },
     deposedAt: { type: String },
     links: [LinkSchema],

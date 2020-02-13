@@ -8,6 +8,7 @@ module.exports = function(dependencies, lib) {
     get,
     list,
     update,
+    updateStatus,
     remove
   };
 
@@ -74,6 +75,25 @@ module.exports = function(dependencies, lib) {
         return send404Error('contribution not found', res);
       })
       .catch(err => send500Error('Error while updating contribution', err, res));
+  }
+
+  /**
+   * update contribution status
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function updateStatus(req, res) {
+    return lib.contribution
+      .updateStatus(req.params.id, req.body)
+      .then(updated => {
+        if (updated) {
+          res.status(204).end();
+        }
+
+        return send404Error('contribution not found', res);
+      })
+      .catch(err => send500Error('Error while updating contribution status', err, res));
   }
 
   /**
