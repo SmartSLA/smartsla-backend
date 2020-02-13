@@ -56,6 +56,7 @@ module.exports = function(dependencies, lib, router) {
 
   router.get('/contract/:id/tickets',
     authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
     load,
     controller.getTicketsByContract
   );

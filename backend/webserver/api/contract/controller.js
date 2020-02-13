@@ -52,12 +52,19 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function getTicketsByContract(req, res) {
+    const options = {};
+    const userType = req.ticketingUser && req.ticketingUser.type;
+
+    if (userType) {
+      options.userType = userType;
+    }
+
     lib.contract
       .getById(req.params.id)
       .then(contract => {
         contract = contract.toObject();
 
-        lib.ticket.listForContracts(contract).then(tickets => {
+        lib.ticket.listForContracts(contract, options).then(tickets => {
           res.status(200).send(tickets);
         });
       })
