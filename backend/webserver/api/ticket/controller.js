@@ -92,8 +92,6 @@ module.exports = function(dependencies, lib) {
   function get(req, res) {
     return lib.ticket.getById(req.params.id)
       .then(ticket => {
-        ticket = ticket.toObject();
-
         lib.ticketingUserRole.userIsAdministrator(req.user._id)
         .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
         .then(canReadPrivateComment => {

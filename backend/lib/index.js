@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies) {
 
+  const cns = require('./cns');
   const models = require('./db')(dependencies);
   const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
@@ -22,6 +23,7 @@ module.exports = function(dependencies) {
   const email = require('./email')(dependencies);
 
   return {
+    cns,
     constants,
     contract,
     contribution,
