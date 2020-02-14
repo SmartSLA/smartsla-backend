@@ -109,7 +109,7 @@ module.exports = dependencies => {
       const query = buildQuery(options)
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-updatedAt');
+        .sort('-timestamps.createdAt');
 
       return query.exec();
     }
@@ -172,7 +172,7 @@ module.exports = dependencies => {
       const query = buildQuery(contracts)
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-updatedAt')
+        .sort('-timestamps.createdAt')
         .populate(DEFAULT_TICKET_POPULATES);
 
         return query.lean()
