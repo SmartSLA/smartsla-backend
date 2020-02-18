@@ -116,9 +116,9 @@ describe('The ticket lib', function() {
 
     topic = { publish: sinon.spy() };
 
-    cnsModuleMock = {
+    cnsModuleMock = () => ({
       computeCns: () => ({})
-    };
+    });
 
     mockery.registerMock('../cns', cnsModuleMock);
 
