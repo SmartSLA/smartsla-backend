@@ -6,7 +6,7 @@ module.exports = dependencies => {
   const ClientSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
     address: { type: String },
-    active: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
     logo: mongoose.Schema.Types.ObjectId,
     accessCode: { type: String },
     accessHelp: { type: String },
