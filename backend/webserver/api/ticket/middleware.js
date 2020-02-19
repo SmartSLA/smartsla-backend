@@ -104,8 +104,14 @@ module.exports = (dependencies, lib) => {
   }
 
   function canCreateTicket(req, res, next) {
+    const ticket = req.body;
+
+    if (!ticket.software) {
+      return next();
+    }
+
     // TODO: Check that the ticket can be created in the given contract
-    const diff = moment().diff(req.body.software.SupportDate.end);
+    const diff = moment().diff(ticket.software.SupportDate.end);
 
     return (Math.sign(diff) === 1 ? send403Error('Support on this software has expired', res) : next());
   }
