@@ -289,11 +289,13 @@ module.exports = dependencies => {
         meetingId,
         type,
         severity,
-        description
+        description,
+        participants,
+        relatedRequests
       } = ticket;
 
       //TODO: Add participants, related request
-      let ticketFields = Object.assign({}, {title, beneficiary, responsible, callNumber, meetingId, type, severity, description: description});
+      let ticketFields = Object.assign({}, { title, beneficiary, responsible, callNumber, meetingId, type, severity, description, participants, relatedRequests});
 
       if (ticket.software && Object.keys(ticket.software).length && ticket.software.software) {
         const software = {
@@ -328,13 +330,19 @@ module.exports = dependencies => {
 
       for (const [field, value] of diffs) {
         switch (true) {
-
           case typeof value === 'string':
           case typeof value === 'undefined' && field === 'severity':
             oldValue = ticketFields[field] ? ticketFields[field] : '';
             newValue = value || '';
             break;
-
+          case field === 'participants':
+            oldValue = ticketFields[field] ? ticketFields[field].join(' ') : '';
+            newValue = modifiedTicketFields[field] ? modifiedTicketFields[field].join(' ') : '';
+            break;
+          case field === 'relatedRequests':
+            oldValue = ticketFields[field] ? ticketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
+            newValue = ticketFields[field] ? modifiedTicketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
+          break;
           case typeof value === 'object':
           case typeof value === 'undefined' && field === 'software':
             if (ticketFields[field]) {
@@ -348,18 +356,26 @@ module.exports = dependencies => {
           action = 'removed';
         } else if (oldValue.length === 0 && newValue.length !== 0) {
           action = 'added';
+        } else {
+          action = 'changed';
         }
 
         changes.push({
-          field: field,
-          oldValue: oldValue,
-          newValue: newValue,
-          action: action
+          field,
+          oldValue,
+          newValue,
+          action
         });
       }
 
       return changes;
     }
+  }
+
+  function _humanizeRelatedRequest(relatedRequest) {
+    const { link, request } = relatedRequest;
+
+    return `${link} #${request.id}-${request.title}`;
   }
 
   /**
