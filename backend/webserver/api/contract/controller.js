@@ -222,7 +222,7 @@ module.exports = function(dependencies, lib) {
 
       const ticketingUser = ticketingUsers.find(ticketingUser => ticketingUser.user.equals(customer.user._id));
 
-      return ticketingUser !== -1 ? ticketingUser.type : defaultType;
+      return ticketingUser ? ticketingUser.type : defaultType;
     }
   }
 };
