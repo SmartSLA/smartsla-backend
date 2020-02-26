@@ -179,7 +179,7 @@ module.exports = function(dependencies, lib) {
         role: customerType.customer.role,
         type: customerType.type
       }));
-
+      res.header('X-ESN-Items-Count', expertsResult.length + customersResult.length);
       res.status(200).json([...expertsResult, ...customersResult]);
     })
     .catch(err => send500Error('Failed to get user for contracts', err, res));
