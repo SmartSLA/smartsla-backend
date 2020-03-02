@@ -156,7 +156,7 @@ module.exports = dependencies => {
   function listForContracts(contracts, options = {}) {
     return Promise.all([
       count(contracts),
-      list(contracts, options)
+      list(contracts, options).then(addCnsToTickets)
     ]).then(result => ({
       size: result[0],
       list: result[1]
