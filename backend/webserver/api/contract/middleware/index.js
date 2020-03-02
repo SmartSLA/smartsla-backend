@@ -53,7 +53,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canListContract(req, res, next) {
-    return requireAdministrator(req, res, next);
+    next(); // TODO Improve permissions
   }
 
   function canReadContract(req, res, next) {
