@@ -110,6 +110,7 @@ module.exports = (dependencies, lib, router) => {
    */
   router.put('/users/:id',
     authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
     middleware.canUpdate,
     checkIdInParams('id', 'User'),
     controller.update

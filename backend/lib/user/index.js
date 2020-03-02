@@ -69,7 +69,8 @@ module.exports = dependencies => {
           type: user.type || '',
           email: user.email || '',
           name: user.name || '',
-          phone: user.phone || ''
+          phone: user.phone || '',
+          jobTitle: opUser.job_title || user.jobTitle || ''
         };
 
         ticketingUser.create(newTicketingUser)
@@ -107,6 +108,7 @@ module.exports = dependencies => {
         if (modified) {
           userUpdatedTopic.publish(modified);
         }
+
         return modified;
       });
   }

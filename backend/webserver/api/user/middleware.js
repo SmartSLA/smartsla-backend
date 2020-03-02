@@ -2,7 +2,7 @@
 
 module.exports = (dependencies, lib) => {
   const coreAvailability = dependencies('availability');
-  const { requireAdministrator, requireCurrentUserOrAdministrator } = require('../helpers')(dependencies, lib);
+  const { requireAdministrator } = require('../helpers')(dependencies, lib);
   const { send400Error, send500Error } = require('../utils')(dependencies);
 
   return {
@@ -32,10 +32,26 @@ module.exports = (dependencies, lib) => {
   }
 
   function canRead(req, res, next) {
-    return requireCurrentUserOrAdministrator(req, res, next);
+    if (!req.user || !req.user._id) {
+      return send400Error('Missing user', res);
+    }
+
+    if (req.user._id.toString() === req.params.id) {
+      return next();
+    }
+
+    return requireAdministrator(req, res, next);
   }
 
   function canUpdate(req, res, next) {
+    if (!req.user || !req.user._id) {
+      return send400Error('Missing user', res);
+    }
+
+    if (req.user._id.toString() === req.ticketingUser.user.toString()) {
+      return next();
+    }
+
     return requireAdministrator(req, res, next);
   }
 
