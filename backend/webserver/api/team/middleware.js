@@ -19,7 +19,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canListTeam(req, res, next) {
-    return requireAdministrator(req, res, next);
+    next(); // TODO Improve permissions
   }
 
   function canUpdateTeam(req, res, next) {

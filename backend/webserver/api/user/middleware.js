@@ -40,7 +40,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canList(req, res, next) {
-    return requireAdministrator(req, res, next);
+    next(); // TODO Improve permissions
   }
 
   function validateUserCreatePayload(req, res, next) {
