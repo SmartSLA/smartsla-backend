@@ -4,8 +4,8 @@ module.exports = dependencies => {
 
   const Client = require('./client')(dependencies);
   const Contract = require('./contract')(dependencies);
-  const Contribution = require('./contribution')(dependencies);
   const Counter = require('./counter')(dependencies);
+  const Contribution = require('./contribution')(dependencies);
   const Filter = require('./filter')(dependencies);
   const Organization = require('./organization')(dependencies);
   const Software = require('./software')(dependencies);

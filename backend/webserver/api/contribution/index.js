@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function(dependencies, lib, router) {
-    const { checkIdInParams } = dependencies('helperMw');
     const authorizationMW = dependencies('authorizationMW');
     const controller = require('./controller')(dependencies, lib);
 
@@ -21,7 +20,6 @@ module.exports = function(dependencies, lib, router) {
 
     router.get('/contributions/:id',
         authorizationMW.requiresAPILogin,
-        checkIdInParams('id', 'contribution'),
         controller.get
     );
 
