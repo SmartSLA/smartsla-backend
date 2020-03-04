@@ -3,6 +3,7 @@
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
+  const CounterModel = mongoose.model('Counter');
 
   const LinkSchema = new Schema({
     name: { type: String },
@@ -18,6 +19,7 @@ module.exports = dependencies => {
   }, { _id: false });
 
   const ContributionSchema = new mongoose.Schema({
+    _id: { type: Number },
     name: { type: String, required: true },
     software: { type: mongoose.Schema.ObjectId, ref: 'Software', required: true },
     author: { type: mongoose.Schema.ObjectId, ref: 'TicketingUser', required: true },
@@ -32,6 +34,24 @@ module.exports = dependencies => {
       creation: { type: Date, default: Date.now }
     },
     schemaVersion: { type: Number, default: 1 }
+  });
+
+  ContributionSchema.pre('save', function(next) {
+    const self = this;
+
+    if (this.isNew) {
+      CounterModel.findOneAndUpdate({ _id: 'contribution'}, { $inc: { seq: 1 } }, { upsert: true, new: true },
+      (err, counter) => {
+        if (err) {
+          return next(err);
+        }
+        self._id = counter.seq;
+
+        next();
+      });
+    } else {
+      next();
+    }
   });
 
   return ContributionSchema;
