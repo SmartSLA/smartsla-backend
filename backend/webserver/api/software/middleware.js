@@ -19,7 +19,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canListSoftware(req, res, next) {
-    return requireAdministrator(req, res, next);
+    next(); // TODO Improve permissions
   }
 
   function canUpdateSoftware(req, res, next) {

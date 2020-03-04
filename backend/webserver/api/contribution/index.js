@@ -10,7 +10,8 @@ module.exports = function(dependencies, lib, router) {
         canUpdateContribution,
         canRemoveContribution,
         validateContributionCreatePayload,
-        validateContributionUpdatePayload
+        validateContributionUpdatePayload,
+        validateContributionStatusUpdatePayload
     } = require('./middleware')(dependencies, lib);
 
     router.get('/contributions',
@@ -36,6 +37,13 @@ module.exports = function(dependencies, lib, router) {
         canUpdateContribution,
         validateContributionUpdatePayload,
         controller.update
+    );
+
+    router.post('/contributions/:id/status',
+        authorizationMW.requiresAPILogin,
+        canUpdateContribution,
+        validateContributionStatusUpdatePayload,
+        controller.updateStatus
     );
 
     router.delete('/contributions/:id',

@@ -38,6 +38,10 @@ module.exports = {
     RESOLVED: 'resolved',
     CLOSED: 'closed'
   },
+  USER_TYPE: {
+    BENEFICIARY: 'beneficiary',
+    EXPERT: 'expert'
+  },
   INDICES: {
     CONTRACT: {
       name: 'contracts.idx',

@@ -3,19 +3,16 @@
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
+const { computeCns } = require('../cns');
 
 const DEFAULT_TICKET_POPULATES = [
-  { path: 'contract',
-    populate: {
-      path: 'software.software'
-    }
-  },
   { path: 'software.software' }
 ];
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Ticket = mongoose.model('Ticket');
+  const Contract = mongoose.model('Contract');
   const email = require('../email')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const logger = dependencies('logger');
@@ -93,7 +90,7 @@ module.exports = dependencies => {
   function list(options = {}) {
     return Promise.all([
       count(options),
-      list(options)
+      list(options).then(addCnsToTickets)
     ]).then(result => ({
       size: result[0],
       list: result[1]
@@ -107,6 +104,7 @@ module.exports = dependencies => {
       options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
       const query = buildQuery(options)
+        .lean()
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
         .sort('-timestamps.createdAt');
@@ -210,11 +208,12 @@ module.exports = dependencies => {
   function getById(ticketId, options = {}) {
     options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
-    const query = Ticket
+    return Ticket
       .findById(ticketId)
-      .populate(options.populations);
-
-    return query.exec();
+      .populate(options.populations)
+      .lean()
+      .exec()
+      .then(addCnsToTicket);
   }
 
   /**
@@ -469,5 +468,18 @@ module.exports = dependencies => {
 
       return deletedTicket;
     });
+  }
+
+  function addCnsToTicket(ticket) {
+    return Contract.findById(ticket.contract).lean().exec()
+      .then(contract => {
+        ticket.cns = computeCns(ticket, contract);
+
+        return Promise.resolve(ticket);
+      });
+  }
+
+  function addCnsToTickets(tickets) {
+    return Promise.all(tickets.map(addCnsToTicket));
   }
 };

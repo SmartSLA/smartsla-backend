@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 
 describe('The ticket lib', function() {
   let ObjectId, moduleHelpers;
-  let TicketModelMock, ticket, ticketId, query;
+  let TicketModelMock, ContractModelMock, ticket, contract, ticketId, queryMock;
   let emailModule, sendMock;
-  let topic, pubsub;
+  let topic, pubsub, cnsModuleMock;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
@@ -41,6 +41,73 @@ describe('The ticket lib', function() {
       severity: 'Minor'
     };
 
+    contract = {
+      timezone: 'Europe/Paris',
+      businessHours: {
+        start: 9,
+        end: 18
+      },
+      features: {
+        nonBusinessHours: false
+      },
+      Engagements: {
+        critical: {
+          engagements: [
+            {
+              supported: {
+                businessHours: 'PT1H',
+                nonBusinessHours: 'PT2H'
+              },
+              bypassed: {
+                businessHours: 'P1D',
+                nonBusinessHours: 'P2D'
+              },
+              resolved: {
+                businessHours: 'P2D',
+                nonBusinessHours: 'P4D'
+              }
+            }
+          ]
+        },
+        sensible: {
+          engagements: [
+            {
+              supported: {
+                businessHours: 'PT1H',
+                nonBusinessHours: 'PT2H'
+              },
+              bypassed: {
+                businessHours: 'P1D',
+                nonBusinessHours: 'P2D'
+              },
+              resolved: {
+                businessHours: 'P2D',
+                nonBusinessHours: 'P4D'
+              }
+            }
+          ]
+        },
+        standard: {
+          engagements: [
+            {
+              supported: {
+                businessHours: 'PT1H',
+                nonBusinessHours: 'PT2H'
+              },
+              bypassed: {
+                businessHours: 'P1D',
+                nonBusinessHours: 'P2D'
+              },
+              resolved: {
+                businessHours: 'P2D',
+                nonBusinessHours: 'P4D'
+              }
+            }
+          ]
+        }
+      }
+    };
+
     pubsub = {
       local: {
         topic: sinon.stub()
@@ -49,21 +116,38 @@ describe('The ticket lib', function() {
 
     topic = { publish: sinon.spy() };
 
+    cnsModuleMock = {
+      computeCns: () => ({})
+    };
+
+    mockery.registerMock('../cns', cnsModuleMock);
+
     moduleHelpers.addDep('pubsub', pubsub);
 
-    query = {
-      exec: sinon.stub().returns(q.when(ticket)),
+    queryMock = function(objectToReturn) {
+      return {
+      exec: sinon.stub().returns(q.when(objectToReturn)),
       populate: sinon.spy(
         function() {
           return this;
+        }),
+      lean: sinon.spy(
+        function() {
+          return this;
         })
+      };
     };
 
     TicketModelMock = {
-      findById: sinon.stub().returns(query)
+      findById: sinon.stub().returns(queryMock(ticket))
+    };
+
+    ContractModelMock = {
+      findById: sinon.stub().returns(queryMock(contract))
     };
 
     moduleHelpers.mockModels({
+      Contract: ContractModelMock,
       Ticket: TicketModelMock
     });
 
