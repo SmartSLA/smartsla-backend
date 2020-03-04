@@ -240,7 +240,6 @@ module.exports = dependencies => {
     .catch(err => logger.error(`Error while updating the ticket: ${ticketId}`, err));
 
     function _pushEvent(ticket, modified, ticketingUser) {
-      ticket = ticket.toObject();
       const ticketFields = _getTicketFields(ticket);
       const modifiedTicketFields = _getTicketFields(modified);
       const changes = _getChanges(ticketFields, modifiedTicketFields);
