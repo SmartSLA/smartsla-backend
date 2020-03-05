@@ -58,6 +58,7 @@ module.exports = dependencies => {
     meetingId: { type: String },
     participants: [String],
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend
+    relatedContributions: [{type: mongoose.Schema.ObjectId, ref: 'Contribution'}],
     responsible: IdNameEmailType, // TODO Consider denormalizing
     severity: { type: String }, // TODO add enum validator
     software: ContractSoftwareSchema, // TODO Consider normalizing and rename field to supportedSoftware

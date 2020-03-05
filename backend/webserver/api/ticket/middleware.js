@@ -23,7 +23,9 @@ module.exports = (dependencies, lib) => {
     canListTicket,
     canReadTicket,
     canDeleteTicket,
+    canUpdateRelatedContributions,
     canUpdateTicket,
+    validateRelatedContributions,
     validateTicketCreation,
     validateTicketUpdate,
     transformTicket,
@@ -178,6 +180,19 @@ module.exports = (dependencies, lib) => {
   function canDeleteTicket(req, res) {
     // TODO
     return send403Error('User does not have permission to delete ticket', res);
+  }
+
+  function canUpdateRelatedContributions(req, res, next) {
+    lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(havePermission => {
+        if (havePermission) {
+          return next();
+        }
+
+        return send403Error('User does not have permission to update related contributions', res);
+      })
+      .catch(err => send500Error('Unable to check permissions', err, res));
   }
 
   function loadTicket(req, res, next) {
@@ -558,5 +573,17 @@ module.exports = (dependencies, lib) => {
 
         return send403Error('User does not have permission to write private comments', res);
       });
+  }
+
+  function validateRelatedContributions(req, res, next) {
+    const contributions = req.body;
+
+    if (contributions) {
+      if (!Array.isArray(contributions)) {
+        return send400Error('invalid related contributions', res);
+      }
+    }
+
+    return next();
   }
 };
