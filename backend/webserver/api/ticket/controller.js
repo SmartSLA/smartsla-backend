@@ -10,6 +10,7 @@ module.exports = function(dependencies, lib) {
     list,
     get,
     update,
+    updateRelatedContributions,
     remove
   };
 
@@ -22,6 +23,27 @@ module.exports = function(dependencies, lib) {
         res.status(200).json(updatedTicket);
       })
       .catch(err => send500Error('failed to add event', err, res));
+  }
+
+  /**
+   * Update ticket related contributions
+   *
+   * @param {Request} req
+   * @param {Response} res
+   */
+  function updateRelatedContributions(req, res) {
+    const contributions = req.body;
+    const ticketId = req.params.id;
+
+    lib.ticket.updateRelatedContributions(ticketId, contributions)
+      .then(updatedTicket => {
+        if (updatedTicket) {
+          return res.status(204).end();
+        }
+
+        return send404Error('ticket not found', res);
+      })
+      .catch(err => send500Error('failed to update related contributions', err, res));
   }
 
   /**

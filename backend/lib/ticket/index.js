@@ -9,6 +9,11 @@ const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' }
 ];
 
+const SINGLE_TICKET_POPULATES = [
+  ...DEFAULT_TICKET_POPULATES,
+  { path: 'relatedContributions' }
+];
+
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Ticket = mongoose.model('Ticket');
@@ -26,6 +31,7 @@ module.exports = dependencies => {
     updateById,
     removeById,
     addEvent,
+    updateRelatedContributions,
     updateState,
     setWorkaroundTime,
     setCorrectionTime
@@ -206,7 +212,7 @@ module.exports = dependencies => {
    * @return {Promise}  - Resolve the found ticket
    */
   function getById(ticketId, options = {}) {
-    options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
+    options.populations = SINGLE_TICKET_POPULATES.concat(options.populations || []);
 
     return Ticket
       .findById(ticketId)
@@ -480,5 +486,17 @@ module.exports = dependencies => {
 
   function addCnsToTickets(tickets) {
     return Promise.all(tickets.map(addCnsToTicket));
+  }
+
+  /**
+   * Update ticket related contributions
+   * @param {String} ticketId       - the ticket ID
+   * @param {Array}  contributions  - the related contributions
+   * @return {Promise}              - Resolve on success
+   */
+  function updateRelatedContributions(ticketId, contributions = []) {
+    return Ticket
+      .findByIdAndUpdate(ticketId, { $set: {relatedContributions: contributions} })
+      .exec();
   }
 };

@@ -36,6 +36,14 @@ module.exports = (dependencies, lib, router) => {
     controller.addEvent
   );
 
+  router.post('/tickets/:id/contributions',
+    authorizationMW.requiresAPILogin,
+    middlewares.checkTicketIdInParams,
+    userMiddleware.loadTicketingUser,
+    middlewares.canUpdateRelatedContributions,
+    controller.updateRelatedContributions
+  );
+
   router.post('/tickets/:id',
     authorizationMW.requiresAPILogin,
     userMiddleware.loadTicketingUser,
