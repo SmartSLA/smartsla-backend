@@ -145,7 +145,7 @@ module.exports = (dependencies, lib) => {
 
           const contractIds = contracts.map(contract => String(contract.contract));
 
-          return contractIds.includes(String(ticket.contract._id));
+          return contractIds.includes(String(ticket.contract));
         });
     }
   }
