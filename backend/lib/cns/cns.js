@@ -36,21 +36,19 @@ function computeCns(ticket, contract) {
 
     const workingInterval = contract.businessHours || { start: 9, end: 18 };
     const periods = computePeriods(ticket.events, ticket.timestamps.createdAt);
-    const engagement = getTicketSoftwareEngagement(ticket, contract);
+    const contractEngagements = getTicketSoftwareEngagement(ticket, contract);
 
-    if (engagement) {
-      cns.supported = computeTime(periods.new, workingInterval, engagement.supported);
-      cns.bypassed = computeTime(periods.supported, workingInterval, engagement.bypassed);
-      cns.resolved = computeTime(periods.bypassed, workingInterval, engagement.resolved);
+    if (contractEngagements) {
+      cns.supported = computeTime(periods.new, workingInterval, contractEngagements.supported);
+      cns.bypassed = computeTime(periods.supported, workingInterval, contractEngagements.bypassed);
+      cns.resolved = computeTime(periods.bypassed, workingInterval, contractEngagements.resolved);
 
-      const { elapsedMinutes, suspendedMinutes, engagementDuration, workingHoursInterval } = cns.bypassed;
-
-      cns.resolved.elapsedMinutes += elapsedMinutes;
-      cns.resolved.suspendedMinutes += suspendedMinutes;
+      cns.resolved.elapsedMinutes += cns.bypassed.elapsedMinutes;
+      cns.resolved.suspendedMinutes += cns.bypassed.suspendedMinutes;
       cns.resolved.percentageElapsed = Math.round(
         (cns.resolved.elapsedMinutes / (
-          convertIsoDurationInMinutes(cns.resolved.engagementDuration, cns.resolved.workingHoursInterval) +
-          convertIsoDurationInMinutes(engagementDuration, workingHoursInterval))) * 100 * 100
+          convertIsoDurationInMinutes(cns.resolved.engagement, cns.resolved.workingHours) +
+          convertIsoDurationInMinutes(cns.bypassed.engagement, cns.bypassed.workingHours))) * 100 * 100
       ) / 100;
     }
   }

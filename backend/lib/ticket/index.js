@@ -3,7 +3,6 @@
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
-const { computeCns } = require('../cns');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' }
@@ -22,6 +21,7 @@ module.exports = dependencies => {
   const pubsubLocal = dependencies('pubsub').local;
   const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
+  const { computeCns } = require('../cns')(dependencies);
 
   return {
     create,

@@ -1,5 +1,9 @@
-const { computeCns } = require('./cns');
+module.exports = dependencies => {
+  const { computeCns } = require('./cns');
+  const { exportData } = require('./export-csv')(dependencies);
 
-module.exports = {
-  computeCns
+  return {
+    computeCns,
+    exportData
+  };
 };

@@ -9,6 +9,7 @@ class CnsValue {
     this.workingHours = workingHours;
     this.isNonBusinessHours = isNonBusinessHours;
     this.elapsedMinutes = 0;
+    this.suspendedMinutes = 0;
   }
 
   getEngagementInHours() {
@@ -22,7 +23,7 @@ class CnsValue {
   }
 
   getValueInHours() {
-    getHoursValue(this.workingHours, this.days, this.hours);
+    return this.elapsedMinutes / 60;
   }
 }
 

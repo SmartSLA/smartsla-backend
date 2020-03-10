@@ -21,5 +21,9 @@ module.exports = {
     'published',
     'integrated',
     'rejected'
-  ]
+  ],
+  TICKETING_USER_TYPES: {
+    EXPERT: 'expert',
+    BENEFICIARY: 'beneficiary'
+  }
 };

@@ -2,8 +2,8 @@
 
 module.exports = function(dependencies) {
 
-  const cns = require('./cns');
   const models = require('./db')(dependencies);
+  const cns = require('./cns')(dependencies);
   const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);

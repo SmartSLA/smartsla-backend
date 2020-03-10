@@ -4,11 +4,17 @@ module.exports = dependencies => {
   const logger = dependencies('logger');
 
   return {
+    send200ListResponse,
     send500Error,
     send404Error,
     send403Error,
     send400Error
   };
+
+  function send200ListResponse(list = [], res) {
+    res.header('X-ESN-Items-Count', list.length);
+    res.status(200).json(list);
+  }
 
   function send500Error(details, err, res) {
     logger.error(details, err);

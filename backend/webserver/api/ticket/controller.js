@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
-  const { send500Error, send404Error } = require('../utils')(dependencies);
+  const { TICKETING_USER_TYPES } = require('../constants');
+  const { Parser } = require('json2csv');
+  const { send200ListResponse, send500Error, send404Error } = require('../utils')(dependencies);
   const logger = dependencies('logger');
 
   return {
@@ -64,6 +66,16 @@ module.exports = function(dependencies, lib) {
       .catch(err => send500Error('Failed to create ticket', err, res));
   }
 
+  function exportCsv(tickets, res) {
+    lib.cns.exportData(tickets).then(data => {
+      const parser = new Parser();
+      const csv = parser.parse(data);
+
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(csv);
+    });
+  }
+
   /**
    * List tickets.
    *
@@ -71,18 +83,22 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
+    const isExportCvs = req.query.export === 'csv';
     const userType = req.ticketingUser && req.ticketingUser.type;
     let options = {
       limit: +req.query.limit,
       offset: +req.query.offset
     };
 
-    lib.ticketingUserRole.userIsAdministrator(req.user._id)
-      .then(isAdmin => (isAdmin || (userType === 'expert')))
+    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (userType === TICKETING_USER_TYPES.EXPERT)))
       .then(canViewAll => (canViewAll ? _listAll() : _listForUser(req.user._id)))
-      .then(({ size, list }) => {
-        res.header('X-ESN-Items-Count', size);
-        res.status(200).json(list);
+      .then(({ list }) => {
+        if (isExportCvs) {
+          exportCsv(list, res);
+        } else {
+          send200ListResponse(list, res);
+        }
       })
       .catch(err => send500Error('Error while getting tickets', err, res));
 
@@ -115,14 +131,14 @@ module.exports = function(dependencies, lib) {
     return lib.ticket.getById(req.params.id)
       .then(ticket => {
         lib.ticketingUserRole.userIsAdministrator(req.user._id)
-        .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
-        .then(canReadPrivateComment => {
-          if (!canReadPrivateComment) {
-            ticket.events = ticket.events.filter(event => !event.isPrivate);
-          }
+          .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === TICKETING_USER_TYPES.EXPERT)))
+          .then(canReadPrivateComment => {
+            if (!canReadPrivateComment) {
+              ticket.events = ticket.events.filter(event => !event.isPrivate);
+            }
 
-          return res.status(200).json(ticket);
-        });
+            return res.status(200).json(ticket);
+          });
       })
       .catch(err => send500Error('Failed to get ticket', err, res));
   }
