@@ -52,11 +52,13 @@ module.exports = function(dependencies, lib) {
   function get(req, res) {
     return lib.contribution.getById(req.params.id)
       .then(contribution => {
-        contribution = contribution.toObject();
+        if (contribution) {
+          res.status(200).json(contribution);
+        }
 
-        res.status(200).json(contribution);
+        return send404Error('contribution not found', res);
       })
-      .catch(err => send500Error('Error while getting contributions', err, res));
+      .catch(err => send500Error('Error while getting contribution', err, res));
   }
 
   /**
@@ -106,7 +108,7 @@ module.exports = function(dependencies, lib) {
     return lib.contribution.removeById(req.params.id)
       .then(deleted => {
         if (deleted) {
-          res.staus(204).end();
+          res.status(204).end();
         }
 
         return send404Error('contribution not found', res);
