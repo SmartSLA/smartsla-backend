@@ -7,7 +7,7 @@ module.exports = function(dependencies) {
   const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
   const DEFAULT_CONTRIBUTION_POPULATES = [
     { path: 'software' },
-    { path: 'author'}
+    { path: 'author' }
   ];
   const contributionCreatedTopic = pubsubLocal.topic(EVENTS.CONTRIBUTION.created);
   const contributionUpdatedTopic = pubsubLocal.topic(EVENTS.CONTRIBUTION.updated);
@@ -47,6 +47,7 @@ module.exports = function(dependencies) {
     return Contribution
       .findById(contributionId)
       .populate(DEFAULT_CONTRIBUTION_POPULATES)
+      .lean()
       .exec();
   }
 
