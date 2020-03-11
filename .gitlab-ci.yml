@@ -1,22 +1,132 @@
-image: linagora/node-test-base:8
+image: node:10
 
 stages:
+  - lint
   - test
+  - release
+  - publish
   - deploy_dev
 
-test:
-  stage: test
+### BEGIN OF TEMPLATES
+
+.build-docker-tpl: &build-docker-tpl
+  image: docker-registry.linagora.com:5000/linshare-snapshots/linshare-dind:latest
   tags:
     - docker
+  services:
+      - name: docker-registry.linagora.com:5000/linshare-snapshots/linshare-dind:latest
+        alias: docker-dind
+
+.test-template: &test-template
+  image: node:10
+  tags:
+    - docker
+  before_script:
+    - npm install -g grunt-cli
+    - npm install
+    - 'echo "INFO: NB node packages : $(ls node_modules | wc -l)"'
+  except:
+    variables:
+      - $SKIP_TESTS
+    refs:
+      - tags@linagora/lps/studio/ticketing08000linux.backend
+
+### END OF TEMPLATES
+
+check_author:
+  image: docker-registry.linagora.com:5000/lgs-releases/gitlab-integrity-checks:latest
+  stage: lint
+  variables:
+    GIT_DEPTH: "1"
+  tags:
+    - ultralight
+  script:
+    - check_author.py check "$GITLAB_USER_EMAIL" "$GITLAB_USER_NAME" --no-accents
+  except:
+    refs:
+      - master@linagora/lps/studio/ticketing08000linux.backend
+      - tags@linagora/lps/studio/ticketing08000linux.backend
+      - /^release-.*/@linagora/lps/studio/ticketing08000linux.backend
+
+
+lint:
+  <<: *test-template
+  stage: lint
+  script:
+    - grunt -v linters
+
+test:
+  <<: *test-template
+  stage: test
   services:
     - mongo:3.4
     - elasticsearch:2.4
     - redis:3
     - rabbitmq:3.6
   script:
-    - npm i
     - npm update
     - grunt --chunk=1 --ci
+
+# build and push a new snapshot of your docker image.
+snapshot:
+  <<: *build-docker-tpl
+  stage: release
+  variables:
+      DOCKER_HOST: "tcp://docker-dind"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-snapshots/ticketing08000linux.backend"
+  script:
+    - guess-version.sh guess
+    - source version.env
+    - docker-tag-computing.sh ${VERSION} docker-tag-and-push.env
+    - docker login -u ${REGISTRY_USER} -p ${REGISTRY_TOKEN} docker-registry.linagora.com:5000
+    - docker build . -t build:latest
+    - docker-tag-and-push.sh build:latest ${DOCKER_IMAGE_PRIVATE}
+    - docker logout docker-registry.linagora.com:5000
+  only:
+    - master@linagora/lps/studio/ticketing08000linux.backend
+    - /^release-.*/@linagora/lps/studio/ticketing08000linux.backend
+  except:
+    variables:
+      - $SKIP_BUILD_DOCKER
+
+docker-release:
+  <<: *build-docker-tpl
+  stage: release
+  variables:
+      DOCKER_HOST: "tcp://docker-dind"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-releases/ticketing08000linux.backend"
+  script:
+    - docker-tag-computing.sh ${CI_COMMIT_TAG} docker-tag-and-push.env
+    - docker login -u ${REGISTRY_USER_RELEASE} -p ${REGISTRY_TOKEN_RELEASE} docker-registry.linagora.com:5000
+    - docker build . -t build:latest
+    - docker-tag-and-push.sh build:latest ${DOCKER_IMAGE_PRIVATE}
+    - docker logout docker-registry.linagora.com:5000
+  only:
+    - tags@linagora/lps/studio/ticketing08000linux.backend
+  except:
+    variables:
+      - $SKIP_BUILD_DOCKER
+
+# push the latest docker tag from the current docker tag, cf last job.
+mark-as-latest:
+  <<: *build-docker-tpl
+  stage: publish
+  variables:
+      GIT_STRATEGY: none
+      DOCKER_HOST: "tcp://docker-dind"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-releases/ticketing08000linux.backend"
+  script:
+    - docker login -u ${REGISTRY_USER_RELEASE} -p ${REGISTRY_TOKEN_RELEASE} docker-registry.linagora.com:5000
+    - docker-tag-computing.sh ${CI_COMMIT_TAG} docker-tags.env
+    - source docker-tags.env
+    - docker pull ${DOCKER_IMAGE_PRIVATE}:${DOCKER_TAG}
+    - export DOCKER_TAGS=latest
+    - docker-tag-and-push.sh ${DOCKER_IMAGE_PRIVATE}:${DOCKER_TAG} ${DOCKER_IMAGE_PRIVATE}
+    - docker logout docker-registry.linagora.com:5000
+  when: manual
+  only:
+    - tags@linagora/lps/studio/ticketing08000linux.backend
+
 deploy_dev:
   stage: deploy_dev
   except:
