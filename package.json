@@ -1,7 +1,7 @@
 {
   "name": "ticketing08000linux.backend",
   "version": "1.6.0-dev",
-  "description": "OpenPaaS module for ticketing feature",
+  "description": "OpenPaaS backend module for ticketing08000linux",
   "main": "index.js",
   "devDependencies": {
     "chai": "3.5.0",
@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing.git"
+    "url": "https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend.git"
   },
   "author": "Linagora R&D",
   "license": "AGPL-3.0",
