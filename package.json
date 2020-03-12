@@ -1,6 +1,6 @@
 {
-  "name": "linagora.esn.ticketing",
-  "version": "0.0.1",
+  "name": "ticketing08000linux.backend",
+  "version": "1.6.0-dev",
   "description": "OpenPaaS module for ticketing feature",
   "main": "index.js",
   "devDependencies": {
