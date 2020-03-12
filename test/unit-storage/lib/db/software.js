@@ -9,7 +9,9 @@ describe('The sofware model', function() {
   beforeEach(function(done) {
     mongoose = this.moduleHelpers.dependencies('db').mongo.mongoose;
 
-    require(this.testEnv.backendPath + '/lib/db/software')(this.moduleHelpers.dependencies);
+    require(this.testEnv.backendPath + '/lib/db/software')(
+      this.moduleHelpers.dependencies
+    );
     Software = mongoose.model('Software');
 
     this.connectMongoose(mongoose, done);
@@ -30,26 +32,31 @@ describe('The sofware model', function() {
   }
 
   describe('The name field', function() {
-    it.skip('should not store the sofware which has name is taken', function(done) {
-      saveSoftware({
-        name: 'foo',
-        category: 'bar',
-        versions: ['1']
-      }, err => {
-        expect(err).to.not.exist;
-
-        const software = {
-          name: 'Foo',
+    it('should not store a sofware which has an already taken name', function(done) {
+      saveSoftware(
+        {
+          name: 'foo',
           category: 'bar',
           versions: ['1']
-        };
+        },
+        err => {
+          expect(err).to.not.exist;
 
-        saveSoftware(software, err => {
-          expect(err).to.exist;
-          expect(err.message).to.equal('name is taken');
-          done();
-        });
-      });
+          const software = {
+            name: 'foo',
+            category: 'bar',
+            versions: ['1']
+          };
+
+          setTimeout(function() {
+            saveSoftware(software, err => {
+              expect(err).to.exist;
+              expect(err.message).to.contain('duplicate key error');
+              done();
+            });
+          }, 2000);
+        }
+      );
     });
 
     /* it('should store the sofware which has name is taken by itself', function(done) {
