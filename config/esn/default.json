@@ -1,0 +1,21 @@
+{
+  "modules": [
+    "linagora.esn.account",
+    "linagora.esn.core.webserver",
+    "linagora.esn.core.wsserver",
+    "linagora.esn.cron",
+    "linagora.esn.digest.daily",
+    "linagora.esn.jobqueue",
+    "linagora.esn.graceperiod",
+    "linagora.esn.messaging.email",
+    "linagora.esn.oauth.consumer",
+    "linagora.esn.profile",
+    "linagora.esn.user.status",
+    "linagora.esn.controlcenter",
+    "linagora.esn.unifiedinbox",
+    "linagora.esn.admin",
+    "linagora.esn.resource",
+    "linagora.esn.sync",
+    "ticketing08000linux.backend"
+  ]
+}
