@@ -4,7 +4,7 @@ const AwesomeModule = require('awesome-module');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
 
 const MODULE_NAME = 'ticketing';
-const AWESOME_MODULE_NAME = 'linagora.esn.' + MODULE_NAME;
+const AWESOME_MODULE_NAME =  `${MODULE_NAME}08000linux.backend`;
 
 const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
   dependencies: [
