@@ -9,7 +9,7 @@ const _ = require('lodash');
 const testConfig = require('../config/servers-conf');
 const basePath = path.resolve(__dirname + '/../../node_modules/linagora-rse');
 const backendPath = path.normalize(__dirname + '/../../backend');
-const MODULE_NAME = 'linagora.esn.ticketing';
+const MODULE_NAME = 'ticketing08000linux.backend';
 const { INDICES } = require('../../backend/lib/constants');
 let rse;
 let getEsConfig;

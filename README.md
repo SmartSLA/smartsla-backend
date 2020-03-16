@@ -1,16 +1,16 @@
-# linagora.esn.ticketing
+# ticketing08000linux.backend
 >This is OpenPaaS Module for ticketing feature
 
-[![build status](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/badges/master/build.svg)](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/commits/master)
+[![build status](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/badges/master/build.svg)](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/commits/master)
 
 ## Install
 
-Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing/wikis/installation)
+Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/wikis/installation)
 
 ### Add the module to OpenPaaS
 
-Add the line `linagora.esn.ticketing` to `esn/config/default.json` in modules section
-Add the line `"linagora.esn.ticketing": "linagora/linagora.esn.ticketing"` to `esn/packages.json` in dependencies section
+Add the line `ticketing08000linux.backend` to `esn/config/default.json` in modules section
+Add the line `"ticketing08000linux.backend": "linagora/ticketing08000linux.backend"` to `esn/packages.json` in dependencies section
 
 ### Install the node packages for the ticketing module
 
@@ -34,7 +34,7 @@ Use Curl to set configuration:
 ```
 curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
-    "name": "linagora.esn.ticketing",
+    "name": "ticketing08000linux.backend",
     "configurations": [
       {
         "name": "frontendUrl",
@@ -51,7 +51,7 @@ Use Curl to set configuration:
 ```
 curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
-    "name": "linagora.esn.ticketing",
+    "name": "ticketing08000linux.backend",
     "configurations": [
       {
         "name" : "mail",
@@ -89,7 +89,7 @@ $ node ./bin/cli reindex --es-host localhost --es-port 9200 --type users
 
 > Cannot access ticketing admin center
 
-Because you does not have administrator permission. In the `esn/node_modules/linagora.esn.ticketing` folder do:
+Because you does not have administrator permission. In the `esn/node_modules/ticketing08000linux.backend` folder do:
 
 ```
 $ node ./bin/cli role --email your@mail.com --role administrator

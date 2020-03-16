@@ -1,6 +1,6 @@
 'use strict';
 
-const MODULE_DIR_NAME = '/linagora.esn.ticketing';
+const MODULE_DIR_NAME = '/ticketing08000linux.backend';
 
 module.exports = function(config) {
   config.set({

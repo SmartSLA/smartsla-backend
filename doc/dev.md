@@ -6,16 +6,16 @@ Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linago
 ### Clone module repository
 
 ```bash
-git clone https://ci.linagora.com/linagora/lgs/openpaas/linagora.esn.ticketing
+git clone https://ci.linagora.com/linagora/lgs/openpaas/ticketing08000linux.backend
 ```
 
 ### Add the module to OpenPaaS
 
-Add the line `linagora.esn.ticketing` to `esn/config/default.json` in modules section
+Add the line `ticketing08000linux.backend` to `esn/config/default.json` in modules section
 
 ### Install dependencies
 
-In the `linagora.esn.ticketing` folder:
+In the `ticketing08000linux.backend` folder:
 
 ```bash
 npm install
@@ -24,7 +24,7 @@ bower install
 
 ### Create module npm link in `esn`:
 
-In the `linagora.esn.ticketing` folder:
+In the `ticketing08000linux.backend` folder:
 
 ```bash
 npm link
@@ -33,7 +33,7 @@ npm link
 In the `esn` folder:
 
 ```bash
-npm link linagora.esn.ticketing
+npm link ticketing08000linux.backend
 ```
 
 ### Launch OpenPaaS
