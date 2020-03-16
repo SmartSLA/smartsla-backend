@@ -17,7 +17,7 @@ module.exports = dependencies => {
     try {
       ticketUrl = new URL(`requests/${ticket._id}`, frontendUrl).toString();
     } catch (e) {
-      logger.warn(`Invalid ticket url, please check that linagora.esn.ticketing.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
+      logger.warn(`Invalid ticket url, please check that ticketing08000linux.backend.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
     }
     const messageBody = i18n.__('Issue #{{id}} is available here: ', { id: ticket._id }) + ticketUrl;
 
@@ -83,7 +83,7 @@ module.exports = dependencies => {
   }
 
   function send(type, ticket, event) {
-    return new EsnConfig('linagora.esn.ticketing')
+    return new EsnConfig('ticketing08000linux.backend')
       .getMultiple(['frontendUrl', 'mail'])
       .then(([frontendUrl, mail]) => {
         userModule.get(ticket.author.id, (err, user) => {

@@ -23,6 +23,6 @@ module.exports = dependencies => {
   };
 
   function register() {
-    esnConfig.registry.register('linagora.esn.ticketing', config);
+    esnConfig.registry.register('ticketing08000linux.backend', config);
   }
 };
