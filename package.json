@@ -1,6 +1,6 @@
 {
   "name": "ticketing08000linux.backend",
-  "version": "1.6.1-dev",
+  "version": "1.6.1",
   "description": "OpenPaaS backend module for ticketing08000linux",
   "main": "index.js",
   "devDependencies": {
