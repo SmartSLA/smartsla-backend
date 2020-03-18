@@ -1,16 +1,32 @@
 # ticketing08000linux.backend
 >This is OpenPaaS Module for ticketing feature
 
-[![build status](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/badges/master/build.svg)](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/commits/master)
+## Installation
 
-## Install
-
-Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend/wikis/installation)
+Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/openpaas-doc/blob/master/_docs/getting-started/linux.md)
 
 ### Add the module to OpenPaaS
 
-Add the line `ticketing08000linux.backend` to `esn/config/default.json` in modules section
-Add the line `"ticketing08000linux.backend": "linagora/ticketing08000linux.backend"` to `esn/packages.json` in dependencies section
+#### Production
+
+Add `ticketing08000linux.backend` to `$ESN_PATH/config/default.json` in modules section
+
+Add `"ticketing08000linux.backend": "linagora/ticketing08000linux.backend"` to `$ESN_PATH/packages.json` in dependencies section
+
+install the dependencies
+
+#### Development
+
+link your local ticketing08000linux.backend module to esn using:
+
+08000TICKETING_PATH: refers to the path of your repository
+
+```
+cd $ESN_PATH/modules;
+ln -s 08000TICKETING_PATH ticketing08000linux.backend
+```
+
+add `ticketing08000linux.backend` to the modules list in `$ESN_PATH/config/default.json`
 
 ### Install the node packages for the ticketing module
 
@@ -69,28 +85,8 @@ curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  
 
 > **PS**  You need to use ``` \n ``` to attach the lines.
 
-### Accessing the ticketing module
+### F.A.Q
 
-The ticketing module can be accessed at the adress : [Ticketing module](http://localhost:8080/#/ticketing) (/#/ticketing)
-The ticketing module admin platform can be accessed at the adress : [Admin platform](http://localhost:8080/#/ticketing/admin) (/#/ticketing/admin)
+> cannot find users when using autocomplete.
 
-### [Development document](./doc/dev.md)
-### [CLI document](./doc/cli.md)
-
-## F.A.Q.
-
-> User autocompletion in the ticketing module is not working.
-
-You should reindex user data from the database to in elasticsearch. In the `esn` folder do
-
-```bash
-$ node ./bin/cli reindex --es-host localhost --es-port 9200 --type users
-```
-
-> Cannot access ticketing admin center
-
-Because you does not have administrator permission. In the `esn/node_modules/ticketing08000linux.backend` folder do:
-
-```
-$ node ./bin/cli role --email your@mail.com --role administrator
-```
+you need to configure the LDAP connection in your openpaas instance, details [here](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux/-/wikis/LDAP-Config)
