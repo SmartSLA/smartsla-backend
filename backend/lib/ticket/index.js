@@ -3,7 +3,6 @@
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
-const { createSurvey } = require('../limesurvey/limesurvey');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' }
@@ -23,6 +22,7 @@ module.exports = dependencies => {
   const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
   const { computeCns } = require('../cns')(dependencies);
+  const limesurvey = require('../limesurvey/limesurvey')(dependencies);
 
   return {
     create,
@@ -64,14 +64,14 @@ module.exports = dependencies => {
 
     return Promise.resolve()
       .then(() => {
-        if (event.isSurvey) return createSurvey(ticketId);
+        if (event.isSurvey) return limesurvey.createSurvey(ticketId);
       })
       .then(survey => _updateTicket(survey));
 
     function _updateTicket(survey) {
-        if (survey) {
-          set.survey = survey;
-        }
+      if (survey) {
+        set.survey = survey;
+      }
 
       return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()

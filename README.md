@@ -54,7 +54,7 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
     "configurations": [
       {
         "name": "frontendUrl",
-        "value": "http://ticketingServeur:port"
+        "value": "http://ticketingServer:port"
       }
     ]
   }
@@ -75,6 +75,28 @@ curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  
           "replyto" : "ossa-dev@linagora.com",
           "noreply" : "noreply-dev@linagora.com",
           "support" : "ossa-dev@linagora.com"
+        }
+      }
+    ]
+  }
+]'
+```
+
+Set limesurvey config (needed to use limesurvey API)
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "ticketing08000linux.backend",
+    "configurations": [
+      {
+        "name": "limesurvey",
+        "value": {
+          "surveyId": 158386,
+          "apiUrl": "http://limesurvey.localhost:8080/admin/remotecontrol/",
+          "username": "username",
+          "password": "password"
         }
       }
     ]
