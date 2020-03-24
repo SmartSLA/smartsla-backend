@@ -103,7 +103,7 @@ module.exports = function(dependencies, lib) {
       .catch(err => send500Error('Error while getting tickets', err, res));
 
     function _listAll() {
-      return lib.ticket.list();
+      return lib.ticket.list(options);
     }
 
     function _listForUser(_id) {
