@@ -11,6 +11,14 @@ const config = {
         noreply: 'noreply-dev@linagora.com',
         support: 'ossa-dev@linagora.com'
       }
+    },
+    limesurvey: {
+      value: {
+        apiUrl: 'http://limesurvey.localhost:8080/admin/remotecontrol/',
+        surveyId: 158386,
+        username: 'username',
+        password: 'password'
+      }
     }
   }
 };

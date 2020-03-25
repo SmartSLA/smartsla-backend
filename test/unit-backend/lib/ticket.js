@@ -8,7 +8,7 @@ describe('The ticket lib', function() {
   let ObjectId, moduleHelpers;
   let TicketModelMock, ContractModelMock, ticket, contract, ticketId, queryMock;
   let emailModule, sendMock;
-  let topic, pubsub, cnsModuleMock;
+  let topic, pubsub, cnsModuleMock, esnConfig;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
@@ -116,6 +116,16 @@ describe('The ticket lib', function() {
 
     topic = { publish: sinon.spy() };
 
+    esnConfig = function() {
+      return {
+        inModule: function() {
+          return {
+            get: sinon.stub().returns(Promise.resolve({}))
+          };
+        }
+      };
+    };
+
     cnsModuleMock = () => ({
       computeCns: () => ({})
     });
@@ -123,6 +133,7 @@ describe('The ticket lib', function() {
     mockery.registerMock('../cns', cnsModuleMock);
 
     moduleHelpers.addDep('pubsub', pubsub);
+    moduleHelpers.addDep('esn-config', esnConfig);
 
     queryMock = function(objectToReturn) {
       return {
@@ -196,23 +207,11 @@ describe('The ticket lib', function() {
   });
 
   describe('The updateById function', function() {
-    let esnConfig, getConfig, ticketingUser, eventAuthor, modifiedMock, modifiedTicketMock, updateQuery;
+    let ticketingUser, eventAuthor, modifiedMock, modifiedTicketMock, updateQuery;
 
     this.beforeEach(function() {
-      getConfig = sinon.stub().returns(Promise.resolve('http://localhost:8080'));
-      esnConfig = function() {
-        return {
-          inModule: function() {
-            return {
-              get: getConfig
-            };
-          }
-        };
-      };
 
       ticket.toObject = sinon.stub().returns(ticket);
-
-      this.moduleHelpers.addDep('esn-config', esnConfig);
 
       ticketingUser = {
         _id: '5d9dfd392054e5013cc90e69',

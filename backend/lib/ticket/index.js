@@ -18,6 +18,7 @@ module.exports = dependencies => {
   const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
   const { computeCns } = require('../cns')(dependencies);
+  const limesurvey = require('../limesurvey/limesurvey')(dependencies);
 
   return {
     create,
@@ -57,11 +58,25 @@ module.exports = dependencies => {
       }
     }
 
-    return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
+    return Promise.resolve()
+      .then(() => {
+        if (event.isSurvey) return limesurvey.createSurvey(ticketId);
+      })
+      .then(survey => _updateTicket(survey));
+
+    function _updateTicket(survey) {
+      if (survey) {
+        set.survey = survey;
+      }
+
+      return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
       .then(modifiedTicket => {
         email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket, event);
+
+        return modifiedTicket;
       });
+    }
   }
 
   /**
