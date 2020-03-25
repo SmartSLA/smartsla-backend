@@ -5,11 +5,7 @@ const { validateTicketState, isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 
 const DEFAULT_TICKET_POPULATES = [
-  { path: 'software.software' }
-];
-
-const SINGLE_TICKET_POPULATES = [
-  ...DEFAULT_TICKET_POPULATES,
+  { path: 'software.software' },
   { path: 'relatedContributions' }
 ];
 
@@ -212,7 +208,7 @@ module.exports = dependencies => {
    * @return {Promise}  - Resolve the found ticket
    */
   function getById(ticketId, options = {}) {
-    options.populations = SINGLE_TICKET_POPULATES.concat(options.populations || []);
+    options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
     return Ticket
       .findById(ticketId)
