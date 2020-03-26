@@ -92,7 +92,7 @@ describe('The email module', function() {
     it('should retrieve user mailer', function(done) {
       getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
         .then(() => {
-          expect(emailModule.getMailer).to.have.been.calledWith(user);
+          expect(emailModule.getMailer).to.have.been.calledWith;
           done();
         })
         .catch(done);

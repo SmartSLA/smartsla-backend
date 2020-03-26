@@ -5,11 +5,23 @@ html.mail
     meta(name='viewport', content='width=device-width, initial-scale=1')
 
   body
-    if (content.event.status)
-      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been changed to {{status}}', { ticket: content.ticket, status: content.status })}
-    if (content.event.target && Object.keys(content.event.target).length)
-      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been assigned to {{assignee}}', { ticket: content.ticket, assignee: content.ticket.assignedTo.name })}
+    - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
+    - var ticketStatus = `<strong>${content.status}</strong>`
+    - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
+    - var author = `<i>${content.ticket.author.name}</i>`
+    p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:author})} :
+    hr 
     if (content.event.comment)
-      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been commented by {{commenter}}', { ticket: content.ticket, commenter: content.event.author.name })}
-    p #{translate('Issue #{{ticket.id}} is available here: ', content)}
-      a(href=content.ticketUrl) #{content.ticketUrl}
+      != content.event.comment
+    p #{translate('The ticket is now {{status}}.', { status: content.status })}
+      br
+      | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
+    hr
+    p(style="color: gray")
+      |--
+      br
+      | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+      br
+      | #{translate('To answer it, you can use the dedicated website of')} 
+      a(href=content.frontendUrl) Linagora
+      | .

@@ -5,4 +5,21 @@ html.mail
     meta(name='viewport', content='width=device-width, initial-scale=1')
 
   body
-    p #{translate('#{{ticket.id}} {{{ticket.title}}}: issue #{{ticket.id}} has been created', { ticket: content.ticket })}
+    - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
+    - var ticketStatus = `<strong>${translate('registered')}</strong>`
+    - var author = `<i>${content.ticket.author.name}</i>`
+    p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
+    hr
+    != content.ticket.description
+    hr
+    p 
+      | #{translate('The issue is qualified with a severity')} 
+      strong #{translate(content.ticket.severity)}.
+      p(style="color: gray")
+        |--
+        br
+        | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+        br
+        | #{translate('To answer it, you can use the dedicated website of')} 
+        a(href=content.frontendUrl) Linagora
+        | .

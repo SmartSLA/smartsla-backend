@@ -42,10 +42,10 @@ module.exports = dependencies => {
   }
 
   function getTemplateContent(ticket, event, frontendUrl) {
-    const translatedStatus = i18n.__(ticket.status);
+    const translatedStatus = i18n.__n(ticket.status, 2);
     const ticketUrl = getTicketUrl(ticket, frontendUrl);
 
-    return {ticket, event, ticketUrl, status: translatedStatus};
+    return {ticket, event, ticketUrl, status: translatedStatus, frontendUrl};
   }
 
   function getConfig() {
