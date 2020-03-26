@@ -1,0 +1,8 @@
+doctype html
+html.mail
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+  body
+    p #{translate('#{{ticket.id}} {{{ticket.title}}}: issue #{{ticket.id}} has been created', { ticket: content.ticket })}

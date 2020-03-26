@@ -6,12 +6,14 @@ module.exports = dependencies => {
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS } = require('../constants');
   const i18n = require('../i18n')(dependencies);
+  const path = require('path');
+  const TEMPLATE_PATH = path.resolve(__dirname, '../../templates/email');
 
   return {
     send
   };
 
-  function formatMessage(type, ticket, event, frontendUrl) {
+  function getTicketUrl(ticket, frontendUrl) {
     let ticketUrl = '';
 
     try {
@@ -19,51 +21,8 @@ module.exports = dependencies => {
     } catch (e) {
       logger.warn(`Invalid ticket url, please check that ticketing08000linux.backend.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
     }
-    const messageBody = i18n.__('Issue #{{id}} is available here: ', { id: ticket._id }) + ticketUrl;
 
-    switch (type) {
-      case EMAIL_NOTIFICATIONS.TYPES.CREATED: {
-        const subject = i18n.__('#{{id}} {{{title}}}: issue #{{id}} has been created',
-          { id: ticket._id, title: ticket.title });
-
-        return {
-          subject: subject,
-          text: messageBody
-        };
-      }
-      case EMAIL_NOTIFICATIONS.TYPES.UPDATED: {
-        if (event.status) {
-          const translatedStatus = i18n.__(event.status);
-          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been changed to {{status}}',
-            { id: ticket._id, title: ticket.title, status: translatedStatus });
-
-          return {
-            subject: subject,
-            text: messageBody
-          };
-        }
-
-        if (event.target) {
-          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been assigned to {{assignee}}',
-            { id: ticket._id, title: ticket.title, assignee: ticket.assignedTo.name });
-
-          return {
-            subject: subject,
-            text: messageBody
-          };
-        }
-
-        if (event.comment) {
-          const subject = i18n.__('#{{id}} {{title}}: issue #{{id}} has been commented by {{commenter}}',
-            { id: ticket._id, title: ticket.title, commenter: event.author.name });
-
-          return {
-            subject: subject,
-            text: messageBody
-          };
-        }
-      }
-    }
+    return ticketUrl;
   }
 
   function getRecipients(ticket, defaultResponsibleEmail) {
@@ -82,29 +41,47 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function send(type, ticket, event) {
+  function getTemplateContent(ticket, event, frontendUrl) {
+    const translatedStatus = i18n.__(ticket.status);
+    const ticketUrl = getTicketUrl(ticket, frontendUrl);
+
+    return {ticket, event, ticketUrl, status: translatedStatus};
+  }
+
+  function getConfig() {
     return new EsnConfig('ticketing08000linux.backend')
       .getMultiple(['frontendUrl', 'mail'])
-      .then(([frontendUrl, mail]) => {
+      .spread((frontendUrl, mail) => ({
+        frontendUrl: frontendUrl && frontendUrl.value,
+        mail: mail && mail.value
+      }));
+  }
+
+  function send(emailType, ticket, event) {
+    return getConfig()
+      .then(({ frontendUrl, mail }) => {
         userModule.get(ticket.author.id, (err, user) => {
           if (err || !user) {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const message = formatMessage(type, ticket, event, frontendUrl && frontendUrl.value);
+          const content = getTemplateContent(ticket, event, frontendUrl);
+          const recipients = getRecipients(ticket, mail.support);
 
-          if (!message) {
-            return;
-          }
+          const message = {
+            subject: i18n.__(emailType.subject, content),
+            to: recipients.to,
+            cc: recipients.cc,
+            from: mail.noreply,
+            replyTo: mail.replyto
+          };
 
-          const recipients = getRecipients(ticket, mail && mail.value && mail.value.support);
-
-          message.to = recipients.to;
-          message.cc = recipients.cc;
-          message.from = mail && mail.value && mail.value.noreply;
-          message.replyTo = mail && mail.value && mail.value.replyto;
-
-          return emailModule.getMailer(user).send(message, logError);
+          return emailModule.getMailer(user).sendHTML(
+            message,
+            { name: emailType.template, path: TEMPLATE_PATH },
+            { content, translate: (phrase, parameters) => i18n.__(phrase, parameters) },
+            logError
+          );
         });
       })
       .catch(logError);

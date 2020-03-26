@@ -10,8 +10,14 @@ module.exports = {
     DEFAULT_FROM: 'ossa@linagora.com',
     DEFAULT_RESPONSIBLE_EMAIL: 'ossa@linagora.com',
     TYPES: {
-      CREATED: 'CREATED',
-      UPDATED: 'UPDATED'
+      CREATED: {
+        subject: '#{{ticket.id}} {{{ticket.title}}}: issue #{{ticket.id}} has been created',
+        template: 'ticket.created'
+      },
+      UPDATED: {
+        subject: '#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been updated',
+        template: 'ticket.updated'
+      }
     }
   },
   TICKETING_USER_ROLES: {

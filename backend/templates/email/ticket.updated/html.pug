@@ -1,0 +1,15 @@
+doctype html
+html.mail
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+  body
+    if (content.event.status)
+      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been changed to {{status}}', { ticket: content.ticket, status: content.status })}
+    if (content.event.target && Object.keys(content.event.target).length)
+      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been assigned to {{assignee}}', { ticket: content.ticket, assignee: content.ticket.assignedTo.name })}
+    if (content.event.comment)
+      p #{translate('#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been commented by {{commenter}}', { ticket: content.ticket, commenter: content.event.author.name })}
+    p #{translate('Issue #{{ticket.id}} is available here: ', content)}
+      a(href=content.ticketUrl) #{content.ticketUrl}
