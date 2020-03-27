@@ -3,7 +3,7 @@ const { Cns, CnsValue } = require('./cns.model');
 const { getTicketSoftwareEngagement } = require('./helpers/ticket');
 const { convertIsoDurationInMinutes } = require('./helpers/duration');
 const { HOLIDAYS } = require('./holidays');
-const { TICKET_STATUS, USER_TYPE } = require('../constants');
+const { TICKET_STATUS, USER_TYPE, REQUEST_TYPE } = require('../constants');
 
 module.exports = {
   computeCns,
@@ -37,11 +37,12 @@ function computeCns(ticket, contract) {
     const workingInterval = contract.businessHours || { start: 9, end: 18 };
     const periods = computePeriods(ticket.events, ticket.timestamps.createdAt);
     const contractEngagements = getTicketSoftwareEngagement(ticket, contract);
+    const resolvedPeriods = ticket.type === REQUEST_TYPE.ANOMALY ? periods.bypassed : periods.supported;
 
     if (contractEngagements) {
       cns.supported = computeTime(periods.new, workingInterval, contractEngagements.supported);
       cns.bypassed = computeTime(periods.supported, workingInterval, contractEngagements.bypassed);
-      cns.resolved = computeTime(periods.bypassed, workingInterval, contractEngagements.resolved);
+      cns.resolved = computeTime(resolvedPeriods, workingInterval, contractEngagements.resolved);
 
       cns.resolved.elapsedMinutes += cns.bypassed.elapsedMinutes;
       cns.resolved.suspendedMinutes += cns.bypassed.suspendedMinutes;
