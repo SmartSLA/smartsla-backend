@@ -37,7 +37,8 @@ const ticket = {
   },
   status: 'new',
   contract: 'contractId',
-  events: []
+  events: [],
+  type: 'Anomaly'
 };
 
 const contract = {
@@ -53,6 +54,7 @@ const contract = {
     critical: {
       engagements: [
         {
+          request: 'Anomaly',
           supported: {
             businessHours: 'PT1H',
             nonBusinessHours: 'PT2H'
@@ -71,6 +73,7 @@ const contract = {
     sensible: {
       engagements: [
         {
+          request: 'Anomaly',
           supported: {
             businessHours: 'PT1H',
             nonBusinessHours: 'PT2H'
@@ -89,6 +92,7 @@ const contract = {
     standard: {
       engagements: [
         {
+          request: 'Anomaly',
           supported: {
             businessHours: 'PT1H',
             nonBusinessHours: 'PT2H'

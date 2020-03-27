@@ -145,5 +145,11 @@ module.exports = {
         username: 'admin',
         password: 'password'
     }
+  },
+  REQUEST_TYPE: {
+    INFORMATION: 'Information',
+    ADMINISTRATION: 'Administration',
+    ANOMALY: 'Anomaly',
+    OTHER: 'Other'
   }
 };
