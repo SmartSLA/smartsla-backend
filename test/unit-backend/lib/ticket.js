@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 describe('The ticket lib', function() {
   let ObjectId, moduleHelpers;
-  let TicketModelMock, ContractModelMock, ticket, tickets, contract, ticketId, queryMock, EMAIL_NOTIFICATIONS;
+  let TicketModelMock, ContractModelMock, ticket, tickets, contract, ticketId, queryMock, EMAIL_NOTIFICATIONS, NOTIFICATIONS_TYPE;
   let emailModule, sendMock;
   let topic, pubsub, cnsModuleMock, esnConfig;
   let user, ticketingUser, TicketingUserRoleMock;
@@ -14,6 +14,7 @@ describe('The ticket lib', function() {
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     EMAIL_NOTIFICATIONS = require(moduleHelpers.backendPath + '/lib/constants').EMAIL_NOTIFICATIONS;
+    NOTIFICATIONS_TYPE = require(moduleHelpers.backendPath + '/lib/constants').NOTIFICATIONS_TYPE;
     ObjectId = mongoose.Types.ObjectId;
     ticketId = new ObjectId();
     ticket = {
@@ -330,7 +331,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
@@ -396,7 +397,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
@@ -450,7 +451,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
@@ -497,7 +498,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
@@ -559,7 +560,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
@@ -621,7 +622,66 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock, $unset: { severity: 1, software: 1 } }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
+        done();
+      })
+      .catch(done);
+    });
+  });
+
+  describe('The addEvent function', function() {
+    let event, updateQuery;
+
+    beforeEach(function() {
+      event = {
+        isPrivate: false,
+        isSurvey: false,
+        _id: ObjectId('5e81c6dd677e5f0242a108ec'),
+        timestamps: {
+            createdAt: '2020-03-30T10:15:57.900Z'
+        },
+        author: {
+            id: '5d9f4be785cc221c1de9ae2f',
+            name: 'michael cales',
+            type: 'expert'
+        },
+        comment: '<p>It still don\'t work for me</p>',
+        status: '',
+        attachments: [],
+        changes: []
+    };
+
+      updateQuery = {
+        exec: sinon.stub().returns(q.when('updatedTicket'))
+      };
+
+      TicketModelMock.findByIdAndUpdate = sinon.stub().returns(updateQuery);
+    });
+
+    //TODO: Add unit tests for the addEvent function in different cases
+
+    it('should call emailModule.send with the notification type ALL_ATTENDEES after updating the ticket ', function(done) {
+      getModule()
+      .addEvent(ticketId, event)
+      .then(updatedTicket => {
+        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
+        done();
+      })
+      .catch(done);
+    });
+
+    it('should call emailModule.send with the notification type EXPERT_ATTENDEES after updating the ticket ', function(done) {
+      event = {
+        ...event,
+        isPrivate: true
+      };
+
+      getModule()
+      .addEvent(ticketId, event)
+      .then(updatedTicket => {
+        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.EXPERT_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);

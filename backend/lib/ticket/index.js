@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE } = require('../constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 const moment = require('moment-timezone');
@@ -75,7 +75,9 @@ module.exports = dependencies => {
       return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
       .then(modifiedTicket => {
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket);
+        const noticationType = event.isPrivate ? NOTIFICATIONS_TYPE.EXPERT_ATTENDEES : NOTIFICATIONS_TYPE.ALL_ATTENDEES;
+
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, noticationType, modifiedTicket);
 
         return modifiedTicket;
       });
@@ -92,12 +94,13 @@ module.exports = dependencies => {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
 
     return Ticket.create(ticket).then(createdTicket => {
-      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, createdTicket);
-        Contract.findById(createdTicket.contract)
+      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, createdTicket);
+
+      Contract.findById(createdTicket.contract)
         .exec()
         .then(contract => {
           if (moment().diff(contract.endDate) > 0) {
-            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, createdTicket, contract.name);
+            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, NOTIFICATIONS_TYPE.EXPERT_ATTENDEES, createdTicket, contract.name);
           }
           listForContracts(createdTicket.contract, options).then(ticketsObject => {
             if (ticketsObject.size >= contract.credits) {
@@ -105,6 +108,7 @@ module.exports = dependencies => {
             }
           });
         });
+
       if (options.populations) {
         return createdTicket.populate(options.populations).execPopulate();
       }
@@ -228,7 +232,7 @@ module.exports = dependencies => {
       return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true })
         .exec()
         .then(updatedTicket => {
-          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
+          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
 
           return updatedTicket;
         });
