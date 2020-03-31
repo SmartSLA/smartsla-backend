@@ -15,7 +15,7 @@ module.exports = {
         template: 'ticket.created'
       },
       UPDATED: {
-        subject: '#{{ticket.id}} {{ticket.title}}: issue #{{ticket.id}} has been updated',
+        subject: '#{{ticket.id}} {{{ticket.title}}}: issue #{{ticket.id}} has been updated',
         template: 'ticket.updated'
       }
     }
