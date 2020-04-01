@@ -11,8 +11,8 @@ module.exports = dependencies => {
     alertSystemActive: { type: Boolean, default: false },
     hash: { type: String },
     testAlertSystemActive: { type: Boolean, default: false },
-    alertSartHour: { type: String },
-    autoAlertSartHour: { type: String },
+    alertStartHour: { type: String },
+    autoAlertStartHour: { type: String },
     contracts: [mongoose.Schema.Types.ObjectId],
     timestamps: {
       creation: { type: Date, default: Date.now }
