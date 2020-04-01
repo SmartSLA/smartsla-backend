@@ -131,7 +131,7 @@ describe('CNS calculation', () => {
     it('should compute cns correctly when issue is in supported state', () => {
       const cns = computeCns(ticketCopy, contract);
 
-      expect(cns.supported.elapsedMinutes).to.equal(1336);
+      expect(cns.supported.elapsedMinutes).to.equal(1335);
       expect(cns.supported.suspendedMinutes).to.equal(0);
       expect(cns.supported.engagementDuration).to.be.undefined;
       expect(cns.supported.workingHoursInterval).to.be.undefined;
@@ -155,7 +155,7 @@ describe('CNS calculation', () => {
       const cns = computeCns(ticketCopy, contract);
 
       expect(cns.supported.elapsedMinutes).to.equal(180);
-      expect(cns.bypassed.elapsedMinutes).to.equal(1156);
+      expect(cns.bypassed.elapsedMinutes).to.equal(1155);
       expect(cns.resolved.elapsedMinutes).to.equal(cns.bypassed.elapsedMinutes);
     });
 
@@ -204,7 +204,7 @@ describe('CNS calculation', () => {
 
       const cns = computeCns(ticketCopy, contract);
 
-      expect(cns.bypassed.elapsedMinutes).to.equal(1156);
+      expect(cns.bypassed.elapsedMinutes).to.equal(1155);
     });
   });
 
@@ -218,11 +218,94 @@ describe('CNS calculation', () => {
   });
 
   describe('The calculateWorkingMinutes function', () => {
-    it('should calculate the minutes the ticket was spent in working hours correctly', () => {
-      const date1 = '2019-09-26T15:44:44.697+02:00';
-      const date2 = '2019-09-26T17:44:44.697+02:00';
+    describe('The start date and end date are the same day', () => {
+      it('should calculate correctly when start and end are in working hours', () => {
+        const start = '2019-09-26T15:44:44.697+02:00';
+        const end = '2019-09-26T17:44:44.697+02:00';
 
-      expect(calculateWorkingMinutes(date1, date2, 9, 18)).to.equal(120);
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(120);
+      });
+
+      it('should calculate correctly when end is after working hours', () => {
+        const start = '2019-09-26T15:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(135);
+      });
+
+      it('should calculate correctly when start is before working hours and end is after working hours', () => {
+        const start = '2019-09-26T07:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(540);
+      });
+
+      it('should calculate correctly when start is after working hours and end is after working hours', () => {
+        const start = '2019-09-26T18:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(0);
+      });
+    });
+
+    describe('The start date is the day before end date', () => {
+      it('should calculate correctly when start and end are in working hours', () => {
+        const start = '2019-09-25T15:44:44.697+02:00';
+        const end = '2019-09-26T17:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(540 + 120);
+      });
+
+      it('should calculate correctly when end is after working hours', () => {
+        const start = '2019-09-25T15:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(540 + 135);
+      });
+
+      it('should calculate correctly when start is before working hours and end is after working hours', () => {
+        const start = '2019-09-25T07:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(540 + 540);
+      });
+
+      it('should calculate correctly when start is after working hours and end is after working hours', () => {
+        const start = '2019-09-25T18:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(540);
+      });
+    });
+
+    describe('The start date is two weeks before end date', () => {
+      it('should calculate correctly when start and end are in working hours', () => {
+        const start = '2019-09-12T15:44:44.697+02:00';
+        const end = '2019-09-26T17:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(10 * 540 + 120);
+      });
+
+      it('should calculate correctly when end is after working hours', () => {
+        const start = '2019-09-12T15:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(10 * 540 + 135);
+      });
+
+      it('should calculate correctly when start is before working hours and end is after working hours', () => {
+        const start = '2019-09-12T07:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(10 * 540 + 540);
+      });
+
+      it('should calculate correctly when start is after working hours and end is after working hours', () => {
+        const start = '2019-09-12T18:44:44.697+02:00';
+        const end = '2019-09-26T19:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(10 * 540);
+      });
     });
   });
 
