@@ -81,6 +81,32 @@ module.exports = function(grunt) {
         configFile: './test/config/karma.conf.js',
         browsers: ['PhantomJS']
       }
+    },
+
+    swagger_generate: {
+      options: {
+        baseDir: __dirname,
+        swaggerOutputFile: 'doc/REST_API/swagger/ticketing08000-swagger.json',
+        info: {
+          title: 'Ticketing08000Linux',
+          description: 'ticketing openpaas backend module',
+          version: '1.6.1'
+        },
+        host: 'localhost:8080',
+        securityDefinitions: {
+          auth: {
+            type: 'oauth2',
+            description: 'OAuth2 security scheme for ticketing08000 Module API',
+            flow: 'password',
+            tokenUrl: 'localhost:8080/oauth/token',
+            scopes: {}
+          }
+        },
+        paths: [
+          'backend/webserver/api/*/*.js',
+          'doc/REST_API/swagger/*/*.js'
+        ]
+      }
     }
 
   });
@@ -97,6 +123,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-puglint');
   grunt.loadNpmTasks('@linagora/grunt-i18n-checker');
+  grunt.loadNpmTasks('grunt-swagger-generate');
 
   grunt.loadTasks('tasks');
   grunt.registerTask('i18n', 'Check the translation files', ['i18n_checker']);
@@ -106,6 +133,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test-midway-backend', ['splitfiles:midway']);
   grunt.registerTask('test-unit-storage', ['splitfiles:storage']);
   grunt.registerTask('test-unit-backend', 'Test backend code', ['mochacli:backend']);
+  grunt.registerTask('swagger-generate', 'Grunt plugin for generating swagger', ['swagger_generate']);
 
   grunt.registerTask('test', ['linters', 'test-unit-backend', 'test-unit-storage']);
   grunt.registerTask('default', ['test']);
