@@ -3,6 +3,7 @@ image: node:10
 stages:
   - lint
   - test
+  - swagger
   - release
   - publish
   - deploy_dev
@@ -66,6 +67,30 @@ test:
   script:
     - npm update
     - grunt --chunk=1 --ci
+
+swagger:
+  <<: *test-template
+  stage: swagger
+  script:
+    - grunt swagger-generate
+  artifacts:
+    paths:
+      - ./doc/REST_API/swagger/ticketing08000-swagger.json
+
+deploy-swagger:
+  stage: deploy_dev
+  tags:
+    - deployment
+    - api.open-paas.org
+    - shell
+  environment:
+    name: api
+    url: https://api.open-paas.org
+  only:
+    - master@https://linagora/lps/studio/ticketing08000linux.backend
+  script:
+    - perl -i -pe's/"host":"localhost:8080"/"schemes":["https"],"host":"demo.open-paas.org"/' ./doc/REST_API/swagger/ticketing08000-swagger.json
+    - cp ./doc/REST_API/swagger/ticketing08000-swagger.json /var/www/html
 
 # build and push a new snapshot of your docker image.
 snapshot:
