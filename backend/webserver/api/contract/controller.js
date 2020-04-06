@@ -4,6 +4,7 @@ module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
   const coreUser = dependencies('coreUser');
   const logger = dependencies('logger');
+  const { REQUEST_TYPE } = require('../../../lib/constants');
 
   return {
     create,
@@ -64,8 +65,16 @@ module.exports = function(dependencies, lib) {
       .then(contract => {
         contract = contract.toObject();
 
-        lib.ticket.listForContracts(contract, options).then(tickets => {
-          res.status(200).send(tickets);
+        lib.ticket.listForContracts(contract, options).then(({list}) => {
+          const ticketsWithoutAdministrationType = list.filter(
+            request =>
+              request.type && request.type !== REQUEST_TYPE.ADMINISTRATION
+          );
+
+          res.status(200).send({
+            size: ticketsWithoutAdministrationType.length,
+            list: ticketsWithoutAdministrationType
+          });
         });
       })
       .catch(err => send500Error('Failed to get contract', err, res));
