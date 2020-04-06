@@ -35,6 +35,31 @@ module.exports = (dependencies, lib, router) => {
   /**
   * @swagger
   * /ticketing/api/tickets:
+  *  head:
+  *    tags:
+  *      - Ticket
+  *    description: Get tickets count.
+  *    responses:
+  *      200:
+  *        $ref: "#/responses/cm_200"
+  *      401:
+  *        $ref: "#/responses/cm_401"
+  *      403:
+  *        $ref: "#/responses/cm_403"
+  *      404:
+  *        $ref: "#/responses/cm_404"
+  *      500:
+  *        $ref: "#/responses/cm_500"
+  */
+  router.head('/tickets',
+    authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
+    controller.count
+  );
+
+  /**
+  * @swagger
+  * /ticketing/api/tickets:
   *  get:
   *    tags:
   *      - Ticket

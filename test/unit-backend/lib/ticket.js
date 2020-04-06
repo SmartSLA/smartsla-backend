@@ -6,9 +6,10 @@ const mongoose = require('mongoose');
 
 describe('The ticket lib', function() {
   let ObjectId, moduleHelpers;
-  let TicketModelMock, ContractModelMock, ticket, contract, ticketId, queryMock, EMAIL_NOTIFICATIONS;
+  let TicketModelMock, ContractModelMock, ticket, tickets, contract, ticketId, queryMock, EMAIL_NOTIFICATIONS;
   let emailModule, sendMock;
   let topic, pubsub, cnsModuleMock, esnConfig;
+  let user, ticketingUser, TicketingUserRoleMock;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
@@ -109,6 +110,23 @@ describe('The ticket lib', function() {
       }
     };
 
+    user = {
+      _id: '5e204f99cdc2b21444f07bdd'
+    };
+
+    ticketingUser = {
+      user: '5e204f99cdc2b21444f07bdd',
+      _id: '5e204fa9cdc2b21444f07be4',
+      role: 'expert'
+    };
+
+    tickets = [
+      { _id: 1},
+      { _id: 2},
+      { _id: 3},
+      { _id: 4}
+    ];
+
     pubsub = {
       local: {
         topic: sinon.stub()
@@ -146,21 +164,34 @@ describe('The ticket lib', function() {
       lean: sinon.spy(
         function() {
           return this;
-        })
+        }),
+        count: sinon.spy(
+          function() {
+            return {
+              exec: sinon.stub().returns(q.when(Array.isArray(objectToReturn) ? objectToReturn.length : 1))
+            };
+          }
+        )
       };
     };
 
     TicketModelMock = {
-      findById: sinon.stub().returns(queryMock(ticket))
+      findById: sinon.stub().returns(queryMock(ticket)),
+      find: sinon.stub().returns(queryMock(tickets))
     };
 
     ContractModelMock = {
       findById: sinon.stub().returns(queryMock(contract))
     };
 
+    TicketingUserRoleMock = {
+      findOne: sinon.stub().returns(queryMock(user))
+    };
+
     moduleHelpers.mockModels({
       Contract: ContractModelMock,
-      Ticket: TicketModelMock
+      Ticket: TicketModelMock,
+      TicketingUserRole: TicketingUserRoleMock
     });
 
     sendMock = sinon.stub().returns(Promise.resolve({}));
@@ -172,6 +203,17 @@ describe('The ticket lib', function() {
   });
 
   const getModule = () => require(moduleHelpers.backendPath + '/lib/ticket')(moduleHelpers.dependencies);
+
+  describe('the count function', function() {
+    it('should count the tickets', function(done) {
+      getModule()
+        .count({ user, ticketingUser })
+        .then(size => {
+          expect(size).to.equals(tickets.length);
+          done();
+        });
+    });
+  });
 
   describe('The getById function', function() {
     it('should find the ticket from his id', function(done) {

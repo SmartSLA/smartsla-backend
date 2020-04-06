@@ -3,11 +3,11 @@
 module.exports = function(dependencies, lib) {
   const { TICKETING_USER_TYPES } = require('../constants');
   const { Parser } = require('json2csv');
-  const { send200ListResponse, send500Error, send404Error } = require('../utils')(dependencies);
-  const logger = dependencies('logger');
+  const { send200ItemCount, send500Error, send404Error } = require('../utils')(dependencies);
 
   return {
     addEvent,
+    count,
     create,
     list,
     get,
@@ -84,41 +84,20 @@ module.exports = function(dependencies, lib) {
    */
   function list(req, res) {
     const isExportCvs = req.query.export === 'csv';
-    const userType = req.ticketingUser && req.ticketingUser.type;
-    let options = {
+    const options = {
       limit: +req.query.limit,
       offset: +req.query.offset
     };
 
-    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
-      .then(isAdmin => (isAdmin || (userType === TICKETING_USER_TYPES.EXPERT)))
-      .then(canViewAll => (canViewAll ? _listAll() : _listForUser(req.user._id)))
-      .then(({ list }) => {
+    return lib.ticket.list(req, options)
+      .then(tickets => {
         if (isExportCvs) {
-          exportCsv(list, res);
+          exportCsv(tickets, res);
         } else {
-          send200ListResponse(list, res);
+          res.status(200).json(tickets);
         }
       })
       .catch(err => send500Error('Error while getting tickets', err, res));
-
-    function _listAll() {
-      return lib.ticket.list(options);
-    }
-
-    function _listForUser(_id) {
-      options = {...options, userType};
-
-      return lib.contract.listForUser(_id)
-        .then(contracts => {
-          if (!contracts || !contracts.length) {
-            logger.info('No contracts for user', req.user._id);
-          }
-
-          return contracts.map(contract => contract.contract);
-        })
-        .then(contracts => lib.ticket.listForContracts(contracts, options));
-      }
   }
 
   /**
@@ -177,5 +156,19 @@ module.exports = function(dependencies, lib) {
         return send404Error('ticket not found', res);
       })
       .catch(err => send500Error('Failed to delete ticket', err, res));
+  }
+
+/**
+ * Count tickets
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+  function count(req, res) {
+    return lib.ticket.count(req)
+      .then(count => {
+        send200ItemCount(count, res);
+      })
+      .catch(err => send500Error('Cannot count tickets', err, res));
   }
 };

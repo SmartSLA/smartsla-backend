@@ -1,12 +1,13 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, EVENTS, TICKETING_CONTRACT_ROLES } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, EVENTS, TICKETING_CONTRACT_ROLES, ALL_CONTRACTS } = require('../constants');
 const DEFAULT_CONTRACT_POPULATE = 'software.software';
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Contract = mongoose.model('Contract');
   const TicketingUserContract = mongoose.model('TicketingUserContract');
+  const ticketingUserRole = require('../ticketing-user-role')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const search = require('./search')(dependencies);
 
@@ -26,6 +27,7 @@ module.exports = dependencies => {
   ];
 
   return {
+    allowedContracts,
     create,
     getById,
     list,
@@ -190,5 +192,10 @@ module.exports = dependencies => {
     const userId = user.user;
 
     return TicketingUserContract.remove({ user: userId }).exec();
+  }
+
+  function allowedContracts({ user, ticketingUser }) {
+    return ticketingUserRole.userIsAdministratorOrExpert(user, ticketingUser)
+      .then(canSeeAll => (canSeeAll ? Promise.resolve(ALL_CONTRACTS) : listForUser(user._id)));
   }
 };
