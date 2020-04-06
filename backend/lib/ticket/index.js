@@ -1,7 +1,7 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
-const { validateTicketState, isSuspendedTicketState } = require('../helpers');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES } = require('../constants');
+const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 
 const DEFAULT_TICKET_POPULATES = [
@@ -14,6 +14,7 @@ module.exports = dependencies => {
   const Ticket = mongoose.model('Ticket');
   const Contract = mongoose.model('Contract');
   const email = require('../email')(dependencies);
+  const contract = require('../contract')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const logger = dependencies('logger');
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
@@ -21,9 +22,9 @@ module.exports = dependencies => {
   const limesurvey = require('../limesurvey/limesurvey')(dependencies);
 
   return {
+    count,
     create,
     list,
-    listForContracts,
     getById,
     updateById,
     removeById,
@@ -104,23 +105,25 @@ module.exports = dependencies => {
    * @param {Object}  options - The options object, may contain states of ticket, requester, supportManager, supportTechnician, offset and limit
    * @return {Promise}         - Resolve on success
    */
-  function list(options = {}) {
-    return Promise.all([
-      count(options),
-      list(options).then(addCnsToTickets)
-    ]).then(result => ({
-      size: result[0],
-      list: result[1]
-    }));
+  function list({ user, ticketingUser }, options = {}) {
+    return contract.allowedContracts({ user, ticketingUser })
+      .then(contract => ({ ...options, contract }))
+      .then(listOptions => list(listOptions))
+      .then(tickets => {
+        const { type } = ticketingUser;
 
-    function count(options) {
-      return buildQuery(options).count().exec();
-    }
+        if (type === TICKETING_USER_TYPES.EXPERT) {
+          return tickets;
+        }
+
+        return ticketsWithoutPrivateComments(tickets);
+      })
+      .then(addCnsToTickets);
 
     function list(options = {}) {
       options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
-      const query = buildQuery(options)
+      const query = buildTicketListQuery(options)
         .lean()
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
@@ -129,91 +132,27 @@ module.exports = dependencies => {
       return query.exec();
     }
 
-    function buildQuery(options) {
-      const findOptions = {};
-
-      if (options.states && options.states.length > 0) {
-        const states = options.states.filter(state => validateTicketState(state));
-
-        if (states.length === 0) {
-          return Promise.resolve([]);
-        }
-
-        findOptions.state = { $in: states };
-      }
-
-      const orFilter = [];
-
-      if (options.requester) {
-        orFilter.push({ requester: options.requester });
-      }
-
-      if (options.supportManager) {
-        orFilter.push({ supportManager: options.supportManager });
-      }
-
-      if (options.supportTechnician) {
-        orFilter.push({ supportTechnicians: options.supportTechnician });
-      }
-
-      const query = Ticket.find(findOptions);
-
-      if (options.populations) {
-        query.populate(options.populations);
-      }
-
-      if (orFilter.length > 0) {
-        query.or(orFilter);
-      }
-
-      return query;
+    function ticketsWithoutPrivateComments(tickets) {
+      return (tickets || []).map(({ events, ...ticket }) => ({
+        ...ticket,
+        events: (events || []).filter(event => !event.isPrivate)
+      }));
     }
   }
 
-  function listForContracts(contracts, options = {}) {
-    return Promise.all([
-      count(contracts),
-      list(contracts, options).then(addCnsToTickets)
-    ]).then(result => ({
-      size: result[0],
-      list: result[1]
-    }));
+  function buildTicketListQuery(options) {
+    const findOptions = {};
 
-    function count(contracts) {
-      return buildQuery(contracts).count().exec();
+    if (options.contract && options.contract !== ALL_CONTRACTS) {
+      findOptions.contract = { $in: options.contract };
+    }
+    const query = Ticket.find(findOptions);
+
+    if (options.populations) {
+      query.populate(options.populations);
     }
 
-    function list(contracts, options) {
-      const query = buildQuery(contracts)
-        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-timestamps.createdAt')
-        .populate(DEFAULT_TICKET_POPULATES);
-
-        return query.lean()
-        .then(tickets => {
-          if (options.userType && options.userType === 'expert') {
-            return tickets;
-          }
-
-          return ticketsWithPublicComments(tickets);
-        });
-    }
-
-    function ticketsWithPublicComments(tickets) {
-      return (tickets || []).map(({events, ...ticket}) => ({
-          ...ticket,
-          events: (events || []).filter(event => !event.isPrivate)
-      }));
-    }
-
-    function buildQuery(contracts) {
-      const findOptions = {
-        contract: { $in: contracts }
-      };
-
-      return Ticket.find(findOptions);
-    }
+    return query;
   }
 
   /**
@@ -509,5 +448,25 @@ module.exports = dependencies => {
     return Ticket
       .findByIdAndUpdate(ticketId, { $set: {relatedContributions: contributions} })
       .exec();
+  }
+
+  /**
+   * Count all tickets
+   * @param {Object}    - connected user
+   * @param {Object}    - ticketing user
+   * @return {Promise}  - Resolve on success
+   */
+  function count({ user, ticketingUser }) {
+
+    return contract.allowedContracts({ user, ticketingUser })
+      .then(contracts => {
+        const options = {
+          contract: contracts
+        };
+
+        return buildTicketListQuery(options)
+          .count()
+          .exec();
+      });
   }
 };

@@ -23,7 +23,12 @@ module.exports = {
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
     USER: 'user',
-    SUPPORTER: 'supporter'
+    EXPERT: 'expert',
+    CUSTOMER: 'customer'
+  },
+  TICKETING_USER_TYPES: {
+    EXPERT: 'expert',
+    BENEFICIARY: 'beneficiary'
   },
   DEFAULT_LIST_OPTIONS: {
     OFFSET: 0,
@@ -151,5 +156,6 @@ module.exports = {
     ADMINISTRATION: 'Administration',
     ANOMALY: 'Anomaly',
     OTHER: 'Other'
-  }
+  },
+  ALL_CONTRACTS: 'ALL_CONTRACTS'
 };

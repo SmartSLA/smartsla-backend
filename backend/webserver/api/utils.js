@@ -5,6 +5,7 @@ module.exports = dependencies => {
 
   return {
     send200ListResponse,
+    send200ItemCount,
     send500Error,
     send404Error,
     send403Error,
@@ -14,6 +15,11 @@ module.exports = dependencies => {
   function send200ListResponse(list = [], res) {
     res.header('X-ESN-Items-Count', list.length);
     res.status(200).json(list);
+  }
+
+  function send200ItemCount(length = 0, res) {
+    res.header('X-ESN-Items-Count', length);
+    res.status(200).end();
   }
 
   function send500Error(details, err, res) {

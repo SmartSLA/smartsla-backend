@@ -16,7 +16,8 @@ module.exports = dependencies => {
     getByUser,
     updateById,
     updateRoleById,
-    userIsAdministrator
+    userIsAdministrator,
+    userIsAdministratorOrExpert
   };
 
   function get(roleId) {
@@ -128,4 +129,25 @@ module.exports = dependencies => {
       .populate({ path: 'user' })
       .cursor();
   }
+
+/**
+ * Checks if a user is administrator or expert
+ *
+ * @param {String} userId
+ * @param {Object} ticketingUser
+ */
+
+  function userIsAdministratorOrExpert(user, ticketingUser) {
+    return Promise.all([
+      userIsAdministrator(user && user._id),
+      userIsExpert()
+    ]).then(checks => (checks[0] || checks[1]));
+
+    function userIsExpert() {
+      const userRole = ticketingUser && ticketingUser.role;
+
+      return Promise.resolve(userRole === TICKETING_USER_ROLES.EXPERT);
+    }
+  }
+
 };
