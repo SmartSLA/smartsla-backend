@@ -17,6 +17,10 @@ module.exports = {
       UPDATED: {
         subject: '#{{ticket.id}} {{{ticket.title}}}: issue #{{ticket.id}} has been updated',
         template: 'ticket.updated'
+      },
+      CONTRACT_EXPIRED: {
+        subject: 'Contract {{{contractName}}} is expired',
+        template: 'contract.expired'
       }
     }
   },
