@@ -21,6 +21,10 @@ module.exports = {
       CONTRACT_EXPIRED: {
         subject: 'Contract {{{contractName}}} is expired',
         template: 'contract.expired'
+      },
+      CONTRACT_CREDITCONSUMED: {
+        subject: 'Contract {{{contractName}}} has reached its credit limit',
+        template: 'contract.creditconsumed'
       }
     }
   },
