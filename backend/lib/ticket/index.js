@@ -26,6 +26,7 @@ module.exports = dependencies => {
     count,
     create,
     list,
+    listForContracts,
     getById,
     updateById,
     removeById,
@@ -162,6 +163,31 @@ module.exports = dependencies => {
     return query;
   }
 
+  function listForContracts(contracts, options = {}) {
+    options.contract = contracts;
+
+    return Promise.all([
+      count(),
+      list()
+    ]).then(result => ({
+      size: result[0],
+      list: result[1]
+    }));
+
+    function count() {
+      return buildTicketListQuery(options).count().exec();
+    }
+
+    function list() {
+      const query = buildTicketListQuery(options)
+        .lean()
+        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+        .sort('-timestamps.createdAt');
+
+      return query.exec();
+    }
+  }
   /**
    * Get ticket by ID.
    * @param  {String}   ticketId - The ticket ID
