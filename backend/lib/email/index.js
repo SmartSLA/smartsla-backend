@@ -41,11 +41,11 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function getTemplateContent(ticket, event, frontendUrl) {
+  function getTemplateContent(ticket, event, frontendUrl, contractName) {
     const translatedStatus = i18n.__n(ticket.status, 2);
     const ticketUrl = getTicketUrl(ticket, frontendUrl);
 
-    return {ticket, event, ticketUrl, status: translatedStatus, frontendUrl};
+    return {ticket, event, ticketUrl, status: translatedStatus, frontendUrl, contractName};
   }
 
   function getConfig() {
@@ -57,7 +57,7 @@ module.exports = dependencies => {
       }));
   }
 
-  function send(emailType, ticket, event) {
+  function send(emailType, ticket, event, contractName) {
     return getConfig()
       .then(({ frontendUrl, mail }) => {
         userModule.get(ticket.author.id, (err, user) => {
@@ -65,7 +65,7 @@ module.exports = dependencies => {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const content = getTemplateContent(ticket, event, frontendUrl);
+          const content = getTemplateContent(ticket, event, frontendUrl, contractName);
           const recipients = getRecipients(ticket, mail.support);
 
           const message = {

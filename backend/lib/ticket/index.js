@@ -3,6 +3,7 @@
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES } = require('../constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
+const moment = require('moment-timezone');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' },
@@ -91,7 +92,13 @@ module.exports = dependencies => {
 
     return Ticket.create(ticket).then(createdTicket => {
       email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, createdTicket);
-
+        Contract.findById(createdTicket.contract)
+        .exec()
+        .then(contract => {
+          if (moment().diff(contract.endDate) > 0) {
+            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, createdTicket, {}, contract.name);
+          }
+        });
       if (options.populations) {
         return createdTicket.populate(options.populations).execPopulate();
       }
