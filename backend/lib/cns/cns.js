@@ -224,18 +224,58 @@ function holidaysBetween(from, to) {
 function calculateWorkingMinutes(startingDate, endingDate, startingHour, endingHour) {
   const startWrapper = moment(startingDate);
   const endWrapper = moment(endingDate);
-  let minutes = 0;
 
-  while (startWrapper.valueOf() < endWrapper.valueOf()) {
-    if (startWrapper.day() !== 0 && startWrapper.day() !== 6) {
-      if (startWrapper.hour() >= startingHour && startWrapper.hour() < endingHour) {
-        ++minutes;
-      }
-    }
-    startWrapper.add(1, 'minutes');
+  if (startWrapper.hour() < startingHour) {
+    startWrapper.hour(startingHour);
+    startWrapper.minute(0);
+    startWrapper.second(0);
   }
 
-  return minutes;
+  if (startWrapper.hour() >= endingHour) {
+    startWrapper.add(1, 'day');
+    startWrapper.hour(startingHour);
+    startWrapper.minute(0);
+    startWrapper.second(0);
+  }
+
+  if (endWrapper.hour() >= endingHour) {
+    endWrapper.hour(endingHour);
+    endWrapper.minute(0);
+    endWrapper.second(0);
+  }
+
+  if (endWrapper.hour() < startingHour) {
+    endWrapper.add(-1, 'day');
+    endWrapper.hour(endingHour);
+    endWrapper.minute(0);
+    endWrapper.second(0);
+  }
+
+  const durationMs = endWrapper.diff(startWrapper);
+
+  if (durationMs < 0) {
+    return 0;
+  }
+
+  const duration = moment.duration(durationMs);
+
+  let daysToRemove = 0;
+
+  while (startWrapper.isBefore(endWrapper)) {
+    if (startWrapper.day() === 0) {
+      startWrapper.add(6, 'day');
+      daysToRemove++;
+    } else if (startWrapper.day() === 6) {
+      startWrapper.add(1, 'day');
+      daysToRemove++;
+    } else {
+      startWrapper.day(6);
+    }
+  }
+
+  duration.add(-daysToRemove, 'day');
+
+  return convertIsoDurationInMinutes(duration, endingHour - startingHour);
 }
 
 /**
