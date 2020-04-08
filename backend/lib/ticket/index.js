@@ -99,6 +99,11 @@ module.exports = dependencies => {
           if (moment().diff(contract.endDate) > 0) {
             email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, createdTicket, {}, contract.name);
           }
+          listForContracts(createdTicket.contract, options).then(ticketsObject => {
+            if (ticketsObject.size >= contract.credits) {
+              email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_CREDITCONSUMED, createdTicket, {}, contract.name);
+            }
+          });
         });
       if (options.populations) {
         return createdTicket.populate(options.populations).execPopulate();
