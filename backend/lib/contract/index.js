@@ -196,6 +196,10 @@ module.exports = dependencies => {
 
   function allowedContracts({ user, ticketingUser }) {
     return ticketingUserRole.userIsAdministratorOrExpert(user, ticketingUser)
-      .then(canSeeAll => (canSeeAll ? Promise.resolve(ALL_CONTRACTS) : listForUser(user._id)));
+      .then(canSeeAll => (canSeeAll ? Promise.resolve(ALL_CONTRACTS) : userContractsList()));
+
+    function userContractsList() {
+      return listForUser(user._id).then(contractRelations => contractRelations.map(relation => relation.contract));
+    }
   }
 };
