@@ -7,15 +7,19 @@ html.mail
   body
     - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
     - var ticketStatus = `<strong>${content.status}</strong>`
-    - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
     - var author = `<i>${content.ticket.author.name}</i>`
-    p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:author})} :
+    if (content.ticket.assignedTo && content.ticket.assignedTo.name)
+      - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
+      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:author})} :
+    else
+      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
     hr 
     if (content.event.comment)
       != content.event.comment
     p #{translate('The ticket is now {{status}}.', { status: content.status })}
-      br
-      | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
+      if (content.ticket.assignedTo && content.ticket.assignedTo.name)
+        br
+        | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
     hr
     p(style="color: gray")
       |--
