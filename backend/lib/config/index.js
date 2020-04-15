@@ -31,6 +31,6 @@ module.exports = dependencies => {
   };
 
   function register() {
-    esnConfig.registry.register('ticketing08000linux.backend', config);
+    esnConfig.registry.register('smartsla-backend', config);
   }
 };

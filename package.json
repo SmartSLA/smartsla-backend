@@ -1,7 +1,7 @@
 {
-  "name": "ticketing08000linux.backend",
+  "name": "smartsla-backend",
   "version": "1.6.2-dev",
-  "description": "OpenPaaS backend module for ticketing08000linux",
+  "description": "OpenPaaS backend module for SmartSLA",
   "main": "index.js",
   "devDependencies": {
     "@linagora/grunt-i18n-checker": "2.0.5",
@@ -47,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://ci.linagora.com/linagora/lps/studio/ticketing08000linux.backend.git"
+    "url": "https://ci.linagora.com/linagora/lgs/linagora/lgs/smartsla/smartsla-backend.git"
   },
   "author": "Linagora R&D",
   "license": "AGPL-3.0",

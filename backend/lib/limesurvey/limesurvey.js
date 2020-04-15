@@ -10,7 +10,7 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function getConfig() {
-    return new EsnConfig('ticketing08000linux.backend')
+    return new EsnConfig('smartsla-backend')
       .get('limesurvey')
       .then(config => {
         if (config && config.apiUrl) {

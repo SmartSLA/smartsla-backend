@@ -6,16 +6,16 @@ Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linago
 ### Clone module repository
 
 ```bash
-git clone https://ci.linagora.com/linagora/lgs/openpaas/ticketing08000linux.backend
+git clone https://ci.linagora.com/linagora/lgs/smartsla/smartsla-backend
 ```
 
 ### Add the module to OpenPaaS
 
-Add the line `ticketing08000linux.backend` to `esn/config/default.json` in modules section
+Add the line `smartsla-backend` to `esn/config/default.json` in modules section
 
 ### Install dependencies
 
-In the `ticketing08000linux.backend` folder:
+In the `smartsla-backend` folder:
 
 ```bash
 npm install
@@ -24,7 +24,7 @@ bower install
 
 ### Create module npm link in `esn`:
 
-In the `ticketing08000linux.backend` folder:
+In the `smartsla-backend` folder:
 
 ```bash
 npm link
@@ -33,7 +33,7 @@ npm link
 In the `esn` folder:
 
 ```bash
-npm link ticketing08000linux.backend
+npm link smartsla-backend
 ```
 
 ### Launch OpenPaaS

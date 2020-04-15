@@ -6,7 +6,7 @@ const mockery = require('mockery');
 const testConfig = require('../config/servers-conf');
 const basePath = path.resolve(__dirname + '/../../node_modules/linagora-rse');
 const backendPath = path.normalize(__dirname + '/../../backend');
-const MODULE_NAME = 'ticketing08000linux.backend';
+const MODULE_NAME = 'smartsla-backend';
 let rse;
 
 before(function(done) {
