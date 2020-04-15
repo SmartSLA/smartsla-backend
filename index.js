@@ -52,7 +52,7 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
 
       // Register every exposed endpoints
       app.use('/api', this.api.module);
-      webserverWrapper.addApp(MODULE_NAME, app);
+      webserverWrapper.addApp('ticketing', app);
 
       return callback();
     },
