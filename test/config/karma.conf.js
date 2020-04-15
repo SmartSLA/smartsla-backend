@@ -1,6 +1,6 @@
 'use strict';
 
-const MODULE_DIR_NAME = '/ticketing08000linux.backend';
+const MODULE_DIR_NAME = '/smartsla-backend';
 
 module.exports = function(config) {
   config.set({

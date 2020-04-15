@@ -1,5 +1,5 @@
-# ticketing08000linux.backend
->This is OpenPaaS Module for ticketing feature
+# SmartSLA-backend
+>This is OpenPaaS Module for SmartSLA
 
 ## Installation
 
@@ -9,26 +9,26 @@ Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linago
 
 #### Production
 
-Add `ticketing08000linux.backend` to `$ESN_PATH/config/default.json` in modules section
+Add `smartsla-backend` to `$ESN_PATH/config/default.json` in modules section
 
-Add `"ticketing08000linux.backend": "linagora/ticketing08000linux.backend"` to `$ESN_PATH/packages.json` in dependencies section
+Add `"smartsla-backend": "linagora/smartsla-backend"` to `$ESN_PATH/packages.json` in dependencies section
 
 install the dependencies
 
 #### Development
 
-link your local ticketing08000linux.backend module to esn using:
+link your local smartsla-backend module to esn using:
 
-08000TICKETING_PATH: refers to the path of your repository
+SMARTSLA_PATH: refers to the path of your repository
 
 ```
 cd $ESN_PATH/modules;
-ln -s 08000TICKETING_PATH ticketing08000linux.backend
+ln -s SMARTSLA_PATH smartsla-backend
 ```
 
-add `ticketing08000linux.backend` to the modules list in `$ESN_PATH/config/default.json`
+add `smartsla-backend` to the modules list in `$ESN_PATH/config/default.json`
 
-### Install the node packages for the ticketing module
+### Install the node packages for the smartsla-backend module
 
 In the `esn` folder do
 ```
@@ -50,11 +50,11 @@ Use Curl to set configuration:
 ```
 curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
-    "name": "ticketing08000linux.backend",
+    "name": "smartsla-backend",
     "configurations": [
       {
         "name": "frontendUrl",
-        "value": "http://ticketingServer:port"
+        "value": "http://smartslaServer:port"
       }
     ]
   }
@@ -67,7 +67,7 @@ Use Curl to set configuration:
 ```
 curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
-    "name": "ticketing08000linux.backend",
+    "name": "smartsla-backend",
     "configurations": [
       {
         "name" : "mail",
@@ -88,7 +88,7 @@ Use Curl to set configuration:
 ```
 curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
   {
-    "name": "ticketing08000linux.backend",
+    "name": "smartsla-backend",
     "configurations": [
       {
         "name": "limesurvey",
@@ -111,7 +111,7 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 
 > cannot find users when using autocomplete.
 
-you need to configure the LDAP connection in your openpaas instance, details [here](https://ci.linagora.com/linagora/lps/studio/ticketing08000linux/-/wikis/LDAP-Config)
+you need to configure the LDAP connection in your openpaas instance, details [here](https://ci.linagora.com/linagora/lgs/smartsla/smartsla-frontend/wikis/LDAP-Config)
 
 ## Licence
 

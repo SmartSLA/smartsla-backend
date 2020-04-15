@@ -86,17 +86,17 @@ module.exports = function(grunt) {
     swagger_generate: {
       options: {
         baseDir: __dirname,
-        swaggerOutputFile: 'doc/REST_API/swagger/ticketing08000-swagger.json',
+        swaggerOutputFile: 'doc/REST_API/swagger/smartsla-backend-swagger.json',
         info: {
-          title: 'Ticketing08000Linux',
-          description: 'ticketing openpaas backend module',
+          title: 'SmartSLA-backend',
+          description: 'smartsla-backend openpaas backend module',
           version: '1.6.1'
         },
         host: 'localhost:8080',
         securityDefinitions: {
           auth: {
             type: 'oauth2',
-            description: 'OAuth2 security scheme for ticketing08000 Module API',
+            description: 'OAuth2 security scheme for smartsla-backend Module API',
             flow: 'password',
             tokenUrl: 'localhost:8080/oauth/token',
             scopes: {}

@@ -30,7 +30,7 @@ stages:
     variables:
       - $SKIP_TESTS
     refs:
-      - tags@linagora/lps/studio/ticketing08000linux.backend
+      - tags@linagora/lgs/smartsla/smartsla-backend
 
 ### END OF TEMPLATES
 
@@ -45,9 +45,9 @@ check_author:
     - check_author.py check "$GITLAB_USER_EMAIL" "$GITLAB_USER_NAME" --no-accents
   except:
     refs:
-      - master@linagora/lps/studio/ticketing08000linux.backend
-      - tags@linagora/lps/studio/ticketing08000linux.backend
-      - /^release-.*/@linagora/lps/studio/ticketing08000linux.backend
+      - master@linagora/lgs/smartsla/smartsla-backend
+      - tags@linagora/lgs/smartsla/smartsla-backend
+      - /^release-.*/@linagora/lgs/smartsla/smartsla-backend
 
 
 lint:
@@ -75,7 +75,7 @@ swagger:
     - grunt swagger-generate
   artifacts:
     paths:
-      - ./doc/REST_API/swagger/ticketing08000-swagger.json
+      - ./doc/REST_API/swagger/smartsla-swagger.json
 
 deploy-swagger:
   stage: deploy_dev
@@ -87,10 +87,10 @@ deploy-swagger:
     name: api
     url: https://api.open-paas.org
   only:
-    - master@https://linagora/lps/studio/ticketing08000linux.backend
+    - master@https://linagora/lgs/smartsla/smartsla-backend
   script:
-    - perl -i -pe's/"host":"localhost:8080"/"schemes":["https"],"host":"demo.open-paas.org"/' ./doc/REST_API/swagger/ticketing08000-swagger.json
-    - cp ./doc/REST_API/swagger/ticketing08000-swagger.json /var/www/html
+    - perl -i -pe's/"host":"localhost:8080"/"schemes":["https"],"host":"demo.open-paas.org"/' ./doc/REST_API/swagger/smartsla-swagger.json
+    - cp ./doc/REST_API/swagger/smartsla-swagger.json /var/www/html
 
 # build and push a new snapshot of your docker image.
 snapshot:
@@ -98,7 +98,7 @@ snapshot:
   stage: release
   variables:
       DOCKER_HOST: "tcp://docker-dind"
-      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-snapshots/ticketing08000linux.backend"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/smartsla-snapshots/smartsla-backend"
   script:
     - guess-version.sh guess
     - source version.env
@@ -108,8 +108,8 @@ snapshot:
     - docker-tag-and-push.sh build:latest ${DOCKER_IMAGE_PRIVATE}
     - docker logout docker-registry.linagora.com:5000
   only:
-    - master@linagora/lps/studio/ticketing08000linux.backend
-    - /^release-.*/@linagora/lps/studio/ticketing08000linux.backend
+    - master@linagora/lgs/smartsla/smartsla-backend
+    - /^release-.*/@linagora/lgs/smartsla/smartsla-backend
   except:
     variables:
       - $SKIP_BUILD_DOCKER
@@ -119,7 +119,7 @@ docker-release:
   stage: release
   variables:
       DOCKER_HOST: "tcp://docker-dind"
-      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-releases/ticketing08000linux.backend"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/smartsla-releases/smartsla-backend"
   script:
     - docker-tag-computing.sh ${CI_COMMIT_TAG} docker-tag-and-push.env
     - docker login -u ${REGISTRY_USER_RELEASE} -p ${REGISTRY_TOKEN_RELEASE} docker-registry.linagora.com:5000
@@ -127,7 +127,7 @@ docker-release:
     - docker-tag-and-push.sh build:latest ${DOCKER_IMAGE_PRIVATE}
     - docker logout docker-registry.linagora.com:5000
   only:
-    - tags@linagora/lps/studio/ticketing08000linux.backend
+    - tags@linagora/lgs/smartsla/smartsla-backend
   except:
     variables:
       - $SKIP_BUILD_DOCKER
@@ -139,7 +139,7 @@ mark-as-latest:
   variables:
       GIT_STRATEGY: none
       DOCKER_HOST: "tcp://docker-dind"
-      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/lps-releases/ticketing08000linux.backend"
+      DOCKER_IMAGE_PRIVATE: "docker-registry.linagora.com:5000/smartsla-releases/smartsla-backend"
   script:
     - docker login -u ${REGISTRY_USER_RELEASE} -p ${REGISTRY_TOKEN_RELEASE} docker-registry.linagora.com:5000
     - docker-tag-computing.sh ${CI_COMMIT_TAG} docker-tags.env
@@ -150,7 +150,7 @@ mark-as-latest:
     - docker logout docker-registry.linagora.com:5000
   when: manual
   only:
-    - tags@linagora/lps/studio/ticketing08000linux.backend
+    - tags@linagora/lgs/smartsla/smartsla-backend
 
 deploy_dev:
   stage: deploy_dev
@@ -163,7 +163,7 @@ deploy_dev:
     name: dev
     url: https://dev.open-paas.org
   only:
-    - master@linagora/lps/studio/ticketing08000linux.backend
+    - master@linagora/lgs/smartsla/smartsla-backend
   script:
     - cd /srv/${CI_PROJECT_NAME}
     - git fetch --all

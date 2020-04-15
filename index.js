@@ -3,8 +3,8 @@
 const AwesomeModule = require('awesome-module');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
 
-const MODULE_NAME = 'ticketing';
-const AWESOME_MODULE_NAME =  `${MODULE_NAME}08000linux.backend`;
+const MODULE_NAME = 'smartsla';
+const AWESOME_MODULE_NAME =  `${MODULE_NAME}-backend`;
 
 const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
   dependencies: [

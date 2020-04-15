@@ -19,7 +19,7 @@ module.exports = dependencies => {
     try {
       ticketUrl = new URL(`requests/${ticket._id}`, frontendUrl).toString();
     } catch (e) {
-      logger.warn(`Invalid ticket url, please check that ticketing08000linux.backend.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
+      logger.warn(`Invalid ticket url, please check that smartsla-backend.frontendUrl configuration is set with a valid url (current url: ${frontendUrl})`, e);
     }
 
     return ticketUrl;
@@ -49,7 +49,7 @@ module.exports = dependencies => {
   }
 
   function getConfig() {
-    return new EsnConfig('ticketing08000linux.backend')
+    return new EsnConfig('smartsla-backend')
       .getMultiple(['frontendUrl', 'mail'])
       .spread((frontendUrl, mail) => ({
         frontendUrl: frontendUrl && frontendUrl.value,
