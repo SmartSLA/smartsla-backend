@@ -330,7 +330,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);
@@ -396,7 +396,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);
@@ -450,7 +450,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);
@@ -497,7 +497,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);
@@ -559,7 +559,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);
@@ -621,7 +621,7 @@ describe('The ticket lib', function() {
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock, $unset: { severity: 1, software: 1 } }, { new: true });
-        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modifiedMock);
+        expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
         done();
       })
       .catch(done);

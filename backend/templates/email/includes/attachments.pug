@@ -1,0 +1,6 @@
+hr
+strong !{translate('See the attachments', content.latestEvent.attachments.length)} :
+ul(style={'list-style-type': 'none', 'padding': 0})
+  each attachment, index in content.latestEvent.attachments
+    li(style={float: 'left', padding: '10px'})
+      a(href=`${content.ticketUrl}#event-${content.latestEvent._id}`) !{attachment.name}
