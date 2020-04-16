@@ -8,8 +8,4 @@ html.mail
     - var contractUrl = new URL(`administration/contracts/${content.ticket.contract}`, content.frontendUrl).toString();
     - var contractNameLinked = `<a href="${contractUrl}">${content.contractName}</a>`
     p !{translate('The contract {{{contractNameLinked}}} is expired.', {contractNameLinked: contractNameLinked})}
-    hr
-    p(style="color: gray")
-      |--
-      br
-      | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+    include ../includes/footer.pug
