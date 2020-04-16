@@ -18,12 +18,9 @@ html.mail
       != content.latestEvent.comment
     p #{translate('The ticket is now {{status}}.', { status: translate(content.ticket.status, 2) })}
       if (content.ticket.assignedTo && content.ticket.assignedTo.name)
-      br
-      | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
+        br
+        | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
     if (content.latestEvent.attachments && content.latestEvent.attachments.length)
       include ../includes/attachments.pug
-    p(style="color: gray; clear: both")
-      |--
-      br
-      | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+    include ../includes/footer.pug
 

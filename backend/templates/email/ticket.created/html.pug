@@ -17,8 +17,6 @@ html.mail
       strong #{translate(content.ticket.severity)}.
     if (content.latestEvent.attachments && content.latestEvent.attachments.length)
       include ../includes/attachments.pug
-    p(style="color: gray; clear: both")
-      |--
-      br
-      | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+    include ../includes/footer.pug
+
 
