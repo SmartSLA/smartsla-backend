@@ -112,7 +112,3 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 > cannot find users when using autocomplete.
 
 you need to configure the LDAP connection in your openpaas instance, details [here](https://ci.linagora.com/linagora/lgs/smartsla/smartsla-frontend/wikis/LDAP-Config)
-
-## Licence
-
-[Affero GPL v3](http://www.gnu.org/licenses/agpl-3.0.html)
