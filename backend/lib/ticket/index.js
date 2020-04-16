@@ -123,10 +123,12 @@ module.exports = dependencies => {
       .then(contract => ({ ...options, contract }))
       .then(listOptions => list(listOptions))
       .then(tickets => {
-        const { type } = ticketingUser;
+        if (ticketingUser) {
+          const { type } = ticketingUser;
 
-        if (type === TICKETING_USER_TYPES.EXPERT) {
-          return tickets;
+          if (type === TICKETING_USER_TYPES.EXPERT) {
+            return tickets;
+          }
         }
 
         return ticketsWithoutPrivateComments(tickets);
