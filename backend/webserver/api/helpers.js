@@ -4,6 +4,7 @@ module.exports = (dependencies, lib) => {
   const { send400Error, send403Error, send500Error } = require('./utils')(dependencies);
   const mongoose = dependencies('db').mongo.mongoose;
   const ObjectId = mongoose.Types.ObjectId;
+  const coreUserDenormalizer = dependencies('coreUserDenormalizer');
 
   return {
     loadUserRole,
@@ -18,15 +19,23 @@ module.exports = (dependencies, lib) => {
       return send400Error('Missing user', res);
     }
 
-    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
-    .then(isAdmin => {
-      if (isAdmin) {
+    return Promise.all([
+      coreUserDenormalizer.denormalize(req.user, { includeIsPlatformAdmin: true }),
+      isTicketingAdmin(req.user._id)
+    ])
+    .then(([user, isTicketingAdmin]) => {
+
+      if (user.isPlatformAdmin || isTicketingAdmin) {
         return next();
       }
 
-      send403Error('User does not have the necessary permission', res);
+      return send403Error('User does not have the necessary permission', res);
     })
     .catch(err => send500Error('Unable to check administrator permission', err, res));
+
+    function isTicketingAdmin(userId) {
+      return lib.ticketingUserRole.userIsAdministrator(userId);
+    }
   }
 
   function loadUserRole(req, res, next) {
@@ -65,15 +74,10 @@ module.exports = (dependencies, lib) => {
       return send400Error('Missing user', res);
     }
 
-    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
-      .then(isAdmin => (isAdmin || (req.user._id.toString() === req.params.id)))
-      .then(canViewProfile => {
-        if (canViewProfile) {
-          return next();
-        }
+    if (req.user._id.toString() === req.params.id) {
+      return next();
+    }
 
-        send403Error('User does not have the necessary permission', res);
-      })
-      .catch(err => send500Error('Unable to check administrator permission', err, res));
+    return requireAdministrator(req, res, next);
   }
 };
