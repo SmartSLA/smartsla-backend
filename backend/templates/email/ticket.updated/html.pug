@@ -6,7 +6,7 @@ html.mail
 
   body
     - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
-    - var ticketStatus = `<strong>${content.status}</strong>`
+    - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
     - var author = `<i>${content.ticket.author.name}</i>`
     if (content.ticket.assignedTo && content.ticket.assignedTo.name)
       - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
@@ -14,14 +14,15 @@ html.mail
     else
       p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
     hr 
-    if (content.event.comment)
-      != content.event.comment
-    p #{translate('The ticket is now {{status}}.', { status: content.status })}
+    if (content.latestEvent.comment)
+      != content.latestEvent.comment
+    p #{translate('The ticket is now {{status}}.', { status: translate(content.ticket.status, 2) })}
       if (content.ticket.assignedTo && content.ticket.assignedTo.name)
-        br
-        | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
-    hr
-    p(style="color: gray")
+      br
+      | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
+    if (content.latestEvent.attachments && content.latestEvent.attachments.length)
+      include ../includes/attachments.pug
+    p(style="color: gray; clear: both")
       |--
       br
       | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}

@@ -15,8 +15,10 @@ html.mail
     p 
       | #{translate('The issue is qualified with a severity')} 
       strong #{translate(content.ticket.severity)}.
-      p(style="color: gray")
-        |--
-        br
-        | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
+    if (content.latestEvent.attachments && content.latestEvent.attachments.length)
+      include ../includes/attachments.pug
+    p(style="color: gray; clear: both")
+      |--
+      br
+      | #{translate('This is an automatic email from {{{site}}}.', {site: content.frontendUrl})}
 

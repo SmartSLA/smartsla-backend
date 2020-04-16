@@ -75,7 +75,7 @@ module.exports = dependencies => {
       return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
       .then(modifiedTicket => {
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket, event);
+        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, modifiedTicket);
 
         return modifiedTicket;
       });
@@ -97,11 +97,11 @@ module.exports = dependencies => {
         .exec()
         .then(contract => {
           if (moment().diff(contract.endDate) > 0) {
-            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, createdTicket, {}, contract.name);
+            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, createdTicket, contract.name);
           }
           listForContracts(createdTicket.contract, options).then(ticketsObject => {
             if (ticketsObject.size >= contract.credits) {
-              email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_CREDITCONSUMED, createdTicket, {}, contract.name);
+              email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_CREDITCONSUMED, createdTicket, contract.name);
             }
           });
         });
@@ -226,7 +226,7 @@ module.exports = dependencies => {
       return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true })
         .exec()
         .then(updatedTicket => {
-          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket, modified);
+          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, updatedTicket);
 
           return updatedTicket;
         });
