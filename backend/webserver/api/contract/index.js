@@ -12,7 +12,8 @@ module.exports = function(dependencies, lib, router) {
     canListContract,
     canUpdateContract,
     canAddUsersToContract,
-    canReadContract
+    canReadContract,
+    contractCanBeRemoved
   } = require('./middleware')(dependencies, lib);
 
   /**
@@ -225,6 +226,7 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     canUpdateContract,
     checkIdInParams('id', 'Contract'),
+    contractCanBeRemoved,
     controller.remove
   );
 
