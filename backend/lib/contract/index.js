@@ -31,6 +31,7 @@ module.exports = dependencies => {
     create,
     getById,
     list,
+    listByClient,
     listByCursor,
     search,
     updateById,
@@ -76,6 +77,17 @@ module.exports = dependencies => {
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
       .sort('-timestamps.creation')
+      .exec();
+  }
+
+  /**
+   * List contracts by client
+   * @param {String} clientId - the client Id
+   * @returns {Promise}       - Resolve on success
+   */
+  function listByClient(clientId) {
+    return Contract
+      .find({ clientId })
       .exec();
   }
 

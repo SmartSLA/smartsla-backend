@@ -7,7 +7,8 @@ module.exports = function(dependencies, lib, router) {
   const {
     canCreateClient,
     canListClient,
-    canUpdateClient
+    canUpdateClient,
+    clientCanBeRemoved
   } = require('./middleware')(dependencies, lib);
 
   /**
@@ -138,6 +139,7 @@ module.exports = function(dependencies, lib, router) {
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'client'),
     canUpdateClient,
+    clientCanBeRemoved,
     controller.remove
   );
 };

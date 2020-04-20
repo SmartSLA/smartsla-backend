@@ -4,12 +4,13 @@ const composableMw = require('composable-middleware');
 
 module.exports = (dependencies, lib) => {
   const { requireAdministrator } = require('../helpers')(dependencies, lib);
-  const { send400Error } = require('../utils')(dependencies);
+  const { send400Error, send403Error } = require('../utils')(dependencies);
 
   return {
     canCreateClient,
     canListClient,
     canUpdateClient,
+    clientCanBeRemoved,
     validateClientCreatePayload,
     validateClientUpdatePayload
   };
@@ -50,5 +51,17 @@ module.exports = (dependencies, lib) => {
     }
 
     next();
+  }
+
+  function clientCanBeRemoved(req, res, next) {
+    return lib.contract.listByClient(req.params.id)
+      .then(contracts => {
+        if (contracts && contracts.length) {
+          return send403Error('client cannot be deleted: related to contracts', res);
+        }
+
+        return next();
+      });
+
   }
 };
