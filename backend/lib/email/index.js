@@ -4,7 +4,7 @@ module.exports = dependencies => {
   const EsnConfig = dependencies('esn-config').EsnConfig;
 
   const logger = dependencies('logger');
-  const { EMAIL_NOTIFICATIONS } = require('../constants');
+  const { EMAIL_NOTIFICATIONS, NOTIFICATIONS_TYPE, USER_TYPE } = require('../constants');
   const i18n = require('../i18n')(dependencies);
   const path = require('path');
   const TEMPLATE_PATH = path.resolve(__dirname, '../../templates/email');
@@ -25,18 +25,27 @@ module.exports = dependencies => {
     return ticketUrl;
   }
 
-  function getRecipients(ticket, defaultResponsibleEmail) {
+  function getExpertRecipients(ticket, defaultResponsibleEmail) {
     const to = [];
-    const cc = ticket.participants && [...ticket.participants];
 
-    ticket.author && ticket.author.email && to.push(ticket.author.email);
-    ticket.assignedTo && ticket.assignedTo.email && to.push(ticket.assignedTo.email);
+    ticket.author && ticket.author.email && ticket.author.type === USER_TYPE.EXPERT && to.push(ticket.author.email);
+    ticket.assignedTo && ticket.assignedTo.email && ticket.assignedTo.type === USER_TYPE.EXPERT && to.push(ticket.assignedTo.email);
 
     if (ticket.responsible && ticket.responsible.email) {
-      to.push(ticket.responsible.email);
+      if (!to.includes(ticket.responsible.email)) to.push(ticket.responsible.email);
     } else {
       to.push(defaultResponsibleEmail || EMAIL_NOTIFICATIONS.DEFAULT_RESPONSIBLE_EMAIL);
     }
+
+    return { to: to};
+  }
+
+  function getNonExpertRecipients(ticket) {
+    const to = [];
+    const cc = ticket.participants && [...ticket.participants];
+
+    ticket.author && ticket.author.email && ticket.author.type !== USER_TYPE.EXPERT && to.push(ticket.author.email);
+    ticket.assignedTo && ticket.assignedTo.email && ticket.assignedTo.type !== USER_TYPE.EXPERT && to.push(ticket.assignedTo.email);
 
     return { to: to, cc: cc };
   }
@@ -58,15 +67,23 @@ module.exports = dependencies => {
       }));
   }
 
-  function send(emailType, ticket, contractName) {
+  function send(emailType, notificationType, ticket, contractName) {
     return getConfig()
       .then(({ frontendUrl, mail }) => {
         userModule.get(ticket.author.id, (err, user) => {
           if (err || !user) {
             return logError(err || `User ${ticket.author.id} not found`);
           }
+
           const content = getTemplateContent(ticket, frontendUrl, contractName);
-          const recipients = getRecipients(ticket, mail.support);
+          let recipients = getExpertRecipients(ticket, mail.support);
+
+          if (notificationType === NOTIFICATIONS_TYPE.ALL_ATTENDEES) {
+            const externalRecipients = getNonExpertRecipients(ticket);
+            const concatRecipients = recipients.to.concat(externalRecipients.to);
+
+            recipients = {to: concatRecipients, cc: externalRecipients.cc};
+          }
 
           const message = {
             subject: i18n.__(emailType.subject, content),

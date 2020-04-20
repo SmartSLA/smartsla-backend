@@ -4,13 +4,14 @@ const mockery = require('mockery');
 const q = require('q');
 
 describe('The email module', function() {
-  let moduleHelpers, EMAIL_NOTIFICATIONS;
+  let moduleHelpers, EMAIL_NOTIFICATIONS, NOTIFICATIONS_TYPE;
   let emailModule, userModule, i18nModule, esnConfigModule, getMultipleSpy, sendHTML;
   let ticket, config, user;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     EMAIL_NOTIFICATIONS = require(moduleHelpers.backendPath + '/lib/constants').EMAIL_NOTIFICATIONS;
+    NOTIFICATIONS_TYPE = require(moduleHelpers.backendPath + '/lib/constants').NOTIFICATIONS_TYPE;
 
     sendHTML = sinon.stub().returns(Promise.resolve());
     emailModule = {
@@ -20,7 +21,7 @@ describe('The email module', function() {
     };
 
     i18nModule = {
-      __: sinon.spy(text => text)
+      __n: sinon.spy(text => text)
     };
 
     config = [
@@ -81,7 +82,7 @@ describe('The email module', function() {
     });
 
     it('should retrieve esn user', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
+      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, ticket)
         .then(() => {
           expect(userModule.get).to.have.been.called;
           done();
@@ -90,7 +91,7 @@ describe('The email module', function() {
     });
 
     it('should retrieve user mailer', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
+      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, ticket)
         .then(() => {
           expect(emailModule.getMailer).to.have.been.calledWith;
           done();
