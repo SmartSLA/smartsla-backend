@@ -13,7 +13,8 @@ module.exports = (dependencies, lib) => {
   const {
     send400Error,
     send404Error,
-    send500Error
+    send500Error,
+    send403Error
   } = require('../../utils')(dependencies);
 
   return {
@@ -23,6 +24,7 @@ module.exports = (dependencies, lib) => {
     canUpdateContract,
     canReadContract,
     canAddUsersToContract,
+    contractCanBeRemoved,
     validateContractPayload,
     validateDemand,
     validatePermissions,
@@ -116,5 +118,16 @@ module.exports = (dependencies, lib) => {
     }
 
     next();
+  }
+
+  function contractCanBeRemoved(req, res, next) {
+    return lib.ticket.listForContracts(req.params.id)
+      .then(({ size }) => {
+        if (!size) {
+          return next();
+        }
+
+        send403Error('cannot delete contract: contract has tickets', res);
+      });
   }
 };
