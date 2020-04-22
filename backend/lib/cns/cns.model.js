@@ -9,6 +9,7 @@ class CnsValue {
     this.workingHours = workingHours;
     this.isNonBusinessHours = isNonBusinessHours;
     this.elapsedMinutes = 0;
+    this.percentageElapsed = 0;
     this.suspendedMinutes = 0;
   }
 
