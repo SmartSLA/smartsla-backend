@@ -3,7 +3,7 @@
 
 ## Installation
 
-Make sure you have OpenPaaS installed from [here](https://ci.linagora.com/linagora/lgs/openpaas/openpaas-doc/blob/master/_docs/getting-started/linux.md)
+Make sure you have OpenPaaS installed from [here](https://github.com/linagora/openpaas-esn)
 
 ### Add the module to OpenPaaS
 
