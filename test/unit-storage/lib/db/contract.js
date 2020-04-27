@@ -10,16 +10,20 @@ describe('The Contract model', function() {
     mongoose = this.moduleHelpers.dependencies('db').mongo.mongoose;
     ObjectId = mongoose.Types.ObjectId;
 
-    require(this.testEnv.backendPath + '/lib/db/contract')(
+    require(this.testEnv.backendPath + '/lib/db/ticketing-user-contract')(
       this.moduleHelpers.dependencies
     );
-    Contract = mongoose.model('Contract');
+    require(this.testEnv.backendPath + '/lib/db/contract')(
+      this.moduleHelpers.dependencies
+      );
+      Contract = mongoose.model('Contract');
 
-    this.connectMongoose(mongoose, done);
-  });
+      this.connectMongoose(mongoose, done);
+    });
 
   afterEach(function(done) {
     delete mongoose.connection.models.Contract;
+    delete mongoose.connection.models.TicketingUserContract;
     this.helpers.mongo.dropDatabase(err => {
       if (err) return done(err);
       this.testEnv.core.db.mongo.mongoose.connection.close(done);
