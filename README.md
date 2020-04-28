@@ -82,6 +82,29 @@ curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json'  
 ]'
 ```
 
+Configure feature flipping
+
+Feature list :
+
+* LimeSurvey
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "smartsla-backend",
+    "configurations": [
+      {
+        "name": "features",
+        "value": {
+          "isLimesurveyEnabled": false
+        }
+      }
+    ]
+  }
+]'
+```
+
 Set limesurvey config (needed to use limesurvey API)
 
 Use Curl to set configuration:
