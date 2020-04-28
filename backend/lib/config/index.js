@@ -19,6 +19,16 @@ const config = {
         username: 'username',
         password: 'password'
       }
+    },
+    features: {
+      rights: {
+        padmin: 'rw',
+        admin: 'rw',
+        user: 'r'
+      },
+      value: {
+        isLimesurveyEnabled: false
+      }
     }
   }
 };
