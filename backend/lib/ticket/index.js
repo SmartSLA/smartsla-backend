@@ -113,7 +113,7 @@ module.exports = dependencies => {
         return createdTicket.populate(options.populations).execPopulate();
       }
 
-      return createdTicket._id;
+      return createdTicket;
     });
   }
 
