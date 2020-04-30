@@ -11,14 +11,14 @@ module.exports = function(dependencies, lib, router) {
 
   /**
    * @swagger
-   * /ticketing/api/filters:
+   * /ticketing/api/custom-filters:
    *  get:
    *    tags:
    *      - Filter
-   *    description: Get filters list of connected user
+   *    description: Get custom filters list of connected user
    *    responses:
    *      200:
-   *        $ref: "#/responses/filters"
+   *        $ref: "#/responses/custom-filters"
    *      401:
    *        $ref: "#/responses/cm_401"
    *      403:
@@ -28,23 +28,23 @@ module.exports = function(dependencies, lib, router) {
    *      500:
    *        $ref: "#/responses/cm_500"
    */
-  router.get('/filters',
+  router.get('/custom-filters',
     authorizationMW.requiresAPILogin,
     controller.list
   );
 
   /**
    * @swagger
-   * /ticketing/api/filters/{id}:
+   * /ticketing/api/custom-filters/{id}:
    *  get:
    *    tags:
    *      - Filter
-   *    description: Get filter by id
+   *    description: Get custom filter by id
    *    parameters:
    *      - $ref: "#/parameters/filter_id"
    *    responses:
    *      200:
-   *        $ref: "#/responses/filter"
+   *        $ref: "#/responses/custom-filter"
    *      401:
    *        $ref: "#/responses/cm_401"
    *      403:
@@ -54,18 +54,18 @@ module.exports = function(dependencies, lib, router) {
    *      500:
    *        $ref: "#/responses/cm_500"
    */
-  router.get('/filters/:id',
+  router.get('/custom-filters/:id',
     authorizationMW.requiresAPILogin,
     controller.get
   );
 
   /**
    * @swagger
-   * /ticketing/api/filters:
+   * /ticketing/api/custom-filters:
    *  post:
    *    tags:
    *      - Filter
-   *    description: Create a new filter
+   *    description: Create a new  custom filter
    *    responses:
    *      201:
    *        $ref: "#/responses/cm_201"
@@ -78,7 +78,7 @@ module.exports = function(dependencies, lib, router) {
    *      500:
    *        $ref: "#/responses/cm_500"
    */
-  router.post('/filters',
+  router.post('/custom-filters',
     authorizationMW.requiresAPILogin,
     validateFilterCreatePayload,
     controller.create
@@ -86,11 +86,11 @@ module.exports = function(dependencies, lib, router) {
 
   /**
    * @swagger
-   * /ticketing/api/filters/{id}:
+   * /ticketing/api/custom-filters/{id}:
    *  put:
    *    tags:
    *      - Filter
-   *    description: Update filter by id
+   *    description: Update custom filter by id
    *    parameters:
    *      - $ref: "#/parameters/filter_id"
    *    responses:
@@ -105,7 +105,7 @@ module.exports = function(dependencies, lib, router) {
    *      500:
    *        $ref: "#/responses/cm_500"
    */
-  router.put('/filters/:id',
+  router.put('/custom-filters/:id',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'filter'),
     validateFilterUpdatePayload,
@@ -114,11 +114,11 @@ module.exports = function(dependencies, lib, router) {
 
   /**
    * @swagger
-   * /ticketing/api/filters/{id}:
+   * /ticketing/api/custom-filters/{id}:
    *  delete:
    *    tags:
    *      - Filter
-   *    description: Delete a filter by id
+   *    description: Delete a custom filter by id
    *    parameters:
    *      - $ref: "#/parameters/filter_number"
    *    responses:
@@ -133,7 +133,7 @@ module.exports = function(dependencies, lib, router) {
    *      500:
    *        $ref: "#/responses/cm_500"
    */
-  router.delete('/filters/:id',
+  router.delete('/custom-filters/:id',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'filter'),
     controller.remove

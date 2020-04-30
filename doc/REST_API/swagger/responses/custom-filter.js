@@ -1,7 +1,7 @@
 /**
  * @swagger
  * response:
- *  filter:
+ *  custom-filter:
  *    description: Ok with the filter object
  *    schema:
  *      $ref: "#/definitions/filter_content"
@@ -21,7 +21,7 @@
  *        ],
  *        "user": "5bd18e5477f6bb734331c3f1",
  *        }
- *  filters:
+ *  custom-filters:
  *    description: Ok with the filters list
  *    schema:
  *      type: array
