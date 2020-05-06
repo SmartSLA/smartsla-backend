@@ -17,6 +17,7 @@ module.exports = (dependencies, lib) => {
   require('./client')(dependencies, lib, router);
   require('./custom-filter')(dependencies, lib, router);
   require('./role')(dependencies, lib, router);
+  require('./filter')(dependencies, lib, router);
 
   return router;
 };
