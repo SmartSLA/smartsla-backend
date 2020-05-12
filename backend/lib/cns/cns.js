@@ -18,6 +18,12 @@ const DEFAULT_TIMEZONE = {
   value: 'Europe/Paris'
 };
 
+const HOLIDAYS_MAP = HOLIDAYS.reduce((holidaysMap, day) => {
+    holidaysMap[day.date] = day.nom_jour_ferie;
+
+    return holidaysMap;
+  }, {});
+
 /**
  * Compute Cns per status
  *
@@ -164,18 +170,16 @@ function computeTime(period, workingInterval, engagement) {
 
   let workingMinutes = 0;
   let suspendedMinutes = 0;
-  let holidaysMinutes = 0;
 
   if (noStop) {
     workingMinutes = hoursBetween(startDate, endDate) * 60;
     suspendedMinutes = calculateSuspendedMinutes(period.suspensions, 0, 24, true);
   } else {
     workingMinutes = calculateWorkingMinutes(startDate, endDate, workingInterval.start, workingInterval.end);
-    holidaysMinutes = holidaysBetween(startDate, endDate) * (workingInterval.end - workingInterval.start) * 60;
     suspendedMinutes = calculateSuspendedMinutes(period.suspensions, workingInterval.start, workingInterval.end);
   }
 
-  cnsValue.elapsedMinutes = workingMinutes - holidaysMinutes - suspendedMinutes;
+  cnsValue.elapsedMinutes = workingMinutes - suspendedMinutes;
   cnsValue.suspendedMinutes = suspendedMinutes;
   cnsValue.percentageElapsed = Math.round(
     (cnsValue.elapsedMinutes / convertIsoDurationInMinutes(engagementDuration, workingHoursInterval)) * 100 * 100
@@ -193,26 +197,6 @@ function hoursBetween(start, end) {
 }
 
 /**
- * Compute the number of holyday days during the period
- *
- * @param from
- * @param to
- * @return {number} number of holyday days during the period
- */
-function holidaysBetween(from, to) {
-  const holidaysDates = HOLIDAYS.map(date => moment(date));
-  const holidays = holidaysDates.filter(date => {
-    if (date.valueOf() <= to.valueOf() && date.valueOf() >= from.valueOf()) {
-      return !(date.weekday() === 6 || date.weekday() === 0);
-    } else {
-      return false;
-    }
-  });
-
-  return holidays.length;
-}
-
-/**
  * Calculate working minutes for the period with office hours
  *
  * @param startingDate
@@ -225,30 +209,28 @@ function calculateWorkingMinutes(startingDate, endingDate, startingHour, endingH
   const startWrapper = moment(startingDate);
   const endWrapper = moment(endingDate);
 
-  if (startWrapper.hour() < startingHour) {
-    startWrapper.hour(startingHour);
-    startWrapper.minute(0);
-    startWrapper.second(0);
-  }
-
-  if (startWrapper.hour() >= endingHour) {
+  if (isNonWorkingDay(startWrapper) || startWrapper.hour() >= endingHour) {
+    // Iterate until the next working day
     startWrapper.add(1, 'day');
-    startWrapper.hour(startingHour);
-    startWrapper.minute(0);
-    startWrapper.second(0);
+    startWrapper.hour(startingHour).minute(0).second(0);
+
+    while (isNonWorkingDay(startWrapper)) {
+      startWrapper.add(1, 'day');
+    }
+  } else if (startWrapper.hour() < startingHour) {
+    startWrapper.hour(startingHour).minute(0).second(0);
   }
 
-  if (endWrapper.hour() >= endingHour) {
-    endWrapper.hour(endingHour);
-    endWrapper.minute(0);
-    endWrapper.second(0);
-  }
-
-  if (endWrapper.hour() < startingHour) {
+  if (isNonWorkingDay(endWrapper) || endWrapper.hour() < startingHour) {
+    // Iterate until the previous working day
     endWrapper.add(-1, 'day');
-    endWrapper.hour(endingHour);
-    endWrapper.minute(0);
-    endWrapper.second(0);
+    endWrapper.hour(endingHour).minute(0).second(0);
+
+    while (isNonWorkingDay(endWrapper)) {
+      endWrapper.add(-1, 'day');
+    }
+  } else if (endWrapper.hour() >= endingHour) {
+    endWrapper.hour(endingHour).minute(0).second(0);
   }
 
   const durationMs = endWrapper.diff(startWrapper);
@@ -259,23 +241,20 @@ function calculateWorkingMinutes(startingDate, endingDate, startingHour, endingH
 
   const duration = moment.duration(durationMs);
 
-  let daysToRemove = 0;
-
   while (startWrapper.isBefore(endWrapper)) {
-    if (startWrapper.day() === 0) {
-      startWrapper.add(6, 'day');
-      daysToRemove++;
-    } else if (startWrapper.day() === 6) {
-      startWrapper.add(1, 'day');
-      daysToRemove++;
-    } else {
-      startWrapper.day(6);
+    if (isNonWorkingDay(startWrapper)) {
+      duration.add(-1, 'day');
     }
+    startWrapper.add(1, 'day');
   }
 
-  duration.add(-daysToRemove, 'day');
-
   return convertIsoDurationInMinutes(duration, endingHour - startingHour);
+
+  function isNonWorkingDay(currentDate) {
+    const dayString = currentDate.format('YYYY-MM-DD');
+
+    return currentDate.day() === 0 || currentDate.day() === 6 || HOLIDAYS_MAP.hasOwnProperty(dayString);
+  }
 }
 
 /**
