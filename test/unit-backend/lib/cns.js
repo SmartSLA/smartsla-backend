@@ -307,6 +307,64 @@ describe('CNS calculation', () => {
         expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(10 * 540);
       });
     });
+
+    describe('Start or/and end dates are non working days', () => {
+      it('should calculate correctly when start and end are same week end day', () => {
+        const start = '2020-05-02T15:44:44.697+02:00';
+        const end = '2020-05-02T17:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(0);
+      });
+
+      it('should calculate correctly when start is saturday and end is following sunday', () => {
+        const start = '2020-05-02T15:44:44.697+02:00'; // Saturday
+        const end = '2020-05-03T17:44:44.697+02:00'; // Sunday
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(0);
+      });
+
+      it('should calculate correctly when start and end are the same holiday', () => {
+        const start = '2020-05-01T15:44:44.697+02:00'; // Labor day
+        const end = '2020-05-01T17:44:44.697+02:00'; // Labor day
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(0);
+      });
+
+      it('should calculate correctly when start is sunday and end is working day', () => {
+        const start = '2020-05-03T15:44:44.697+02:00'; // Sunday
+        const end = '2020-05-04T15:44:44.697+02:00'; // Monday
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(404);
+      });
+
+      it('should calculate correctly when start is working day and end is holiday', () => {
+        const start = '2020-04-30T15:44:44.697+02:00'; // thursday
+        const end = '2020-05-01T16:44:44.697+02:00'; // Labor day
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(135);
+      });
+
+      it('should calculate correctly when start is holiday followed by weekend and end is working day', () => {
+        const start = '2020-05-01T15:44:44.697+02:00'; // Labor day
+        const end = '2020-05-04T15:44:44.697+02:00'; // Monday
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(404);
+      });
+
+      it('should calculate correctly when start is a weekend day with a following holiday monday and end is working day', () => {
+        const start = '2020-04-11T15:44:44.697+02:00'; // Saturday before Easter monday
+        const end = '2020-04-14T15:44:44.697+02:00'; // Tuesday
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(404);
+      });
+
+      it('should calculate correctly when start is working day and end is holiday', () => {
+        const start = '2020-04-30T15:44:44.697+02:00'; // thursday
+        const end = '2020-05-03T16:44:44.697+02:00'; // Labor day
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(135);
+      });
+    });
   });
 
   describe('The computePeriods function', () => {
