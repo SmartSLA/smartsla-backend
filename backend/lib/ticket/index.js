@@ -21,6 +21,7 @@ module.exports = dependencies => {
   const ticketDeletedTopic = pubsubLocal.topic(EVENTS.TEAM.deleted);
   const { computeCns } = require('../cns')(dependencies);
   const limesurvey = require('../limesurvey/limesurvey')(dependencies);
+  const ticketFilter = require('../filter');
 
   return {
     count,
@@ -125,6 +126,7 @@ module.exports = dependencies => {
   function list({ user, ticketingUser }, options = {}) {
     return contract.allowedContracts({ user, ticketingUser })
       .then(contract => ({ ...options, contract }))
+      .then(OptionsWithContract => getFilter(OptionsWithContract))
       .then(listOptions => list(listOptions))
       .then(tickets => {
         if (ticketingUser) {
@@ -157,14 +159,27 @@ module.exports = dependencies => {
         events: (events || []).filter(event => !event.isPrivate)
       }));
     }
+
+    function getFilter(options) {
+      return ticketFilter.getById(options.filter).then(filter => ({
+          ...options,
+          filter
+        }
+      ));
+    }
   }
 
   function buildTicketListQuery(options) {
-    const findOptions = {};
+    let findOptions = {};
 
     if (options.contract && options.contract !== ALL_CONTRACTS) {
       findOptions.contract = { $in: options.contract };
     }
+
+    if (options.filter) {
+      findOptions = { ...findOptions, ...options.filter.query };
+    }
+
     const query = Ticket.find(findOptions);
 
     if (options.populations) {
