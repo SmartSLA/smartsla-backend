@@ -89,6 +89,10 @@ module.exports = function(dependencies, lib) {
       offset: +req.query.offset
     };
 
+    if (req.query.filter) {
+      options.filter = req.query.filter;
+    }
+
     return lib.ticket.list(req, options)
       .then(tickets => {
         if (isExportCvs) {
