@@ -1,19 +1,20 @@
 const { expect } = require('chai');
 
 describe('The filter module', function() {
-  let moduleHelpers, filterModule;
+  let moduleHelpers, filterModule, filterList;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     filterModule = require(moduleHelpers.backendPath + '/lib/filter');
+    filterList = require(moduleHelpers.backendPath + '/lib/filter/constants').FILTER_LIST;
   });
 
   describe('The list function', function() {
-    it('should return array of 4', function(done) {
+    it('should return array of filters', function(done) {
       filterModule.list()
         .then(filters => {
           expect(filters).to.be.an('array');
-          expect(filters.length).to.be.equal(4);
+          expect(filters.length).to.be.equal(filterList.length);
 
           done();
         })
