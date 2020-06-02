@@ -9,11 +9,11 @@ describe('The filter module', function() {
   });
 
   describe('The list function', function() {
-    it('should return array of 2', function(done) {
+    it('should return array of 4', function(done) {
       filterModule.list()
         .then(filters => {
           expect(filters).to.be.an('array');
-          expect(filters.length).to.be.equal(2);
+          expect(filters.length).to.be.equal(4);
 
           done();
         })
