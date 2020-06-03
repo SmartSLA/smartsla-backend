@@ -4,6 +4,7 @@ module.exports = function(dependencies) {
 
   const models = require('./db')(dependencies);
   const cns = require('./cns')(dependencies);
+  const filter = require('./filter');
   const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
   const ticketingUserRole = require('./ticketing-user-role')(dependencies);
@@ -18,7 +19,7 @@ module.exports = function(dependencies) {
   const client = require('./client')(dependencies);
   const glossary = require('./ticketing-glossary')(dependencies);
   const ticket = require('./ticket')(dependencies);
-  const filter = require('./filter')(dependencies);
+  const customFilter = require('./custom-filter')(dependencies);
   const AccessControl = require('./access-control');
   const email = require('./email')(dependencies);
 
@@ -28,6 +29,7 @@ module.exports = function(dependencies) {
     contract,
     contribution,
     email,
+    filter,
     helpers,
     models,
     organization,
@@ -40,7 +42,7 @@ module.exports = function(dependencies) {
     ticketingUserRole,
     ticketingUser,
     ticket,
-    filter,
+    customFilter,
     accessControl: new AccessControl()
   };
 

@@ -34,7 +34,7 @@ module.exports = function(dependencies) {
             return send400Error('user is required', res);
         }
         if (!items.length) {
-            return send400Error('Filter is empty', res);
+            return send400Error('Custom filter is empty', res);
         }
 
         next();

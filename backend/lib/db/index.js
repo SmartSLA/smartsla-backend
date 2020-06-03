@@ -7,7 +7,7 @@ module.exports = dependencies => {
   const Contract = require('./contract')(dependencies);
   const Counter = require('./counter')(dependencies);
   const Contribution = require('./contribution')(dependencies);
-  const Filter = require('./filter')(dependencies);
+  const CustomFilter = require('./custom-filter')(dependencies);
   const Organization = require('./organization')(dependencies);
   const Software = require('./software')(dependencies);
   const Team = require('./team')(dependencies);
@@ -21,7 +21,7 @@ module.exports = dependencies => {
     Contract,
     Contribution,
     Counter,
-    Filter,
+    CustomFilter,
     Organization,
     Software,
     Team,

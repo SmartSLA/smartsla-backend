@@ -8,7 +8,7 @@ module.exports = dependencies => {
         value: { type: String }
     }, { _id: false });
 
-    const FilterSchema = new mongoose.Schema({
+    const CustomFilterSchema = new mongoose.Schema({
         user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
         name: { type: String, required: true },
         items: [ItemSchema],
@@ -18,7 +18,7 @@ module.exports = dependencies => {
         schemaVersion: { type: Number, default: 1 }
     });
 
-    const FilterModel = mongoose.model('TicketFilter', FilterSchema);
+    const FilterModel = mongoose.model('CustomFilter', CustomFilterSchema);
 
     return FilterModel;
 };

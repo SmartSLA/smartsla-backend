@@ -10,11 +10,13 @@ describe('The ticket lib', function() {
   let emailModule, sendMock;
   let topic, pubsub, cnsModuleMock, esnConfig;
   let user, ticketingUser, TicketingUserRoleMock;
+  let options, filterModule;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     EMAIL_NOTIFICATIONS = require(moduleHelpers.backendPath + '/lib/constants').EMAIL_NOTIFICATIONS;
     NOTIFICATIONS_TYPE = require(moduleHelpers.backendPath + '/lib/constants').NOTIFICATIONS_TYPE;
+    filterModule = require(moduleHelpers.backendPath + '/lib/filter');
     ObjectId = mongoose.Types.ObjectId;
     ticketId = new ObjectId();
     ticket = {
@@ -122,11 +124,31 @@ describe('The ticket lib', function() {
     };
 
     tickets = [
-      { _id: 1},
-      { _id: 2},
-      { _id: 3},
-      { _id: 4}
+      {
+        _id: 1,
+        cns: {},
+        events: []
+      },
+      {
+        _id: 2,
+        cns: {},
+        events: []
+      },
+      {
+        _id: 3,
+        cns: {},
+        events: []
+      },
+      {
+        _id: 4,
+        cns: {},
+        events: []
+      }
     ];
+
+    options = {
+      filter: 'closed'
+    };
 
     pubsub = {
       local: {
@@ -157,22 +179,34 @@ describe('The ticket lib', function() {
 
     queryMock = function(objectToReturn) {
       return {
-      exec: sinon.stub().returns(q.when(objectToReturn)),
-      populate: sinon.spy(
-        function() {
-          return this;
-        }),
-      lean: sinon.spy(
-        function() {
-          return this;
-        }),
+        exec: sinon.stub().returns(q.when(objectToReturn)),
+        populate: sinon.spy(
+          function() {
+            return this;
+          }),
+        lean: sinon.spy(
+          function() {
+            return this;
+          }),
         count: sinon.spy(
           function() {
             return {
               exec: sinon.stub().returns(q.when(Array.isArray(objectToReturn) ? objectToReturn.length : 1))
             };
           }
-        )
+        ),
+        skip: sinon.spy(
+          function() {
+            return this;
+          }),
+        limit: sinon.spy(
+          function() {
+            return this;
+          }),
+        sort: sinon.spy(
+          function() {
+              return this;
+            })
       };
     };
 
@@ -213,6 +247,46 @@ describe('The ticket lib', function() {
           expect(size).to.equals(tickets.length);
           done();
         });
+    });
+  });
+
+  describe('the list function', function() {
+    it('should use the filter param', function(done) {
+      const filterGetByIdSpy = sinon.spy(filterModule, 'getById');
+
+      getModule()
+        .list({ user, ticketingUser }, options)
+        .then(ticketsList => {
+          expect(ticketsList).to.have.lengthOf(tickets.length);
+          expect(filterGetByIdSpy).to.have.been.calledOnce;
+          expect(filterGetByIdSpy).to.have.been.calledWith('closed');
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should correctly set the filter query', function(done) {
+      TicketModelMock = {
+        find: sinon.spy(
+          function() {
+            return queryMock(tickets);
+          })
+      };
+
+      moduleHelpers.mockModels({
+        Contract: ContractModelMock,
+        Ticket: TicketModelMock,
+        TicketingUserRole: TicketingUserRoleMock
+      });
+
+      getModule()
+        .list({ user, ticketingUser }, options)
+        .then(() => {
+          expect(TicketModelMock.find).to.have.been.calledOnce;
+          expect(TicketModelMock.find).to.have.been.calledWith({ status: 'closed' });
+          done();
+        })
+        .catch(done);
     });
   });
 
