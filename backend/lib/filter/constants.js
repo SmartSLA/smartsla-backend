@@ -1,7 +1,5 @@
 'use strict';
 
-const RECENTLY = 86400000; // 24 hours
-
 module.exports = {
   FILTER_LIST: [
     {
@@ -27,12 +25,12 @@ module.exports = {
     {
       _id: 'recentlyupdated',
       name: 'Recently updated tickets',
-      query: { 'timestamps.updatedAt': { $gt: new Date(Date.now() - RECENTLY) } }
+      query: { 'timestamps.updatedAt': { $gt: '%recent_date%' } }
     },
     {
       _id: 'recentlysolved',
       name: 'Recently solved tickets',
-      query: { 'timestamps.updatedAt': { $gt: new Date(Date.now() - RECENTLY) }, status: { $in: ['resolved', 'closed']} }
+      query: { 'timestamps.updatedAt': { $gt: '%recent_date%' }, status: { $in: ['resolved', 'closed']} }
     },
     {
       _id: 'mytickets',
@@ -50,5 +48,6 @@ module.exports = {
         status: { $ne: 'closed'}
       }
     }
-  ]
+  ],
+  RECENTLY: 86400000 // 24 hours
 };
