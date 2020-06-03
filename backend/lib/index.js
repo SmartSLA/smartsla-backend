@@ -4,6 +4,7 @@ module.exports = function(dependencies) {
 
   const models = require('./db')(dependencies);
   const cns = require('./cns')(dependencies);
+  const dashboard = require('./dashboard')(dependencies);
   const filter = require('./filter');
   const user = require('./user')(dependencies);
   const organization = require('./organization')(dependencies);
@@ -29,6 +30,7 @@ module.exports = function(dependencies) {
     contract,
     contribution,
     email,
+    dashboard,
     filter,
     helpers,
     models,
