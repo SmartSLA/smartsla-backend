@@ -1,6 +1,7 @@
 'use strict';
 
 const { FILTER_LIST } = require('./constants');
+const { parseQuery, populateFilteryQueryTemplate } = require('./helpers');
 
 module.exports = {
     list,
@@ -22,8 +23,19 @@ function list() {
  * @param  {String}   filterId - The filter ID
  * @return {Promise}  - Resolve the found filter
  */
-function getById(filterId) {
+function getById(filterId, values = {}) {
   const filter = FILTER_LIST.find(filter => filter._id === filterId);
+
+  if (filter && filter.query) {
+
+    const templateParams = parseQuery(filter.query);
+    const paramValues = templateParams.map(param => ({
+      key: param,
+      value: values[param] || ''
+    }));
+
+    filter.query = populateFilteryQueryTemplate(filter.query, paramValues);
+  }
 
   return Promise.resolve(filter);
 }

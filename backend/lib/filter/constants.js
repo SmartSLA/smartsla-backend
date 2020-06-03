@@ -32,7 +32,23 @@ module.exports = {
     {
       _id: 'recentlysolved',
       name: 'Recently solved tickets',
-      query: { 'timestamps.updatedAt': { $gt: new Date(Date.now() - RECENTLY) }, status: { $in: ['resolved', 'closed']}}
+      query: { 'timestamps.updatedAt': { $gt: new Date(Date.now() - RECENTLY) }, status: { $in: ['resolved', 'closed']} }
+    },
+    {
+      _id: 'mytickets',
+      name: 'Your tickets',
+      query: { 'author.id': { $eq: '%user%'} }
+    },
+    {
+      _id: 'myunsolvedtickets',
+      name: 'Your unsolved tickets',
+      query: {
+        $or: [
+          { 'assignedTo._id': { $eq: '%user%' } },
+          { 'responsible._id': { $eq: '%user%' } }
+        ],
+        status: { $ne: 'closed'}
+      }
     }
   ]
 };

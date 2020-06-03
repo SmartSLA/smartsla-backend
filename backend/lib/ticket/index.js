@@ -126,7 +126,7 @@ module.exports = dependencies => {
   function list({ user, ticketingUser }, options = {}) {
     return contract.allowedContracts({ user, ticketingUser })
       .then(contract => ({ ...options, contract }))
-      .then(OptionsWithContract => getFilter(OptionsWithContract))
+      .then(OptionsWithContract => getFilter({ ...OptionsWithContract, user }))
       .then(listOptions => list(listOptions))
       .then(tickets => {
         if (ticketingUser) {
@@ -161,7 +161,11 @@ module.exports = dependencies => {
     }
 
     function getFilter(options) {
-      return ticketFilter.getById(options.filter).then(filter => ({
+      const values = {
+        user: options.user._id
+      };
+
+      return ticketFilter.getById(options.filter, values).then(filter => ({
           ...options,
           filter
         }
