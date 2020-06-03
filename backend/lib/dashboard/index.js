@@ -23,6 +23,9 @@ module.exports = dependencies => {
     let groupConditionId = {};
 
     switch (group) {
+      case GROUP.NONE:
+        groupConditionId = null;
+        break;
       case GROUP.DAY:
         groupConditionId = { day: {$dayOfMonth: '$' + dateField }};
       // eslint-disable-next-line no-fallthrough

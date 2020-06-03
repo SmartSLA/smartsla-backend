@@ -4,6 +4,7 @@ const { REQUEST_TYPE, TICKET_STATUS } = require('../constants');
 
 module.exports = {
   GROUP: {
+    NONE: 'none',
     YEAR: 'year',
     MONTH: 'month',
     DAY: 'day'

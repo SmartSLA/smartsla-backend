@@ -68,6 +68,19 @@ describe('The dashboard lib', function() {
         TicketMock.aggregate = sinon.spy(pipeline => {
           const groupStage = pipeline.find(stage => !!stage.$group);
 
+          expect(groupStage.$group._id).to.deep.equal(null);
+          done();
+        });
+
+        getModule()
+          .processDashboardQuery({query: { queryId, group: GROUP.NONE }, user, ticketingUser})
+          .catch(done);
+      });
+
+      it('should group on year if year is selected', function(done) {
+        TicketMock.aggregate = sinon.spy(pipeline => {
+          const groupStage = pipeline.find(stage => !!stage.$group);
+
           expect(groupStage.$group._id).to.deep.equal({ year: { $year: '$timestamps.createdAt' }});
           done();
         });
