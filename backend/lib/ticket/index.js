@@ -1,6 +1,7 @@
 'use strict';
 
 const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE } = require('../constants');
+const { RECENTLY } = require('../filter/constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 const moment = require('moment-timezone');
@@ -162,7 +163,8 @@ module.exports = dependencies => {
 
     function getFilter(options) {
       const values = {
-        user: options.user._id
+        user: options.user._id,
+        recent_date: new Date(Date.now() - RECENTLY).getTime()
       };
 
       return ticketFilter.getById(options.filter, values).then(filter => ({
