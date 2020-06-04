@@ -5,14 +5,30 @@ module.exports = (dependencies, lib) => {
   const mongoose = dependencies('db').mongo.mongoose;
   const ObjectId = mongoose.Types.ObjectId;
   const coreUserDenormalizer = dependencies('coreUserDenormalizer');
+  const EsnConfig = dependencies('esn-config').EsnConfig;
 
   return {
+    flipFeature,
     loadUserRole,
     validateObjectIds,
     requireAdministrator,
     buildUserDisplayName,
     requireCurrentUserOrAdministrator
   };
+
+  function flipFeature(featureName) {
+    return function(req, res, next) {
+      new EsnConfig('smartsla-backend')
+        .get('features')
+        .then(config => {
+          if (config[featureName]) {
+            next();
+          } else {
+            send403Error('Feature not enabled', res);
+          }
+        });
+    };
+  }
 
   function requireAdministrator(req, res, next) {
     if (!req.user || !req.user._id) {
