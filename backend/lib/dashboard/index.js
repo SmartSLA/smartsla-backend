@@ -52,6 +52,10 @@ module.exports = dependencies => {
         pipeline.push({ $sort: { [dateField]: 1 } });
         pipeline.push({ $group: groupCondition});
 
+        if (dashboardQuery.finalStages) {
+          pipeline.push(...dashboardQuery.finalStages);
+        }
+
         return Ticket.aggregate(pipeline);
       });
   }

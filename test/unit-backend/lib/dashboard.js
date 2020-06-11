@@ -7,13 +7,14 @@ describe('The dashboard lib', function() {
   let moduleHelpers;
   let TicketMock, ContractMock;
   let GROUP;
-  let queryId, user, ticketingUser;
+  let queryId, queryWithFinalStagesId, user, ticketingUser;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     GROUP = require(moduleHelpers.backendPath + '/lib/dashboard/constants').GROUP;
 
-    queryId = 'ticketByType';
+    queryId = 'ticketByOpenClosed';
+    queryWithFinalStagesId = 'ticketByType';
 
     user = {
       _id: '5e204f99cdc2b21444f07bdd'
@@ -177,5 +178,24 @@ describe('The dashboard lib', function() {
           .catch(done);
       });
     });
+
+    describe('the final stages', function() {
+      const start = '2020-05-01';
+      const end = '2020-05-31';
+
+      it('should add final stages if any', function(done) {
+        TicketMock.aggregate = sinon.spy(pipeline => {
+          const finalStage = pipeline.pop();
+
+          expect(finalStage.$project).to.exist;
+          done();
+        });
+
+        getModule()
+          .processDashboardQuery({query: { queryId: queryWithFinalStagesId, start, end }, user, ticketingUser})
+          .catch(done);
+      });
+    });
+
   });
 });
