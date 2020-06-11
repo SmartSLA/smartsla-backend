@@ -13,7 +13,6 @@ module.exports = dependencies => {
   };
 
   const IdNameEmailType = {
-    _id: Schema.Types.Mixed, // FIXME ids are inconsistant in UI, should be fixed
     id: { type: String }, // ObjectId in string version
     name: { type: String }, // Display name
     email: { type: String },
@@ -28,11 +27,7 @@ module.exports = dependencies => {
   };
 
   const Event = {
-    author: {
-      id: { type: String },
-      name: { type: String },
-      type: { type: String }
-    },
+    author: IdNameEmailType,
     target: IdNameEmailType, // this can be assigned to a Team, a Group, a User, anything...
     status: { type: String },
     comment: { type: String },
