@@ -27,7 +27,8 @@ const config = {
         user: 'r'
       },
       value: {
-        isLimesurveyEnabled: false
+        isLimesurveyEnabled: false,
+        isDashboardEnabled: false
       }
     }
   }

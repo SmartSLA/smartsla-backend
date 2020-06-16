@@ -169,5 +169,8 @@ module.exports = {
     ANOMALY: 'Anomaly',
     OTHER: 'Other'
   },
+  TICKET_SEVERITY: {
+    CRITICAL: 'critical'
+  },
   ALL_CONTRACTS: 'ALL_CONTRACTS'
 };
