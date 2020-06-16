@@ -154,8 +154,8 @@ describe('The dashboard lib', function() {
 
           expect(groupStage.$match['timestamps.createdAt']).to.deep.equal(
             {
-              $gte: start + 'T00:00:00.000Z',
-              $lte: end + 'T00:00:00.000Z'
+              $gte: new Date(start),
+              $lte: new Date(end)
             });
           done();
         });
