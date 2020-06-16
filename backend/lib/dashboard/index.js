@@ -38,7 +38,7 @@ module.exports = dependencies => {
 
     const groupCondition = { _id: groupConditionId, ...dashboardQuery.group };
 
-    let matchCondition = { [dateField]: { $gte: start.toISOString(), $lte: end.toISOString() }};
+    let matchCondition = { [dateField]: { $gte: new Date(start), $lte: new Date(end) }};
 
     return contract.allowedContracts({ user, ticketingUser })
       .then(contracts => {
