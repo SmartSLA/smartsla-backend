@@ -7,14 +7,15 @@ describe('The dashboard lib', function() {
   let moduleHelpers;
   let TicketMock, ContractMock;
   let GROUP;
-  let queryId, queryWithFinalStagesId, user, ticketingUser;
+  let queryWithGroup, queryWithFinalStages, queryWithNoGroup, user, ticketingUser;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     GROUP = require(moduleHelpers.backendPath + '/lib/dashboard/constants').GROUP;
 
-    queryId = 'ticketByOpenClosed';
-    queryWithFinalStagesId = 'ticketByType';
+    queryWithGroup = 'ticketByOpenClosed';
+    queryWithFinalStages = 'ticketByType';
+    queryWithNoGroup = 'topSoftware';
 
     user = {
       _id: '5e204f99cdc2b21444f07bdd'
@@ -46,7 +47,7 @@ describe('The dashboard lib', function() {
   describe('the processDashboardQuery method', function() {
     it('should fetch the allowed contracts for the user', function(done) {
       getModule()
-        .processDashboardQuery({query: { queryId }, user, ticketingUser})
+        .processDashboardQuery({query: { queryId: queryWithGroup }, user, ticketingUser})
         .then(() => {
           expect(ContractMock.allowedContracts).to.have.been.calledWith({ user, ticketingUser });
           done();
@@ -56,7 +57,7 @@ describe('The dashboard lib', function() {
 
     it('should call the Ticket aggregation query', function(done) {
       getModule()
-        .processDashboardQuery({query: { queryId }, user, ticketingUser})
+        .processDashboardQuery({query: { queryId: queryWithGroup }, user, ticketingUser})
         .then(() => {
           expect(TicketMock.aggregate).to.have.been.called;
           done();
@@ -65,7 +66,22 @@ describe('The dashboard lib', function() {
     });
 
     describe('the $group condition', function() {
-      it('should group on year if year is selected', function(done) {
+      it('should not group on date if query has no group option', function(done) {
+        TicketMock.aggregate = sinon.spy(pipeline => {
+          const groupStage = pipeline.find(stage => !!stage.$group);
+
+          const expectedGroupStageId = '$software.software';
+
+          expect(groupStage.$group._id).to.deep.equal(expectedGroupStageId);
+          done();
+        });
+
+        getModule()
+          .processDashboardQuery({query: { queryId: queryWithNoGroup, group: GROUP.NONE }, user, ticketingUser})
+          .catch(done);
+      });
+
+      it('should group on whole if none is selected', function(done) {
         TicketMock.aggregate = sinon.spy(pipeline => {
           const groupStage = pipeline.find(stage => !!stage.$group);
 
@@ -74,7 +90,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, group: GROUP.NONE }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, group: GROUP.NONE }, user, ticketingUser})
           .catch(done);
       });
 
@@ -87,7 +103,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, group: GROUP.YEAR }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, group: GROUP.YEAR }, user, ticketingUser})
           .catch(done);
       });
 
@@ -104,7 +120,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, group: GROUP.MONTH }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, group: GROUP.MONTH }, user, ticketingUser})
           .catch(done);
       });
 
@@ -122,7 +138,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, group: GROUP.DAY }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, group: GROUP.DAY }, user, ticketingUser})
           .catch(done);
       });
 
@@ -139,7 +155,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup }, user, ticketingUser})
           .catch(done);
       });
     });
@@ -161,7 +177,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, start, end }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, start, end }, user, ticketingUser})
           .catch(done);
       });
 
@@ -174,7 +190,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId, start, end }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithGroup, start, end }, user, ticketingUser})
           .catch(done);
       });
     });
@@ -192,7 +208,7 @@ describe('The dashboard lib', function() {
         });
 
         getModule()
-          .processDashboardQuery({query: { queryId: queryWithFinalStagesId, start, end }, user, ticketingUser})
+          .processDashboardQuery({query: { queryId: queryWithFinalStages, start, end }, user, ticketingUser})
           .catch(done);
       });
     });

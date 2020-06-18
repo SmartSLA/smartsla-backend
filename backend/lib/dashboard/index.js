@@ -1,7 +1,5 @@
 'use strict';
 
-const moment = require('moment-timezone');
-
 const { DASHBOARD_QUERIES, GROUP } = require('./constants');
 const { ALL_CONTRACTS } = require('../constants');
 
@@ -17,15 +15,40 @@ module.exports = dependencies => {
   function processDashboardQuery({ user, ticketingUser, query }) {
     const dashboardQuery = DASHBOARD_QUERIES.find(dashboardQuery => dashboardQuery._id === query.queryId);
     const dateField = 'timestamps.createdAt';
-    const start = (query.start && moment.utc(query.start)) || moment().add(-1, 'years');
-    const end = (query.end && moment.utc(query.end)) || moment();
-    const group = query.group || GROUP.MONTH;
+
+    return contract.allowedContracts({ user, ticketingUser })
+      .then(contracts => {
+        const pipeline = [];
+        let matchCondition = getDateMatching(query.start, query.end, dateField);
+
+        if (contracts && contracts !== ALL_CONTRACTS) {
+          matchCondition = { ...matchCondition, contract: { $in: contracts }};
+        }
+
+        if (matchCondition) {
+          pipeline.push({ $match: matchCondition });
+        }
+
+        if (dashboardQuery.group) {
+          const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
+
+          pipeline.push({ $group: groupCondition});
+          pipeline.push({ $sort: { _id: 1 } });
+        }
+
+        if (dashboardQuery.finalStages) {
+          pipeline.push(...dashboardQuery.finalStages);
+        }
+
+        return Ticket.aggregate(pipeline);
+      });
+  }
+
+  function getGrouping(dashboardQuery, queryGroup, dateField) {
+    const group = queryGroup || GROUP.MONTH;
     let groupConditionId = {};
 
     switch (group) {
-      case GROUP.NONE:
-        groupConditionId = null;
-        break;
       case GROUP.DAY:
         groupConditionId = { day: {$dayOfMonth: '$' + dateField }};
       // eslint-disable-next-line no-fallthrough
@@ -34,29 +57,28 @@ module.exports = dependencies => {
       // eslint-disable-next-line no-fallthrough
       case GROUP.YEAR:
         groupConditionId = { year: { $year: '$' + dateField }, ...groupConditionId };
+        break;
+      case GROUP.NONE:
+        groupConditionId = null;
+    }
+    const groupCondition = {_id: groupConditionId, ...dashboardQuery.group};
+
+    return groupCondition;
+  }
+
+  function getDateMatching(queryStart, queryEnd, dateField) {
+    let matchCondition;
+
+    if (queryStart) {
+      matchCondition = { $gte: new Date(queryStart) };
     }
 
-    const groupCondition = { _id: groupConditionId, ...dashboardQuery.group };
+    if (queryEnd) {
+      matchCondition = { ...matchCondition || {}, $lte: new Date(queryEnd) };
+    }
 
-    let matchCondition = { [dateField]: { $gte: new Date(start), $lte: new Date(end) }};
-
-    return contract.allowedContracts({ user, ticketingUser })
-      .then(contracts => {
-        if (contracts && contracts !== ALL_CONTRACTS) {
-          matchCondition = { ...matchCondition, contract: { $in: contracts }};
-        }
-
-        const pipeline = [];
-
-        pipeline.push({ $match: matchCondition });
-        pipeline.push({ $sort: { [dateField]: 1 } });
-        pipeline.push({ $group: groupCondition});
-
-        if (dashboardQuery.finalStages) {
-          pipeline.push(...dashboardQuery.finalStages);
-        }
-
-        return Ticket.aggregate(pipeline);
-      });
+    if (matchCondition) {
+      return { [dateField]: matchCondition };
+    }
   }
 };
