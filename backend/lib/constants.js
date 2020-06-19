@@ -153,7 +153,10 @@ module.exports = {
     updated: 'ticketing:notification:ticket:updated'
   },
   TICKETING_CONTRACT_ROLES: {
-    VIEWER: 'viewer'
+    VIEWER: 'viewer',
+    CUSTOMER: 'customer',
+    OPERATIONAL_MANAGER: 'operational manager',
+    CONTRACT_MANAGER: 'contract manager'
   },
   LIMESURVEY: {
     API_URL: 'http://localhost/index.php/admin/remotecontrol/',

@@ -13,7 +13,8 @@ module.exports = (dependencies, lib) => {
     validateObjectIds,
     requireAdministrator,
     buildUserDisplayName,
-    requireCurrentUserOrAdministrator
+    requireCurrentUserOrAdministrator,
+    requireContractManagerOrAdmin
   };
 
   function flipFeature(featureName) {
@@ -95,5 +96,15 @@ module.exports = (dependencies, lib) => {
     }
 
     return requireAdministrator(req, res, next);
+  }
+
+  function requireContractManagerOrAdmin(req, res, next) {
+    return lib.contract.getUserRoleInContract(req.params.id, req.user._id).then(role => {
+      if (role === lib.constants.TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER || role === lib.constants.TICKETING_CONTRACT_ROLES.OPERATIONAL_MANAGER) {
+        return next();
+      }
+
+      return requireAdministrator(req, res, next);
+    });
   }
 };

@@ -5,7 +5,8 @@ const composableMw = require('composable-middleware');
 module.exports = (dependencies, lib) => {
   const {
     validateObjectIds,
-    requireAdministrator
+    requireAdministrator,
+    requireContractManagerOrAdmin
   } = require('../../helpers')(dependencies, lib);
   const { validatePermissions } = require('./permission')(dependencies, lib);
   const { validateSoftwareToAdd, validateSoftwareToUpdate } = require('./software')(dependencies, lib);
@@ -59,7 +60,7 @@ module.exports = (dependencies, lib) => {
   }
 
   function canReadContract(req, res, next) {
-    return requireAdministrator(req, res, next);
+    return requireContractManagerOrAdmin(req, res, next);
   }
 
   function canUpdateContract(req, res, next) {
