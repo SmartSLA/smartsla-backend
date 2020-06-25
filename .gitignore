@@ -2,6 +2,5 @@ node_modules
 .idea
 *.log
 tmp
-package-lock.json
 .vscode
 .DS_Store
