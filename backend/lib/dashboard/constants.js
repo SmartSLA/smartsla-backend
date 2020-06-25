@@ -11,6 +11,29 @@ module.exports = {
   },
   DASHBOARD_QUERIES: [
     {
+      _id: 'globalStats',
+
+      finalStages: [
+        {
+          $group: {
+            openTickets: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
+            closedTickets: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
+            activeContracts: { $addToSet: '$contract' },
+            criticalTickets: { $sum: {$cond: { if: { $eq: ['$severity', TICKET_SEVERITY.CRITICAL] }, then: 1, else: 0 }}}
+          }
+        },
+        {
+          $project: {
+            _id: '$_id',
+            openTickets: '$openTickets',
+            closedTickets: '$closedTickets',
+            criticalTickets: '$criticalTickets',
+            activeContracts: { $size: '$activeContracts' }
+          }
+        }
+      ]
+    },
+    {
       _id: 'ticketByOpenClosed',
       group: {
         open: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
