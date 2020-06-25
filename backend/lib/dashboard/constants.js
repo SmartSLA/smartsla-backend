@@ -72,6 +72,59 @@ module.exports = {
           }
         }
       ]
+    },
+    {
+      _id: 'topSoftware',
+      finalStages: [
+        {
+          $match: { 'software.software': { $exists: true }, status: { $ne: ['$status', TICKET_STATUS.CLOSED] } }
+        },
+        {
+          $group: {
+            _id: '$software.software',
+            total: { $sum: 1 },
+            anomaly: {
+              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}]}, then: 1, else: 0 }}
+            },
+            information: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }] }, then: 1, else: 0 }}
+            },
+            administration: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }] }, then: 1, else: 0 }}
+            },
+            other: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }] }, then: 1, else: 0 }}
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'softwares',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'software'
+          }
+        },
+        {
+          $unwind: '$software'
+        },
+        {
+          $project: {
+            _id: 0,
+            softwareName: '$software.name',
+            total: 1,
+            anomaly: 1,
+            information: 1,
+            administration: 1,
+            other: 1
+          }
+        },
+        {
+          $sort: {
+            total: -1
+          }
+        }
+      ]
     }
   ]
 };
