@@ -30,6 +30,15 @@ const config = {
         isLimesurveyEnabled: false,
         isDashboardEnabled: false
       }
+         },
+    language: {
+      rights: {
+        user: 'rw'
+      },
+      value: {
+        defaultLanguage: 'en'
+      }
+
     }
   }
 };
