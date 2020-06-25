@@ -38,6 +38,7 @@ module.exports = dependencies => {
     removeById,
     addUsers,
     getUsers,
+    getUserRoleInContract,
     listForUser,
     updateUser
   };
@@ -213,5 +214,15 @@ module.exports = dependencies => {
     function userContractsList() {
       return listForUser(user._id).then(contractRelations => contractRelations.map(relation => relation.contract));
     }
+  }
+
+  function getUserRoleInContract(contractId, userId) {
+    return TicketingUserContract.findOne({ user: userId, contract: contractId }).then(relation => {
+      if (relation) {
+        return relation.role;
+      }
+
+      return false;
+    });
   }
 };
