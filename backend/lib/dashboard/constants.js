@@ -16,6 +16,7 @@ module.exports = {
       finalStages: [
         {
           $group: {
+            _id: null,
             openTickets: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
             closedTickets: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
             activeContracts: { $addToSet: '$contract' },
