@@ -148,6 +148,38 @@ module.exports = {
           }
         }
       ]
+    },
+    {
+      _id: 'OpenTicketsBySoftware',
+      finalStages: [
+        {
+          $match: { 'software.software': { $exists: true } }
+        },
+        {
+          $group: {
+            _id: '$software.software',
+            ticketCount: { $sum: 1 }
+          }
+        },
+        {
+          $lookup: {
+            from: 'softwares',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'software'
+          }
+        },
+        {
+          $unwind: '$software'
+        },
+        {
+          $project: {
+            _id: 0,
+            softwareName: '$software.name',
+            ticketCount: 1
+          }
+        }
+      ]
     }
   ]
 };
