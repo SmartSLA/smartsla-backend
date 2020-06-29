@@ -171,7 +171,7 @@ describe('The dashboard lib', function() {
           expect(groupStage.$match['timestamps.createdAt']).to.deep.equal(
             {
               $gte: new Date(start),
-              $lte: new Date(end)
+              $lte: new Date('2020-06-01')
             });
           done();
         });
