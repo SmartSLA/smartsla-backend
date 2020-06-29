@@ -11,9 +11,9 @@ module.exports = (dependencies, lib) => {
     flipFeature,
     loadUserRole,
     validateObjectIds,
+    isAdministrator,
     requireAdministrator,
     buildUserDisplayName,
-    requireCurrentUserOrAdministrator,
     requireContractManagerOrAdmin
   };
 
@@ -31,28 +31,33 @@ module.exports = (dependencies, lib) => {
     };
   }
 
-  function requireAdministrator(req, res, next) {
-    if (!req.user || !req.user._id) {
+  function isAdministrator(user, res) {
+    if (!user || !user._id) {
       return send400Error('Missing user', res);
     }
 
     return Promise.all([
-      coreUserDenormalizer.denormalize(req.user, { includeIsPlatformAdmin: true }),
-      isTicketingAdmin(req.user._id)
+      coreUserDenormalizer.denormalize(user, { includeIsPlatformAdmin: true }),
+      isTicketingAdmin(user._id)
     ])
-    .then(([user, isTicketingAdmin]) => {
+    .then(([user, isTicketingAdmin]) => (user.isPlatformAdmin || isTicketingAdmin));
 
-      if (user.isPlatformAdmin || isTicketingAdmin) {
+    function isTicketingAdmin(userId) {
+      return lib.ticketingUserRole.userIsAdministrator(userId);
+    }
+  }
+
+  function requireAdministrator(req, res, next) {
+    return isAdministrator(req.user, res)
+      .then(isAdmin => {
+
+      if (isAdmin) {
         return next();
       }
 
       return send403Error('User does not have the necessary permission', res);
     })
     .catch(err => send500Error('Unable to check administrator permission', err, res));
-
-    function isTicketingAdmin(userId) {
-      return lib.ticketingUserRole.userIsAdministrator(userId);
-    }
   }
 
   function loadUserRole(req, res, next) {
@@ -84,18 +89,6 @@ module.exports = (dependencies, lib) => {
 
   function buildUserDisplayName(user) {
     return (user.firstname && user.lastname) ? user.firstname + ' ' + user.lastname : user.preferredEmail;
-  }
-
-  function requireCurrentUserOrAdministrator(req, res, next) {
-    if (!req.user || !req.user._id) {
-      return send400Error('Missing user', res);
-    }
-
-    if (req.user._id.toString() === req.params.id) {
-      return next();
-    }
-
-    return requireAdministrator(req, res, next);
   }
 
   function requireContractManagerOrAdmin(req, res, next) {

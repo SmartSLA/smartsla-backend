@@ -8,6 +8,7 @@ module.exports = dependencies => {
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     phone: { type: String },
+    jobTitle: {type: String},
     // The role must be kept here in case the type is "expert" just because we do not have any other place to store it
     role: { type: String },
     timestamps: {

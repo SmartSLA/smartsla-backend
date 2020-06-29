@@ -4,6 +4,7 @@ module.exports = (dependencies, lib) => {
   const coreUser = dependencies('coreUser');
   const domainModule = dependencies('coreDomain');
   const coreUserDenormalizer = dependencies('coreUserDenormalizer');
+  const { isAdministrator } = require('../helpers')(dependencies, lib);
 
   const {
     send404Error,
@@ -121,7 +122,22 @@ module.exports = (dependencies, lib) => {
   function update(req, res) {
     const {contracts, ...user} = req.body;
 
-    lib.user.updateById(req.params.id, user)
+    return isAdministrator(req.user, res).then(isAdmin => {
+      if (isAdmin) {
+        const newUser = {
+          type: user.type,
+          jobTitle: user.jobTitle,
+          role: user.role
+        };
+
+        _updateAsAdmin(req.params.id, newUser, contracts);
+      } else {
+        _updateAsCurrentUser(req.params.id, {jobTitle: user.jobTitle});
+      }
+    });
+
+    function _updateAsAdmin(userId, user, contracts) {
+      lib.user.updateById(userId, user)
       .then(updatedUser => {
         if (!updatedUser) {
           return send404Error('User not found', res);
@@ -130,6 +146,18 @@ module.exports = (dependencies, lib) => {
         lib.contract.updateUser(user, contracts).then(() => res.status(204).end());
       })
       .catch(err => send500Error('Failed to update Ticketing user', err, res));
+    }
+
+    function _updateAsCurrentUser(userId, user) {
+      lib.user.updateById(userId, user)
+      .then(updatedUser => {
+        if (!updatedUser) {
+          return send404Error('User not found', res);
+        }
+      })
+      .then(() => res.status(204).end())
+      .catch(err => send500Error('Failed to update Ticketing user', err, res));
+    }
   }
 
   /**
