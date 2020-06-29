@@ -2,6 +2,7 @@
 
 const { DASHBOARD_QUERIES, GROUP } = require('./constants');
 const { ALL_CONTRACTS } = require('../constants');
+const moment = require('moment-timezone');
 
 module.exports = dependencies => {
   const contract = require('../contract')(dependencies);
@@ -74,7 +75,9 @@ module.exports = dependencies => {
     }
 
     if (queryEnd) {
-      matchCondition = { ...matchCondition || {}, $lte: new Date(queryEnd) };
+      const end = moment.utc(queryEnd).add(1, 'days');
+
+      matchCondition = { ...matchCondition || {}, $lte: new Date(end) };
     }
 
     if (matchCondition) {
