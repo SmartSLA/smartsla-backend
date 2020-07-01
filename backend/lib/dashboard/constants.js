@@ -1,6 +1,6 @@
 'use strict';
 
-const { REQUEST_TYPE, TICKET_STATUS, SOFTWARE_CRITICAL } = require('../constants');
+const { REQUEST_TYPE, TICKET_STATUS, SOFTWARE_CRITICAL, TICKETING_USER_TYPES } = require('../constants');
 
 module.exports = {
   GROUP: {
@@ -19,17 +19,8 @@ module.exports = {
             _id: null,
             openTickets: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
             closedTickets: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
-            activeContracts: { $addToSet: '$contract' },
+            supportAssignedTickets: { $sum: {$cond: { if: { $eq: ['$assignedTo.type', TICKETING_USER_TYPES.EXPERT] }, then: 1, else: 0 }}},
             criticalTickets: { $sum: {$cond: { if: { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}}
-          }
-        },
-        {
-          $project: {
-            _id: '$_id',
-            openTickets: '$openTickets',
-            closedTickets: '$closedTickets',
-            criticalTickets: '$criticalTickets',
-            activeContracts: { $size: '$activeContracts' }
           }
         }
       ]
