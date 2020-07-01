@@ -189,7 +189,7 @@ module.exports = (dependencies, lib, router) => {
   router.delete('/users/:id',
     authorizationMW.requiresAPILogin,
     checkIdInParams('id', 'User'),
-    userMiddleware.canUpdate,
+    userMiddleware.canRemove,
     controller.remove
   );
 };
