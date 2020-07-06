@@ -11,6 +11,7 @@ module.exports = (dependencies, lib) => {
     canRead,
     canUpdate,
     canList,
+    canRemove,
     validateUserCreatePayload
   };
 
@@ -57,6 +58,10 @@ module.exports = (dependencies, lib) => {
 
   function canList(req, res, next) {
     next(); // TODO Improve permissions
+  }
+
+  function canRemove(req, res, next) {
+    return requireAdministrator(req, res, next);
   }
 
   function validateUserCreatePayload(req, res, next) {
