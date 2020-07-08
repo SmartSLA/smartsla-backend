@@ -55,10 +55,18 @@ module.exports = dependencies => {
       set.status = event.status;
     }
 
+    if (event.beneficiary) {
+      set.beneficiary = event.beneficiary;
+    }
+
+    if (event.responsible) {
+      set.responsible = event.responsible;
+    }
+
     if (event.target) {
       set.assignedTo = event.target;
 
-      if (event.target.type === 'expert') {
+      if (!event.responsible && event.target.type === 'expert') {
         set.responsible = event.target;
       }
     }
