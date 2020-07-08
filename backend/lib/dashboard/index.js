@@ -18,12 +18,24 @@ module.exports = dependencies => {
     const dateField = 'timestamps.createdAt';
 
     return contract.allowedContracts({ user, ticketingUser })
-      .then(contracts => {
+      .then(allowedContractIds => {
         const pipeline = [];
         let matchCondition = getDateMatching(query.start, query.end, dateField);
+        let contractIdFilter;
 
-        if (contracts && contracts !== ALL_CONTRACTS) {
-          matchCondition = { ...matchCondition, contract: { $in: contracts }};
+        if (allowedContractIds && allowedContractIds !== ALL_CONTRACTS) {
+          contractIdFilter = allowedContractIds;
+        }
+
+        if (query.contracts) {
+          contractIdFilter = contractIdFilter ? query.contracts.filter(contract => contractIdFilter.includes(contract)) : query.contracts;
+        }
+
+        if (contractIdFilter) {
+          matchCondition = {
+            ...matchCondition,
+            contract: { $in: contractIdFilter.map(mongoose.Types.ObjectId) }
+          };
         }
 
         if (matchCondition) {

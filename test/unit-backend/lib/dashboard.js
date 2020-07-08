@@ -5,9 +5,9 @@ const mockery = require('mockery');
 
 describe('The dashboard lib', function() {
   let moduleHelpers;
-  let TicketMock, ContractMock;
+  let mongoose, TicketMock, ContractMock;
   let GROUP;
-  let queryWithGroup, queryWithFinalStages, queryWithNoGroup, user, ticketingUser;
+  let queryWithGroup, queryWithFinalStages, queryWithNoGroup, user, ticketingUser, contract1, contract2;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
@@ -31,14 +31,18 @@ describe('The dashboard lib', function() {
       aggregate: sinon.spy()
     };
 
+    contract1 = '5db084ad77e2cc0eb0679e4c';
+    contract2 = '5db084ad77e2cc0eb0679e4d';
+
     ContractMock = {
-      allowedContracts: sinon.stub().returns(q.when(['contract1']))
+      allowedContracts: sinon.stub().returns(q.when([contract1, contract2]))
     };
 
     moduleHelpers.mockModels({
       Ticket: TicketMock
     });
 
+    mongoose = moduleHelpers.dependencies('db').mongo.mongoose;
     mockery.registerMock('../contract', () => ContractMock);
   });
 
@@ -185,12 +189,25 @@ describe('The dashboard lib', function() {
         TicketMock.aggregate = sinon.spy(pipeline => {
           const groupStage = pipeline.find(stage => !!stage.$match);
 
-          expect(groupStage.$match.contract).to.deep.equal({ $in: ['contract1'] });
+          expect(groupStage.$match.contract).to.deep.equal({ $in: [mongoose.Types.ObjectId(contract1), mongoose.Types.ObjectId(contract2)] });
           done();
         });
 
         getModule()
           .processDashboardQuery({query: { queryId: queryWithGroup, start, end }, user, ticketingUser})
+          .catch(done);
+      });
+
+      it('should select queries according to allowed contracts and contracts param', function(done) {
+        TicketMock.aggregate = sinon.spy(pipeline => {
+          const groupStage = pipeline.find(stage => !!stage.$match);
+
+          expect(groupStage.$match.contract).to.deep.equal({ $in: [mongoose.Types.ObjectId(contract1)] });
+          done();
+        });
+
+        getModule()
+          .processDashboardQuery({query: { queryId: queryWithGroup, start, end, contracts: [contract1] }, user, ticketingUser})
           .catch(done);
       });
     });
