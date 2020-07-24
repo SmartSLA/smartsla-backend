@@ -29,6 +29,11 @@ module.exports = {
       query: { 'timestamps.updatedAt': { $gt: '%recent_date%' } }
     },
     {
+      _id: 'notupdatedweekago',
+      name: 'Not updated tickets since one week',
+      query: { 'timestamps.updatedAt': { $lt: '%one_week_ago%' }, status: { $ne: 'closed' } }
+    },
+    {
       _id: 'recentlysolved',
       name: 'Recently solved tickets',
       query: { 'timestamps.updatedAt': { $gt: '%recent_date%' }, status: { $in: ['resolved', 'closed'] } }
@@ -50,5 +55,6 @@ module.exports = {
       query: { status: 'closed' }
     }
   ],
-  RECENTLY: 86400000 // 24 hours
+  RECENTLY: 86400000, // 24 hours,
+  WEEK: 86400000 * 7
 };
