@@ -28,7 +28,9 @@ module.exports = dependencies => {
 
   const Event = {
     author: IdNameEmailType,
-    target: IdNameEmailType, // this can be assigned to a Team, a Group, a User, anything...
+    target: IdNameEmailType,
+    beneficiary: IdNameEmailType,
+    responsible: IdNameEmailType,
     status: { type: String },
     comment: { type: String },
     timestamps: {
