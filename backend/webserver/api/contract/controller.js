@@ -2,9 +2,8 @@
 
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
-  const coreUser = dependencies('coreUser');
   const logger = dependencies('logger');
-  const { REQUEST_TYPE } = require('../../../lib/constants');
+  const { REQUEST_TYPE, USER_TYPE } = require('../../../lib/constants');
 
   return {
     create,
@@ -178,60 +177,23 @@ module.exports = function(dependencies, lib) {
       _getCustomers(req.params.id)
     ])
     .then(([experts, customers]) => {
-      const expertsResult = experts.map(expert => ({
-        user: { ...coreUser.denormalize.denormalize(expert.user), ...{ displayName: expert.name } },
-        type: expert.type,
-        role: expert.role
-      }));
-      const customersResult = customers.map(customerType => ({
-        user: { ...coreUser.denormalize.denormalize(customerType.customer.user), ...{ displayName: customerType.displayName } },
-        role: customerType.customer.role,
-        type: customerType.type
-      }));
-      res.header('X-ESN-Items-Count', expertsResult.length + customersResult.length);
-      res.status(200).json([...expertsResult, ...customersResult]);
+      res.header('X-ESN-Items-Count', experts.length + experts.length);
+      res.status(200).json([...experts, ...customers]);
     })
     .catch(err => send500Error('Failed to get user for contracts', err, res));
 
     function _getCustomers(contractId) {
-      return lib.contract.getUsers(contractId, ['user'])
-        .then(users => getCustomersTypes(users));
-    }
+      return lib.contract.getUsers(contractId)
+        .then(users => {
+          const userIds = users.map(customer => customer.user);
 
-    function getCustomersTypes(customers = []) {
-      const ids = customers
-        .filter(customer => !!customer.user)
-        .map(customer => customer.user._id);
+          return lib.ticketingUser.listByUserIds(userIds);
+        })
+        .then(ticketingUsers => {
+          const customerTicketingUsers = ticketingUsers.filter(({ type }) => type === USER_TYPE.BENEFICIARY);
 
-      return lib.ticketingUser.listByUserIds(ids)
-        .then(ticketingUsers => customers.map(customer => ({
-          type: findType(customer, ticketingUsers),
-          customer,
-          displayName: findDisplayName(customer, ticketingUsers)
-        })));
-    }
-
-    function findDisplayName(customer, ticketingUsers) {
-      if (!customer.user) {
-        return;
-      }
-
-      const ticketingUser = ticketingUsers.find(ticketingUser => ticketingUser.user.equals(customer.user._id));
-
-      return ticketingUser && ticketingUser.name;
-    }
-
-    function findType(customer, ticketingUsers) {
-      // TODO: Default type from role
-      const defaultType = 'beneficiary';
-
-      if (!customer.user) {
-        return defaultType;
-      }
-
-      const ticketingUser = ticketingUsers.find(ticketingUser => ticketingUser.user.equals(customer.user._id));
-
-      return ticketingUser ? ticketingUser.type : defaultType;
+          return customerTicketingUsers;
+        });
     }
   }
 };
