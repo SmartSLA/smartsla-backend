@@ -198,21 +198,11 @@ module.exports = (dependencies, lib) => {
 
       errorMessage = 'Failed to list users';
       getUsers = lib.user.list(options)
-        .then(users => {
-          const denormalizedUsers = users.map(user => {
-            const denormalizedUser = coreUser.denormalize.denormalize(user);
-
-            // entity info
-            denormalizedUser.entity = user.entity;
-
-            return user;
-          });
-
-          return {
-            total_count: denormalizedUsers.length,
-            list: denormalizedUsers
-          };
-        });
+        .then(users => ({
+            total_count: users.length,
+            list: users
+          })
+        );
     }
 
     return getUsers
