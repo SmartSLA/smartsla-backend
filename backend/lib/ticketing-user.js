@@ -37,13 +37,12 @@ module.exports = dependencies => {
       .find()
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-      .populate('user')
       .sort('-timestamps.creation')
       .exec();
   }
 
   function listByType(type) {
-    return TicketingUser.find({ type }).populate('user').exec();
+    return TicketingUser.find({ type }).exec();
   }
 
   function listByUserIds(userIds) {
