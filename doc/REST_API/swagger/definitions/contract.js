@@ -23,6 +23,10 @@
  *        type: string
  *      version:
  *        type: string
+ *      configuration:
+ *        type: array
+ *        items:
+ *          type: string
  *      supportDate:
  *        $ref: "#/definitions/contract_schedule"
  *  contract_contact:

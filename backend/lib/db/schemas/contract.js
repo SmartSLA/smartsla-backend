@@ -15,6 +15,7 @@ module.exports = dependencies => {
     technicalReferent: { type: String }, // FIXME Store User instead of name
     os: { type: String },
     version: { type: String },
+    configuration: [String],
     SupportDate: ContractScheduleSchema
   }, { _id: false});
 
