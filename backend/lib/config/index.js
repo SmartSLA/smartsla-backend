@@ -20,6 +20,11 @@ const config = {
         password: 'password'
       }
     },
+    lininfosec: {
+      value: {
+        apiUrl: 'http://localhost:9999/api'
+      }
+    },
     features: {
       rights: {
         padmin: 'rw',
@@ -28,7 +33,8 @@ const config = {
       },
       value: {
         isLimesurveyEnabled: false,
-        isDashboardEnabled: false
+        isDashboardEnabled: false,
+        isLinInfosecEnabled: false
       }
          },
     language: {
