@@ -23,7 +23,7 @@
  *        type: string
  *      version:
  *        type: string
- *      lininfosec_configuration:
+ *      lininfosecConfiguration:
  *        type: array
  *        items:
  *          type: string

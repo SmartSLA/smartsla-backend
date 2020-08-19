@@ -22,7 +22,7 @@ const config = {
     },
     lininfosec: {
       value: {
-        apiUrl: 'http://localhost:9999/api'
+        apiUrl: 'http://lininfosec.localhost:9999'
       }
     },
     features: {
