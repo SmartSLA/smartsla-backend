@@ -98,9 +98,13 @@ module.exports = dependencies => {
       .then(config => {
         return axios.post(config.apiUrl + "/monitor/add", data);
       })
-      .catch(err => {
-        logger.error(err);
-        return null;
+      .catch(error => {
+         if (error.response) {
+           logger.error(`Error adding a configuration to lininfosec: ${JSON.stringify({status: error.response.status, headers: error.response.headers,data:error.response.data})}`);
+         } else {
+           logger.error(error.message);
+         }
+         return null;
       });
   }
 
@@ -153,9 +157,13 @@ module.exports = dependencies => {
       .then(config => {
         return axios.post(config.apiUrl + "/monitor/update", data);
       })
-      .catch(err => {
-        logger.error(err);
-        return null;
+      .catch(error => {
+         if (error.response) {
+           logger.error(`Error updating a configuration to lininfosec: ${JSON.stringify({status: error.response.status, headers: error.response.headers,data:error.response.data})}`);
+         } else {
+           logger.error(error.message);
+         }
+         return null;
       });
   }
 
@@ -173,9 +181,13 @@ module.exports = dependencies => {
       .then(config => {
         return axios.post(config.apiUrl + "/monitor/remove", data);
       })
-      .catch(err => {
-        logger.error(err);
-        return null;
+      .catch(error => {
+         if (error.response) {
+           logger.error(`Error removing a configuration to lininfosec: ${JSON.stringify({status: error.response.status, headers: error.response.headers,data:error.response.data})}`);
+         } else {
+           logger.error(error.message);
+         }
+         return null;
       });
   }
 
