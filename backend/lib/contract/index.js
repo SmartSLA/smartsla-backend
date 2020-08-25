@@ -10,6 +10,7 @@ module.exports = dependencies => {
   const ticketingUserRole = require('../ticketing-user-role')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const search = require('./search')(dependencies);
+  const lininfosec = require('../lininfosec/lininfosec')(dependencies);
 
   const contractCreatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.created);
   const contractUpdatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.updated);
@@ -60,6 +61,15 @@ module.exports = dependencies => {
       .then(createdContract => {
         contractCreatedTopic.publish(createdContract);
 
+        lininfosec.isEnabled()
+          .then(enabled => {
+            if(enabled) {
+              lininfosec.onContractAction(null,createdContract);
+            } else {
+              Promise.resolve();
+            }
+          });
+
         return createdContract;
       });
   }
@@ -102,14 +112,22 @@ module.exports = dependencies => {
     return Contract
       .findByIdAndUpdate(
         contractId,
-        { $set: modified },
-        { new: true }
+        { $set: modified }
       )
       .exec()
-      .then(modified => {
+      .then(oldContract=> {
         if (modified) {
           contractUpdatedTopic.publish(modified);
         }
+
+        lininfosec.isEnabled()
+          .then(enabled => {
+            if(enabled) {
+              lininfosec.onContractAction(oldContract, modified);
+            } else {
+              Promise.resolve();
+            }
+          });
 
         return modified;
       });
@@ -144,6 +162,15 @@ module.exports = dependencies => {
         if (deletedContract) {
           contractDeletedTopic.publish(deletedContract);
         }
+
+        lininfosec.isEnabled()
+          .then(enabled => {
+            if(enabled) {
+              lininfosec.onContractAction(deletedContract,null);
+            } else {
+              Promise.resolve();
+            }
+          });
 
         return deletedContract;
       });
