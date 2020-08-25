@@ -63,10 +63,8 @@ module.exports = dependencies => {
 
         lininfosec.isEnabled()
           .then(enabled => {
-            if(enabled) {
-              lininfosec.onContractAction(null,createdContract);
-            } else {
-              Promise.resolve();
+            if (enabled) {
+              lininfosec.onContractAction(null, createdContract);
             }
           });
 
@@ -115,17 +113,15 @@ module.exports = dependencies => {
         { $set: modified }
       )
       .exec()
-      .then(oldContract=> {
+      .then(oldContract => {
         if (modified) {
           contractUpdatedTopic.publish(modified);
         }
 
         lininfosec.isEnabled()
           .then(enabled => {
-            if(enabled) {
+            if (enabled) {
               lininfosec.onContractAction(oldContract, modified);
-            } else {
-              Promise.resolve();
             }
           });
 
@@ -165,10 +161,8 @@ module.exports = dependencies => {
 
         lininfosec.isEnabled()
           .then(enabled => {
-            if(enabled) {
-              lininfosec.onContractAction(deletedContract,null);
-            } else {
-              Promise.resolve();
+            if (enabled) {
+              lininfosec.onContractAction(deletedContract, null);
             }
           });
 
