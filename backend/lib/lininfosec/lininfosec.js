@@ -25,13 +25,18 @@ module.exports = dependencies => {
   }
 
   /**
-   * Update or Registers a configuration to LinInfoSec
+   * Update a configuration in LinInfoSec
+   * Takes the old version and the new version of the contract 
+   * and updates the LinInfoSec service accordingly
    *
-   * @param {Object}   oldContract   - The previous version of the contract
+   * null can be used as the oldContract to signify a contract being created
+   * null can be used as the newContract to signify a contract being deleted
+   *
+   * @param {Object}   oldContract   - The previous version of the contract 
    * @param {Object }  newContract   - The new contract
    * @return {Promise} resolve on success
    */
-  function onContractAction(oldContract, newContract) {
+  function onContractUpdate(oldContract, newContract) {
     const oldSoftwareArray = oldContract && oldContract.software ? oldContract.software : [];
     const newSoftwareArray = newContract && newContract.software ? newContract.software : [];
 
@@ -57,29 +62,35 @@ module.exports = dependencies => {
       newSoftware[uid] = newSoftwareArray[i].lininfosecConfiguration;
 
       if (uid in oldSoftware && !(_.isEqual(newSoftwareArray[i].lininfosecConfiguration, oldSoftware[uid]))) {
-        actions.push(upsertConf(uid, newSoftwareArray[i].lininfosecConfiguration));
+        actions.push(upsertCpeConfiguration(uid, newSoftwareArray[i].lininfosecConfiguration));
       } else if (!(uid in oldSoftware)) {
-        actions.push(createConf(uid, newSoftwareArray[i].lininfosecConfiguration));
+        actions.push(addCpeConfiguration(uid, newSoftwareArray[i].lininfosecConfiguration));
       }
     }
 
     for (const [uid] of Object.entries(oldSoftware)) {
       if (!(uid in newSoftware)) {
-        actions.push(removeConf(uid));
+        actions.push(removeCpeConfiguration(uid));
       }
     }
+
 
     return Promise.all(actions);
   }
 
   /**
-   *  Create a software cpe configuration in LinInfoSec
+   *  Add a software cpe configuration in LinInfoSec
    *
    * @return {Promise} resolve on success
    */
-  function createConf(uid, cpes) {
+  function addCpeConfiguration(uid, cpes) {
+     
+     if (cpes.length === 0) {
+       return Promise.resolve();
+     }
+
     const data = {
-      configuration: uid,
+      configurationUid: uid,
       cpes: cpes
     };
 
@@ -111,18 +122,18 @@ module.exports = dependencies => {
   }
 
   /**
-   *  Insert or update a software cpe configuration in LinInfoSec
+   *  Update a software cpe configuration in LinInfoSec
    *
    * @return {Promise} resolve on success
    */
-  function upsertConf(uid, cpes) {
+  function upsertCpeConfiguration(uid, cpes) {
     return getByUid(uid)
       .then(config => {
         if (config === null) {
-          return createConf(uid, cpes);
+          return addCpeConfiguration(uid, cpes);
         }
 
-        return updateConf(uid, cpes);
+        return updateCpeConfiguration(uid, cpes);
       });
   }
 
@@ -131,9 +142,14 @@ module.exports = dependencies => {
    *
    * @return {Promise} resolve on success
    */
-  function updateConf(uid, cpes) {
+  function updateCpeConfiguration(uid, cpes) {
+
+    if (cpes.length === 0) {
+      return Promise.resolve();
+    }
+
     const data = {
-      configuration: uid,
+      configurationUid: uid,
       cpes: cpes
     };
 
@@ -155,9 +171,11 @@ module.exports = dependencies => {
    *
    * @return {Promise} resolve on success
    */
-  function removeConf(uid) {
+  function removeCpeConfiguration(uid) {
+
+
     const data = {
-      configuration: uid
+      configurationUid: uid
     };
 
     return getConfig()
@@ -185,7 +203,7 @@ module.exports = dependencies => {
   }
 
   return {
-    onContractAction,
+    onContractUpdate,
     isEnabled
   };
 };
