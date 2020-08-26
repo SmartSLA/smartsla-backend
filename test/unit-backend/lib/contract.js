@@ -43,14 +43,20 @@ describe('The contract lib', function() {
 
     topic = { publish: sinon.spy() };
 
-    esnConfig = function() {
-      return {
-        inModule: function() {
-          return {
-            get: sinon.stub().returns(Promise.resolve({}))
-          };
+    esnConfig = {
+      inModule: function() {
+        return {
+          get: sinon.stub().returns(Promise.resolve({}))
+        };
+      },
+      EsnConfig: class {
+
+        // This lint is irrelevant when mocking
+        // eslint-disable-next-line class-methods-use-this
+        get() {
+          return Promise.resolve({});
         }
-      };
+      }
     };
 
     moduleHelpers.addDep('pubsub', pubsub);
