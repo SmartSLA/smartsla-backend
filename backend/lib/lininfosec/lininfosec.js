@@ -26,13 +26,13 @@ module.exports = dependencies => {
 
   /**
    * Update a configuration in LinInfoSec
-   * Takes the old version and the new version of the contract 
+   * Takes the old version and the new version of the contract
    * and updates the LinInfoSec service accordingly
    *
    * null can be used as the oldContract to signify a contract being created
    * null can be used as the newContract to signify a contract being deleted
    *
-   * @param {Object}   oldContract   - The previous version of the contract 
+   * @param {Object}   oldContract   - The previous version of the contract
    * @param {Object }  newContract   - The new contract
    * @return {Promise} resolve on success
    */
@@ -55,16 +55,21 @@ module.exports = dependencies => {
     const actions = [];
 
     for (let i = 0; i < newSoftwareArray.length; i++) {
+      const currentLinInfoSecConfiguration = newSoftwareArray[i].lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
       const uid = newContract._id.toString() + '-' + newSoftwareArray[i].software._id;
 
-      newSoftware[uid] = newSoftwareArray[i].lininfosecConfiguration;
+      newSoftware[uid] = currentLinInfoSecConfiguration;
 
-      if (uid in oldSoftware && !(_.isEqual(newSoftwareArray[i].lininfosecConfiguration, oldSoftware[uid]))) {
-        actions.push(upsertCpeConfiguration(uid, newSoftwareArray[i].lininfosecConfiguration));
+      if (uid in oldSoftware && !(_.isEqual(currentLinInfoSecConfiguration, oldSoftware[uid]))) {
+        if (currentLinInfoSecConfiguration.length === 0) {
+          actions.push(removeCpeConfiguration(uid));
+        } else {
+          actions.push(upsertCpeConfiguration(uid, currentLinInfoSecConfiguration));
+        }
       } else if (!(uid in oldSoftware)) {
-        actions.push(addCpeConfiguration(uid, newSoftwareArray[i].lininfosecConfiguration));
+        actions.push(addCpeConfiguration(uid, currentLinInfoSecConfiguration));
       }
     }
 
@@ -73,7 +78,6 @@ module.exports = dependencies => {
         actions.push(removeCpeConfiguration(uid));
       }
     }
-
 
     return Promise.all(actions);
   }
@@ -84,7 +88,7 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function addCpeConfiguration(uid, cpes) {
-     
+
      if (cpes.length === 0) {
        return Promise.resolve();
      }
@@ -143,7 +147,6 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function updateCpeConfiguration(uid, cpes) {
-
     if (cpes.length === 0) {
       return Promise.resolve();
     }
@@ -172,7 +175,6 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function removeCpeConfiguration(uid) {
-
 
     const data = {
       configurationUid: uid
