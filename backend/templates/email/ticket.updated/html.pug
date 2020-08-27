@@ -7,12 +7,12 @@ html.mail
   body
     - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
     - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
-    - var author = `<i>${content.ticket.author.name}</i>`
+    - var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
     if (content.ticket.assignedTo && content.ticket.assignedTo.name)
       - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
-      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:author})} :
+      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:updateBy})} :
     else
-      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
+      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:updateBy})} :
     hr 
     if (content.latestEvent.comment)
       != content.latestEvent.comment
