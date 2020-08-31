@@ -46,7 +46,7 @@ module.exports = dependencies => {
           const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
 
           pipeline.push({ $group: groupCondition});
-          pipeline.push({ $sort: { '_id.year': 1, '_id.month': 1, '_id.week': 1, '_id.day': 1 }});
+          pipeline.push({ $sort: { '_id.year': 1, '_id.quarter': 1, '_id.month': 1, '_id.week': 1, '_id.day': 1 }});
         }
 
         if (dashboardQuery.finalStages) {
@@ -74,12 +74,31 @@ module.exports = dependencies => {
       case GROUP.WEEK:
         groupConditionId = { year: { $year: '$' + dateField }, week: { $week: '$' + dateField } };
         break;
+      case GROUP.QUARTER:
+        groupConditionId = {
+          year: {$year: '$' + dateField},
+          quarter: {
+            $trunc: {
+              $add: [
+                {
+                  $divide: [
+                    {
+                      $subtract: [{ $month: '$' + dateField }, 1]
+                    },
+                    3
+                  ]
+                },
+                1
+              ]
+            }
+          }
+        };
+        break;
       case GROUP.NONE:
         groupConditionId = null;
     }
-    const groupCondition = {_id: groupConditionId, ...dashboardQuery.group};
 
-    return groupCondition;
+    return { _id: groupConditionId, ...dashboardQuery.group };
   }
 
   function getDateMatching(queryStart, queryEnd, dateField) {

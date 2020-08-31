@@ -6,6 +6,7 @@ module.exports = {
   GROUP: {
     NONE: 'none',
     YEAR: 'year',
+    QUARTER: 'quarter',
     MONTH: 'month',
     WEEK: 'week',
     DAY: 'day'
