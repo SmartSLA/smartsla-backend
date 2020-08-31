@@ -46,7 +46,7 @@ module.exports = dependencies => {
           const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
 
           pipeline.push({ $group: groupCondition});
-          pipeline.push({ $sort: { _id: 1 } });
+          pipeline.push({ $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } });
         }
 
         if (dashboardQuery.finalStages) {
