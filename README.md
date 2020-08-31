@@ -127,6 +127,25 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 ]'
 ```
 
+* LinInfoSec
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://backend.smartsla.local/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "smartsla-backend",
+    "configurations": [
+      {
+        "name": "features",
+        "value": {
+          "isLinInfoSecEnabled": true
+        }
+      }
+    ]
+  }
+]'
+```
+
 * Dashboard
 
 Use Curl to set configuration:
