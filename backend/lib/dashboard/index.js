@@ -46,7 +46,7 @@ module.exports = dependencies => {
           const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
 
           pipeline.push({ $group: groupCondition});
-          pipeline.push({ $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } });
+          pipeline.push({ $sort: { '_id.year': 1, '_id.month': 1, '_id.week': 1, '_id.day': 1 }});
         }
 
         if (dashboardQuery.finalStages) {
@@ -70,6 +70,9 @@ module.exports = dependencies => {
       // eslint-disable-next-line no-fallthrough
       case GROUP.YEAR:
         groupConditionId = { year: { $year: '$' + dateField }, ...groupConditionId };
+        break;
+      case GROUP.WEEK:
+        groupConditionId = { year: { $year: '$' + dateField }, week: { $week: '$' + dateField } };
         break;
       case GROUP.NONE:
         groupConditionId = null;
