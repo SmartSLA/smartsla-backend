@@ -37,8 +37,8 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function onContractUpdate(oldContract, newContract) {
-    const oldSoftwareArray = oldContract && oldContract.software ? oldContract.software : [];
-    const newSoftwareArray = newContract && newContract.software ? newContract.software : [];
+    const oldSoftwareArray = oldContract && oldContract.software || [];
+    const newSoftwareArray = newContract && newContract.software || [];
 
     const oldSoftware = {};
     const newSoftware = {};
@@ -46,7 +46,7 @@ module.exports = dependencies => {
     for (let i = 0; i < oldSoftwareArray.length; i++) {
 
       // Using contract id + software id for a unique identifier
-      const uid = oldContract._id.toString() + '-' + oldSoftwareArray[i].software._id;
+      const uid = `${newContract._id.toString()}-${newSoftwareArray[i].software._id}`;
 
       oldSoftware[uid] = oldSoftwareArray[i].lininfosecConfiguration;
     }
@@ -58,7 +58,7 @@ module.exports = dependencies => {
       const currentLinInfoSecConfiguration = newSoftwareArray[i].lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
-      const uid = newContract._id.toString() + '-' + newSoftwareArray[i].software._id;
+      const uid = `${newContract._id.toString()}-${newSoftwareArray[i].software._id}`;
 
       newSoftware[uid] = currentLinInfoSecConfiguration;
 
