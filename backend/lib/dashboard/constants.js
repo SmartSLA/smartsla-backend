@@ -7,6 +7,7 @@ module.exports = {
     NONE: 'none',
     YEAR: 'year',
     MONTH: 'month',
+    WEEK: 'week',
     DAY: 'day'
   },
   DASHBOARD_QUERIES: [
