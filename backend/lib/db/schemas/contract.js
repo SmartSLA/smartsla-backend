@@ -17,7 +17,7 @@ module.exports = dependencies => {
     version: { type: String },
     lininfosecConfiguration: [String],
     SupportDate: ContractScheduleSchema
-  }, { _id: false});
+  });
 
   const ContactSchema = new Schema({
     commercial: { type: String}, // FIXME Store User instead of name

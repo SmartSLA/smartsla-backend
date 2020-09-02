@@ -46,7 +46,7 @@ module.exports = dependencies => {
     for (let i = 0; i < oldSoftwareArray.length; i++) {
 
       // Using contract id + software id for a unique identifier
-      const uid = `${newContract._id.toString()}-${newSoftwareArray[i].software._id}`;
+      const uid = `${newContract._id.toString()}-${newSoftwareArray[i]._id.toString()}`;
 
       oldSoftware[uid] = oldSoftwareArray[i].lininfosecConfiguration;
     }
@@ -58,7 +58,7 @@ module.exports = dependencies => {
       const currentLinInfoSecConfiguration = newSoftwareArray[i].lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
-      const uid = `${newContract._id.toString()}-${newSoftwareArray[i].software._id}`;
+      const uid = `${newContract._id.toString()}-${newSoftwareArray[i]._id.toString()}`;
 
       newSoftware[uid] = currentLinInfoSecConfiguration;
 
