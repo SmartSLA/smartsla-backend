@@ -43,22 +43,22 @@ module.exports = dependencies => {
     const oldSoftware = {};
     const newSoftware = {};
 
-    for (let i = 0; i < oldSoftwareArray.length; i++) {
+    for (const oldSoftwareItem of oldSoftwareArray) {
 
       // Using contract id + software id for a unique identifier
-      const uid = `${newContract._id.toString()}-${newSoftwareArray[i]._id.toString()}`;
+      const uid = `${newContract._id.toString()}-${oldSoftwareItem._id.toString()}`;
 
-      oldSoftware[uid] = oldSoftwareArray[i].lininfosecConfiguration;
+      oldSoftware[uid] = oldSoftwareItem.lininfosecConfiguration;
     }
 
     //Promises for LinInfoSec sync
     const actions = [];
 
-    for (let i = 0; i < newSoftwareArray.length; i++) {
-      const currentLinInfoSecConfiguration = newSoftwareArray[i].lininfosecConfiguration;
+    for (const newSoftwareItem of newSoftwareArray) {
+      const currentLinInfoSecConfiguration = newSoftwareItem.lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
-      const uid = `${newContract._id.toString()}-${newSoftwareArray[i]._id.toString()}`;
+      const uid = `${newContract._id.toString()}-${newSoftwareItem._id.toString()}`;
 
       newSoftware[uid] = currentLinInfoSecConfiguration;
 
