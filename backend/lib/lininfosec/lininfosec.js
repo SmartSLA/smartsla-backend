@@ -40,20 +40,22 @@ module.exports = dependencies => {
     const oldSoftwareArray = oldContract && oldContract.software || [];
     const newSoftwareArray = newContract && newContract.software || [];
 
+    // HashMaps {uid: lininfosecConfiguration}
     const oldSoftware = {};
     const newSoftware = {};
 
+    // Filling oldSoftware
     for (const oldSoftwareItem of oldSoftwareArray) {
-
       // Using contract id + software id for a unique identifier
       const uid = `${newContract._id.toString()}-${oldSoftwareItem._id.toString()}`;
 
       oldSoftware[uid] = oldSoftwareItem.lininfosecConfiguration;
     }
 
-    //Promises for LinInfoSec sync
+    // Promises for LinInfoSec sync
     const actions = [];
 
+    // Synchronisation of updates with LinInfoSec
     for (const newSoftwareItem of newSoftwareArray) {
       const currentLinInfoSecConfiguration = newSoftwareItem.lininfosecConfiguration;
 
@@ -73,6 +75,7 @@ module.exports = dependencies => {
       }
     }
 
+    // Synchronisation of removals with LinInfoSec
     for (const [uid] of Object.entries(oldSoftware)) {
       if (!(uid in newSoftware)) {
         actions.push(removeCpeConfiguration(uid));
@@ -126,7 +129,7 @@ module.exports = dependencies => {
   }
 
   /**
-   *  Update a software cpe configuration in LinInfoSec
+   *  Upsert a software cpe configuration in LinInfoSec
    *
    * @return {Promise} resolve on success
    */
