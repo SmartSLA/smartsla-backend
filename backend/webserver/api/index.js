@@ -19,6 +19,7 @@ module.exports = (dependencies, lib) => {
   require('./role')(dependencies, lib, router);
   require('./dashboard')(dependencies, lib, router);
   require('./filter')(dependencies, lib, router);
+  require('./lininfosec')(dependencies, lib, router);
 
   return router;
 };

@@ -29,6 +29,7 @@ module.exports = (dependencies, lib) => {
     validateTicketCreation,
     validateTicketUpdate,
     transformTicket,
+    transform,
     canPutPrivateComment
   };
 
@@ -46,8 +47,7 @@ module.exports = (dependencies, lib) => {
     next();
   }
 
-  function transformTicket(req, res, next) {
-    const ticket = req.body;
+  function transform(ticket, res) {
     // For now the beneficiary is by default the author
     // Later we should had it in the ticket creation
     const beneficiary = ticket.author;
@@ -74,9 +74,7 @@ module.exports = (dependencies, lib) => {
 
         const createdDuringBusinessHours = isInBusinessHours(contract);
 
-        res.locals.newTicket = { ...ticket, beneficiary, idOssa, createdDuringBusinessHours };
-
-        return next();
+        return new Promise(resolve => resolve({ ...ticket, beneficiary, idOssa, createdDuringBusinessHours }));
 
         function isInBusinessHours(contract) {
           if (contract.features && contract.features.nonBusinessHours) {
@@ -103,6 +101,17 @@ module.exports = (dependencies, lib) => {
         }
       })
       .catch(err => send500Error('Unable to compute ticket OssaId', err, res));
+  }
+
+  function transformTicket(req, res, next) {
+    const ticket = req.body;
+
+    return transform(ticket, res)
+      .then(transformedTicket => {
+        res.locals.newTicket = transformedTicket;
+
+        next();
+      });
   }
 
   function canCreateTicket(req, res, next) {

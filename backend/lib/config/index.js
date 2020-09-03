@@ -23,7 +23,14 @@ const config = {
     lininfosec: {
       value: {
         apiUrl: 'http://lininfosec.localhost:9999',
-        lininfosec_auth_token: 'LinagoraR7'
+        lininfosec_auth_token: 'LinagoraR7',
+        author: {
+          id: '5f3a805b7aa11a5db50a39c2',
+          name: 'Amy WOLSH',
+          email: 'amy.wolsh@open-paas.org',
+          type: 'beneficiary',
+          phone: ''
+        }
       }
     },
     features: {
