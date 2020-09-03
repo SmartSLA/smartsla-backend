@@ -31,7 +31,8 @@ module.exports = dependencies => {
     deposedAt: { type: String },
     links: [LinkSchema],
     timestamps: {
-      creation: { type: Date, default: Date.now }
+      creation: { type: Date, default: Date.now },
+      updatedAt: { type: Date }
     },
     schemaVersion: { type: Number, default: 1 }
   });
@@ -52,6 +53,19 @@ module.exports = dependencies => {
     } else {
       next();
     }
+  });
+
+  ContributionSchema.pre('update', function(next) {
+    const self = this;
+    const set = self._update.$set || {};
+
+    if (set.timestamps) {
+      set.timestamps.updatedAt = Date.now();
+    } else {
+      self._update.$set = Object.assign(set, { 'timestamps.updatedAt': Date.now() });
+    }
+
+    next();
   });
 
   return ContributionSchema;
