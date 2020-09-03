@@ -47,7 +47,7 @@ module.exports = dependencies => {
     // Filling oldSoftware
     for (const oldSoftwareItem of oldSoftwareArray) {
       // Using contract id + software id for a unique identifier
-      const uid = `${newContract._id.toString()}-${oldSoftwareItem._id.toString()}`;
+      const uid = `${oldContract._id.toString()}-${oldSoftwareItem._id.toString()}`;
 
       oldSoftware[uid] = oldSoftwareItem.lininfosecConfiguration;
     }
