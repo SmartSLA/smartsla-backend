@@ -61,14 +61,15 @@ module.exports = dependencies => {
       .then(createdContract => {
         contractCreatedTopic.publish(createdContract);
 
-        lininfosec.isEnabled()
+        return lininfosec.isEnabled()
           .then(enabled => {
             if (enabled) {
-              lininfosec.onContractUpdate(null, createdContract);
+              return lininfosec.onContractUpdate(null, createdContract);
             }
+          })
+          .then(function() {
+            return createdContract;
           });
-
-        return createdContract;
       });
   }
 
@@ -118,14 +119,16 @@ module.exports = dependencies => {
           contractUpdatedTopic.publish(modified);
         }
 
-        lininfosec.isEnabled()
+        return lininfosec.isEnabled()
           .then(enabled => {
             if (enabled) {
-              lininfosec.onContractUpdate(oldContract, modified);
+              return lininfosec.onContractUpdate(oldContract, modified);
             }
+          })
+          .then(function() {
+            return modified;
           });
 
-        return modified;
       });
   }
 
@@ -159,14 +162,15 @@ module.exports = dependencies => {
           contractDeletedTopic.publish(deletedContract);
         }
 
-        lininfosec.isEnabled()
+        return lininfosec.isEnabled()
           .then(enabled => {
             if (enabled) {
-              lininfosec.onContractUpdate(deletedContract, null);
+              return lininfosec.onContractUpdate(deletedContract, null);
             }
+          })
+          .then(function() {
+            return deletedContract;
           });
-
-        return deletedContract;
       });
   }
 
