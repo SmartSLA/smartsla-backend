@@ -14,7 +14,6 @@ module.exports = {
   DASHBOARD_QUERIES: [
     {
       _id: 'globalStats',
-
       finalStages: [
         {
           $group: {
@@ -36,33 +35,36 @@ module.exports = {
     },
     {
       _id: 'ticketByType',
-      group: {
-        anomalyCritical: {
-          $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
-        },
-        anomalyNonCritical: {
-          $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
-        },
-        informationCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        },
-        informationNonCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        },
-        administrationCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        },
-        administrationNonCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        },
-        otherCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        },
-        otherNonCritical: {
-            $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
-        }
-      },
       finalStages: [
+        {
+          $group: {
+            _id: null,
+            anomalyCritical: {
+              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
+            },
+            anomalyNonCritical: {
+              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
+            },
+            informationCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            },
+            informationNonCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            },
+            administrationCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            },
+            administrationNonCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            },
+            otherCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            },
+            otherNonCritical: {
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+            }
+          }
+        },
         {
           $project: {
             _id: '$_id',
