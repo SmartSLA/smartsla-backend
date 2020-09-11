@@ -73,7 +73,7 @@ const contract = {
     sensible: {
       engagements: [
         {
-          request: 'Anomaly',
+          request: 'Information',
           supported: {
             businessHours: 'PT1H',
             nonBusinessHours: 'PT2H'
@@ -92,7 +92,7 @@ const contract = {
     standard: {
       engagements: [
         {
-          request: 'Anomaly',
+          request: 'Administration',
           supported: {
             businessHours: 'PT1H',
             nonBusinessHours: 'PT2H'
@@ -120,12 +120,34 @@ describe('CNS calculation', () => {
   });
 
   describe('The computeCns function', () => {
-    it('should be a valid structure ', () => {
-      const { supported, bypassed, resolved } = computeCns(ticketCopy, contract);
+    describe('Cns structure depends on ticket type', () => {
+      it('should return cns with supported, bypassed, resolved for an anomaly ticket', () => {
+        const cns = computeCns(ticketCopy, contract);
 
-      expect(supported).to.be.an('object');
-      expect(bypassed).to.be.an('object');
-      expect(resolved).to.be.an('object');
+        expect(cns.supported).to.be.an('object');
+        expect(cns.bypassed).to.be.an('object');
+        expect(cns.resolved).to.be.an('object');
+      });
+
+      it('should return cns with supported, resolved for an information ticket', () => {
+        ticketCopy.type = 'Information';
+        ticketCopy.software.critical = 'sensible';
+        const cns = computeCns(ticketCopy, contract);
+
+        expect(cns.supported).to.be.an('object');
+        expect(cns.bypassed).to.be.undefined;
+        expect(cns.resolved).to.be.an('object');
+      });
+
+      it('should return cns with supported, resolved for an administration ticket', () => {
+        ticketCopy.type = 'Administration';
+        ticketCopy.software.critical = 'standard';
+        const cns = computeCns(ticketCopy, contract);
+
+        expect(cns.supported).to.be.an('object');
+        expect(cns.bypassed).to.be.undefined;
+        expect(cns.resolved).to.be.an('object');
+      });
     });
 
     it('should compute cns correctly when issue is in supported state', () => {
