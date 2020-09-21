@@ -18,10 +18,12 @@ module.exports = {
         {
           $group: {
             _id: null,
+            totalTickets: { $sum: 1 },
             openTickets: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
             closedTickets: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
             supportAssignedTickets: { $sum: {$cond: { if: { $eq: ['$assignedTo.type', TICKETING_USER_TYPES.EXPERT] }, then: 1, else: 0 }}},
-            criticalTickets: { $sum: {$cond: { if: { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}}
+            criticalTickets: { $sum: {$cond: { if: { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}},
+            notCriticalTickets: { $sum: {$cond: { if: { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}}
           }
         }
       ]
