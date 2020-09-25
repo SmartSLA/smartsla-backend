@@ -65,6 +65,7 @@ module.exports = dependencies => {
 
         const newTicketingUser = {
           user: opUser._id,
+          client: user.client || null,
           role,
           type: user.type || '',
           email: user.email || '',

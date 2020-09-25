@@ -127,7 +127,8 @@ module.exports = (dependencies, lib) => {
         const newUser = {
           type: user.type,
           jobTitle: user.jobTitle,
-          role: user.role
+          role: user.role,
+          client: user.client
         };
 
         _updateAsAdmin(req.params.id, newUser, contracts);
