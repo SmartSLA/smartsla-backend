@@ -9,6 +9,7 @@ module.exports = dependencies => {
     email: { type: String, unique: true, required: true },
     phone: { type: String },
     jobTitle: {type: String},
+    client: { type: mongoose.Schema.ObjectId, ref: 'Client'},
     // The role must be kept here in case the type is "expert" just because we do not have any other place to store it
     role: { type: String },
     timestamps: {
