@@ -18,12 +18,12 @@ module.exports = {
         {
           $group: {
             _id: null,
-            totalTickets: { $sum: 1 },
-            openTickets: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
-            closedTickets: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
-            supportAssignedTickets: { $sum: {$cond: { if: { $eq: ['$assignedTo.type', TICKETING_USER_TYPES.EXPERT] }, then: 1, else: 0 }}},
-            criticalTickets: { $sum: {$cond: { if: { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}},
-            notCriticalTickets: { $sum: {$cond: { if: { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, then: 1, else: 0 }}}
+            totalTickets: { $sum: {$cond: { if: { $ne: ['$archived', true] }, then: 1, else: 0 }} },
+            openTickets: { $sum: { $cond: { if: {$and: [{$ne: ['$status', TICKET_STATUS.CLOSED]}, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
+            closedTickets: { $sum: { $cond: { if: {$and: [{$eq: ['$status', TICKET_STATUS.CLOSED]}, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
+            supportAssignedTickets: { $sum: { $cond: { if: {$and: [{$eq: ['$assignedTo.type', TICKETING_USER_TYPES.EXPERT]}, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
+            criticalTickets: { $sum: { $cond: { if: {$and: [{$eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
+            notCriticalTickets: { $sum: { $cond: { if: {$and: [{$ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}}
           }
         }
       ]
@@ -31,8 +31,8 @@ module.exports = {
     {
       _id: 'ticketByOpenClosed',
       group: {
-        open: { $sum: {$cond: { if: { $ne: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}},
-        closed: { $sum: {$cond: { if: { $eq: ['$status', TICKET_STATUS.CLOSED] }, then: 1, else: 0 }}}
+        open: { $sum: {$cond: { if: {$and: [{ $ne: ['$status', TICKET_STATUS.CLOSED] }, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
+        closed: { $sum: {$cond: { if: {$and: [{ $eq: ['$status', TICKET_STATUS.CLOSED] }, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}}
       }
     },
     {
@@ -42,28 +42,28 @@ module.exports = {
           $group: {
             _id: null,
             anomalyCritical: {
-              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
+              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             anomalyNonCritical: {
-              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}]}, then: 1, else: 0 }}
+              $sum: { $cond: { if: {$and: [{$eq: ['$type', REQUEST_TYPE.ANOMALY]}, {$ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             informationCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             informationNonCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.INFORMATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             administrationCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             administrationNonCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             otherCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             },
             otherNonCritical: {
-              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }] }, then: 1, else: 0 }}
+              $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.OTHER] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
             }
           }
         },
@@ -98,7 +98,13 @@ module.exports = {
       _id: 'topSoftware',
       finalStages: [
         {
-          $match: { 'software.software': { $exists: true }, status: { $ne: ['$status', TICKET_STATUS.CLOSED] } }
+          $match: {
+            $and: [
+              { 'software.software': { $exists: true }},
+              { status: { $ne: ['$status', TICKET_STATUS.CLOSED] }},
+              { archived: {$exists: true, $ne: ['$archived', true]} }
+            ]
+          }
         },
         {
           $group: {
@@ -151,7 +157,12 @@ module.exports = {
       _id: 'OpenTicketsBySoftware',
       finalStages: [
         {
-          $match: { 'software.software': { $exists: true } }
+          $match: {
+            $and: [
+              { 'software.software': { $exists: true } },
+              { archived: {$exists: true, $ne: ['$archived', true]} }
+            ]
+          }
         },
         {
           $group: {
