@@ -13,7 +13,8 @@ module.exports = function(dependencies, lib) {
     get,
     update,
     updateRelatedContributions,
-    remove
+    remove,
+    search
   };
 
   function addEvent(req, res) {
@@ -174,5 +175,26 @@ module.exports = function(dependencies, lib) {
         send200ItemCount(count, res);
       })
       .catch(err => send500Error('Cannot count tickets', err, res));
+  }
+
+  /**
+ * Search tickets
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+  function search(req, res) {
+    if (req.query.q) {
+      return lib.ticket.search(req)
+        .then(({size, list}) => {
+          res.status(200).json({
+            size,
+            list
+          });
+        })
+        .catch(err => send500Error('Error while searching tickets', err, res));
+    }
+
+    return send500Error('Failed to search tickets', 'Query parameter {q} is mandatory', res);
   }
 };
