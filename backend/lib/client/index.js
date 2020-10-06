@@ -92,14 +92,19 @@ module.exports = function(dependencies) {
       .findById(clientId)
       .lean()
       .exec()
-      .then(client =>
-        Contract.find({ clientId: clientId })
+      .then(client => {
+        if (client) {
+          return Contract.find({ clientId: clientId })
           .exec()
           .then(contracts => {
             client.contracts = contracts.map(contract => ({_id: contract._id, name: contract.name}));
 
             return client;
-          })
+          });
+        }
+
+        throw new Error('Failed to get client');
+      }
       );
   }
 
