@@ -53,6 +53,11 @@ module.exports = {
       _id: 'closed',
       name: 'Closed tickets',
       query: { status: 'closed' }
+    },
+    {
+      _id: 'archived',
+      name: 'Archived tickets',
+      query: { archived: true }
     }
   ],
   RECENTLY: 86400000, // 24 hours,
