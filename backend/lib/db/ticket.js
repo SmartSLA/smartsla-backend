@@ -72,6 +72,7 @@ module.exports = dependencies => {
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now }
     },
+    archived: { type: Boolean, default: false },
     title: { type: String, required: true },
     type: { type: String }, // TODO add enum validator
     schemaVersion: { type: Number, default: 1 }
