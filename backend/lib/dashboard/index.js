@@ -24,7 +24,7 @@ module.exports = dependencies => {
         let contractIdFilter;
 
         if (allowedContractIds && allowedContractIds !== ALL_CONTRACTS) {
-          contractIdFilter = allowedContractIds;
+          contractIdFilter = allowedContractIds.map(String);
         }
 
         if (query.contracts) {
