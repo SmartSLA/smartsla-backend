@@ -63,6 +63,7 @@ module.exports = function(dependencies, lib, router) {
    */
   router.get('/contracts/:id',
     authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
     canReadContract,
     checkIdInParams('id', 'Contract'),
     controller.get
