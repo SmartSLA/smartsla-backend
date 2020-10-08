@@ -89,6 +89,7 @@ module.exports = dependencies => {
   function listByClient(clientId) {
     return Contract
       .find({ clientId })
+      .populate(DEFAULT_CONTRACT_POPULATE)
       .exec();
   }
 

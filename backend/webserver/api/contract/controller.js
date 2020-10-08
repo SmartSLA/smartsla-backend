@@ -3,7 +3,7 @@
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
   const logger = dependencies('logger');
-  const { REQUEST_TYPE, USER_TYPE } = require('../../../lib/constants');
+  const { REQUEST_TYPE, USER_TYPE, TICKETING_CONTRACT_ROLES } = require('../../../lib/constants');
 
   return {
     create,
@@ -108,6 +108,12 @@ module.exports = function(dependencies, lib) {
     }
 
     function _listUserContracts(userId) {
+      const ticketingUser = req.ticketingUser;
+
+      if (ticketingUser && ticketingUser.role === TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER) {
+        return _listContractsByClient(ticketingUser.client);
+      }
+
       return lib.contract.listForUser(userId, {
           path: 'contract',
           populate: { path: 'software.software' }
@@ -122,6 +128,13 @@ module.exports = function(dependencies, lib) {
             list: userContracts.map(userContract => userContract.contract)
           };
         });
+    }
+
+    function _listContractsByClient(client) {
+      return lib.contract.listByClient(client).then(contracts => ({
+        size: contracts.length,
+        list: contracts
+      }));
     }
   }
 
