@@ -11,7 +11,7 @@ module.exports = function(dependencies, lib) {
    * @param {Response} res
    */
   function list(req, res) {
-    lib.filter.list()
+    lib.filter.list(req)
     .then(filters => {
       res.status(200).json(filters);
     });
