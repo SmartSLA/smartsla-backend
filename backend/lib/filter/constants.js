@@ -1,4 +1,4 @@
-'use strict';
+const { TICKETING_USER_TYPES } = require('../constants');
 
 module.exports = {
   FILTER_LIST: [
@@ -31,7 +31,8 @@ module.exports = {
     {
       _id: 'notupdatedweekago',
       name: 'Not updated tickets since one week',
-      query: { 'timestamps.updatedAt': { $lt: '%one_week_ago%' }, status: { $ne: 'closed' } }
+      query: { 'timestamps.updatedAt': { $lt: '%one_week_ago%' }, status: { $ne: 'closed' } },
+      rights: [TICKETING_USER_TYPES.EXPERT]
     },
     {
       _id: 'recentlysolved',
@@ -57,7 +58,8 @@ module.exports = {
     {
       _id: 'archived',
       name: 'Archived tickets',
-      query: { archived: true }
+      query: { archived: true },
+      rights: [TICKETING_USER_TYPES.EXPERT]
     }
   ],
   RECENTLY: 86400000, // 24 hours,

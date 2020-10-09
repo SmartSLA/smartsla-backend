@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies, lib, router) {
   const authorizationMW = dependencies('authorizationMW');
+  const userMiddleware = require('../user/middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
 
   /**
@@ -25,6 +26,7 @@ module.exports = function(dependencies, lib, router) {
   */
   router.get('/filters',
     authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
     controller.list
   );
 };

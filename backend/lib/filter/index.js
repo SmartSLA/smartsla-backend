@@ -12,8 +12,15 @@ module.exports = {
  * List filter
  * @return {Promise} - Resolve on success
  */
-function list() {
-  const filters = FILTER_LIST.map(({ _id, name }) => ({ _id, name }));
+function list({ticketingUser}) {
+  const { type } = ticketingUser;
+  const filters = FILTER_LIST.filter(filter => {
+    if (filter.rights && !filter.rights.includes(type)) {
+      return false;
+    }
+
+    return true;
+  }).map(({ _id, name }) => ({ _id, name }));
 
   return Promise.resolve(filters);
 }
