@@ -92,12 +92,12 @@ module.exports = (dependencies, lib) => {
   }
 
   function requireContractManagerOrAdmin(req, res, next) {
-    return lib.contract.getUserRoleInContract(req.params.id, req.user._id).then(role => {
-      if (role === lib.constants.TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER || role === lib.constants.TICKETING_CONTRACT_ROLES.OPERATIONAL_MANAGER) {
-        return next();
-      }
+    const { role } = req.ticketingUser;
 
-      return requireAdministrator(req, res, next);
-    });
+    if (role === lib.constants.TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER || role === lib.constants.TICKETING_CONTRACT_ROLES.OPERATIONAL_MANAGER) {
+      return next();
+    }
+
+    return requireAdministrator(req, res, next);
   }
 };
