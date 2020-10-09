@@ -22,7 +22,8 @@ const config = {
     },
     lininfosec: {
       value: {
-        apiUrl: 'http://lininfosec.localhost:9999'
+        apiUrl: 'http://lininfosec.localhost:9999',
+        lininfosec_auth_token: 'LinagoraR7'
       }
     },
     features: {

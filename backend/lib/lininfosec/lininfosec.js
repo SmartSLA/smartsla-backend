@@ -14,7 +14,7 @@ module.exports = dependencies => {
     return new EsnConfig('smartsla-backend')
       .get('lininfosec')
       .then(config => {
-        if (config && config.apiUrl) {
+        if (config && config.apiUrl && config.lininfosec_auth_token) {
           return config;
         }
 
@@ -92,17 +92,26 @@ module.exports = dependencies => {
    */
   function addCpeConfiguration(uid, cpes) {
 
-     if (cpes.length === 0) {
-       return Promise.resolve();
-     }
+    if (cpes.length === 0) {
+      return Promise.resolve();
+    }
 
-    const data = {
+    const reqData = {
       configurationUid: uid,
       cpes: cpes
     };
 
     return getConfig()
-      .then(config => axios.post(config.apiUrl + '/monitor/add', data));
+    .then(config =>
+      axios({
+        method: 'POST',
+        baseURL: config.apiUrl,
+        url: '/monitor/add',
+        data: reqData,
+        headers: {'X-Auth-Token': config.lininfosec_auth_token}
+      })
+      .catch(err => logger.error('Error while adding CPE configuration', err))
+    );
   }
 
   /**
@@ -111,12 +120,22 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success with the software configuration, null if configuration doesn't exists.
    */
   function getByUid(uid) {
+    const reqParams = {
+      name: uid
+    };
+
     return getConfig()
       .then(config =>
-        axios.get(config.apiUrl + '/monitor/get', { params: { name: uid }})
-      )
-      .then(res => res.data)
-      .catch(() => null);
+        axios({
+          method: 'GET',
+          baseURL: config.apiUrl,
+          url: '/monitor/get',
+          headers: {'X-Auth-Token': config.lininfosec_auth_token},
+          params: reqParams
+        })
+        .then(res => res.data)
+        .catch(err => logger.error('Error while getting CPE configuration', err))
+    );
   }
 
   /**
@@ -145,13 +164,23 @@ module.exports = dependencies => {
       return Promise.resolve();
     }
 
-    const data = {
+    const reqData = {
       configurationUid: uid,
       cpes: cpes
     };
 
     return getConfig()
-      .then(config => axios.post(config.apiUrl + '/monitor/update', data));
+      .then(config =>
+        axios({
+          method: 'POST',
+          baseURL: config.apiUrl,
+          url: '/monitor/update',
+          data: reqData,
+          headers: {'X-Auth-Token': config.lininfosec_auth_token}
+        })
+        .then(res => res.data)
+        .catch(err => logger.error('Error while updating CPE configuration', err))
+      );
   }
 
   /**
@@ -160,13 +189,22 @@ module.exports = dependencies => {
    * @return {Promise} resolve on success
    */
   function removeCpeConfiguration(uid) {
-
-    const data = {
+    const reqData = {
       configurationUid: uid
     };
 
     return getConfig()
-      .then(config => axios.post(config.apiUrl + '/monitor/remove', data));
+      .then(config =>
+        axios({
+          method: 'POST',
+          baseURL: config.apiUrl,
+          url: '/monitor/remove',
+          data: reqData,
+          headers: {'X-Auth-Token': config.lininfosec_auth_token}
+        })
+        .then(res => res.data)
+        .catch(err => logger.error('Error while removing CPE configuration', err))
+      );
   }
 
   /**

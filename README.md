@@ -158,6 +158,7 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
         "name": "lininfosec",
         "value": {
           "apiUrl": "http://lininfosec.smartsla.local:8080/",
+          "lininfosec_auth_token": "TOKEN"
         }
       }
     ]
