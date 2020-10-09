@@ -1,17 +1,22 @@
 const { expect } = require('chai');
 
 describe('The filter module', function() {
-  let moduleHelpers, filterModule, filterList;
+  let moduleHelpers, filterModule, filterList, ticketingUser;
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
     filterModule = require(moduleHelpers.backendPath + '/lib/filter');
     filterList = require(moduleHelpers.backendPath + '/lib/filter/constants').FILTER_LIST;
+    ticketingUser = {
+      user: '5e204f99cdc2b21444f07bdd',
+      _id: '5e204fa9cdc2b21444f07be4',
+      type: 'expert'
+    };
   });
 
   describe('The list function', function() {
     it('should return array of filters', function(done) {
-      filterModule.list()
+      filterModule.list({ticketingUser})
         .then(filters => {
           expect(filters).to.be.an('array');
           expect(filters.length).to.be.equal(filterList.length);
@@ -22,7 +27,7 @@ describe('The filter module', function() {
     });
 
     it('should return filters with id and name properties', function(done) {
-      filterModule.list()
+      filterModule.list({ticketingUser})
         .then(filters => {
           filters.forEach(filter => {
             expect(Object.keys(filter)).to.have.members(['_id', 'name']);
