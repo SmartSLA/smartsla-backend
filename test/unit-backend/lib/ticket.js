@@ -283,7 +283,7 @@ describe('The ticket lib', function() {
         .list({ user, ticketingUser }, options)
         .then(() => {
           expect(TicketModelMock.find).to.have.been.calledOnce;
-          expect(TicketModelMock.find).to.have.been.calledWith({ status: 'closed' });
+          expect(TicketModelMock.find).to.have.been.calledWith({ status: 'closed', archived: { $ne: true } });
           done();
         })
         .catch(done);
