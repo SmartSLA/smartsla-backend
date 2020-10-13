@@ -4,7 +4,7 @@ const AwesomeModule = require('awesome-module');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
 
 const MODULE_NAME = 'smartsla';
-const AWESOME_MODULE_NAME =  `${MODULE_NAME}-backend`;
+const AWESOME_MODULE_NAME = `${MODULE_NAME}-backend`;
 
 const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
   dependencies: [
@@ -63,6 +63,10 @@ const myAwesomeModule = new AwesomeModule(AWESOME_MODULE_NAME, {
       this.lib.start(callback);
     }
   }
+});
+
+module.exports = Object.freeze({
+  name: AWESOME_MODULE_NAME
 });
 
 /**

@@ -1,6 +1,9 @@
 'use strict';
 
 module.exports = function(dependencies, lib) {
+  const projectModule = require('../../../../index');
+  const esnConfig = dependencies('esn-config');
+  const i18n = dependencies('i18n');
   const { TICKETING_USER_TYPES } = require('../constants');
   const { Parser } = require('json2csv');
   const { send200ItemCount, send500Error, send404Error } = require('../utils')(dependencies);
@@ -67,14 +70,23 @@ module.exports = function(dependencies, lib) {
       .catch(err => send500Error('Failed to create ticket', err, res));
   }
 
-  function exportCsv(tickets, res) {
-    lib.cns.exportData(tickets).then(data => {
+  function setDefaultLanguage(user) {
+    return esnConfig.getConfigsForUser(user, true).then(esnConfig => {
+      const userConfig = esnConfig.modules.filter(esnConfig => esnConfig.name === projectModule.name);
+      const defaultLanguage = userConfig && userConfig[0].configurations.filter(userConfig => userConfig.name === 'language');
+
+      i18n.setLocale(defaultLanguage[0] && defaultLanguage[0].value.defaultLanguage || 'fr');
+    });
+  }
+
+  function exportCsv(tickets, res, user) {
+    return setDefaultLanguage(user).then(lib.cns.exportData(tickets).then(data => {
       const parser = new Parser();
       const csv = parser.parse(data);
 
       res.set('Content-Type', 'text/csv');
       res.status(200).send(csv);
-    });
+    }));
   }
 
   /**
@@ -97,7 +109,7 @@ module.exports = function(dependencies, lib) {
     return lib.ticket.list(req, options)
       .then(tickets => {
         if (isExportCvs) {
-          exportCsv(tickets, res);
+          exportCsv(tickets, res, req.user);
         } else {
           res.status(200).json(tickets);
         }
