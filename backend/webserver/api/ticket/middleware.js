@@ -2,6 +2,7 @@ const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
 const { TICKET_ACTIONS, ID_OSSA_CONVERTION, DEFAULT_TIMEZONE } = require('../constants');
+const { TICKETING_CONTRACT_ROLES } = require('../../../lib/constants');
 const moment = require('moment-timezone');
 const business = require('moment-business');
 
@@ -137,6 +138,12 @@ module.exports = (dependencies, lib) => {
       .catch(err => send500Error('Unable to check ticket rights', err, res));
 
     function userCanReadTicket(user, ticket) {
+      const { role, client } = req.ticketingUser;
+
+      if (role === TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER) {
+        return lib.contract.listByClient(client).then(contracts => contracts.map(contract => String(contract._id)).includes(String(ticket.contract)));
+      }
+
       return lib.contract.listForUser(user._id)
         .then(contracts => {
           if (!contracts || !contracts.length) {
