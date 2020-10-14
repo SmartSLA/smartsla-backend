@@ -25,5 +25,15 @@ module.exports = {
   TICKETING_USER_TYPES: {
     EXPERT: 'expert',
     BENEFICIARY: 'beneficiary'
+  },
+  LININFOSEC: {
+    DEFAULT_MEETINGID: '1234', // TO DEFINE
+    DEFAULT_CALLNUMBER: '0600000000', // TO DEFINE
+    TYPE: 'softwareVulnerability'
+  },
+  SEVERITY_TYPES: {
+    MAJOR: 'Major',
+    MINOR: 'Minor',
+    NONE: 'None'
   }
 };

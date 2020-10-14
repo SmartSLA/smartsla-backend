@@ -166,6 +166,26 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 ]'
 ```
 
+Use this curl to set the author of the automatic ticket created when the vulnerability notification sent by LinInfoSec.
+
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations\?scope\=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[{
+    "name": "smartsla-backend",
+    "configurations": [{
+        "name": "lininfosec",
+        "value": {
+            "author": {
+                "id": "authorId",
+                "name": "authorName",
+                "email": "authorEmail",
+                "type": "authorType",
+                "phone": "authorPhone"
+            }
+        }
+    }]
+}]'
+```
+
 * Dashboard
 
 Use Curl to set configuration:
