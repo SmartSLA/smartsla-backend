@@ -10,7 +10,8 @@ module.exports = dependencies => {
   const TEMPLATE_PATH = path.resolve(__dirname, '../../templates/email');
 
   return {
-    send
+    send,
+    sendSspMail
   };
 
   function getTicketUrl(ticket, frontendUrl) {
@@ -60,10 +61,11 @@ module.exports = dependencies => {
 
   function getConfig() {
     return new EsnConfig('smartsla-backend')
-      .getMultiple(['frontendUrl', 'mail'])
-      .spread((frontendUrl, mail) => ({
+      .getMultiple(['frontendUrl', 'mail', 'ssp'])
+      .spread((frontendUrl, mail, ssp) => ({
         frontendUrl: frontendUrl && frontendUrl.value,
-        mail: mail && mail.value
+        mail: mail && mail.value,
+        ssp: ssp && ssp.value
       }));
   }
 
@@ -102,6 +104,35 @@ module.exports = dependencies => {
         });
       })
       .catch(logError);
+  }
+
+  function sendSspMail(emailType, user) {
+    return getConfig()
+    .then(({ ssp, mail, frontendUrl }) => {
+        const recipient = user.email;
+        const { subject, template } = emailType;
+
+        const content = {
+          sspUrl: ssp.sspUrl,
+          contactSupport: mail.support,
+          frontendUrl
+        };
+
+        const message = {
+          subject: i18n.__(subject, content),
+          to: recipient,
+          from: mail.noreply,
+          replyTo: mail.replyto
+        };
+
+        return emailModule.getMailer(user).sendHTML(
+          message,
+          { name: template, path: TEMPLATE_PATH },
+          { content, translate: (...args) => i18n.__n(...args) },
+          logError
+        );
+    })
+    .catch(logError);
   }
 
   function logError(err) {
