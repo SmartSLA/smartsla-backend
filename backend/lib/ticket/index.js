@@ -195,6 +195,8 @@ module.exports = dependencies => {
 
     if (options.filter) {
       findOptions = { ...findOptions, ...options.filter.query };
+    } else {
+      findOptions = { ...findOptions, archived: { $ne: true } };
     }
 
     const query = Ticket.find(findOptions);
