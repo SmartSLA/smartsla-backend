@@ -5,6 +5,7 @@ module.exports = function(dependencies, lib) {
   const ticketMiddlewares = require('../ticket/middleware')(dependencies, lib);
   const { SEVERITY_TYPES, LININFOSEC } = require('../constants');
   const { send500Error } = require('../utils')(dependencies);
+  const i18n = require('../../../lib/i18n/index.js')(dependencies);
 
   return {
     create
@@ -34,25 +35,30 @@ module.exports = function(dependencies, lib) {
 
     function _normalizeTicket(notification) {
       const ticket = {
-        title: notification.cve.CVE_data_meta.ID,
         contract: notification.configurationUid.split('-')[0],
-        participants: [],
         type: LININFOSEC.TYPE,
         severity: _getSeverity(notification.impact.baseMetricV2.severity),
         description: notification.cve.description.description_data[0].value,
-        status: 'new',
+        status: LININFOSEC.TICKET_STATUS,
         callNumber: LININFOSEC.DEFAULT_CALLNUMBER,
         meetingId: LININFOSEC.DEFAULT_MEETINGID
       };
 
       return Promise.all([
         _getAuthor(),
-        _getContractSoftware(notification.configurationUid.split('-')[0])
+        _getContract(notification.configurationUid.split('-')[0])
       ])
-      .then(([author, software]) => ({
+      .then(([author, contract]) => ({
         ...ticket,
+        title: i18n.__('Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}',
+          {
+            CveId: notification.cve.CVE_data_meta.ID,
+            softwareName: contract.contractSoftware.software.name,
+            softwareVersion: contract.contractSoftware.version
+          }),
         author: author,
-        software: software
+        software: contract.contractSoftware,
+        participants: contract.vulnerabilityContact ? [contract.vulnerabilityContact] : []
       }))
       .then(normalizedTicket => (ticketMiddlewares.transform(normalizedTicket, res)))
       .then(newTicket => newTicket)
@@ -65,10 +71,18 @@ module.exports = function(dependencies, lib) {
       .catch(err => send500Error('Failed to get the author', err, res));
     }
 
-    function _getContractSoftware(contractId) {
-      return lib.contract.getById(contractId).then(
-        contractSoftware => (contractSoftware.toObject().software.filter(software => software._id.toString() === notification.configurationUid.split('-')[1])[0])
-      );
+    function _getContract(contractId) {
+      return lib.contract.getById(contractId)
+      .then(contract => (contract.toObject()))
+      .then(contract => {
+        const contractSoftware = contract.software.filter(software => software._id.toString() === notification.configurationUid.split('-')[1])[0],
+              vulnerabilityContact = contract.contact.vulneratility;
+
+        return {
+          contractSoftware,
+          vulnerabilityContact
+        };
+      });
     }
 
     function _getSeverity(notificationSeverity) {
@@ -76,9 +90,9 @@ module.exports = function(dependencies, lib) {
 
       switch (notificationSeverity) {
         case 'HIGH':
-        case 'MEDIUM':
           severity = SEVERITY_TYPES.MAJOR;
           break;
+        case 'MEDIUM':
         case 'LOW':
           severity = SEVERITY_TYPES.MINOR;
           break;

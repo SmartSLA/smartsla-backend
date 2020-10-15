@@ -247,6 +247,7 @@
   "User updated": "L'utilisateur est mis à jour",
   "Versions": "Versions",
   "Version": "Version",
+  "Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}": "Vulnérabilité détectée: {{CveId}} sur {{softwareName}} v. {{SoftwareVersion}}",
   "Workaround": "Contournement",
   "Workaround time is set": "Le temps de contournement est défini",
   "Workaround time is unset": "Le temps de contournement est supprimé",

@@ -20,8 +20,9 @@ module.exports = dependencies => {
   });
 
   const ContactSchema = new Schema({
-    commercial: { type: String}, // FIXME Store User instead of name
-    technical: { type: String} // FIXME Store User instead of name
+    commercial: { type: String }, // FIXME Store User instead of name
+    technical: { type: String }, // FIXME Store User instead of name
+    vulneratility: { type: String }
   }, { _id: false});
 
   const MailingListSchema = new Schema({
@@ -60,8 +61,8 @@ module.exports = dependencies => {
   }, { _id: false});
 
   const ExternalLinksSchema = new Schema({
-    name: {type: String},
-    url: {type: String}
+    name: { type: String },
+    url: { type: String }
   }, {_id: false});
 
   const ContractSchema = new Schema({
@@ -70,7 +71,8 @@ module.exports = dependencies => {
     Engagements: EngagementsSchema,
     businessHours: ContractScheduleSchema,
     features: {
-      nonBusinessHours: { type: Boolean, default: false }
+      nonBusinessHours: { type: Boolean, default: false },
+      linInfoSec: { type: Boolean, default: false}
     },
     contact: ContactSchema,
     client: { type: String, required: true },
