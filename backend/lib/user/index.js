@@ -1,14 +1,14 @@
 'use strict';
 
 const Q = require('q');
-const { TICKETING_USER_ROLES, EVENTS } = require('../constants');
+const { TICKETING_USER_ROLES, EVENTS, EMAIL_NOTIFICATIONS } = require('../constants');
 
 module.exports = dependencies => {
   const userModule = dependencies('coreUser');
   const logger = dependencies('logger');
   const mongoose = dependencies('db').mongo.mongoose;
   const pubsub = dependencies('pubsub').local;
-
+  const email = require('../email')(dependencies);
   const User = mongoose.model('User');
   const ticketingUser = require('../ticketing-user')(dependencies);
   const search = require('./search')(dependencies);
@@ -79,6 +79,8 @@ module.exports = dependencies => {
           .then(createdUserObject => {
             createdUserObject.role = role;
             userCreatedTopic.publish(createdUserObject);
+
+            email.sendSspMail(EMAIL_NOTIFICATIONS.TYPES.USER_CREATED, createdUserObject);
 
             resolve(opUser);
           })
