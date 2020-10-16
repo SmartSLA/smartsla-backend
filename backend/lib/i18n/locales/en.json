@@ -276,7 +276,7 @@
   "User updated": "User updated",
   "Versions": "Versions",
   "Version": "Version",
-  "We have just created a beneficiary account for you on the Support platform.": "We have just created a beneficiary account for you on the Support platform.",
+  "We have just created a beneficiary account for you on the Support platform: {{{site}}}.": "We have just created a beneficiary account for you on the Support platform: {{{site}}}.",
   "Workaround time is set": "Workaround time is set",
   "Workaround time is unset": "Workaround time is unset",
   "Workaround time SLA": "Workaround time SLA",

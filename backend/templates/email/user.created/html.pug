@@ -8,8 +8,9 @@ html.mail
     - var ssp = new URL('?action=sendtoken', content.sspUrl).toString();
     - var contactSupport = `<a href='mailto:${content.contactSupport}'>${content.contactSupport}</a>`;
     - var sspUrl = `<a href="${ssp}">${content.sspUrl}</a>`
+    - var frontendUrl = `<a href="${content.frontendUrl}">${content.frontendUrl}</a>`
     p #{translate('Hello,')}
-    p #{translate('We have just created a beneficiary account for you on the Support platform.')}
+    p !{translate('We have just created a beneficiary account for you on the Support platform: {{{site}}}.', {site: frontendUrl})}
     p !{translate('Please finalize your registration by resetting your password at this link: {{{sspUrl}}}', {sspUrl: sspUrl})}
     p !{translate('If you have any questions, please contact the support via the following email address: {{{contactSupport}}}', {contactSupport: contactSupport})}
     p #{translate('Yours sincerely,')}
