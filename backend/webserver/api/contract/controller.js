@@ -190,7 +190,7 @@ module.exports = function(dependencies, lib) {
       _getCustomers(req.params.id)
     ])
     .then(([experts, customers]) => {
-      res.header('X-ESN-Items-Count', experts.length + experts.length);
+      res.header('X-ESN-Items-Count', experts.length + customers.length);
       res.status(200).json([...experts, ...customers]);
     })
     .catch(err => send500Error('Failed to get user for contracts', err, res));
