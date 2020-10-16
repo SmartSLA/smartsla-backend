@@ -102,7 +102,7 @@ module.exports = {
             $and: [
               { 'software.software': { $exists: true }},
               { status: { $ne: ['$status', TICKET_STATUS.CLOSED] }},
-              { archived: {$exists: true, $ne: ['$archived', true]} }
+              { archived: { $ne: ['$archived', true]} }
             ]
           }
         },
@@ -160,7 +160,7 @@ module.exports = {
           $match: {
             $and: [
               { 'software.software': { $exists: true } },
-              { archived: {$exists: true, $ne: ['$archived', true]} }
+              { archived: { $ne: ['$archived', true]} }
             ]
           }
         },
