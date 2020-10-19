@@ -1,6 +1,6 @@
 'use strict';
 
-const { DASHBOARD_QUERIES, GROUP } = require('./constants');
+const { DASHBOARD_QUERIES, GROUP } = require('./constants')();
 const { ALL_CONTRACTS } = require('../constants');
 const moment = require('moment-timezone');
 
