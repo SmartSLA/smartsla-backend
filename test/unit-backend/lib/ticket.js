@@ -477,10 +477,7 @@ describe('The ticket lib', function() {
       .catch(done);
     });
 
-    it(`Should: 
-        - Change the beneficiary and the responsible
-        - Add the changes in events
-        - Send an Email to notify about update`, function(done) {
+    it('Should not add changes to event (We can\'t modify the beneficiary and the responsible in the update from the frontend)', function(done) {
       modifiedMock = {
         ...ticket,
         beneficiary: {
@@ -491,29 +488,6 @@ describe('The ticket lib', function() {
         }
       };
 
-      modifiedTicketMock = {
-        ...modifiedMock,
-        events: [
-          {
-            changes: [
-              {
-                field: 'beneficiary',
-                action: 'changed',
-                oldValue: 'michael cales',
-                newValue: 'Michel Dupont'
-              },
-              {
-                field: 'responsible',
-                action: 'changed',
-                oldValue: 'Amy WOLSH',
-                newValue: 'Rachid Oubraim'
-              }
-            ],
-            author: eventAuthor
-          }
-        ]
-      };
-
       updateQuery = {
         exec: sinon.stub().returns(q.when('updatedTicket'))
       };
@@ -524,17 +498,14 @@ describe('The ticket lib', function() {
       .updateById(ticketId, modifiedMock, ticketingUser)
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
-        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
+        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedMock }, { new: true });
         expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })
       .catch(done);
     });
 
-    it(`Should: 
-        - Add a responsible
-        - Add the changes in events
-        - Send an Email to notify about update`, function(done) {
+    it('Should not add changes to event (We can\'t modify the beneficiary and the responsible in the update from the frontend)', function(done) {
       delete ticket.responsible;
 
       modifiedMock = {
@@ -544,23 +515,6 @@ describe('The ticket lib', function() {
         }
       };
 
-      modifiedTicketMock = {
-        ...modifiedMock,
-        events: [
-          {
-            changes: [
-              {
-                field: 'responsible',
-                action: 'added',
-                oldValue: '',
-                newValue: 'Rachid Oubraim'
-              }
-            ],
-            author: eventAuthor
-          }
-        ]
-      };
-
       updateQuery = {
         exec: sinon.stub().returns(q.when('updatedTicket'))
       };
@@ -571,7 +525,7 @@ describe('The ticket lib', function() {
       .updateById(ticketId, modifiedMock, ticketingUser)
       .then(updatedTicket => {
         expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledOnce;
-        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedTicketMock }, { new: true });
+        expect(TicketModelMock.findByIdAndUpdate).to.have.been.calledWith(ticketId, { $set: modifiedMock }, { new: true });
         expect(emailModule.send).to.have.been.calledWith(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
         done();
       })

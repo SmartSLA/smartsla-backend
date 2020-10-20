@@ -315,8 +315,6 @@ module.exports = dependencies => {
     function _getTicketFields(ticket) {
       const {
         title,
-        beneficiary,
-        responsible,
         callNumber,
         meetingId,
         type,
@@ -326,17 +324,10 @@ module.exports = dependencies => {
         relatedRequests
       } = ticket;
 
-      //TODO: Add participants, related request
-      let ticketFields = Object.assign({}, { title, beneficiary, responsible, callNumber, meetingId, type, severity, description, participants, relatedRequests});
+      let ticketFields = Object.assign({}, { title, callNumber, meetingId, type, severity, description, participants, relatedRequests});
 
       if (ticket.software && Object.keys(ticket.software).length && ticket.software.software) {
-        const software = {
-          ...ticket.software,
-          software: {
-            _id: ticket.software.software._id.toString(),
-            name: `${ticket.software.software.name} ${ticket.software.version} ${ticket.software.os}`
-          }
-        };
+        const software = `${ticket.software.software.name} ${ticket.software.version} ${ticket.software.os}`;
 
         ticketFields = {
           ...ticketFields,
@@ -350,38 +341,24 @@ module.exports = dependencies => {
     function _getChanges(ticketFields, modifiedTicketFields) {
       const changes = [];
       const diffs = Object.entries(diff(ticketFields, modifiedTicketFields));
-      const config = {
-        software: 'software.name',
-        beneficiary: 'name',
-        responsible: 'name'
-      };
 
       let oldValue = '';
       let newValue = '';
       let action = 'changed';
 
       for (const [field, value] of diffs) {
-        switch (true) {
-          case typeof value === 'string':
-          case typeof value === 'undefined' && field === 'severity':
-            oldValue = ticketFields[field] ? ticketFields[field] : '';
-            newValue = value || '';
-            break;
-          case field === 'participants':
-            oldValue = ticketFields[field] ? ticketFields[field].join(' ') : '';
-            newValue = modifiedTicketFields[field] ? modifiedTicketFields[field].join(' ') : '';
-            break;
-          case field === 'relatedRequests':
-            oldValue = ticketFields[field] ? ticketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
-            newValue = ticketFields[field] ? modifiedTicketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
-          break;
-          case typeof value === 'object':
-          case typeof value === 'undefined' && field === 'software':
-            if (ticketFields[field]) {
-              oldValue = config[field].split('.').reduce((o, i) => o[i], ticketFields[field]);
-            }
-            newValue = value ? config[field].split('.').reduce((o, i) => o[i], value) : '';
-            break;
+        if (
+          typeof value === 'string' ||
+          (typeof value === 'undefined' && ['severity', 'software', 'beneficiary', 'responsible'].includes(field))
+        ) {
+          oldValue = ticketFields[field] ? ticketFields[field] : '';
+          newValue = value || '';
+        } else if (field === 'participants') {
+          oldValue = ticketFields[field] ? ticketFields[field].join(' ') : '';
+          newValue = modifiedTicketFields[field] ? modifiedTicketFields[field].join(' ') : '';
+        } else if (field === 'relatedRequests') {
+          oldValue = ticketFields[field] ? ticketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
+          newValue = ticketFields[field] ? modifiedTicketFields[field].map(related => _humanizeRelatedRequest(related)).join(', ') : '';
         }
 
         if (oldValue.length !== 0 && newValue.length === 0) {
