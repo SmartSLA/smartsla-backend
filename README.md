@@ -147,6 +147,65 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 ]'
 ```
 
+* LinInfoSec
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://backend.smartsla.local/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "smartsla-backend",
+    "configurations": [
+      {
+        "name": "features",
+        "value": {
+          "isLinInfoSecEnabled": true
+        }
+      }
+    ]
+  }
+]'
+```
+
+Set lininfosecconfig (needed to use lininfosec API)
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[
+  {
+    "name": "smartsla-backend",
+    "configurations": [
+      {
+        "name": "lininfosec",
+        "value": {
+          "apiUrl": "http://lininfosec.smartsla.local:8080/",
+          "lininfosec_auth_token": "TOKEN"
+        }
+      }
+    ]
+  }
+]'
+```
+
+Use this curl to set the author of the automatic ticket created when the vulnerability notification sent by LinInfoSec.
+
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations\?scope\=platform -u "ADMIN_USERNAME:PASSWORD"  -d '[{
+    "name": "smartsla-backend",
+    "configurations": [{
+        "name": "lininfosec",
+        "value": {
+            "author": {
+                "id": "authorId",
+                "name": "authorName",
+                "email": "authorEmail",
+                "type": "authorType",
+                "phone": "authorPhone"
+            }
+        }
+    }]
+}]'
+```
+
 * Dashboard
 
 Use Curl to set configuration:
