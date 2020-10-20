@@ -29,6 +29,7 @@ module.exports = {
   LININFOSEC: {
     DEFAULT_MEETINGID: '1234', // TO DEFINE
     DEFAULT_CALLNUMBER: '0600000000', // TO DEFINE
+    TICKET_STATUS: 'new',
     TYPE: 'softwareVulnerability'
   },
   SEVERITY_TYPES: {

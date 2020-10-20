@@ -247,6 +247,7 @@
   "User updated": "User updated",
   "Versions": "Versions",
   "Version": "Version",
+  "Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}": "Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}",
   "Workaround time is set": "Workaround time is set",
   "Workaround time is unset": "Workaround time is unset",
   "Workaround time SLA": "Workaround time SLA",
