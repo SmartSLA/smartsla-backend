@@ -43,20 +43,25 @@ function computeCns(ticket, contract) {
     const workingInterval = contract.businessHours || { start: 9, end: 18 };
     const periods = computePeriods(ticket.events, ticket.timestamps.createdAt);
     const contractEngagements = getTicketSoftwareEngagement(ticket, contract);
-    const resolvedPeriods = ticket.type === REQUEST_TYPE.ANOMALY ? periods.bypassed : periods.supported;
 
     if (contractEngagements) {
       cns.supported = computeTime(periods.new, workingInterval, contractEngagements.supported);
-      cns.bypassed = computeTime(periods.supported, workingInterval, contractEngagements.bypassed);
-      cns.resolved = computeTime(resolvedPeriods, workingInterval, contractEngagements.resolved);
 
-      cns.resolved.elapsedMinutes += cns.bypassed.elapsedMinutes;
-      cns.resolved.suspendedMinutes += cns.bypassed.suspendedMinutes;
-      cns.resolved.percentageElapsed = Math.round(
-        (cns.resolved.elapsedMinutes / (
-          convertIsoDurationInMinutes(cns.resolved.engagement, cns.resolved.workingHours) +
-          convertIsoDurationInMinutes(cns.bypassed.engagement, cns.bypassed.workingHours))) * 100 * 100
-      ) / 100;
+      if (ticket.type === REQUEST_TYPE.ANOMALY) {
+        cns.bypassed = computeTime(periods.supported, workingInterval, contractEngagements.bypassed);
+        cns.resolved = computeTime(periods.bypassed, workingInterval, contractEngagements.resolved);
+
+        cns.resolved.elapsedMinutes += cns.bypassed.elapsedMinutes;
+        cns.resolved.suspendedMinutes += cns.bypassed.suspendedMinutes;
+        cns.resolved.percentageElapsed = Math.round(
+          (cns.resolved.elapsedMinutes / (
+            convertIsoDurationInMinutes(cns.resolved.engagement, cns.resolved.workingHours) +
+            convertIsoDurationInMinutes(cns.bypassed.engagement, cns.bypassed.workingHours))) * 100 * 100
+        ) / 100;
+      } else {
+        cns.resolved = computeTime(periods.supported, workingInterval, contractEngagements.resolved);
+      }
+
     }
   }
 

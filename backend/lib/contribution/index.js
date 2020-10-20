@@ -113,7 +113,7 @@ module.exports = function(dependencies) {
     const statusKey = `status.${stepName}`;
 
     return Contribution
-      .findByIdAndUpdate(contributionId, { $set: { [statusKey]: stepValue}})
+      .update({ _id: contributionId}, { $set: { [statusKey]: stepValue}})
       .exec();
   }
 };

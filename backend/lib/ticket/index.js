@@ -23,6 +23,7 @@ module.exports = dependencies => {
   const { computeCns } = require('../cns')(dependencies);
   const limesurvey = require('../limesurvey/limesurvey')(dependencies);
   const ticketFilter = require('../filter');
+  const search = require('./search')(dependencies);
 
   return {
     count,
@@ -36,7 +37,8 @@ module.exports = dependencies => {
     updateRelatedContributions,
     updateState,
     setWorkaroundTime,
-    setCorrectionTime
+    setCorrectionTime,
+    search
   };
 
   /**
@@ -193,6 +195,8 @@ module.exports = dependencies => {
 
     if (options.filter) {
       findOptions = { ...findOptions, ...options.filter.query };
+    } else {
+      findOptions = { ...findOptions, archived: { $ne: true } };
     }
 
     const query = Ticket.find(findOptions);

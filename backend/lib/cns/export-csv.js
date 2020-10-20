@@ -14,13 +14,47 @@ module.exports = function(dependencies) {
   function exportData(tickets) {
     return Promise.all(tickets.map(ticket =>
       getContract(ticket.contract).then(contract => formatCsvData(ticket, contract)))
-    );
+    )
+    .then(csvData => addLabels(csvData));
+  }
+
+  function addLabels(csvData) {
+    csvData.unshift({
+      [i18n.__('Id')]: i18n.__('Ticket id'),
+      [i18n.__('Support priority')]: i18n.__('Support priority'),
+      [i18n.__('Type')]: i18n.__('Type of request'),
+      [i18n.__('Severity')]: i18n.__('Ticket severity'),
+      [i18n.__('Software')]: i18n.__('Software supported in ticket'),
+      [i18n.__('Version')]: i18n.__('Software version'),
+      [i18n.__('OS')]: i18n.__('Software operating system'),
+      [i18n.__('Title')]: i18n.__('Ticket title'),
+      [i18n.__('Description')]: i18n.__('Ticket description'),
+      [i18n.__('Assigned to')]: i18n.__('The person to whom the ticket is assigned'),
+      [i18n.__('Created by')]: i18n.__('The person who opened the ticket'),
+      [i18n.__('Service (of author)')]: i18n.__('The service to which the author belongs'),
+      [i18n.__('Contract')]: i18n.__('Contract supported in the ticket'),
+      [i18n.__('Last update')]: i18n.__('The date of the last modification of the ticket'),
+      [i18n.__('Created at')]: i18n.__('The date the ticket was created'),
+      [i18n.__('Status')]: i18n.__('The progress of the ticket'),
+      [i18n.__('SLA support')]: i18n.__('Time spent to support the ticket / Service Level Agreement support'),
+      [i18n.__('SLA bypass')]: i18n.__('Time spent to bypass the ticket / Service Level Agreement bypass'),
+      [i18n.__('SLA resolution')]: i18n.__('Time spent to resolve the ticket / Service Level Agreement resolution'),
+      [i18n.__('BH / NBH')]: i18n.__('Working Hours / Non-Working Hours'),
+      [i18n.__('Supt')]: i18n.__('Support Time'),
+      [i18n.__('Ctt')]: i18n.__('Bypass Time'),
+      [i18n.__('Ctt / Ctt target')]: i18n.__('Percentage of bypass time consumption'),
+      [i18n.__('Crt')]: i18n.__('Correction time'),
+      [i18n.__('Crt / Crt target')]: i18n.__('Percentage of bypass time correction'),
+      [i18n.__('WT')]: i18n.__('Cumulative waiting time')
+    });
+
+    return csvData;
   }
 
   function formatCsvData(ticket, contract) {
     return {
       [i18n.__('Id')]: ticket._id,
-      [i18n.__('ID OSSA')]: i18n.__(ticket.idOssa.id),
+      [i18n.__('Support priority')]: i18n.__(ticket.idOssa.id),
       [i18n.__('Type')]: i18n.__(ticket.type),
       [i18n.__('Severity')]: i18n.__(ticket.severity),
       [i18n.__('Software')]: ticket.software && ticket.software.software.name,

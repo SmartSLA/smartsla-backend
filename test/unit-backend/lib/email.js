@@ -75,7 +75,7 @@ describe('The email module', function() {
     it('should retrieve configuration', function(done) {
       getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
         .then(() => {
-          expect(getMultipleSpy).to.have.been.calledWith(['frontendUrl', 'mail']);
+          expect(getMultipleSpy).to.have.been.calledWith(['frontendUrl', 'mail', 'ssp']);
           done();
         })
         .catch(done);

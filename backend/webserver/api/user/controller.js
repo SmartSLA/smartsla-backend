@@ -127,7 +127,8 @@ module.exports = (dependencies, lib) => {
         const newUser = {
           type: user.type,
           jobTitle: user.jobTitle,
-          role: user.role
+          role: user.role,
+          client: user.client
         };
 
         _updateAsAdmin(req.params.id, newUser, contracts);
@@ -143,7 +144,7 @@ module.exports = (dependencies, lib) => {
           return send404Error('User not found', res);
         }
 
-        lib.contract.updateUser(user, contracts).then(() => res.status(204).end());
+        lib.contract.updateUser(updatedUser, contracts).then(() => res.status(204).end());
       })
       .catch(err => send500Error('Failed to update Ticketing user', err, res));
     }

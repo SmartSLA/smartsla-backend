@@ -84,6 +84,33 @@ module.exports = (dependencies, lib, router) => {
 
   /**
    * @swagger
+   * /ticketing/api/tickets/search:
+   *  get:
+   *    tags:
+   *      - Ticket
+   *    description: Search tickets by a given query.
+   *    parameters:
+   *      - $ref: "#/parameters/query"
+   *    responses:
+   *      200:
+   *        $ref: "#/responses/tickets"
+   *      401:
+   *        $ref: "#/responses/cm_401"
+   *      403:
+   *        $ref: "#/responses/cm_403"
+   *      404:
+   *        $ref: "#/responses/cm_404"
+   *      500:
+   *        $ref: "#/responses/cm_500"
+   */
+  router.get('/tickets/search',
+    authorizationMW.requiresAPILogin,
+    userMiddleware.loadTicketingUser,
+    controller.search
+  );
+
+  /**
+   * @swagger
    * /ticketing/api/tickets/{id}:
    *  get:
    *    tags:

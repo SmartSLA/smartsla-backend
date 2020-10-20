@@ -7,6 +7,7 @@ module.exports = (dependencies, lib) => {
 
   return {
     loadTicketingUser,
+    loadAllowedContracts,
     canCreate,
     canRead,
     canUpdate,
@@ -26,6 +27,16 @@ module.exports = (dependencies, lib) => {
       .catch(err => {
         send500Error('Can not load ticketing user', err, res);
       });
+  }
+
+  function loadAllowedContracts(req, res, next) {
+    lib.contract.allowedContracts({ user: req.user, ticketingUser: req.ticketingUser }).then(contract => {
+      req.allowedContracts = contract;
+      next();
+    })
+    .catch(err => {
+      send500Error(`Cannot load the allowed contract for the user ${req.user._id}`, err, res);
+    });
   }
 
   function canCreate(req, res, next) {

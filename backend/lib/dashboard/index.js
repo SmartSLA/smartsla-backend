@@ -1,6 +1,6 @@
 'use strict';
 
-const { DASHBOARD_QUERIES, GROUP } = require('./constants');
+const { DASHBOARD_QUERIES, GROUP } = require('./constants')();
 const { ALL_CONTRACTS } = require('../constants');
 const moment = require('moment-timezone');
 
@@ -24,7 +24,7 @@ module.exports = dependencies => {
         let contractIdFilter;
 
         if (allowedContractIds && allowedContractIds !== ALL_CONTRACTS) {
-          contractIdFilter = allowedContractIds;
+          contractIdFilter = allowedContractIds.map(String);
         }
 
         if (query.contracts) {
@@ -46,7 +46,7 @@ module.exports = dependencies => {
           const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
 
           pipeline.push({ $group: groupCondition});
-          pipeline.push({ $sort: { _id: 1 } });
+          pipeline.push({ $sort: { '_id.year': 1, '_id.quarter': 1, '_id.month': 1, '_id.week': 1, '_id.day': 1 }});
         }
 
         if (dashboardQuery.finalStages) {
@@ -71,12 +71,34 @@ module.exports = dependencies => {
       case GROUP.YEAR:
         groupConditionId = { year: { $year: '$' + dateField }, ...groupConditionId };
         break;
+      case GROUP.WEEK:
+        groupConditionId = { year: { $year: '$' + dateField }, week: { $week: '$' + dateField } };
+        break;
+      case GROUP.QUARTER:
+        groupConditionId = {
+          year: {$year: '$' + dateField},
+          quarter: {
+            $trunc: {
+              $add: [
+                {
+                  $divide: [
+                    {
+                      $subtract: [{ $month: '$' + dateField }, 1]
+                    },
+                    3
+                  ]
+                },
+                1
+              ]
+            }
+          }
+        };
+        break;
       case GROUP.NONE:
         groupConditionId = null;
     }
-    const groupCondition = {_id: groupConditionId, ...dashboardQuery.group};
 
-    return groupCondition;
+    return { _id: groupConditionId, ...dashboardQuery.group };
   }
 
   function getDateMatching(queryStart, queryEnd, dateField) {

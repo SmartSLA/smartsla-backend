@@ -98,6 +98,7 @@ module.exports = dependencies => {
   function listByClient(clientId) {
     return Contract
       .find({ clientId })
+      .populate(DEFAULT_CONTRACT_POPULATE)
       .exec();
   }
 
@@ -234,10 +235,26 @@ module.exports = dependencies => {
 
   function allowedContracts({ user, ticketingUser }) {
     return ticketingUserRole.userIsAdministratorOrExpert(user, ticketingUser)
-      .then(canSeeAll => (canSeeAll ? Promise.resolve(ALL_CONTRACTS) : userContractsList()));
+      .then(canSeeAll => {
+        const { role } = ticketingUser;
+
+        if (canSeeAll) {
+          return Promise.resolve(ALL_CONTRACTS);
+        }
+
+        if (role === TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER) {
+          return clientContractsList(ticketingUser);
+        }
+
+        return userContractsList();
+      });
 
     function userContractsList() {
       return listForUser(user._id).then(contractRelations => contractRelations.map(relation => relation.contract));
+    }
+
+    function clientContractsList({ client }) {
+      return listByClient(client).then(contracts => contracts.map(contract => contract._id));
     }
   }
 

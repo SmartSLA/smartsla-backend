@@ -12,6 +12,12 @@ const config = {
         support: 'ossa-dev@linagora.com'
       }
     },
+    ssp: {
+      value: {
+        sspUrl: 'https://ssp.08000linux.com/',
+        isSspEnabled: true
+      }
+    },
     limesurvey: {
       value: {
         apiUrl: 'http://limesurvey.localhost:8080/admin/remotecontrol/',
@@ -44,7 +50,7 @@ const config = {
         isDashboardEnabled: false,
         isLinInfosecEnabled: false
       }
-         },
+    },
     language: {
       rights: {
         user: 'rw'

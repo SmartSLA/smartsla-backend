@@ -11,7 +11,7 @@ describe('The dashboard lib', function() {
 
   beforeEach(function() {
     moduleHelpers = this.moduleHelpers;
-    GROUP = require(moduleHelpers.backendPath + '/lib/dashboard/constants').GROUP;
+    GROUP = require(moduleHelpers.backendPath + '/lib/dashboard/constants')().GROUP;
 
     queryWithGroup = 'ticketByOpenClosed';
     queryWithFinalStages = 'ticketByType';

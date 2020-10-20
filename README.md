@@ -82,6 +82,26 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
 ]'
 ```
 
+Set SSP config (required to reset a user's password)
+
+Use Curl to set configuration:
+```
+curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  http://0.0.0.0:8080/api/configurations?scope=platform -u "admin@open-paas.org:secret"  -d '[
+  {
+    "name": "smartsla-backend",
+    "configurations": [
+      {
+        "name": "ssp",
+        "value": {
+          "sspUrl": "https://ssp.08000linux.com/",
+          "isSspEnabled": true
+        }
+      }
+    ]
+  }
+]'
+```
+
 Configure feature flipping
 
 Feature list :

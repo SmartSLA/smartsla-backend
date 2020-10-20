@@ -25,6 +25,10 @@ module.exports = {
       CONTRACT_CREDITCONSUMED: {
         subject: 'Contract {{{contractName}}} has reached its credit limit',
         template: 'contract.creditconsumed'
+      },
+      USER_CREATED: {
+        subject: 'Access to the support platform',
+        template: 'user.created'
       }
     }
   },
