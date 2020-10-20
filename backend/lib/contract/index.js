@@ -10,6 +10,7 @@ module.exports = dependencies => {
   const ticketingUserRole = require('../ticketing-user-role')(dependencies);
   const pubsubLocal = dependencies('pubsub').local;
   const search = require('./search')(dependencies);
+  const lininfosec = require('../lininfosec/lininfosec')(dependencies);
 
   const contractCreatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.created);
   const contractUpdatedTopic = pubsubLocal.topic(EVENTS.CONTRACT.updated);
@@ -60,7 +61,15 @@ module.exports = dependencies => {
       .then(createdContract => {
         contractCreatedTopic.publish(createdContract);
 
-        return createdContract;
+        return lininfosec.isEnabled()
+          .then(enabled => {
+            if (enabled) {
+              return lininfosec.onContractUpdate(null, createdContract);
+            }
+          })
+          .then(function() {
+            return createdContract;
+          });
       });
   }
 
@@ -103,16 +112,24 @@ module.exports = dependencies => {
     return Contract
       .findByIdAndUpdate(
         contractId,
-        { $set: modified },
-        { new: true }
+        { $set: modified }
       )
       .exec()
-      .then(modified => {
+      .then(oldContract => {
         if (modified) {
           contractUpdatedTopic.publish(modified);
         }
 
-        return modified;
+        return lininfosec.isEnabled()
+          .then(enabled => {
+            if (enabled) {
+              return lininfosec.onContractUpdate(oldContract, modified);
+            }
+          })
+          .then(function() {
+            return modified;
+          });
+
       });
   }
 
@@ -146,7 +163,15 @@ module.exports = dependencies => {
           contractDeletedTopic.publish(deletedContract);
         }
 
-        return deletedContract;
+        return lininfosec.isEnabled()
+          .then(enabled => {
+            if (enabled) {
+              return lininfosec.onContractUpdate(deletedContract, null);
+            }
+          })
+          .then(function() {
+            return deletedContract;
+          });
       });
   }
 
