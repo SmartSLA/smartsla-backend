@@ -94,7 +94,13 @@ module.exports = (dependencies, lib) => {
   function requireContractManagerOrAdmin(req, res, next) {
     const { role } = req.ticketingUser;
 
-    if (role === lib.constants.TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER || role === lib.constants.TICKETING_CONTRACT_ROLES.OPERATIONAL_MANAGER) {
+    if (
+      role === lib.constants.TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER ||
+      role === lib.constants.TICKETING_CONTRACT_ROLES.OPERATIONAL_MANAGER ||
+      role === lib.constants.TICKETING_CONTRACT_ROLES.VIEWER ||
+      role === lib.constants.TICKETING_CONTRACT_ROLES.CUSTOMER ||
+      role === lib.constants.EXPERT_ROLE.EXPERT
+      ) {
       return next();
     }
 
