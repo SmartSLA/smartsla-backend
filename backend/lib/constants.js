@@ -162,6 +162,10 @@ module.exports = {
     OPERATIONAL_MANAGER: 'operational manager',
     CONTRACT_MANAGER: 'contract manager'
   },
+  EXPERT_ROLE: {
+    MANAGER: 'manager',
+    EXPERT: 'expert'
+  },
   LIMESURVEY: {
     API_URL: 'http://localhost/index.php/admin/remotecontrol/',
     SURVEY_ID: 158386,
