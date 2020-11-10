@@ -1,6 +1,6 @@
 {
   "name": "smartsla-backend",
-  "version": "1.6.3",
+  "version": "1.6.4-dev",
   "description": "OpenPaaS backend module for SmartSLA",
   "main": "index.js",
   "devDependencies": {
