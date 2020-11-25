@@ -109,7 +109,7 @@ module.exports = dependencies => {
   function sendSspMail(emailType, user) {
     return getConfig()
     .then(({ ssp, mail, frontendUrl }) => {
-        const recipient = user.email;
+        const recipient = user.preferredEmail;
         const { subject, template } = emailType;
 
         const content = {
