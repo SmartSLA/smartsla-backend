@@ -80,7 +80,7 @@ module.exports = dependencies => {
             createdUserObject.role = role;
             userCreatedTopic.publish(createdUserObject);
 
-            email.sendSspMail(EMAIL_NOTIFICATIONS.TYPES.USER_CREATED, createdUserObject);
+            email.sendSspMail(EMAIL_NOTIFICATIONS.TYPES.USER_CREATED, opUser);
 
             resolve(opUser);
           })
