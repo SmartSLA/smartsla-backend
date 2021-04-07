@@ -7,6 +7,7 @@ module.exports = function(dependencies, lib) {
   const { TICKETING_USER_TYPES } = require('../constants');
   const { Parser } = require('json2csv');
   const { send200ItemCount, send500Error, send404Error } = require('../utils')(dependencies);
+  const logger = dependencies('logger');
 
   return {
     addEvent,
@@ -106,15 +107,32 @@ module.exports = function(dependencies, lib) {
       options.filter = req.query.filter;
     }
 
+    if (req.query.a) {
+      options.additional_filters = getAdditionalParams(req);
+    }
+
     return lib.ticket.list(req, options)
       .then(tickets => {
         if (isExportCvs) {
           exportCsv(tickets, res, req.user);
         } else {
+          res.header('X-ESN-Items-Count', tickets.length);
           res.status(200).json(tickets);
         }
       })
       .catch(err => send500Error('Error while getting tickets', err, res));
+  }
+
+  function getAdditionalParams({query}) {
+    let filters = {};
+
+    try {
+      filters = JSON.parse(query.a);
+    } catch (e) {
+      logger.error('Unable to parse additional filters parameters', e);
+    }
+
+    return filters;
   }
 
   /**

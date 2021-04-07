@@ -5,6 +5,7 @@ const { RECENTLY, WEEK } = require('../filter/constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 const moment = require('moment-timezone');
+const _ = require('lodash');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' },
@@ -186,6 +187,57 @@ module.exports = dependencies => {
     }
   }
 
+  function setAdditionalOptions(options) {
+    const additionalOptions = {};
+    let contractIdFilter;
+
+    const { contract } = options;
+
+    if (contract && contract !== ALL_CONTRACTS) {
+      contractIdFilter = contract.map(String);
+    }
+
+    if (options.additional_filters.contract) {
+      const contractsFilter = _.map(options.additional_filters.contract, 'id');
+
+      contractIdFilter = contractIdFilter ? contractsFilter.filter(contract => contractIdFilter.includes(contract)) : contractsFilter;
+    }
+
+    if (contractIdFilter) {
+      additionalOptions.contract = { $in: contractIdFilter };
+    }
+
+    if (options.additional_filters.software) {
+      additionalOptions['software.software'] = { $in: _.map(options.additional_filters.software, 'id') };
+    }
+
+    if (options.additional_filters.severity) {
+      additionalOptions.severity = { $in: _.map(options.additional_filters.severity, 'id') };
+    }
+
+    if (options.additional_filters.status) {
+      additionalOptions.status = { $in: _.map(options.additional_filters.status, 'id') };
+    }
+
+    if (options.additional_filters.assignto) {
+      additionalOptions['assignedTo.id'] = { $in: _.map(options.additional_filters.assignto, 'id') };
+    }
+
+    if (options.additional_filters.author) {
+      additionalOptions['author.id'] = { $in: _.map(options.additional_filters.author, 'id') };
+    }
+
+    if (options.additional_filters.beneficiary) {
+      additionalOptions['beneficiary.id'] = { $in: _.map(options.additional_filters.beneficiary, 'id') };
+    }
+
+    if (options.additional_filters.type) {
+      additionalOptions.type = { $in: _.map(options.additional_filters.type, 'id') };
+    }
+
+    return additionalOptions;
+  }
+
   function buildTicketListQuery(options) {
     let findOptions = {};
 
@@ -197,6 +249,10 @@ module.exports = dependencies => {
       findOptions = { ...findOptions, ...options.filter.query };
     } else {
       findOptions = { ...findOptions, archived: { $ne: true } };
+    }
+
+    if (options.additional_filters) {
+      findOptions = {...findOptions, ...setAdditionalOptions(options) };
     }
 
     const query = Ticket.find(findOptions);
