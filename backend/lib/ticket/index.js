@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE, REQUEST_TYPE } = require('../constants');
 const { RECENTLY, WEEK } = require('../filter/constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
@@ -187,6 +187,12 @@ module.exports = dependencies => {
     }
   }
 
+  function otherType() {
+    return {
+      $nin: [REQUEST_TYPE.ANOMALY, REQUEST_TYPE.INFORMATION, REQUEST_TYPE.ADMINISTRATION]
+    };
+  }
+
   function setAdditionalOptions(options) {
     const additionalOptions = {};
     let contractIdFilter;
@@ -232,7 +238,13 @@ module.exports = dependencies => {
     }
 
     if (options.additional_filters.type) {
-      additionalOptions.type = { $in: _.map(options.additional_filters.type, 'id') };
+      const types = _.map(options.additional_filters.type, 'id');
+
+      additionalOptions.type = { $in: types };
+
+      if (types.includes(REQUEST_TYPE.OTHER)) {
+        additionalOptions.type = otherType();
+      }
     }
 
     return additionalOptions;
