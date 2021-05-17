@@ -246,7 +246,8 @@ describe('The ticket lib', function() {
         .then(size => {
           expect(size).to.equals(tickets.length);
           done();
-        });
+        })
+        .catch(done);
     });
   });
 
