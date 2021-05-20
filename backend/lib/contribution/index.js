@@ -1,13 +1,14 @@
 'use strict';
 
+const _ = require('lodash');
+
 module.exports = function(dependencies) {
   const mongoose = dependencies('db').mongo.mongoose;
   const pubsubLocal = dependencies('pubsub').local;
   const Contribution = mongoose.model('Contribution');
   const { DEFAULT_LIST_OPTIONS, EVENTS } = require('../constants');
   const DEFAULT_CONTRIBUTION_POPULATES = [
-    { path: 'software' },
-    { path: 'author' }
+    { path: 'software' }
   ];
   const contributionCreatedTopic = pubsubLocal.topic(EVENTS.CONTRIBUTION.created);
   const contributionUpdatedTopic = pubsubLocal.topic(EVENTS.CONTRIBUTION.updated);
@@ -94,8 +95,14 @@ module.exports = function(dependencies) {
    * @return {resolve}         - resolve on success
    */
   function list(options = {}) {
+    let findOptions = {};
+
+    if (options.additional_filters) {
+      findOptions = { ...setAdditionalOptions(options) };
+    }
+
     return Contribution
-      .find()
+      .find(findOptions)
       .populate(DEFAULT_CONTRIBUTION_POPULATES)
       .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
       .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
@@ -115,5 +122,34 @@ module.exports = function(dependencies) {
     return Contribution
       .update({ _id: contributionId}, { $set: { [statusKey]: stepValue}})
       .exec();
+  }
+
+  function setAdditionalOptions(options) {
+    let additionalOptions = {};
+    let statusOptions = {};
+
+    if (options.additional_filters.software) {
+      additionalOptions.software = { $in: _.map(options.additional_filters.software, 'id') };
+    }
+
+    if (options.additional_filters.type) {
+      additionalOptions.type = { $in: _.map(options.additional_filters.type, 'id') };
+    }
+
+    if (options.additional_filters.author) {
+      additionalOptions.author = { $in: _.map(options.additional_filters.author, 'id') };
+    }
+
+    if (options.additional_filters.status) {
+      const statusIds = _.map(options.additional_filters.status, 'id');
+
+      statusIds.forEach(step => {
+        statusOptions = {...statusOptions, ...{ [`status.${step}`]: { $exists: 1, $ne: null} }};
+      });
+
+      additionalOptions = {...additionalOptions, ...statusOptions};
+    }
+
+    return additionalOptions;
   }
 };

@@ -2,6 +2,7 @@
 
 module.exports = function(dependencies, lib) {
   const { send404Error, send500Error } = require('../utils')(dependencies);
+  const logger = dependencies('logger');
 
   return {
     create,
@@ -35,6 +36,10 @@ module.exports = function(dependencies, lib) {
       limit: +req.query.limit,
       offset: +req.query.offset
     };
+
+    if (req.query.a) {
+      options.additional_filters = getAdditionalParams(req);
+    }
 
     lib.contribution.list(options).then(list => {
       res.header('X-ESN-Items-Count', list.length);
@@ -114,5 +119,17 @@ module.exports = function(dependencies, lib) {
         return send404Error('contribution not found', res);
       })
       .catch(err => send500Error('Error while removing contribution', err, res));
+  }
+
+  function getAdditionalParams({query}) {
+    let filters = {};
+
+    try {
+      filters = JSON.parse(query.a);
+    } catch (e) {
+      logger.error('Unable to parse additional filters parameters', e);
+    }
+
+    return filters;
   }
 };
