@@ -1,10 +1,11 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE } = require('../constants');
+const { DEFAULT_LIST_OPTIONS, TICKET_STATUS, EVENTS, EMAIL_NOTIFICATIONS, ALL_CONTRACTS, TICKETING_USER_TYPES, NOTIFICATIONS_TYPE, REQUEST_TYPE } = require('../constants');
 const { RECENTLY, WEEK } = require('../filter/constants');
 const { isSuspendedTicketState } = require('../helpers');
 const { diff } = require('deep-object-diff');
 const moment = require('moment-timezone');
+const _ = require('lodash');
 
 const DEFAULT_TICKET_POPULATES = [
   { path: 'software.software' },
@@ -155,13 +156,7 @@ module.exports = dependencies => {
     function list(options = {}) {
       options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
-      const query = buildTicketListQuery(options)
-        .lean()
-        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-timestamps.createdAt');
-
-      return query.exec();
+      return listTicketQuery(options);
     }
 
     function ticketsWithoutPrivateComments(tickets) {
@@ -186,8 +181,95 @@ module.exports = dependencies => {
     }
   }
 
+  function otherType() {
+    return {
+      $nin: [REQUEST_TYPE.ANOMALY, REQUEST_TYPE.INFORMATION, REQUEST_TYPE.ADMINISTRATION]
+    };
+  }
+
+  function getContractOption(options) {
+    const { contract } = options;
+    let optionPromise;
+
+    if (options.additional_filters.client) {
+      const clients = _.map(options.additional_filters.client, 'id');
+
+      optionPromise = getClientContracts(clients);
+    } else {
+      optionPromise = Promise.resolve([]);
+    }
+
+    return optionPromise.then(([clientContractIds]) => {
+      let contractIdFilter = clientContractIds;
+
+      if (contract && contract !== ALL_CONTRACTS) {
+        contractIdFilter = [...new Set([...contract.map(String), ...clientContractIds])];
+      }
+
+      if (options.additional_filters.contract) {
+        const contractsFilter = _.map(options.additional_filters.contract, 'id');
+
+        contractIdFilter = contractIdFilter && contractIdFilter.length > 0 ? contractsFilter.filter(contract => contractIdFilter.includes(contract)) : contractsFilter;
+      }
+
+      if (contractIdFilter && contractIdFilter.length > 0) {
+        return { contract: { $in: contractIdFilter } };
+      }
+
+      return {};
+    });
+
+  }
+
+  function setAdditionalOptions(options) {
+    const additionalOptions = {};
+
+    if (options.additional_filters.software) {
+      additionalOptions['software.software'] = { $in: _.map(options.additional_filters.software, 'id') };
+    }
+
+    if (options.additional_filters.severity) {
+      additionalOptions.severity = { $in: _.map(options.additional_filters.severity, 'id') };
+    }
+
+    if (options.additional_filters.status) {
+      additionalOptions.status = { $in: _.map(options.additional_filters.status, 'id') };
+    }
+
+    if (options.additional_filters.assignto) {
+      additionalOptions['assignedTo.id'] = { $in: _.map(options.additional_filters.assignto, 'id') };
+    }
+
+    if (options.additional_filters.author) {
+      additionalOptions['author.id'] = { $in: _.map(options.additional_filters.author, 'id') };
+    }
+
+    if (options.additional_filters.beneficiary) {
+      additionalOptions['beneficiary.id'] = { $in: _.map(options.additional_filters.beneficiary, 'id') };
+    }
+
+    if (options.additional_filters.type) {
+      const types = _.map(options.additional_filters.type, 'id');
+
+      additionalOptions.type = { $in: types };
+
+      if (types.includes(REQUEST_TYPE.OTHER)) {
+        additionalOptions.type = otherType();
+      }
+    }
+
+    return getContractOption(options).then(contractOption => Promise.resolve({...contractOption, ...additionalOptions}));
+  }
+
+  function getClientContracts(clients) {
+    return Promise.all(clients.map(client =>
+      contract.listByClient(client).then(clientContracts => clientContracts.map(contract => String(contract._id)))
+    ));
+  }
+
   function buildTicketListQuery(options) {
     let findOptions = {};
+    let optionPromise;
 
     if (options.contract && options.contract !== ALL_CONTRACTS) {
       findOptions.contract = { $in: options.contract };
@@ -199,13 +281,29 @@ module.exports = dependencies => {
       findOptions = { ...findOptions, archived: { $ne: true } };
     }
 
-    const query = Ticket.find(findOptions);
-
-    if (options.populations) {
-      query.populate(options.populations);
+    if (options.additional_filters) {
+      optionPromise = setAdditionalOptions(options).then(additionalFilters => ({...findOptions, ...additionalFilters }));
+    } else {
+      optionPromise = Promise.resolve(findOptions);
     }
 
-    return query;
+    return optionPromise;
+  }
+
+  function listTicketQuery(options) {
+    return buildTicketListQuery(options).then(queryOptions => {
+      const query = Ticket.find(queryOptions);
+
+      if (options.populations) {
+        query.populate(options.populations);
+      }
+
+      return query.lean()
+        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
+        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
+        .sort('-timestamps.createdAt')
+        .exec();
+    });
   }
 
   function listForContracts(contracts, options = {}) {
@@ -220,17 +318,11 @@ module.exports = dependencies => {
     }));
 
     function count() {
-      return buildTicketListQuery(options).count().exec();
+      return buildTicketListQuery(options).then(queryOptions => Ticket.find(queryOptions).count().exec());
     }
 
     function list() {
-      const query = buildTicketListQuery(options)
-        .lean()
-        .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
-        .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-timestamps.createdAt');
-
-      return query.exec();
+      return listTicketQuery(options);
     }
   }
   /**
@@ -519,9 +611,7 @@ module.exports = dependencies => {
           contract: contracts
         };
 
-        return buildTicketListQuery(options)
-          .count()
-          .exec();
+        return buildTicketListQuery(options).then(queryOptions => Ticket.find(queryOptions).count().exec());
       });
   }
 };

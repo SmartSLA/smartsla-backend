@@ -22,7 +22,7 @@ module.exports = dependencies => {
     _id: { type: Number },
     name: { type: String, required: true },
     software: { type: mongoose.Schema.ObjectId, ref: 'Software', required: true },
-    author: { type: mongoose.Schema.ObjectId, ref: 'TicketingUser', required: true },
+    author: { type: String },
     type: { type: String},
     version: { type: String },
     fixedInVersion: { type: String },
