@@ -64,8 +64,8 @@ module.exports = dependencies => {
               })
               .then(() => resolve({ id: surveyId, token: generatedToken }));
           })
-          .catch(() => {
-            logger.warn('Unable to reach limesurvey server');
+          .catch((e) => {
+            logger.warn('Unable to reach limesurvey server', e);
             resolve();
           });
       });
