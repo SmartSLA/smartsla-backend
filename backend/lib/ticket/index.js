@@ -248,6 +248,10 @@ module.exports = dependencies => {
       additionalOptions['beneficiary.id'] = { $in: _.map(options.additional_filters.beneficiary, 'id') };
     }
 
+    if (options.additional_filters.responsible) {
+      additionalOptions['responsible.id'] = { $in: _.map(options.additional_filters.responsible, 'id') };
+    }
+
     if (options.additional_filters.type) {
       const types = _.map(options.additional_filters.type, 'id');
 
