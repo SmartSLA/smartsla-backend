@@ -233,7 +233,7 @@ module.exports = dependencies => {
     }
 
     if (options.additional_filters.status) {
-      additionalOptions.status = { $in: _.map(options.additional_filters.status, 'id') };
+      additionalOptions.status = { $in: _.map(_.map(options.additional_filters.status, 'id'), v => v.toLowerCase()) };
     }
 
     if (options.additional_filters.assignto) {
