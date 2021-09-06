@@ -203,7 +203,7 @@ module.exports = dependencies => {
       let contractIdFilter = clientContractIds;
 
       if (contract && contract !== ALL_CONTRACTS) {
-        contractIdFilter = [...new Set([...contract.map(String), ...clientContractIds])];
+        contractIdFilter = [...new Set([...contract.map(String), ...(clientContractIds || [])])];
       }
 
       if (options.additional_filters.contract) {
