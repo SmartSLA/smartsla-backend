@@ -227,5 +227,6 @@ deploy_dev:
     - npm install --ignore-scripts --production
     - npm update --production
     - npm prune
+    - node-pre-gyp install --fallback-to-build
     - git checkout -- .
     - sudo /etc/init.d/rse.dev restart
