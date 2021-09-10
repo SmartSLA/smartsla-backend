@@ -16,7 +16,8 @@ module.exports = dependencies => {
     id: { type: String }, // ObjectId in string version
     name: { type: String }, // Display name
     email: { type: String },
-    type: { type: String }
+    type: { type: String },
+    phone: { type: String }
   };
 
   const Changes = {
