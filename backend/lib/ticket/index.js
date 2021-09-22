@@ -87,13 +87,12 @@ module.exports = dependencies => {
 
       return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
-      .then(modifiedTicket => {
-        Contract.findById(modifiedTicket.contract)
+      .then(modifiedTicket => Contract.findById(modifiedTicket.contract)
         .exec()
         .then(contract => {
           email.send({
             emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
-            noticationType: event.isPrivate ? NOTIFICATIONS_TYPE.EXPERT_ATTENDEES : NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+            notificationType: event.isPrivate ? NOTIFICATIONS_TYPE.EXPERT_ATTENDEES : NOTIFICATIONS_TYPE.ALL_ATTENDEES,
             ticket: modifiedTicket,
             contract: {
               name: contract.name,
@@ -103,8 +102,7 @@ module.exports = dependencies => {
 
           return modifiedTicket;
 
-        });
-      });
+        }));
     }
   }
 
@@ -395,23 +393,21 @@ module.exports = dependencies => {
 
       return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true })
         .exec()
-        .then(updatedTicket => {
-          Contract.findById(updatedTicket.contract)
-            .exec()
-            .then(contract => {
-              email.send({
-                emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
-                notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
-                ticket: updatedTicket,
-                contract: {
-                  name: contract.name,
-                  mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
-                }
-              });
-
-              return updatedTicket;
+        .then(updatedTicket => Contract.findById(updatedTicket.contract)
+          .exec()
+          .then(contract => {
+            email.send({
+              emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
+              notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+              ticket: updatedTicket,
+              contract: {
+                name: contract.name,
+                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+              }
             });
-        });
+
+            return updatedTicket;
+          }));
     })
     .catch(err => logger.error(`Error while updating the ticket: ${ticketId}`, err));
 

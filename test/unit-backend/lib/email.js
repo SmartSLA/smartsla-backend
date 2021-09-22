@@ -73,7 +73,11 @@ describe('The email module', function() {
 
   describe('The send function', function() {
     it('should retrieve configuration', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
+      getModule()
+        .send({
+          emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
+          ticket
+        })
         .then(() => {
           expect(getMultipleSpy).to.have.been.calledWith(['frontendUrl', 'mail', 'ssp']);
           done();
@@ -82,7 +86,12 @@ describe('The email module', function() {
     });
 
     it('should retrieve esn user', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, ticket)
+      getModule()
+        .send({
+          emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
+          notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+          ticket
+        })
         .then(() => {
           expect(userModule.get).to.have.been.called;
           done();
@@ -91,7 +100,12 @@ describe('The email module', function() {
     });
 
     it('should retrieve user mailer', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, ticket)
+      getModule()
+        .send({
+          emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
+          notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+          ticket
+        })
         .then(() => {
           expect(emailModule.getMailer).to.have.been.calledWith;
           done();
@@ -100,7 +114,11 @@ describe('The email module', function() {
     });
 
     it('should send html email', function(done) {
-      getModule().send(EMAIL_NOTIFICATIONS.TYPES.CREATED, ticket)
+      getModule()
+        .send({
+          emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
+          ticket
+        })
         .then(() => {
           expect(sendHTML).to.have.been.calledWith;
           done();

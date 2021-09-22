@@ -22,7 +22,7 @@ module.exports = dependencies => {
 
   const ContactSchema = new Schema({
     commercial: { type: String }, // FIXME Store User instead of name
-    technical: { type: String }, // FIXME Store User instead of name
+    technical: { type: String } // FIXME Store User instead of name
   }, { _id: false});
 
   const MailingListSchema = new Schema({
