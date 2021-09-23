@@ -253,6 +253,10 @@ function calculateWorkingMinutes(startingDate, endingDate, startingHour, endingH
     startWrapper.add(1, 'day');
   }
 
+  if (startWrapper.format('HH:mm:ss') > endWrapper.format('HH:mm:ss')) {
+    duration.add(- (24 - (endingHour - startingHour)), 'hour');
+  }
+
   return convertIsoDurationInMinutes(duration, endingHour - startingHour);
 
   function isNonWorkingDay(currentDate) {
