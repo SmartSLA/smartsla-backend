@@ -258,7 +258,7 @@ describe('The ticket lib', function() {
       getModule()
         .list({ user, ticketingUser }, options)
         .then(ticketsList => {
-          expect(ticketsList).to.have.lengthOf(tickets.length);
+          expect(ticketsList.tickets).to.have.lengthOf(tickets.length);
           expect(filterGetByIdSpy).to.have.been.calledOnce;
           expect(filterGetByIdSpy).to.have.been.calledWith('closed');
           done();
@@ -283,7 +283,6 @@ describe('The ticket lib', function() {
       getModule()
         .list({ user, ticketingUser }, options)
         .then(() => {
-          expect(TicketModelMock.find).to.have.been.calledOnce;
           expect(TicketModelMock.find).to.have.been.calledWith({ status: 'closed', archived: { $ne: true } });
           done();
         })
