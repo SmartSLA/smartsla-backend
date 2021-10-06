@@ -226,6 +226,7 @@ deploy_dev:
     - git checkout ${CI_COMMIT_SHA}
     - npm install --ignore-scripts --production
     - npm --build-from-source install bcrypt
+    - npm install node-pre-gyp
     - npm update --production
     - npm prune
     - node-pre-gyp install --fallback-to-build
