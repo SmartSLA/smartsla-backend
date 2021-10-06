@@ -136,10 +136,11 @@ module.exports = dependencies => {
    * @return {Promise}         - Resolve on success
    */
   function list({ user, ticketingUser }, options = {}) {
-    return contract.allowedContracts({ user, ticketingUser })
+    function tickets() {
+      return contract.allowedContracts({ user, ticketingUser })
       .then(contract => ({ ...options, contract }))
       .then(OptionsWithContract => getFilter({ ...OptionsWithContract, user }))
-      .then(listOptions => list(listOptions))
+      .then(listOptions => buildTicketQuery(listOptions))
       .then(tickets => {
         if (ticketingUser) {
           const { type } = ticketingUser;
@@ -153,11 +154,24 @@ module.exports = dependencies => {
       })
       .then(addCnsToTickets);
 
-    function list(options = {}) {
-      options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
+      function buildTicketQuery(options = {}) {
+        options.populations = DEFAULT_TICKET_POPULATES.concat(options.populations || []);
 
-      return listTicketQuery(options);
+        return listTicketQuery(options);
+      }
     }
+
+    function count() {
+      return buildTicketListQuery(options).then(queryOptions => Ticket.find(queryOptions).count().exec());
+    }
+
+    return Promise.all([
+      count(),
+      tickets()
+    ]).then(result => ({
+      size: result[0],
+      tickets: result[1]
+    }));
 
     function ticketsWithoutPrivateComments(tickets) {
       return (tickets || []).map(({ events, ...ticket }) => ({

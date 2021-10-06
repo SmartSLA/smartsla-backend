@@ -112,11 +112,11 @@ module.exports = function(dependencies, lib) {
     }
 
     return lib.ticket.list(req, options)
-      .then(tickets => {
+      .then(({tickets, size}) => {
         if (isExportCvs) {
           exportCsv(tickets, res, req.user);
         } else {
-          res.header('X-ESN-Items-Count', tickets.length);
+          res.header('X-ESN-Items-Count', size);
           res.status(200).json(tickets);
         }
       })
