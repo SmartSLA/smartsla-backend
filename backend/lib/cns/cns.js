@@ -30,7 +30,8 @@ const HOLIDAYS_MAP = HOLIDAYS.reduce((holidaysMap, day) => {
  * cns per status can be 0 if n/a
  *
  * @param ticket
- * @return {{bypassed: number, supported: number, resolved: number}}
+ * @param contract
+ * @return {Cns}
  */
 function computeCns(ticket, contract) {
   const cns = new Cns();
@@ -211,49 +212,87 @@ function hoursBetween(start, end) {
  * @return {number}
  */
 function calculateWorkingMinutes(startingDate, endingDate, startingHour, endingHour) {
-  const startWrapper = moment(startingDate);
-  const endWrapper = moment(endingDate);
-
-  if (isNonWorkingDay(startWrapper) || startWrapper.hour() >= endingHour) {
-    // Iterate until the next working day
-    startWrapper.add(1, 'day');
-    startWrapper.hour(startingHour).minute(0).second(0);
-
-    while (isNonWorkingDay(startWrapper)) {
-      startWrapper.add(1, 'day');
-    }
-  } else if (startWrapper.hour() < startingHour) {
-    startWrapper.hour(startingHour).minute(0).second(0);
-  }
-
-  if (isNonWorkingDay(endWrapper) || endWrapper.hour() < startingHour) {
-    // Iterate until the previous working day
-    endWrapper.add(-1, 'day');
-    endWrapper.hour(endingHour).minute(0).second(0);
-
-    while (isNonWorkingDay(endWrapper)) {
-      endWrapper.add(-1, 'day');
-    }
-  } else if (endWrapper.hour() >= endingHour) {
-    endWrapper.hour(endingHour).minute(0).second(0);
-  }
+  const { startWrapper, endWrapper } = adjustRangeInWorkingHour(startingDate, endingDate, startingHour, endingHour);
 
   const durationMs = endWrapper.diff(startWrapper);
 
+  // If start and end dates are in consecutive non working days.
+  // adjustRangeInWorkingHour will introduce a negative difference although it should be 0
   if (durationMs < 0) {
     return 0;
   }
 
   const duration = moment.duration(durationMs);
 
-  while (startWrapper.isBefore(endWrapper)) {
-    if (isNonWorkingDay(startWrapper)) {
-      duration.add(-1, 'day');
-    }
-    startWrapper.add(1, 'day');
+  const nbNonWorkingDay = getNumberOfWorkingDay(startWrapper, endWrapper);
+
+  duration.subtract(nbNonWorkingDay, 'day');
+
+  // If startWapper time is after endWrapper time, time difference will be computed across days.
+  // It'll include whole day hours, so we need to remove non working days hours.
+  if (startWrapper.format('HH:mm:ss') > endWrapper.format('HH:mm:ss')) {
+    duration.subtract(24 - (endingHour - startingHour), 'hour');
   }
 
   return convertIsoDurationInMinutes(duration, endingHour - startingHour);
+
+  function getNumberOfWorkingDay(startDay, endDay) {
+    let nb = 0;
+
+    while (startDay.isBefore(endDay)) {
+      if (isNonWorkingDay(startDay)) {
+        nb++;
+      }
+      startDay.add(1, 'day');
+    }
+
+    return nb;
+  }
+
+  /**
+   * Return closest working hour date times for period start and end date/times
+   *
+   * If start and end are in working hour/days, they are left unchanged.
+   *
+   * If start is not in working hour, returned startWrapper is the closest working day/hour before start
+   * If end is not in working hour, returned endWrapper is the closest working day/hour after end
+   *
+   * @param start period start date time
+   * @param end period end date time
+   * @param startHourBoundary Office working hour start time
+   * @param endHourBoundary Office working hour end time
+   * @returns {{endWrapper: (*|moment.Moment), startWrapper: (*|moment.Moment)}}
+   */
+  function adjustRangeInWorkingHour(start, end, startHourBoundary, endHourBoundary) {
+    const startWrapperLocal = moment(start);
+    const endWrapperLocal = moment(end);
+
+    if (isNonWorkingDay(startWrapperLocal) || startWrapperLocal.hour() >= endHourBoundary) {
+      // Iterate until the next working day
+      startWrapperLocal.add(1, 'day');
+      startWrapperLocal.hour(startHourBoundary).minute(0).second(0);
+
+      while (isNonWorkingDay(startWrapperLocal)) {
+        startWrapperLocal.add(1, 'day');
+      }
+    } else if (startWrapperLocal.hour() < startHourBoundary) {
+      startWrapperLocal.hour(startHourBoundary).minute(0).second(0);
+    }
+
+    if (isNonWorkingDay(endWrapperLocal) || endWrapperLocal.hour() < startHourBoundary) {
+      // Iterate until the previous working day
+      endWrapperLocal.add(-1, 'day');
+      endWrapperLocal.hour(endHourBoundary).minute(0).second(0);
+
+      while (isNonWorkingDay(endWrapperLocal)) {
+        endWrapperLocal.add(-1, 'day');
+      }
+    } else if (endWrapperLocal.hour() >= endHourBoundary) {
+      endWrapperLocal.hour(endHourBoundary).minute(0).second(0);
+    }
+
+    return { startWrapper: startWrapperLocal, endWrapper: endWrapperLocal };
+  }
 
   function isNonWorkingDay(currentDate) {
     const dayString = currentDate.format('YYYY-MM-DD');

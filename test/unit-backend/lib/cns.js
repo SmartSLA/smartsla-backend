@@ -240,6 +240,15 @@ describe('CNS calculation', () => {
   });
 
   describe('The calculateWorkingMinutes function', () => {
+    describe('The start time and end time ', () => {
+      it('should calculate correctly when start time is after the end time', () => {
+        const start = '2019-09-25T17:44:44.697+02:00';
+        const end = '2019-09-26T15:44:44.697+02:00';
+
+        expect(calculateWorkingMinutes(start, end, 9, 18)).to.equal(420);
+      });
+    });
+
     describe('The start date and end date are the same day', () => {
       it('should calculate correctly when start and end are in working hours', () => {
         const start = '2019-09-26T15:44:44.697+02:00';
