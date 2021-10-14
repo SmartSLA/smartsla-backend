@@ -178,12 +178,18 @@ module.exports = {
     INFORMATION: 'Information',
     ADMINISTRATION: 'Administration',
     ANOMALY: 'Anomaly',
+    VULNERABILITY: 'softwareVulnerability',
     OTHER: 'Other'
   },
   SOFTWARE_CRITICAL: {
     CRITICAL: 'critical',
     SENSIBLE: 'sensible',
     STANDARD: 'standard'
+  },
+  SEVERITY_TYPE: {
+    MAJOR: 'Major',
+    MINOR: 'Minor',
+    BLOCKING: 'Blocking'
   },
   ALL_CONTRACTS: 'ALL_CONTRACTS'
 };
