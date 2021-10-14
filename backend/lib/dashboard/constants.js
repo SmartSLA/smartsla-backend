@@ -42,6 +42,53 @@ module.exports = function() {
       },
       {
         _id: 'ticketByOpenClosed',
+        middleStages:
+        [
+          {
+            $project: {
+              creationDate: '$timestamps.createdAt',
+              archived: '$archived',
+              closedEvent: {
+                $filter: {
+                  input: '$events',
+                  as: 'event',
+                  cond: {$eq: ['$$event.status', 'closed']}
+                }
+              }
+            }
+          },
+          {
+            $project: {
+              createdEvent: [
+                {
+                  status: {$literal: 'created'},
+                  archived: '$archived',
+                  eventDate: '$creationDate'
+                }
+              ],
+              closedEvent: {
+                status: {$literal: 'closed'},
+                archived: '$archived',
+                eventDate: {$arrayElemAt: ['$closedEvent.timestamps.createdAt', 0]}
+              }
+            }
+          },
+          {
+            $project: {
+              events: {$concatArrays: ['$createdEvent', '$closedEvent']}
+            }
+          },
+          {
+            $unwind: '$events'
+          },
+          {
+            $project: {
+              archived: '$events.archived',
+              timestamps: { createdAt: '$events.eventDate' },
+              status: '$events.status'
+            }
+          }
+        ],
         group: {
           open: { $sum: {$cond: { if: {$and: [{ $ne: ['$status', TICKET_STATUS.CLOSED] }, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}},
           closed: { $sum: {$cond: { if: {$and: [{ $eq: ['$status', TICKET_STATUS.CLOSED] }, {$ne: ['$archived', true]}]}, then: 1, else: 0 }}}

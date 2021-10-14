@@ -42,6 +42,10 @@ module.exports = dependencies => {
           pipeline.push({ $match: matchCondition });
         }
 
+        if (dashboardQuery.middleStages) {
+          pipeline.push(...dashboardQuery.middleStages);
+        }
+
         if (dashboardQuery.group) {
           const groupCondition = getGrouping(dashboardQuery, query.group, dateField);
 
