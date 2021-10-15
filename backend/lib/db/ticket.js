@@ -58,7 +58,6 @@ module.exports = dependencies => {
     createdDuringBusinessHours: { type: Boolean, default: true },
     description: { type: String },
     events: [Event],
-    idOssa: Schema.Types.Mixed,
     meetingId: { type: String },
     participants: [String],
     relatedRequests: [Schema.Types.Mixed], // FIXME Doesn't work in frontend

@@ -1,7 +1,7 @@
 const Q = require('q');
 const composableMw = require('composable-middleware');
 const _ = require('lodash');
-const { TICKET_ACTIONS, ID_OSSA_CONVERTION, DEFAULT_TIMEZONE } = require('../constants');
+const { TICKET_ACTIONS, DEFAULT_TIMEZONE } = require('../constants');
 const { TICKETING_CONTRACT_ROLES } = require('../../../lib/constants');
 const moment = require('moment-timezone');
 const business = require('moment-business');
@@ -55,27 +55,9 @@ module.exports = (dependencies, lib) => {
 
     return lib.contract.getById(ticket.contract)
       .then(contract => {
-        let idOssa;
-
-        if (ticket.software && ticket.software.critical) {
-          const {critical} = ticket.software; //Depending on the software and the contract engagements we get differents idOssa
-          const OssaDescription = contract.Engagements[critical].engagements[0].idOssa; //we need to convert that idOssa to a number
-
-          idOssa = {
-            // We might has well save the two infos
-            id: ID_OSSA_CONVERTION[OssaDescription],
-            OssaDescription
-          };
-        } else {
-          idOssa = {
-            id: 0,
-            OssaDescription: 'Not found'
-          };
-        }
-
         const createdDuringBusinessHours = isInBusinessHours(contract);
 
-        return new Promise(resolve => resolve({ ...ticket, beneficiary, idOssa, createdDuringBusinessHours }));
+        return new Promise(resolve => resolve({ ...ticket, beneficiary, createdDuringBusinessHours }));
 
         function isInBusinessHours(contract) {
           if (contract.features && contract.features.nonBusinessHours) {
@@ -101,7 +83,7 @@ module.exports = (dependencies, lib) => {
           return true;
         }
       })
-      .catch(err => send500Error('Unable to compute ticket OssaId', err, res));
+      .catch(err => send500Error('Unable to compute ticket', err, res));
   }
 
   function transformTicket(req, res, next) {

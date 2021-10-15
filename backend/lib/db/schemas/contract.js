@@ -44,7 +44,6 @@ module.exports = dependencies => {
   const EngagementDetailSchema = {
     bypassed: BusinessHoursSchema,
     description: { type: String }, // FIXME Send by frontend but useless (not in UI)
-    idOssa: { type: String },
     request: { type: String },
     resolved: BusinessHoursSchema,
     severity: { type: String },

@@ -81,8 +81,6 @@
  *        $ref: "#/definitions/contract_hours"
  *      description:
  *        type: string
- *      idOssa:
- *        type: string
  *      severity:
  *        type: string
  *  contract_engagement_section:

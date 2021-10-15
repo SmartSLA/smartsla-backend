@@ -47,8 +47,6 @@
  *        type: array
  *        items:
  *          $ref: "#/definitions/ticket_event"
- *      idOssa:
- *        type: string
  *      meetingId:
  *        type: string
  *      participants:

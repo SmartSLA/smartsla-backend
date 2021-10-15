@@ -279,7 +279,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P2D",
  *                    "nonBusinessHours": "P0D"
@@ -429,7 +428,6 @@
  *                  "_id": "5df06798e29925292aefd02c",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P5D",
  *                    "nonBusinessHours": "P0D"
@@ -452,7 +450,6 @@
  *                  "_id": "5dd264eceb518b3414ea842a",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Information",
  *                  "description": ""
  *                }
  *              ]
@@ -527,7 +524,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT3H"
@@ -546,7 +542,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Information",
  *                  "bypassed": {
  *                    "businessHours": "PT4H",
  *                    "nonBusinessHours": "PT5H"
@@ -564,7 +559,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT3H"
@@ -586,7 +580,7 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
+
  *                  "bypassed": {
  *                    "businessHours": "PT5H",
  *                    "nonBusinessHours": "PT6H"
@@ -609,7 +603,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "bypassed": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P1D"
@@ -628,7 +621,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P45DT1H",
  *                    "nonBusinessHours": "P45DT1H"
@@ -843,14 +835,12 @@
  *                {
  *                  "_id": "5dc060d225c0406ac3cba372",
  *                  "description": "",
- *                  "idOssa": "Blocking",
  *                  "severity": "Major",
  *                  "request": "Anomaly"
  *                },
  *                {
  *                  "_id": "5dcbd87f76aec77d3d6b6d08",
  *                  "description": "",
- *                  "idOssa": "Blocking",
  *                  "severity": "Blocking",
  *                  "request": "Anomaly"
  *                },
@@ -858,7 +848,6 @@
  *                  "_id": "5dcc3e5c53f0c0570f7260d7",
  *                  "request": "Ra",
  *                  "severity": "Major",
- *                  "idOssa": "Information",
  *                  "description": ""
  *                }
  *              ]
@@ -868,7 +857,6 @@
  *                {
  *                  "_id": "5dc05df625c0406ac3cba36e",
  *                  "description": "",
- *                  "idOssa": "Blocking",
  *                  "severity": "Minor",
  *                  "request": "Anomaly"
  *                },
@@ -876,7 +864,6 @@
  *                  "_id": "5dc1381c25c0406ac3cba73c",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "description": ""
  *                }
  *              ]
@@ -1356,7 +1343,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "PT12H"
@@ -1448,7 +1434,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT4H",
  *                    "nonBusinessHours": "P0D"
@@ -1467,7 +1452,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P50DT60H",
  *                    "nonBusinessHours": "P70DT80H"
@@ -1559,7 +1543,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT6H",
  *                    "nonBusinessHours": "P1D"
@@ -1582,7 +1565,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P55DT3H",
  *                    "nonBusinessHours": "P55DT3H"
@@ -1601,7 +1583,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT4H",
  *                    "nonBusinessHours": "P30DT1H"
@@ -1713,7 +1694,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Information",
  *                  "bypassed": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "P0D"
@@ -1827,7 +1807,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT3H"
@@ -1846,7 +1825,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Information",
  *                  "bypassed": {
  *                    "businessHours": "PT6H",
  *                    "nonBusinessHours": "PT6H"
@@ -1940,7 +1918,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT4H"
@@ -2024,7 +2001,6 @@
  *                  "_id": "5e7da6f381e3d43b645ebc7f",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P40D",
  *                    "nonBusinessHours": "P40D"
@@ -2054,7 +2030,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT3H",
  *                    "nonBusinessHours": "P0D"
@@ -2069,7 +2044,6 @@
  *                  "_id": "5e5cdf4c163cd0255961082e",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -2263,7 +2237,6 @@
  *                  "_id": "5defb72de29925292aefc97e",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1DT2H",
  *                    "nonBusinessHours": "P1DT2H"
@@ -2359,7 +2332,6 @@
  *                  "_id": "5df0a070e4c25b4cc219ac33",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -2603,7 +2575,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P31DT15H",
  *                    "nonBusinessHours": "P11DT16H"
@@ -2622,7 +2593,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P10D",
  *                    "nonBusinessHours": "P20D"
@@ -2641,7 +2611,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Information",
  *                  "bypassed": {
  *                    "businessHours": "P40DT5H",
  *                    "nonBusinessHours": "P11DT6H"
@@ -2660,7 +2629,6 @@
  *                  "_id": "5dee4a39e29925292aefb1d7",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P10D",
  *                    "nonBusinessHours": "P31DT16H"
@@ -2757,7 +2725,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P2DT4H",
  *                    "nonBusinessHours": "P2DT4H"
@@ -2776,7 +2743,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P5DT2H",
  *                    "nonBusinessHours": "P5DT2H"
@@ -2795,7 +2761,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P5DT5H",
  *                    "nonBusinessHours": "P5DT5H"
@@ -2814,7 +2779,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P10D",
  *                    "nonBusinessHours": "P10D"
@@ -2832,7 +2796,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P5DT5H",
  *                    "nonBusinessHours": "P5D"
@@ -2850,7 +2813,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P10D",
  *                    "nonBusinessHours": "P10D"
@@ -2868,7 +2830,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "bypassed": {
  *                    "businessHours": "P4D",
  *                    "nonBusinessHours": "P4DT4H"
@@ -2886,7 +2847,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "None",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P10D",
  *                    "nonBusinessHours": "P10D"
@@ -2900,7 +2860,6 @@
  *                  "_id": "5e7b14c723298131dd702dbe",
  *                  "request": "new type",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT2H"
@@ -2919,7 +2878,6 @@
  *                  "_id": "5e7b14c723298131dd702dbd",
  *                  "request": "new new",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P1D"
@@ -2946,7 +2904,6 @@
  *                  },
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P4D",
  *                    "nonBusinessHours": "P6D"
@@ -2965,7 +2922,6 @@
  *                  },
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT4H",
  *                    "nonBusinessHours": "P4D"
@@ -2980,7 +2936,6 @@
  *                  "_id": "5df7270457a4ad7fc872b5bc",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P5D",
  *                    "nonBusinessHours": "P5D"
@@ -3007,7 +2962,6 @@
  *                  },
  *                  "request": "Other",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -3022,7 +2976,6 @@
  *                  "_id": "5df099dd6d936f355583ad95",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT2H",
  *                    "nonBusinessHours": "PT2H"
@@ -3041,7 +2994,6 @@
  *                  "_id": "5e7c587d3687003605f58df0",
  *                  "request": "Administration",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P0D",
  *                    "nonBusinessHours": "P0D"
@@ -3178,7 +3130,6 @@
  *                  "_id": "5df0aaa3e4c25b4cc219ad5f",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT8H",
  *                    "nonBusinessHours": "P0D"
@@ -3715,7 +3666,6 @@
  *                  "_id": "5df3957157a4ad7fc872a937",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -3808,7 +3758,6 @@
  *                  "_id": "5df72c4257a4ad7fc872b624",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P5D",
  *                    "nonBusinessHours": "P0D"
@@ -3827,7 +3776,6 @@
  *                  "_id": "5df72cd057a4ad7fc872b640",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P2DT4H",
  *                    "nonBusinessHours": "P0D"
@@ -3920,7 +3868,6 @@
  *                  "_id": "5df73eb957a4ad7fc872b77a",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P2D"
@@ -4013,7 +3960,6 @@
  *                  "_id": "5df7407257a4ad7fc872b7c1",
  *                  "request": "Information",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P2D"
@@ -4106,7 +4052,6 @@
  *                  "_id": "5df754c157a4ad7fc872b980",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P2D"
@@ -4198,7 +4143,6 @@
  *                  "_id": "5df7581357a4ad7fc872ba9c",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P2D",
  *                    "nonBusinessHours": "P0D"
@@ -4290,7 +4234,6 @@
  *                  "_id": "5e1f4e9d44e2df599b65984f",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P11DT11H",
  *                    "nonBusinessHours": "P0D"
@@ -4477,7 +4420,6 @@
  *                  "_id": "5e15b62cb3855f7589423c60",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1DT1H",
  *                    "nonBusinessHours": "P0D"
@@ -4571,7 +4513,6 @@
  *                  "_id": "5dfba8ef7bb1025600bf85e9",
  *                  "request": "Administration",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1DT2H",
  *                    "nonBusinessHours": "P0D"
@@ -4594,7 +4535,6 @@
  *                  "_id": "5df8b3f181a2da6f63bed328",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P1DT3H",
  *                    "nonBusinessHours": "P0D"
@@ -4621,7 +4561,6 @@
  *                  },
  *                  "request": "Administration",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "bypassed": {
  *                    "businessHours": "P2DT5H",
  *                    "nonBusinessHours": "P0D"
@@ -4636,7 +4575,6 @@
  *                  "_id": "5e3c3f4964fea431a7e0d62b",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "P0D",
  *                    "nonBusinessHours": "P0D"
@@ -4750,7 +4688,6 @@
  *                  "_id": "5e1f4e9d44e2df599b65984f",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P11DT11H",
  *                    "nonBusinessHours": "P0D"
@@ -4842,7 +4779,6 @@
  *                  "_id": "5e39320e64fea431a7e0b736",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "P1D",
  *                    "nonBusinessHours": "P0D"
@@ -4986,7 +4922,6 @@
  *                  "_id": "5e4bfa6f0975516f75524250",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P1DT2H",
  *                    "nonBusinessHours": "P3DT4H"
@@ -5005,7 +4940,6 @@
  *                  "_id": "5e4bfa6f0975516f7552424f",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P3DT4H",
  *                    "nonBusinessHours": "P3DT4H"
@@ -5024,7 +4958,6 @@
  *                  "_id": "5e4bfa6f0975516f7552424e",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "P4DT5H",
  *                    "nonBusinessHours": "P4DT5H"
@@ -5043,7 +4976,6 @@
  *                  "_id": "5e4bfbe60975516f75524381",
  *                  "request": "Information",
  *                  "severity": "Minor",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "P0D",
  *                    "nonBusinessHours": "P0D"
@@ -5135,7 +5067,6 @@
  *                  "_id": "5e7c7bc93687003605f594b7",
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -5154,7 +5085,6 @@
  *                  "_id": "5e7c7bc93687003605f594b6",
  *                  "request": "Administration",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "P3D",
  *                    "nonBusinessHours": "P3D"
@@ -5173,7 +5103,6 @@
  *                  "_id": "5e7c7bc93687003605f594b5",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -5192,7 +5121,6 @@
  *                  "_id": "5e7c7bc93687003605f594b4",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -5211,7 +5139,6 @@
  *                  "_id": "5e7c7bc93687003605f594b3",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "PT1H"
@@ -5312,7 +5239,6 @@
  *                  "_id": "5e7c7f3c80fa03277966b6e0",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5331,7 +5257,6 @@
  *                  "_id": "5e7c7f3c80fa03277966b6df",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5350,7 +5275,6 @@
  *                  "_id": "5e7c7f3c80fa03277966b6de",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5369,7 +5293,6 @@
  *                  "_id": "5e7c7fa180fa03277966b6e2",
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5392,7 +5315,6 @@
  *                  "_id": "5e7c805a80fa03277966b703",
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5411,7 +5333,6 @@
  *                  "_id": "5e7c805a80fa03277966b702",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5430,7 +5351,6 @@
  *                  "_id": "5e7c805a80fa03277966b701",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5449,7 +5369,6 @@
  *                  "_id": "5e7c805a80fa03277966b700",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5472,7 +5391,6 @@
  *                  "_id": "5e7c837380fa03277966b83b",
  *                  "request": "Information",
  *                  "severity": "None",
- *                  "idOssa": "Information",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5491,7 +5409,6 @@
  *                  "_id": "5e7c837380fa03277966b83a",
  *                  "request": "Anomaly",
  *                  "severity": "Minor",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5510,7 +5427,6 @@
  *                  "_id": "5e7c837380fa03277966b839",
  *                  "request": "Anomaly",
  *                  "severity": "Major",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5529,7 +5445,6 @@
  *                  "_id": "5e7c837380fa03277966b838",
  *                  "request": "Anomaly",
  *                  "severity": "Blocking",
- *                  "idOssa": "Blocking",
  *                  "supported": {
  *                    "businessHours": "PT1H",
  *                    "nonBusinessHours": "P0D"
@@ -5548,7 +5463,6 @@
  *                  "_id": "5e7c837380fa03277966b837",
  *                  "request": "demande de devis",
  *                  "severity": "None",
- *                  "idOssa": "Non-blocking",
  *                  "supported": {
  *                    "businessHours": "P2D",
  *                    "nonBusinessHours": "P0D"
