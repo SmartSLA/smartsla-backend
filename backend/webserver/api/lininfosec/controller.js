@@ -58,7 +58,7 @@ module.exports = function(dependencies, lib) {
           }),
         author: author,
         software: contract.contractSoftware,
-        participants: contract.vulnerabilityContact ? [contract.vulnerabilityContact] : []
+        participants: contract.vulnerabilityMailingList ? [contract.vulnerabilityMailingList] : []
       }))
       .then(normalizedTicket => (ticketMiddlewares.transform(normalizedTicket, res)))
       .then(newTicket => newTicket)
@@ -76,11 +76,11 @@ module.exports = function(dependencies, lib) {
       .then(contract => (contract.toObject()))
       .then(contract => {
         const contractSoftware = contract.software.filter(software => software._id.toString() === notification.configurationUid.split('-')[1])[0],
-              vulnerabilityContact = contract.contact.vulneratility;
+              vulnerabilityMailingList = contract.mailingList.vulnerability;
 
         return {
           contractSoftware,
-          vulnerabilityContact
+          vulnerabilityMailingList
         };
       });
     }

@@ -69,7 +69,9 @@ module.exports = dependencies => {
       }));
   }
 
-  function send(emailType, notificationType, ticket, contractName) {
+  function send({emailType, notificationType, ticket, contract = {}}) {
+    const { name: contractName, mailingList } = contract;
+
     return getConfig()
       .then(({ frontendUrl, mail }) => {
         userModule.get(ticket.author.id, (err, user) => {
@@ -91,6 +93,7 @@ module.exports = dependencies => {
             subject: i18n.__(emailType.subject, content),
             to: recipients.to,
             cc: recipients.cc,
+            bcc: mailingList,
             from: mail.noreply,
             replyTo: mail.replyto
           };

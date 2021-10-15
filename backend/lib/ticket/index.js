@@ -87,13 +87,22 @@ module.exports = dependencies => {
 
       return Ticket.findByIdAndUpdate(ticketId, { $push: { events: event }, $set: set }, { new: true })
       .exec()
-      .then(modifiedTicket => {
-        const noticationType = event.isPrivate ? NOTIFICATIONS_TYPE.EXPERT_ATTENDEES : NOTIFICATIONS_TYPE.ALL_ATTENDEES;
+      .then(modifiedTicket => Contract.findById(modifiedTicket.contract)
+        .exec()
+        .then(contract => {
+          email.send({
+            emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
+            notificationType: event.isPrivate ? NOTIFICATIONS_TYPE.EXPERT_ATTENDEES : NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+            ticket: modifiedTicket,
+            contract: {
+              name: contract.name,
+              mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+            }
+          });
 
-        email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, noticationType, modifiedTicket);
+          return modifiedTicket;
 
-        return modifiedTicket;
-      });
+        }));
     }
   }
 
@@ -107,17 +116,40 @@ module.exports = dependencies => {
     ticket = ticket instanceof Ticket ? ticket : new Ticket(ticket);
 
     return Ticket.create(ticket).then(createdTicket => {
-      email.send(EMAIL_NOTIFICATIONS.TYPES.CREATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, createdTicket);
-
       Contract.findById(createdTicket.contract)
         .exec()
         .then(contract => {
+          email.send({
+            emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
+            notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+            ticket: createdTicket,
+            contract: {
+              name: contract.name,
+              mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+            }
+          });
+
           if (moment().diff(contract.endDate) > 0) {
-            email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED, NOTIFICATIONS_TYPE.EXPERT_ATTENDEES, createdTicket, contract.name);
+            email.send({
+              emailType: EMAIL_NOTIFICATIONS.TYPES.CONTRACT_EXPIRED,
+              notificationType: NOTIFICATIONS_TYPE.EXPERT_ATTENDEES,
+              ticket: createdTicket,
+              contract: {
+                name: contract.name,
+                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+              }
+            });
           }
           listForContracts(createdTicket.contract, options).then(ticketsObject => {
             if (ticketsObject.size >= contract.credits) {
-              email.send(EMAIL_NOTIFICATIONS.TYPES.CONTRACT_CREDITCONSUMED, createdTicket, contract.name);
+              email.send({
+                emailType: EMAIL_NOTIFICATIONS.TYPES.CONTRACT_CREDITCONSUMED,
+                ticket: createdTicket,
+                contract: {
+                  name: contract.name,
+                  mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+                }
+              });
             }
           });
         });
@@ -375,11 +407,21 @@ module.exports = dependencies => {
 
       return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true })
         .exec()
-        .then(updatedTicket => {
-          email.send(EMAIL_NOTIFICATIONS.TYPES.UPDATED, NOTIFICATIONS_TYPE.ALL_ATTENDEES, updatedTicket);
+        .then(updatedTicket => Contract.findById(updatedTicket.contract)
+          .exec()
+          .then(contract => {
+            email.send({
+              emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
+              notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,
+              ticket: updatedTicket,
+              contract: {
+                name: contract.name,
+                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+              }
+            });
 
-          return updatedTicket;
-        });
+            return updatedTicket;
+          }));
     })
     .catch(err => logger.error(`Error while updating the ticket: ${ticketId}`, err));
 
