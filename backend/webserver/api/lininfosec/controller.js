@@ -3,7 +3,7 @@
 module.exports = function(dependencies, lib) {
   const EsnConfig = dependencies('esn-config').EsnConfig;
   const ticketMiddlewares = require('../ticket/middleware')(dependencies, lib);
-  const { SEVERITY_TYPES, LININFOSEC } = require('../constants');
+  const { LININFOSEC_SEVERITY_TYPES, LININFOSEC } = require('../constants');
   const { send500Error } = require('../utils')(dependencies);
   const i18n = require('../../../lib/i18n/index.js')(dependencies);
   const logger = dependencies('logger');
@@ -148,7 +148,11 @@ module.exports = function(dependencies, lib) {
             vulnerabilityMailingList
           };
         })
-        .catch(err => logger.error('Error while fetching contract: ' + err));
+        .catch(err => {
+          logger.error('Error while fetching contract: ' + err);
+
+          return err;
+        });
     }
 
     function _getSeverity(notificationSeverity) {
@@ -156,14 +160,14 @@ module.exports = function(dependencies, lib) {
 
       switch (notificationSeverity) {
         case 'HIGH':
-          severity = SEVERITY_TYPES.MAJOR;
+          severity = LININFOSEC_SEVERITY_TYPES.MAJOR;
           break;
         case 'MEDIUM':
         case 'LOW':
-          severity = SEVERITY_TYPES.MINOR;
+          severity = LININFOSEC_SEVERITY_TYPES.MINOR;
           break;
         default:
-          severity = SEVERITY_TYPES.NONE;
+          severity = LININFOSEC_SEVERITY_TYPES.NONE;
       }
 
       return severity;

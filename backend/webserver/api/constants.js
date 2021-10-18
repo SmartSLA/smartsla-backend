@@ -32,7 +32,7 @@ module.exports = {
     TICKET_STATUS: 'new',
     TYPE: 'softwareVulnerability'
   },
-  SEVERITY_TYPES: {
+  LININFOSEC_SEVERITY_TYPES: {
     MAJOR: 'Major',
     MINOR: 'Minor',
     NONE: 'None'
