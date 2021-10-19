@@ -48,6 +48,28 @@ module.exports = dependencies => {
     token: { type: String }
   };
 
+  const VulnVersion = {
+    including: { type: Boolean },
+    version: { type: String }
+  };
+
+  const CPE = {
+    cpe23Uri: { type: String },
+    versionStart: { type: VulnVersion },
+    versionEnd: { type: VulnVersion }
+  };
+
+  const VulnReference = {
+    source: { type: String },
+    URL: { type: Object },
+    tags: [String]
+  };
+
+  const Vuln = {
+    cpes: [CPE],
+    references: [VulnReference]
+  };
+
   const ticketSchema = new mongoose.Schema({
     _id: Number,
     assignedTo: IdNameEmailType, // TODO Consider denormalizing
@@ -76,7 +98,8 @@ module.exports = dependencies => {
     archived: { type: Boolean, default: false },
     title: { type: String, required: true },
     type: { type: String }, // TODO add enum validator
-    schemaVersion: { type: Number, default: 1 }
+    schemaVersion: { type: Number, default: 1 },
+    vulnInfos: { type: Vuln }
   });
 
   ticketSchema.pre('save', function(next) {

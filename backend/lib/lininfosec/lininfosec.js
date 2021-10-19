@@ -102,16 +102,19 @@ module.exports = dependencies => {
     };
 
     return getConfig()
-    .then(config =>
-      axios({
-        method: 'POST',
-        baseURL: config.apiUrl,
-        url: '/monitor/add',
-        data: reqData,
+      .then(config =>
+        axios({
+          method: 'POST',
+          baseURL: config.apiUrl,
+          url: '/monitor/add',
+          data: reqData,
         headers: {'X-Auth-Token': config.lininfosec_auth_token}
-      })
-      .catch(err => logger.error('Error while adding CPE configuration', err))
-    );
+        })
+          .catch(err => {
+            logger.error('Error while adding CPE configuration', err);
+            return err;
+          })
+      );
   }
 
   /**
@@ -133,9 +136,12 @@ module.exports = dependencies => {
           headers: {'X-Auth-Token': config.lininfosec_auth_token},
           params: reqParams
         })
-        .then(res => res.data)
-        .catch(err => logger.error('Error while getting CPE configuration', err))
-    );
+          .then(res => res.data)
+          .catch(err => {
+            logger.error('Error while getting CPE configuration', err);
+            return err;
+          })
+      );
   }
 
   /**
@@ -178,8 +184,11 @@ module.exports = dependencies => {
           data: reqData,
           headers: {'X-Auth-Token': config.lininfosec_auth_token}
         })
-        .then(res => res.data)
-        .catch(err => logger.error('Error while updating CPE configuration', err))
+          .then(res => res.data)
+          .catch(err => {
+            logger.error('Error while updating CPE configuration', err);
+            return err;
+          })
       );
   }
 
@@ -202,8 +211,11 @@ module.exports = dependencies => {
           data: reqData,
           headers: {'X-Auth-Token': config.lininfosec_auth_token}
         })
-        .then(res => res.data)
-        .catch(err => logger.error('Error while removing CPE configuration', err))
+          .then(res => res.data)
+          .catch(err => {
+            logger.error('Error while removing CPE configuration', err);
+            return err;
+          })
       );
   }
 
