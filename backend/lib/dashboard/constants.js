@@ -9,7 +9,8 @@ module.exports = function() {
       $and: [
         { $ne: ['$type', REQUEST_TYPE.ANOMALY] },
         { $ne: ['$type', REQUEST_TYPE.INFORMATION] },
-        { $ne: ['$type', REQUEST_TYPE.ADMINISTRATION] }
+        { $ne: ['$type', REQUEST_TYPE.ADMINISTRATION] },
+        { $ne: ['$type', REQUEST_TYPE.VULNERABILITY] }
       ]
     };
   }
