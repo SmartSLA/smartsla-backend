@@ -21,7 +21,6 @@ module.exports = function(dependencies) {
   function addLabels(csvData) {
     csvData.unshift({
       [i18n.__('Id')]: i18n.__('Ticket id'),
-      [i18n.__('Support priority')]: i18n.__('Support priority'),
       [i18n.__('Type')]: i18n.__('Type of request'),
       [i18n.__('Severity')]: i18n.__('Ticket severity'),
       [i18n.__('Software')]: i18n.__('Software supported in ticket'),
@@ -54,7 +53,6 @@ module.exports = function(dependencies) {
   function formatCsvData(ticket, contract) {
     return {
       [i18n.__('Id')]: ticket._id,
-      [i18n.__('Support priority')]: i18n.__(ticket.idOssa.id),
       [i18n.__('Type')]: i18n.__(ticket.type),
       [i18n.__('Severity')]: i18n.__(ticket.severity),
       [i18n.__('Software')]: ticket.software && ticket.software.software.name,

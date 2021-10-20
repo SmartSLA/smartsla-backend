@@ -139,10 +139,6 @@
  *            "email": "amy.wolsh@open-paas.org",
  *            "type": "expert"
  *          },
- *          "idOssa": {
- *            "id": 3,
- *            "OssaDescription": "Blocking"
- *          },
  *          "events": [],
  *          "cns": {
  *            "supported": {
@@ -230,10 +226,6 @@
  *              "email": "amy.wolsh@open-paas.org",
  *              "type": "expert"
  *            },
- *            "idOssa": {
- *              "id": 3,
- *              "OssaDescription": "Blocking"
- *            },
  *            "events": [],
  *            "cns": {
  *              "supported": {
@@ -311,10 +303,6 @@
  *            },
  *            "callNumber": "2",
  *            "meetingId": "2",
- *            "idOssa": {
- *              "id": 3,
- *              "OssaDescription": "Blocking"
- *            },
  *            "events": [],
  *            "relatedContributions": [],
  *            "cns": {
