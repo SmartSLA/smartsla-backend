@@ -18,8 +18,17 @@ describe('The filter module', function() {
     it('should return array of filters', function(done) {
       filterModule.list({ticketingUser})
         .then(filters => {
+          const { type } = ticketingUser;
+          const filterListExpert = filterList.filter(filter => {
+            if (filter.rights && !filter.rights.includes(type)) {
+              return false;
+            }
+
+            return true;
+          });
+
           expect(filters).to.be.an('array');
-          expect(filters.length).to.be.equal(filterList.length);
+          expect(filters.length).to.be.equal(filterListExpert.length);
 
           done();
         })

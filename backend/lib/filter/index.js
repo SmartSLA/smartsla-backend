@@ -30,7 +30,7 @@ function list({ticketingUser}) {
  * @param  {String}   filterId - The filter ID
  * @return {Promise}  - Resolve the found filter
  */
-function getById(filterId, values = {}) {
+function getById(filterId = 'open', values = {}) {
   const filter = FILTER_LIST.find(filter => filter._id === filterId);
 
   if (filter && filter.query) {
