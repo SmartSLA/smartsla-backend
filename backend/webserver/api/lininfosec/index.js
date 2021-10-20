@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function(dependencies, lib, router) {
-  const { canCreateTicket } = require('./middleware')(dependencies, lib);
   const controller = require('./controller')(dependencies, lib);
 
   /**
@@ -24,7 +23,6 @@ module.exports = function(dependencies, lib, router) {
   */
   router.post('/lininfosec',
     // TO DO: Add the authentification!!
-    canCreateTicket,
     controller.create
   );
 };
