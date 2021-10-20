@@ -60,6 +60,7 @@ module.exports = dependencies => {
       const currentLinInfoSecConfiguration = newSoftwareItem.lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
+      logger.info('Generating lininfosec conf uid ', newContract._id, newSoftwareItem._id);
       const uid = `${newContract._id.toString()}-${newSoftwareItem._id.toString()}`;
 
       newSoftware[uid] = currentLinInfoSecConfiguration;
@@ -152,7 +153,8 @@ module.exports = dependencies => {
   function upsertCpeConfiguration(uid, cpes) {
     return getByUid(uid)
       .then(config => {
-        if (config === null) {
+        logger.info('Adding or updating CPE configuration ', config);
+        if (config instanceof Error) {
           return addCpeConfiguration(uid, cpes);
         }
 
