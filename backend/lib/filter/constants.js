@@ -3,14 +3,56 @@ const { TICKETING_USER_TYPES } = require('../constants');
 module.exports = {
   FILTER_LIST: [
     {
+      _id: 'open',
+      name: 'Open tickets',
+      query: { status: { $ne: 'closed' }, archived: { $ne: true }}
+    },
+    {
+      _id: 'closed',
+      name: 'Closed tickets',
+      query: {
+        status: 'closed',
+        archived: { $ne: true }
+      }
+    },
+    {
+      _id: 'all',
+      name: 'All tickets',
+      query: {}
+    },
+    {
       _id: 'mytickets',
       name: 'My tickets',
       query: {
-        $and: [
+        $or: [
           {'author.id': { $eq: '%user%' } },
+          { 'assignedTo._id': { $eq: '%user%' } }
+        ],
+        archived: { $ne: true }
+      },
+      rights: [TICKETING_USER_TYPES.BENEFICIARY]
+    },
+    {
+      _id: 'myassignedtickets',
+      name: 'My assigned tickets',
+      query: {
+        $and: [
+          { 'assignedTo._id': { $eq: '%user%' } },
           { archived: { $ne: true } }
         ]
-      }
+      },
+      rights: [TICKETING_USER_TYPES.EXPERT]
+    },
+    {
+      _id: 'myaccountabletickets',
+      name: 'My accountable tickets',
+      query: {
+        $and: [
+          { 'responsible._id': { $eq: '%user%' } },
+          { archived: { $ne: true } }
+        ]
+      },
+      rights: [TICKETING_USER_TYPES.EXPERT]
     },
     {
       _id: 'myunsolvedtickets',
@@ -59,24 +101,19 @@ module.exports = {
         archived: { $ne: true }
       }
     },
-
-    {
-      _id: 'open',
-      name: 'Open tickets',
-      query: { status: { $ne: 'closed' }, archived: { $ne: true }}
-    },
     {
       _id: 'suspended',
       name: 'Suspended tickets',
       query: { 'assignedTo.type': 'beneficiary', archived: { $ne: true } }
     },
     {
-      _id: 'closed',
-      name: 'Closed tickets',
+      _id: 'vulnerability',
+      name: 'Vulnerability tickets',
       query: {
-        status: 'closed',
+        type: 'softwareVulnerability',
         archived: { $ne: true }
-      }
+      },
+      rights: [TICKETING_USER_TYPES.EXPERT]
     },
     {
       _id: 'archived',
