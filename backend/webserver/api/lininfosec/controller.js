@@ -4,7 +4,7 @@ module.exports = function(dependencies, lib) {
   const EsnConfig = dependencies('esn-config').EsnConfig;
   const ticketMiddlewares = require('../ticket/middleware')(dependencies, lib);
   const { LININFOSEC_SEVERITY_TYPES, LININFOSEC } = require('../constants');
-  const { send500Error } = require('../utils')(dependencies);
+  const { send500Error, send403Error } = require('../utils')(dependencies);
   const i18n = require('../../../lib/i18n/index.js')(dependencies);
   const logger = dependencies('logger');
 
@@ -48,6 +48,10 @@ module.exports = function(dependencies, lib) {
 
     for (const [confUid, cves] of CVEMap) {
       const contract = await _getContract(confUid);
+
+      if (!contract.isLininfosecEnabled) {
+        return send403Error('Can not create a ticket: LinInfoSec is disabled for this contract', res);
+      }
 
       const normalizedCveTickets = [];
 
@@ -144,6 +148,7 @@ module.exports = function(dependencies, lib) {
 
           return {
             contractUid,
+            isLininfosecEnabled: contract.features.linInfoSec,
             contractSoftware,
             vulnerabilityMailingList
           };
