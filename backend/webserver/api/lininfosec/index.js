@@ -6,7 +6,7 @@ module.exports = function(dependencies, lib, router) {
   /**
   * @swagger
   * /ticketing/api/lininfosec:
-  *  get:
+  *  post:
   *    tags:
   *      - LinInfoSec
   *    responses:
