@@ -198,7 +198,11 @@ module.exports = dependencies => {
     }
 
     function count() {
-      return buildTicketListQuery(options).then(queryOptions => Ticket.find(queryOptions).count().exec());
+      return contract.allowedContracts({ user, ticketingUser })
+      .then(contract => ({ ...options, contract }))
+      .then(OptionsWithContract => getFilter({ ...OptionsWithContract, user }))
+      .then(options => buildTicketListQuery(options))
+      .then(queryOptions => Ticket.find(queryOptions).count().exec());
     }
 
     return Promise.all([
