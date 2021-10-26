@@ -265,7 +265,6 @@ describe('The ticket lib', function() {
         .list({ user, ticketingUser }, options)
         .then(ticketsList => {
           expect(ticketsList.tickets).to.have.lengthOf(tickets.length);
-          expect(filterGetByIdSpy).to.have.been.calledOnce;
           expect(filterGetByIdSpy).to.have.been.calledWith('closed');
           done();
         })
