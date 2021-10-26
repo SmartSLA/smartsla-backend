@@ -18,7 +18,7 @@ module.exports = {
     {
       _id: 'all',
       name: 'All tickets',
-      query: {}
+      query: { archived: { $ne: true }}
     },
     {
       _id: 'mytickets',
