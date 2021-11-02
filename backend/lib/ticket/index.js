@@ -119,6 +119,7 @@ module.exports = dependencies => {
       Contract.findById(createdTicket.contract)
         .exec()
         .then(contract => {
+          logger.info('Sending Mail to lininfosec mailing list');
           email.send({
             emailType: EMAIL_NOTIFICATIONS.TYPES.CREATED,
             notificationType: NOTIFICATIONS_TYPE.ALL_ATTENDEES,

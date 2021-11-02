@@ -42,9 +42,13 @@ module.exports = function(dependencies, lib) {
       CVEMap.set(notif.configurationUid, cves);
     });
 
+    logger.info('Getting author');
+
     // eslint-disable-next-line
     let author = await _getAuthor();
     let tickets = [];
+
+    logger.info('Normalizing Tickets');
 
     for (const [confUid, cves] of CVEMap) {
       const contract = await _getContract(confUid);
@@ -60,6 +64,9 @@ module.exports = function(dependencies, lib) {
       }
       tickets = [...tickets, ...normalizedCveTickets];
     }
+
+    logger.info('Transforming ant addind tickets in DB');
+
     for (const ticket of tickets) {
       ticketMiddlewares.transform(ticket).then(newTicket => {
         lib.ticket.create(newTicket)
@@ -73,7 +80,8 @@ module.exports = function(dependencies, lib) {
 
     function _normalizeTicket(notification, contract, author) {
 
-      const isVersionIncluding = (cpe, start) => {
+      logger.info('Normalizing: _ ');
+      function _isVersionIncluding(cpe, start) {
         const keys = Object.getOwnPropertyNames(cpe);
 
         for (const idx of keys) {
@@ -85,7 +93,7 @@ module.exports = function(dependencies, lib) {
 
           return null;
         }
-      };
+      }
 
       let cpes = [];
 
@@ -93,8 +101,8 @@ module.exports = function(dependencies, lib) {
         cpes = notification.configurations.nodes[0].cpe_match.map(cpe => (
           {
             cpe23Uri: cpe.cpe23Uri,
-            versionStart: isVersionIncluding(cpe, true),
-            versionEnd: isVersionIncluding(cpe, false)
+            versionStart: _isVersionIncluding(cpe, true),
+            versionEnd: _isVersionIncluding(cpe, false)
           }
         ));
       }
@@ -109,8 +117,7 @@ module.exports = function(dependencies, lib) {
             tags: ref.tags
           }));
       }
-
-      return {
+      const normalized = {
         contract: contract.contractUid,
         type: LININFOSEC.TYPE,
         severity: _getSeverity(notification.impact.baseMetricV2.severity),
@@ -129,6 +136,8 @@ module.exports = function(dependencies, lib) {
         participants: contract.vulnerabilityMailingList ? [contract.vulnerabilityMailingList] : [],
         vulnInfos: { cpes, references }
       };
+
+      return normalized;
     }
 
     function _getAuthor() {

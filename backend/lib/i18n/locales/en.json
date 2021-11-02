@@ -276,7 +276,7 @@
   "Versions": "Versions",
   "Version": "Version",
   "We have just created a beneficiary account for you on the Support platform: {{{site}}}.": "We have just created a beneficiary account for you on the Support platform: {{{site}}}.",
-  "Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}": "Vulnerability detected: {{CveId}} on {{softwareName}} v. {{softwareVersion}}",
+  "Vulnerability detected: {{CveId}} on {{softwareName}} v-{{softwareVersion}}": "Vulnerability detected: {{CveId}} on {{softwareName}} v-{{softwareVersion}}",
   "Workaround time is set": "Workaround time is set",
   "Workaround time is unset": "Workaround time is unset",
   "Workaround time SLA": "Workaround time SLA",

@@ -14,6 +14,7 @@ module.exports = (dependencies, lib) => {
     validateObjectIds
   } = require('../helpers')(dependencies, lib);
   const { send400Error, send403Error, send404Error, send500Error } = require('../utils')(dependencies);
+  const logger = dependencies('logger');
 
   return {
     checkTicketIdInParams,
@@ -53,8 +54,11 @@ module.exports = (dependencies, lib) => {
     // Later we should had it in the ticket creation
     const beneficiary = ticket.author;
 
+    logger.info('Transforming ticket on contract', ticket.contract);
+
     return lib.contract.getById(ticket.contract)
       .then(contract => {
+
         const createdDuringBusinessHours = isInBusinessHours(contract);
 
         return new Promise(resolve => resolve({ ...ticket, beneficiary, createdDuringBusinessHours }));
