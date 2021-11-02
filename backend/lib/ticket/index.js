@@ -360,7 +360,7 @@ module.exports = dependencies => {
       return query.lean()
         .skip(+options.offset || DEFAULT_LIST_OPTIONS.OFFSET)
         .limit(+options.limit || DEFAULT_LIST_OPTIONS.LIMIT)
-        .sort('-timestamps.createdAt')
+        .sort('-timestamps.updatedAt')
         .exec();
     });
   }
