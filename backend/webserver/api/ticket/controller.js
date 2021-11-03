@@ -18,7 +18,8 @@ module.exports = function(dependencies, lib) {
     update,
     updateRelatedContributions,
     remove,
-    search
+    search,
+    deleteComment
   };
 
   function addEvent(req, res) {
@@ -146,9 +147,19 @@ module.exports = function(dependencies, lib) {
       .then(ticket => {
         lib.ticketingUserRole.userIsAdministrator(req.user._id)
           .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === TICKETING_USER_TYPES.EXPERT)))
-          .then(canReadPrivateComment => {
-            if (!canReadPrivateComment) {
-              ticket.events = ticket.events.filter(event => !event.isPrivate);
+          .then(hasPermission => {
+            if (!hasPermission) {
+              let events = ticket.events.filter(event => !event.isPrivate);
+
+              events = events.map(event => {
+                if (event.deleted && !!Object.keys(event.deleted).length) {
+                  event.comment = '';
+                }
+
+                return event;
+              });
+
+              ticket.events = events;
             }
 
             return res.status(200).json(ticket);
@@ -226,5 +237,31 @@ module.exports = function(dependencies, lib) {
     }
 
     return send500Error('Failed to search tickets', 'Query parameter {q} is mandatory', res);
+  }
+
+  /**
+ * Update event and add deleted flag
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+  function deleteComment(req, res) {
+    const deleted = req.body;
+
+    if (req.params.id && req.params.eventId) {
+      return lib.ticket.deleteComment(req.params.id, req.params.eventId, deleted)
+        .then(updatedTicket => {
+          res.status(200).json(updatedTicket);
+        })
+        .catch(err => {
+          logger.error(`Error while deleting comment ${err}`);
+
+          return send500Error('Error while deleting comment', err, res);
+        });
+    }
+
+    logger.error('Failed to delete comment');
+
+    return send500Error('Failed to delete comment');
   }
 };
