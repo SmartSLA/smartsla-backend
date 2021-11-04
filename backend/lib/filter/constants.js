@@ -26,7 +26,7 @@ module.exports = {
       query: {
         $or: [
           {'author.id': { $eq: '%user%' } },
-          { 'assignedTo._id': { $eq: '%user%' } }
+          { 'assignedTo.id': { $eq: '%user%' } }
         ],
         archived: { $ne: true }
       },
@@ -37,7 +37,7 @@ module.exports = {
       name: 'My assigned tickets',
       query: {
         $and: [
-          { 'assignedTo._id': { $eq: '%user%' } },
+          { 'assignedTo.id': { $eq: '%user%' } },
           { archived: { $ne: true } }
         ]
       },
@@ -48,7 +48,7 @@ module.exports = {
       name: 'My accountable tickets',
       query: {
         $and: [
-          { 'responsible._id': { $eq: '%user%' } },
+          { 'responsible.id': { $eq: '%user%' } },
           { archived: { $ne: true } }
         ]
       },
@@ -59,8 +59,8 @@ module.exports = {
       name: 'My unsolved tickets',
       query: {
         $or: [
-          { 'assignedTo._id': { $eq: '%user%' } },
-          { 'responsible._id': { $eq: '%user%' } }
+          { 'assignedTo.id': { $eq: '%user%' } },
+          { 'responsible.id': { $eq: '%user%' } }
         ],
         status: { $ne: 'closed' },
         archived: { $ne: true }
