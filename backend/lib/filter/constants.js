@@ -5,7 +5,10 @@ module.exports = {
     {
       _id: 'open',
       name: 'Open tickets',
-      query: { status: { $ne: 'closed' }, archived: { $ne: true }}
+      query: {
+        status: { $ne: 'closed' },
+        type: { $ne: 'softwareVulnerability' },
+        archived: { $ne: true }}
     },
     {
       _id: 'closed',
@@ -25,7 +28,7 @@ module.exports = {
       name: 'My tickets',
       query: {
         $or: [
-          {'author.id': { $eq: '%user%' } },
+          { 'author.id': { $eq: '%user%' } },
           { 'assignedTo.id': { $eq: '%user%' } }
         ],
         archived: { $ne: true }
@@ -79,6 +82,7 @@ module.exports = {
       name: 'Recently updated tickets',
       query: {
         'timestamps.updatedAt': { $gt: '%recent_date%' },
+        type: { $ne: 'softwareVulnerability' },
         archived: { $ne: true }
       }
     },
@@ -89,6 +93,7 @@ module.exports = {
       query: {
         'timestamps.updatedAt': { $lt: '%one_week_ago%' },
         status: { $ne: 'closed' },
+        type: { $ne: 'softwareVulnerability' },
         archived: { $ne: true }
       }
     },
