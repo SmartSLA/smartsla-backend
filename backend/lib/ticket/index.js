@@ -96,7 +96,7 @@ module.exports = dependencies => {
             ticket: modifiedTicket,
             contract: {
               name: contract.name,
-              mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+              mailingList: event.isPrivate ? [] : [...contract.mailingList.internal, ...contract.mailingList.external]
             }
           });
 
@@ -126,7 +126,7 @@ module.exports = dependencies => {
             ticket: createdTicket,
             contract: {
               name: contract.name,
-              mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+              mailingList: [...contract.mailingList.internal, ...contract.mailingList.external]
             }
           });
 
@@ -137,7 +137,7 @@ module.exports = dependencies => {
               ticket: createdTicket,
               contract: {
                 name: contract.name,
-                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external]
               }
             });
           }
@@ -148,7 +148,7 @@ module.exports = dependencies => {
                 ticket: createdTicket,
                 contract: {
                   name: contract.name,
-                  mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+                  mailingList: [...contract.mailingList.internal, ...contract.mailingList.external]
                 }
               });
             }
@@ -425,7 +425,7 @@ module.exports = dependencies => {
               ticket: updatedTicket,
               contract: {
                 name: contract.name,
-                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external, ...contract.mailingList.vulnerability]
+                mailingList: [...contract.mailingList.internal, ...contract.mailingList.external]
               }
             });
 
