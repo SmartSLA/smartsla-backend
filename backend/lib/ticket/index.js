@@ -228,6 +228,9 @@ module.exports = dependencies => {
         one_week_ago: new Date(Date.now() - WEEK).getTime()
       };
 
+      logger.info('getFilter [option] => ', options);
+      logger.info('getFilter [values] => ', values);
+
       return ticketFilter.getById(options.filter, values).then(filter => ({
           ...options,
           filter
