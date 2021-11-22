@@ -40,7 +40,8 @@ module.exports = dependencies => {
     setWorkaroundTime,
     setCorrectionTime,
     search,
-    deleteComment
+    deleteComment,
+    updateComment
   };
 
   /**
@@ -720,4 +721,21 @@ module.exports = dependencies => {
     ).exec();
 
   }
+
+    /**
+   * Update a comment
+   * @param {String}    - the ticket ID
+   * @param {String}    - the event ID
+   * @param {Object}    - the comment history object
+   * @return {Promise}  - Resolve on success
+   */
+    function updateComment(ticketId, eventId, comment) {
+      return Ticket.findOneAndUpdate(
+        {
+          _id: ticketId,
+          events: { $elemMatch: { _id: eventId } }
+        },
+        { $push: { 'events.$.eventHistory': {...comment} } }
+      ).exec();
+    }
 };

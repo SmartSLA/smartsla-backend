@@ -33,6 +33,12 @@ module.exports = dependencies => {
     deletedAt: {type: Date, default: Date.now}
   };
 
+  const EventHistory = {
+    comment: {type: String},
+    createdAt: {type: Date, default: Date.now},
+    editedBy: { type: String }
+  };
+
   const Event = {
     author: IdNameEmailType,
     target: IdNameEmailType,
@@ -47,7 +53,8 @@ module.exports = dependencies => {
     changes: [Changes],
     isPrivate: {type: Boolean, default: false},
     isSurvey: {type: Boolean, default: false},
-    deleted: { type: DeletedType }
+    deleted: { type: DeletedType },
+    eventHistory: [EventHistory]
   };
 
   const Survey = {
