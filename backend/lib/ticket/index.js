@@ -39,7 +39,8 @@ module.exports = dependencies => {
     updateState,
     setWorkaroundTime,
     setCorrectionTime,
-    search
+    search,
+    deleteComment
   };
 
   /**
@@ -187,7 +188,9 @@ module.exports = dependencies => {
           }
         }
 
-        return ticketsWithoutPrivateComments(tickets);
+        const filteredTickets = ticketsWithoutPrivateComments(tickets);
+
+        return ticketsWithoutDeletedComments(filteredTickets);
       })
       .then(addCnsToTickets);
 
@@ -218,6 +221,19 @@ module.exports = dependencies => {
       return (tickets || []).map(({ events, ...ticket }) => ({
         ...ticket,
         events: (events || []).filter(event => !event.isPrivate)
+      }));
+    }
+
+    function ticketsWithoutDeletedComments(tickets) {
+      return (tickets || []).map(({ events, ...ticket }) => ({
+        ...ticket,
+        events: (events || []).map(event => {
+          if (event.deleted && !!Object.keys(event.deleted).length) {
+            event.comment = '';
+          }
+
+          return event;
+        })
       }));
     }
 
@@ -685,5 +701,23 @@ module.exports = dependencies => {
 
         return buildTicketListQuery(options).then(queryOptions => Ticket.find(queryOptions).count().exec());
       });
+  }
+
+  /**
+   * Delete comment by adding deleted flag
+   * @param {String}    - the ticket ID
+   * @param {String}    - the event ID
+   * @return {Promise}  - Resolve on success
+   */
+  function deleteComment(ticketId, eventId, options) {
+
+    return Ticket.findOneAndUpdate(
+      {
+        _id: ticketId,
+        events: { $elemMatch: { _id: eventId } }
+      },
+      { $set: { 'events.$.deleted': options.deleted } }
+    ).exec();
+
   }
 };

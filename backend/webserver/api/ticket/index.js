@@ -170,6 +170,36 @@ module.exports = (dependencies, lib, router) => {
 
   /**
    * @swagger
+   * /ticketing/api/tickets/{id}/events/{eventId}/comment:
+   *  patch:
+   *    tags:
+   *      - Ticket
+   *    description: add deleted flag to a ticket event.
+   *    parameters:
+   *      - $ref: "#/parameters/ticket_number"
+   *    responses:
+   *      200:
+   *        $ref: "#/responses/ticket"
+   *      401:
+   *        $ref: "#/responses/cm_401"
+   *      403:
+   *        $ref: "#/responses/cm_403"
+   *      404:
+   *        $ref: "#/responses/cm_404"
+   *      500:
+   *        $ref: "#/responses/cm_500"
+   */
+  router.patch('/tickets/:id/events/:eventId/comment',
+    authorizationMW.requiresAPILogin,
+    middlewares.checkTicketIdInParams,
+    middlewares.loadTicket,
+    userMiddleware.loadTicketingUser,
+    middlewares.canDeleteOrUpdateComment,
+    controller.deleteComment
+  );
+
+  /**
+   * @swagger
    * /ticketing/api/tickets/{id}/contributions:
    *  post:
    *    tags:

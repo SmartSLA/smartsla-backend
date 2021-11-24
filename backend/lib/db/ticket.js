@@ -27,6 +27,12 @@ module.exports = dependencies => {
     action: {type: String}
   };
 
+  const DeletedType = {
+    reason: { type: String, default: '' },
+    deletedBy: { type: String },
+    deletedAt: {type: Date, default: Date.now}
+  };
+
   const Event = {
     author: IdNameEmailType,
     target: IdNameEmailType,
@@ -40,7 +46,8 @@ module.exports = dependencies => {
     attachments: [Attachment],
     changes: [Changes],
     isPrivate: {type: Boolean, default: false},
-    isSurvey: {type: Boolean, default: false}
+    isSurvey: {type: Boolean, default: false},
+    deleted: { type: DeletedType }
   };
 
   const Survey = {

@@ -32,7 +32,8 @@ module.exports = (dependencies, lib) => {
     validateTicketUpdate,
     transformTicket,
     transform,
-    canPutPrivateComment
+    canPutPrivateComment,
+    canDeleteOrUpdateComment
   };
 
   function checkTicketIdInParams(req, res, next) {
@@ -587,5 +588,25 @@ module.exports = (dependencies, lib) => {
     }
 
     return next();
+  }
+
+  function canDeleteOrUpdateComment(req, res, next) {
+    return lib.ticketingUserRole.userIsAdministrator(req.user._id)
+      .then(isAdmin => (isAdmin || (req.ticketingUser && req.ticketingUser.type === 'expert')))
+      .then(canDeleteComment => {
+        if (canDeleteComment) {
+          return next();
+        }
+
+        const event = req.ticket.events.find(event => event._id.toString() === req.params.eventId);
+
+        if (event && event.author && event.author.id === req.user._id.toString()) {
+          return next();
+        }
+
+        logger.error(`User id: ${req.user._id.toString()} does not have permission to delete comment`);
+
+        return send403Error('User does not have permission to delete comment', res);
+      });
   }
 };
