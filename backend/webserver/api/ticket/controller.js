@@ -250,15 +250,28 @@ module.exports = function(dependencies, lib) {
     const deleted = req.body;
 
     if (req.params.id && req.params.eventId) {
-      return lib.ticket.deleteComment(req.params.id, req.params.eventId, deleted)
-        .then(updatedTicket => {
-          res.status(200).json(updatedTicket);
-        })
-        .catch(err => {
-          logger.error(`Error while deleting comment ${err}`);
 
-          return send500Error('Error while deleting comment', err, res);
-        });
+      if (deleted) {
+        return lib.ticket.deleteComment(req.params.id, req.params.eventId, deleted)
+          .then(updatedTicket => {
+            res.status(200).json(updatedTicket);
+          })
+          .catch(err => {
+            logger.error(`Error while deleting comment ${err}`);
+
+            return send500Error('Error while deleting comment', err, res);
+          });
+      }
+
+      return lib.ticket.revertCommentDeletion(req.params.id, req.params.eventId)
+          .then(updatedTicket => {
+            res.status(200).json(updatedTicket);
+          })
+          .catch(err => {
+            logger.error(`Error while reverting comment deletion ${err}`);
+
+            return send500Error('Error while reverting comment deletion', err, res);
+          });
     }
 
     logger.error('Failed to delete comment');

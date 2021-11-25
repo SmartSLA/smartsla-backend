@@ -41,7 +41,8 @@ module.exports = dependencies => {
     setCorrectionTime,
     search,
     deleteComment,
-    updateComment
+    updateComment,
+    revertCommentDeletion
   };
 
   /**
@@ -737,5 +738,17 @@ module.exports = dependencies => {
         },
         { $push: { 'events.$.eventHistory': {...comment} } }
       ).exec();
+    }
+
+    function revertCommentDeletion(ticketId, eventId) {
+
+      return Ticket.findOneAndUpdate(
+        {
+          _id: ticketId,
+          events: { $elemMatch: { _id: eventId } }
+        },
+        { $unset: { 'events.$.deleted': 1 } }
+      ).exec();
+  
     }
 };
