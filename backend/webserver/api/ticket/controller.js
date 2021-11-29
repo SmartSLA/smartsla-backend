@@ -19,7 +19,8 @@ module.exports = function(dependencies, lib) {
     updateRelatedContributions,
     remove,
     search,
-    deleteComment
+    deleteComment,
+    updateComment
   };
 
   function addEvent(req, res) {
@@ -264,4 +265,30 @@ module.exports = function(dependencies, lib) {
 
     return send500Error('Failed to delete comment');
   }
+
+  /**
+  * Update comment
+  *
+  * @param {Request} req
+  * @param {Response} res
+  */
+    function updateComment(req, res) {
+      const comment = req.body;
+
+      if (req.params.id && req.params.eventId) {
+        return lib.ticket.updateComment(req.params.id, req.params.eventId, comment)
+          .then(updatedTicket => {
+            res.status(200).json(updatedTicket);
+          })
+          .catch(err => {
+            logger.error(`Error while updating comment ${err}`);
+
+            send500Error('Error while updating comment', err, res);
+          });
+      }
+
+      logger.error('Failed to edit comment');
+
+      return send500Error('Failed to edit comment');
+    }
 };

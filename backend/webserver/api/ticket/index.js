@@ -198,6 +198,36 @@ module.exports = (dependencies, lib, router) => {
     controller.deleteComment
   );
 
+    /**
+   * @swagger
+   * /ticketing/api/tickets/{id}/events/{eventId}/comment:
+   *  patch:
+   *    tags:
+   *      - Ticket
+   *    description: Edit comment.
+   *    parameters:
+   *      - $ref: "#/parameters/ticket_number"
+   *    responses:
+   *      200:
+   *        $ref: "#/responses/ticket"
+   *      401:
+   *        $ref: "#/responses/cm_401"
+   *      403:
+   *        $ref: "#/responses/cm_403"
+   *      404:
+   *        $ref: "#/responses/cm_404"
+   *      500:
+   *        $ref: "#/responses/cm_500"
+   */
+    router.put('/tickets/:id/events/:eventId/comment',
+    authorizationMW.requiresAPILogin,
+    middlewares.checkTicketIdInParams,
+    middlewares.loadTicket,
+    userMiddleware.loadTicketingUser,
+    middlewares.canDeleteOrUpdateComment,
+    controller.updateComment
+  );
+
   /**
    * @swagger
    * /ticketing/api/tickets/{id}/contributions:
