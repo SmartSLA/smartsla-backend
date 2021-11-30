@@ -97,7 +97,8 @@ module.exports = dependencies => {
             contract: {
               name: contract.name,
               mailingList: event.isPrivate ? [] : [...contract.mailingList.internal, ...contract.mailingList.external]
-            }
+            },
+            addReferents: event.isPrivate
           });
 
           return modifiedTicket;
@@ -127,7 +128,8 @@ module.exports = dependencies => {
             contract: {
               name: contract.name,
               mailingList: [...contract.mailingList.internal, ...contract.mailingList.external]
-            }
+            },
+            addReferents: true
           });
 
           if (moment().diff(contract.endDate) > 0) {

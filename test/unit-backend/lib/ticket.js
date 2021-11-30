@@ -754,7 +754,8 @@ describe('The ticket lib', function() {
           contract: {
             name: 'contractId',
             mailingList: []
-          }
+          },
+          addReferents: false
         });
         done();
       })
@@ -778,7 +779,8 @@ describe('The ticket lib', function() {
           contract: {
             name: 'contractId',
             mailingList: []
-          }
+          },
+          addReferents: event.isPrivate
         });
         done();
       })
