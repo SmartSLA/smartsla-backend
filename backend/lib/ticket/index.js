@@ -166,6 +166,7 @@ module.exports = dependencies => {
     })
       .catch(err => {
         logger.error('Cannot create ticket in DB ', err);
+
         return err;
     });
   }
@@ -749,6 +750,5 @@ module.exports = dependencies => {
         },
         { $unset: { 'events.$.deleted': 1 } }
       ).exec();
-  
     }
 };
