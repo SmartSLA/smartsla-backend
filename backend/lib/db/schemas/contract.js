@@ -3,17 +3,22 @@ const { CONTRACTS_TYPES } = require('../../constants');
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
   const Schema = mongoose.Schema;
-  const TicketingUserSchema = require('./ticketingUser')(dependencies);
 
   const ContractScheduleSchema = new Schema({
     start: { type: String },
     end: { type: String }
   }, { _id: false});
 
+  const UserType = {
+    id: { type: String },
+    name: { type: String },
+    email: { type: String }
+  };
+
   const ContractSoftwareSchema = new Schema({
     software: { type: mongoose.Schema.ObjectId, ref: 'Software', required: true },
     critical: { type: String },
-    technicalReferent: TicketingUserSchema,
+    technicalReferent: [UserType],
     os: { type: String },
     version: { type: String },
     lininfosecConfiguration: [String],

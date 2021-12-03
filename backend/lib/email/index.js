@@ -69,7 +69,7 @@ module.exports = dependencies => {
       }));
   }
 
-  function send({emailType, notificationType, ticket, contract = {}}) {
+  function send({emailType, notificationType, ticket, contract = {}, addReferents = false}) {
     const { name: contractName, mailingList } = contract;
 
     return getConfig()
@@ -87,6 +87,12 @@ module.exports = dependencies => {
             const concatRecipients = recipients.to.concat(externalRecipients.to);
 
             recipients = {to: concatRecipients, cc: externalRecipients.cc};
+          }
+
+          if (addReferents && ticket.software && !!ticket.software.technicalReferent.length) {
+            const technicalReferentRecipients = ticket.software.technicalReferent.map(({email}) => email);
+
+            recipients.cc = [...recipients.cc, ...technicalReferentRecipients];
           }
 
           const message = {
