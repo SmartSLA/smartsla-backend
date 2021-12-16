@@ -129,7 +129,7 @@ module.exports = function(dependencies, lib) {
           {
             CveId: notification.cve.CVE_data_meta.ID,
             softwareName: contract.contractSoftware.software.name,
-            softwareVersion: contract.contractSoftware.version
+            softwareVersion: contract.contractSoftware.software.version
           }),
         author: author,
         software: contract.contractSoftware,
