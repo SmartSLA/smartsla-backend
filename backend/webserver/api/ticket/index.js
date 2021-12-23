@@ -168,6 +168,13 @@ module.exports = (dependencies, lib, router) => {
     controller.addEvent
   );
 
+  router.put('/tickets/:id/participants',
+    authorizationMW.requiresAPILogin,
+    middlewares.checkTicketIdInParams,
+    userMiddleware.loadTicketingUser,
+    controller.addParticpant
+  );
+
   /**
    * @swagger
    * /ticketing/api/tickets/{id}/events/{eventId}/comment:
