@@ -35,6 +35,7 @@ module.exports = dependencies => {
 
   const EventHistory = {
     comment: {type: String},
+    attachments: [Attachment],
     createdAt: {type: Date, default: Date.now},
     editedBy: { type: String }
   };
