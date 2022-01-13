@@ -20,7 +20,8 @@ module.exports = function(dependencies, lib) {
     remove,
     search,
     deleteComment,
-    updateComment
+    updateComment,
+    addParticpant
   };
 
   function addEvent(req, res) {
@@ -303,5 +304,25 @@ module.exports = function(dependencies, lib) {
       logger.error('Failed to edit comment');
 
       return send500Error('Failed to edit comment');
+    }
+
+    function addParticpant(req, res) {
+      const { participants } = req.body;
+
+      if (participants && !!participants.length) {
+        return lib.ticket.addParticpant(req.params.id, participants)
+          .then(updatedTicket => {
+            res.status(200).json(updatedTicket);
+          })
+          .catch(err => {
+            logger.error(`Error while updating participants ${err}`);
+
+            send500Error('Error while updating participants', err, res);
+          });
+      }
+
+      logger.error('Error while updating participants');
+
+      return send500Error('Error while updating participants');
     }
 };

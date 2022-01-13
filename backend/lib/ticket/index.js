@@ -42,7 +42,8 @@ module.exports = dependencies => {
     search,
     deleteComment,
     updateComment,
-    revertCommentDeletion
+    revertCommentDeletion,
+    addParticpant
   };
 
   /**
@@ -752,5 +753,11 @@ module.exports = dependencies => {
         },
         { $unset: { 'events.$.deleted': 1 } }
       ).exec();
+    }
+
+    function addParticpant(ticketId, participants) {
+      const updateSet = {$set: { participants }};
+
+      return Ticket.findByIdAndUpdate(ticketId, updateSet, { new: true }).exec();
     }
 };
