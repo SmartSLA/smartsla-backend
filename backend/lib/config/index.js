@@ -23,7 +23,8 @@ const config = {
         apiUrl: 'http://limesurvey.localhost:8080/admin/remotecontrol/',
         surveyId: 158386,
         username: 'username',
-        password: 'password'
+        password: 'password',
+        limesurveyUrl: 'http://limesurvey.localhost:8080/'
       }
     },
     lininfosec: {
