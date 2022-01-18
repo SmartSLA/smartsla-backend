@@ -51,21 +51,37 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function getTemplateContent(ticket, frontendUrl, contractName) {
+  function getTemplateContent(ticket, frontendUrl, contractName, limesurvey) {
     const latestEvent = ticket.events.slice(-1).pop() || {};
 
     const ticketUrl = getTicketUrl(ticket, frontendUrl);
 
-    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName};
+    const limesurveyUrl = getLimesurveyUrl(ticket, limesurvey && limesurvey.limesurveyUrl);
+
+    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl};
+  }
+
+  function getLimesurveyUrl(ticket, limesurveyUrl) {
+    let limesurveyURL = '';
+    const { id: survey_id, token } = ticket.survey;
+
+    try {
+      limesurveyURL = new URL(`${limesurveyUrl}${survey_id}/lang/fr/newtest/Y?token=${token}`, `${limesurveyUrl}${survey_id}`).toString();
+    } catch (e) {
+      logger.warn(`Invalid limesurvey url, please check that smartsla-backend.limesurvey configuration is set with a valid url (current url: ${limesurveyUrl})`, e);
+    }
+
+    return limesurveyURL;
   }
 
   function getConfig() {
     return new EsnConfig('smartsla-backend')
-      .getMultiple(['frontendUrl', 'mail', 'ssp'])
-      .spread((frontendUrl, mail, ssp) => ({
+      .getMultiple(['frontendUrl', 'mail', 'ssp', 'limesurvey'])
+      .spread((frontendUrl, mail, ssp, limesurvey) => ({
         frontendUrl: frontendUrl && frontendUrl.value,
         mail: mail && mail.value,
-        ssp: ssp && ssp.value
+        ssp: ssp && ssp.value,
+        limesurvey: limesurvey && limesurvey.value
       }));
   }
 
@@ -73,13 +89,15 @@ module.exports = dependencies => {
     const { name: contractName, mailingList } = contract;
 
     return getConfig()
-      .then(({ frontendUrl, mail }) => {
+      .then(conf => {
+        const { frontendUrl, mail, limesurvey } = conf;
+
         userModule.get(ticket.author.id, (err, user) => {
           if (err || !user) {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const content = getTemplateContent(ticket, frontendUrl, contractName);
+          const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey);
           let recipients = getExpertRecipients(ticket, mail.support);
 
           if (notificationType === NOTIFICATIONS_TYPE.ALL_ATTENDEES) {

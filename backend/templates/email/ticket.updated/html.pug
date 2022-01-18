@@ -8,6 +8,7 @@ html.mail
     - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
     - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
     - var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
+    - var surveyUrl = `<a href="${content.limesurveyUrl}">${translate('Please fill out this survey')}</a>`
     if (content.ticket.assignedTo && content.ticket.assignedTo.name)
       - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
       p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:updateBy})} :
@@ -20,6 +21,8 @@ html.mail
       if (content.ticket.assignedTo && content.ticket.assignedTo.name)
         br
         | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
+    if (content.limesurveyUrl)
+      != surveyUrl
     if (content.latestEvent.attachments && content.latestEvent.attachments.length)
       include ../includes/attachments.pug
     include ../includes/footer.pug
