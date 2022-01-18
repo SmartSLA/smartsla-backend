@@ -139,7 +139,8 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
           "surveyId": 158386,
           "apiUrl": "http://limesurvey.localhost:8080/index.php/admin/remotecontrol/",
           "username": "username",
-          "password": "password"
+          "password": "password",
+          "limesurveyUrl": "http://limesurvey.localhost:8080/"
         }
       }
     ]
