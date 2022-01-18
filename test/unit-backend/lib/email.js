@@ -79,7 +79,7 @@ describe('The email module', function() {
           ticket
         })
         .then(() => {
-          expect(getMultipleSpy).to.have.been.calledWith(['frontendUrl', 'mail', 'ssp']);
+          expect(getMultipleSpy).to.have.been.calledWith(['frontendUrl', 'mail', 'ssp', 'limesurvey']);
           done();
         })
         .catch(done);
