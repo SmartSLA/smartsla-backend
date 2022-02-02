@@ -187,11 +187,12 @@ module.exports = function(dependencies, lib) {
   function getUsers(req, res) {
     return Promise.all([
       lib.ticketingUser.listByType('expert'),
-      _getCustomers(req.params.id)
+      _getCustomers(req.params.id),
+      _getContractManagers(req.params.id)
     ])
-    .then(([experts, customers]) => {
-      res.header('X-ESN-Items-Count', experts.length + customers.length);
-      res.status(200).json([...experts, ...customers]);
+    .then(([experts, customers, contractManagers]) => {
+      res.header('X-ESN-Items-Count', experts.length + customers.length + contractManagers.length);
+      res.status(200).json([...experts, ...customers, ...contractManagers]);
     })
     .catch(err => send500Error('Failed to get user for contracts', err, res));
 
@@ -206,6 +207,15 @@ module.exports = function(dependencies, lib) {
           const customerTicketingUsers = ticketingUsers.filter(({ type }) => type === USER_TYPE.BENEFICIARY);
 
           return customerTicketingUsers;
+        });
+    }
+
+    function _getContractManagers(contractId) {
+      return lib.contract.getById(contractId)
+        .then(contract => {
+          contract = contract.toObject();
+
+          return lib.ticketingUser.listByClientId(contract.clientId).then(users => users);
         });
     }
   }

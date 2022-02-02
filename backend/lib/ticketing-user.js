@@ -1,6 +1,6 @@
 'use strict';
 
-const { DEFAULT_LIST_OPTIONS } = require('./constants');
+const { DEFAULT_LIST_OPTIONS, TICKETING_CONTRACT_ROLES } = require('./constants');
 
 module.exports = dependencies => {
   const mongoose = dependencies('db').mongo.mongoose;
@@ -13,7 +13,8 @@ module.exports = dependencies => {
     listByType,
     listByUserIds,
     removeById,
-    updateUserById
+    updateUserById,
+    listByClientId
   };
 
   /**
@@ -79,5 +80,12 @@ module.exports = dependencies => {
         { new: true }
       )
       .exec();
+  }
+
+  function listByClientId(clientId) {
+    return TicketingUser.find({
+        client: { $in: clientId },
+        role: TICKETING_CONTRACT_ROLES.CONTRACT_MANAGER
+    }).exec();
   }
 };
