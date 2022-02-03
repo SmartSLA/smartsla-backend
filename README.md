@@ -1,5 +1,5 @@
 # SmartSLA-backend
->This is OpenPaaS Module for SmartSLA
+>This is OpenPaaS Module for SmartSla
 
 ## Installation
 
