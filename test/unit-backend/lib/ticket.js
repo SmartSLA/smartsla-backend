@@ -678,6 +678,18 @@ describe('The ticket lib', function() {
                 action: 'removed',
                 oldValue: 'Minor',
                 newValue: ''
+              },
+              {
+                field: 'participants',
+                oldValue: '',
+                newValue: '',
+                action: 'changed'
+              },
+              {
+                field: 'relatedRequests',
+                oldValue: '',
+                newValue: '',
+                action: 'changed'
               }
             ],
             author: eventAuthor
