@@ -128,12 +128,16 @@ module.exports = (dependencies, lib) => {
           type: user.type,
           jobTitle: user.jobTitle,
           role: user.role,
+          phone: user.phone,
           client: user.client
         };
 
         _updateAsAdmin(req.params.id, newUser, contracts);
       } else {
-        _updateAsCurrentUser(req.params.id, {jobTitle: user.jobTitle});
+        _updateAsCurrentUser(req.params.id, {
+          jobTitle: user.jobTitle,
+          phone: user.phone
+        });
       }
     });
 
