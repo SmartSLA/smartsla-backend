@@ -1,5 +1,6 @@
 hr
-strong !{translate('See the attachments', content.latestEvent.attachments.length)} :
+- let attachmentsMessage = content.latestEvent.attachments.length > 1 ? `See attachments` : 'See attachment';
+strong !{translate(attachmentsMessage)} :
 ul(style={'list-style-type': 'none', 'padding': 0})
   each attachment, index in content.latestEvent.attachments
     li(style={float: 'left', padding: '10px'})
