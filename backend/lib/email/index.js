@@ -62,13 +62,15 @@ module.exports = dependencies => {
   }
 
   function getLimesurveyUrl(ticket, limesurveyUrl) {
-    let limesurveyURL = '';
+    let limesurveyURL;
     const { id: survey_id, token } = ticket.survey;
 
-    try {
-      limesurveyURL = new URL(`${limesurveyUrl}${survey_id}/lang/fr/newtest/Y?token=${token}`, `${limesurveyUrl}${survey_id}`).toString();
-    } catch (e) {
-      logger.warn(`Invalid limesurvey url, please check that smartsla-backend.limesurvey configuration is set with a valid url (current url: ${limesurveyUrl})`, e);
+    if (survey_id && token) {
+      try {
+        limesurveyURL = new URL(`${limesurveyUrl}${survey_id}/lang/fr/newtest/Y?token=${token}`, `${limesurveyUrl}${survey_id}`).toString();
+      } catch (e) {
+        logger.warn(`Invalid limesurvey url, please check that smartsla-backend.limesurvey configuration is set with a valid url (current url: ${limesurveyUrl})`, e);
+      }
     }
 
     return limesurveyURL;
@@ -98,6 +100,7 @@ module.exports = dependencies => {
           }
 
           const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey);
+
           let recipients = getExpertRecipients(ticket, mail.support);
 
           if (notificationType === NOTIFICATIONS_TYPE.ALL_ATTENDEES) {
