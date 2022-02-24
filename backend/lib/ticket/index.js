@@ -740,8 +740,26 @@ module.exports = dependencies => {
           _id: ticketId,
           events: { $elemMatch: { _id: eventId } }
         },
-        { $push: { 'events.$.eventHistory': {...comment} } }
-      ).exec();
+        {
+          $push: { 'events.$.eventHistory': {...comment} }
+        }
+        )
+        .exec()
+        .then(updatedTicket => Contract.findById(updatedTicket.contract)
+          .exec()
+          .then(contract => {
+            email.send({
+              emailType: EMAIL_NOTIFICATIONS.TYPES.UPDATED,
+              notificationType: NOTIFICATIONS_TYPE.MENTIONED_ATTENDEES,
+              ticket: updatedTicket,
+              contract: {
+                name: contract.name,
+                mailingList: []
+              }
+            });
+
+            return updatedTicket;
+          }));
     }
 
     function revertCommentDeletion(ticketId, eventId) {

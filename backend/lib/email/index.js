@@ -51,6 +51,13 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
+  function getParticipantsRecipients(ticket) {
+    const to = ticket.participants && [...ticket.participants];
+    const cc = [];
+
+    return { to: to, cc: cc };
+  }
+
   function getTemplateContent(ticket, frontendUrl, contractName, limesurvey) {
     const latestEvent = ticket.events.slice(-1).pop() || {};
 
@@ -108,6 +115,10 @@ module.exports = dependencies => {
             const concatRecipients = recipients.to.concat(externalRecipients.to);
 
             recipients = {to: concatRecipients, cc: externalRecipients.cc};
+          }
+
+          if (notificationType === NOTIFICATIONS_TYPE.MENTIONED_ATTENDEES) {
+            recipients = getParticipantsRecipients(ticket);
           }
 
           if (addReferents && ticket.software && !!ticket.software.technicalReferent.length) {

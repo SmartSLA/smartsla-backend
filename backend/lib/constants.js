@@ -34,7 +34,8 @@ module.exports = {
   },
   NOTIFICATIONS_TYPE: {
     EXPERT_ATTENDEES: 'expert_attendees',
-    ALL_ATTENDEES: 'all_attendees'
+    ALL_ATTENDEES: 'all_attendees',
+    MENTIONED_ATTENDEES: 'mentioned_attendees'
   },
   TICKETING_USER_ROLES: {
     ADMINISTRATOR: 'administrator',
