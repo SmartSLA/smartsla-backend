@@ -119,6 +119,12 @@ module.exports = function() {
               administrationNonCritical: {
                 $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
               },
+              vulnerabilityCritical: {
+                $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.VULNERABILITY] }, { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
+              },
+              vulnerabilityNonCritical: {
+                $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.VULNERABILITY] }, { $ne: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL] }, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
+              },
               otherCritical: {
                 $sum: {$cond: { if: { $and: [otherType(), { $eq: ['$software.critical', SOFTWARE_CRITICAL.CRITICAL]}, {$ne: ['$archived', true] }] }, then: 1, else: 0 }}
               },
@@ -144,6 +150,11 @@ module.exports = function() {
                 total: { $sum: ['$administrationCritical', '$administrationNonCritical'] },
                 critical: '$administrationCritical',
                 nonCritical: '$administrationNonCritical'
+              },
+              vulnerability: {
+                total: { $sum: ['$vulnerabilityCritical', '$vulnerabilityNonCritical'] },
+                critical: '$vulnerabilityCritical',
+                nonCritical: '$vulnerabilityNonCritical'
               },
               other: {
                 total: { $sum: ['$otherCritical', '$otherNonCritical'] },
@@ -179,6 +190,9 @@ module.exports = function() {
               administration: {
                 $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.ADMINISTRATION] }] }, then: 1, else: 0 }}
               },
+              vulnerability: {
+                $sum: {$cond: { if: { $and: [{ $eq: ['$type', REQUEST_TYPE.VULNERABILITY] }] }, then: 1, else: 0 }}
+              },
               other: {
                 $sum: {$cond: { if: otherType(), then: 1, else: 0 }}
               }
@@ -203,6 +217,7 @@ module.exports = function() {
               anomaly: 1,
               information: 1,
               administration: 1,
+              vulnerability: 1,
               other: 1
             }
           },
