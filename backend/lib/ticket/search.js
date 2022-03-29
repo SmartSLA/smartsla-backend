@@ -14,6 +14,7 @@ module.exports = dependencies => {
 
     function buildQuery(req) {
         const {query, user, ticketingUser} = req;
+        let contractIdFilter;
 
         let findOptions = {
             $or: [
@@ -30,9 +31,17 @@ module.exports = dependencies => {
             .then(allowedContractIds => {
 
                 if (allowedContractIds && allowedContractIds !== ALL_CONTRACTS) {
+                    contractIdFilter = allowedContractIds.map(String);
+                }
+
+                if (query.contract) {
+                    contractIdFilter = contractIdFilter ? [query.contract].filter(contract => contractIdFilter.includes(contract)) : [query.contract];
+                }
+
+                if (contractIdFilter) {
                     findOptions = {
                         ...findOptions,
-                        contract: { $in: allowedContractIds.map(mongoose.Types.ObjectId) }
+                        contract: { $in: contractIdFilter.map(mongoose.Types.ObjectId) }
                     };
                 }
 
