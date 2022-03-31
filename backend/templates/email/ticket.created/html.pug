@@ -1,22 +1,91 @@
-doctype html
-html.mail
-  head
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
 
-  body
-    - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
-    - var ticketStatus = `<strong>${translate('registered')}</strong>`
-    - var author = `<i>${content.ticket.author.name}</i>`
-    p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
-    hr
-    != content.ticket.description
-    hr
-    p 
-      | #{translate('The issue is qualified with a severity')} 
-      strong #{translate(content.ticket.severity)}.
-    if (content.latestEvent.attachments && content.latestEvent.attachments.length)
-      include ../includes/attachments.pug
-    include ../includes/footer.pug
+- var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
+- var ticketStatus = `<strong>${translate('registered')}</strong>`
+- var author = `<i>${content.ticket.author.name}</i>`
+include ../includes/header.pug
+table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f2f3;')
+  tbody
+    tr
+      td
+        table.row-content.stack(align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 650px;' width='650')
+          tbody
+            tr
+              td.column.column-1(width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                table.image_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                  tr
+                    td(style='width:100%;padding-right:0px;padding-left:0px;')
+                      div(align='center' style='line-height:10px')
+                        img(src='https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/778803_762530/logo.34e006fc.png' style='display: block; height: auto; border: 0; width: 260px; max-width: 100%;' width='260' alt="I'm an image" title="I'm an image")
+                table.divider_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                  tr
+                    td(style='padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;')
+                      div(align='center')
+                        table(border='0' cellpadding='0' cellspacing='0' role='presentation' width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                          tr
+                            td.divider_inner(style='font-size: 1px; line-height: 1px; border-top: 1px solid #BBBBBB;')
+                              span &hairsp;
+                table.text_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                  tr
+                    td(style='padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:40px;')
+                      div(style='font-family: sans-serif')
+                        .txtTinyMce-wrapper(style='font-size: 12px; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;')
+                          p(style='margin: 0; font-size: 16px; text-align: center;')
+                            em
+                              strong
+                                #content.ticket.id - content.ticket.title
+                                br
+                table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                  tr
+                    td
+                      div(style='color:#b3a1a1;direction:ltr;font-family:Roboto, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:center;')
+                        p(style='margin: 0;') !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
+                        p(style='margin: 0;') !{translate('The issue is qualified with a severity')} 
+                          strong !{translate(content.ticket.severity)}.
+                table.text_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                  tr
+                    td
+                      div(style='font-family: sans-serif')
+                        .txtTinyMce-wrapper(style='font-size: 12px; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;')
+                          p(style='margin: 0; font-size: 14px; text-align: center;') content.ticket.description
+
+                //- Attachement //-
+                if (content.latestEvent.attachments && content.latestEvent.attachments.length)
+                  include ../includes/attachments.pug
+                table.button_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                  tr
+                    td(style='padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:40px;text-align:center;')
+                      div(align='center')
+                        //if mso
+                          v:roundrect(xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' style='height:42px;width:183px;v-text-anchor:middle;' arcsize='10%' stroke='false' fillcolor='#3AAEE0')
+                            w:anchorlock
+                              v:textbox(inset='0px,0px,0px,0px')
+                                center(style='color:#ffffff; font-family:Tahoma, Verdana, sans-serif; font-size:16px')
+                        div(style='text-decoration:none;display:inline-block;color:#ffffff;background-color:#3AAEE0;border-radius:4px;width:auto;border-top:1px solid #3AAEE0;border-right:1px solid #3AAEE0;border-bottom:1px solid #3AAEE0;border-left:1px solid #3AAEE0;padding-top:5px;padding-bottom:5px;font-family:Roboto, Tahoma, Verdana, Segoe, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;')
+                          span(style='padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;')
+                            span(style='font-size: 16px; margin: 0; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;') Voir sur SmartSLA
+                        //if mso
+include ../includes/footer.pug
+
+//-
+  doctype html
+  html.mail
+    head
+      meta(charset='utf-8')
+      meta(name='viewport' content='width=device-width, initial-scale=1')
+
+    body
+      - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
+      - var ticketStatus = `<strong>${translate('registered')}</strong>`
+      - var author = `<i>${content.ticket.author.name}</i>`
+      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
+      hr
+      != content.ticket.description
+      hr
+      p 
+        | #{translate('The issue is qualified with a severity')} 
+        strong #{translate(content.ticket.severity)}.
+      if (content.latestEvent.attachments && content.latestEvent.attachments.length)
+        include ../includes/attachments.pug
+      include ../includes/footer.pug
 
 
