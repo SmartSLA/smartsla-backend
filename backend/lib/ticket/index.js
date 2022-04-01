@@ -570,7 +570,7 @@ module.exports = dependencies => {
   function _humanizeRelatedRequest(relatedRequest) {
     const { link, request } = relatedRequest;
 
-    return `${link} #${request.id}-${request.title}`;
+    return `${link} #${request._id}-${request.title}`;
   }
 
   /**
