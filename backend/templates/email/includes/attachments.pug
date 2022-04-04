@@ -1,7 +1,7 @@
 - let attachmentsMessage = content.latestEvent.attachments.length > 1 ? `See attachments` : 'See attachment';
 table.icons_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
   tr
-    td(style='vertical-align: middle; color: #0068a5; text-align: left; padding-top: 30px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; font-family: inherit; font-size: 11px;')
+    td(style='vertical-align: middle; color: #000000; font-family: inherit; font-size: 14px; text-align: left;')
       table(width='100%' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
         tr
           td(style='vertical-align: middle; text-align: left;')
@@ -11,13 +11,14 @@ table.icons_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='
             table.icons-inner(style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; margin-right: -4px; padding-left: 0px; padding-right: 0px;' cellpadding='0' cellspacing='0' role='presentation')
               // <![endif]
               tr
-                td(style='vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 25px; padding-right: 5px;')
+                td(style='vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px;')
                   img.icon(alt='' src='https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/778803_762530/paperclip-grey-clip-office-23655.jpg' height='16' width='18' align='center' style='display: block; height: auto; margin: 0 auto; border: 0;')
-                td(style='font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; font-size: 11px; color: #0068a5; vertical-align: middle; letter-spacing: undefined; text-align: left;') !{translate(attachmentsMessage)}
+                td(style='font-family: lato, Helvetica Neue, Helvetica, sans-serif; font-size: 14px; color: #000000; vertical-align: middle; letter-spacing: undefined; text-align: left; padding-left:30px') !{translate(attachmentsMessage)}
+
 table.list_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
   tr
-    td(style='padding-bottom:10px;padding-left:25px;padding-right:10px;padding-top:10px;')
-      ol(style='margin: 0; padding: 0; margin-left: 20px; list-style-type: decimal; color: #0068a5; direction: ltr; font-family: Roboto, Tahoma, Verdana, Segoe, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: 0px; line-height: 120%; text-align: left;')
+    td(style='padding-bottom:15px;padding-left:10px;padding-right:10px;padding-top:10px;')
+      ul(style="font-family:lato")
         each attachment, index in content.latestEvent.attachments
           li(style='margin-bottom: 4px;')
-            a(href=`${content.ticketUrl}#event-${content.latestEvent._id}`) !{attachment.name}
+            a(style="font-family:lato" href=`${content.ticketUrl}#event-${content.latestEvent._id}`) !{attachment.name}

@@ -58,14 +58,14 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function getTemplateContent(ticket, frontendUrl, contractName, limesurvey) {
+  function getTemplateContent(ticket, frontendUrl, contractName, limesurvey, backendUrl) {
     const latestEvent = ticket.events.slice(-1).pop() || {};
 
     const ticketUrl = getTicketUrl(ticket, frontendUrl);
 
     const limesurveyUrl = getLimesurveyUrl(ticket, limesurvey && limesurvey.limesurveyUrl);
 
-    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl};
+    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl, backendUrl};
   }
 
   function getLimesurveyUrl(ticket, limesurveyUrl) {
@@ -106,7 +106,9 @@ module.exports = dependencies => {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey);
+          const backendUrl = `http://${process.env.WEB_HOST || 'localhost'}:${process.env.WEB_PORT || '8080'}`;
+
+          const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey, backendUrl);
 
           let recipients = getExpertRecipients(ticket, mail.support);
 
