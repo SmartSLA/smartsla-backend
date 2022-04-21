@@ -81,18 +81,20 @@ module.exports = function(dependencies, lib) {
     function _normalizeTicket(notification, contract, author) {
 
       logger.info('Normalizing: _ ');
-      function _isVersionIncluding(cpe, start) {
+      function _isVersionIncluding(cpe, type) {
         const keys = Object.getOwnPropertyNames(cpe);
+        const [cpeVersion] = keys.filter(x => x.includes('version'));
 
-        for (const idx of keys) {
-          if (idx.includes('versionStart') && start) {
-            return idx.includes('Including') ? { including: true, version: cpe.versionStartIncluding } : { including: true, version: cpe.versionStartExcluding };
-          } else if (idx.includes('versionEnd') && !start) {
-            return idx.includes('Including') ? { including: true, version: cpe.versionEndIncluding } : { including: true, version: cpe.versionEndExcluding };
-          }
+        if (!cpeVersion) return {including: null, version: '-' };
+        const [, vType, isIncluding] = cpeVersion.replace(/([a-z](?=[A-Z]))/g, '$1 ').split(' ');
 
-          return null;
-        }
+        if (vType !== type) return;
+        const versionNumber = {
+          including: isIncluding === 'Including',
+          version: cpe[cpeVersion]
+        };
+
+        return versionNumber;
       }
 
       let cpes = [];
@@ -117,10 +119,13 @@ module.exports = function(dependencies, lib) {
             tags: ref.tags
           }));
       }
+
+      const nvdUrl = `${LININFOSEC.NVD_PATH}${notification.cve.CVE_data_meta.ID}`;
+
       const normalized = {
         contract: contract.contractUid,
         type: LININFOSEC.TYPE,
-        severity: _getSeverity(notification.impact.baseMetricV2.severity),
+        severity: _getSeverity(notification.impact.baseMetricV3.baseSeverity),
         description: notification.cve.description.description_data[0].value,
         status: LININFOSEC.TICKET_STATUS,
         callNumber: LININFOSEC.DEFAULT_CALLNUMBER,
@@ -129,12 +134,19 @@ module.exports = function(dependencies, lib) {
           {
             CveId: notification.cve.CVE_data_meta.ID,
             softwareName: contract.contractSoftware.software.name,
-            softwareVersion: contract.contractSoftware.software.version
+            softwareVersion: contract.contractSoftware.version
           }),
         author: author,
         software: contract.contractSoftware,
         participants: contract.vulnerabilityMailingList ? [contract.vulnerabilityMailingList] : [],
-        vulnInfos: { cpes, references }
+        vulnInfos: {
+          cpes,
+          references,
+          cveId: notification.cve.CVE_data_meta.ID,
+          baseScore: notification.cve.impact.baseMetricV3.baseScore,
+          baseSeverity: notification.cve.impact.baseMetricV3.baseSeverity.toLowerCase(),
+          nvdUrl: nvdUrl
+        }
       };
 
       return normalized;

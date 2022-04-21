@@ -25,7 +25,8 @@ module.exports = {
     DEFAULT_MEETINGID: '1234', // TO DEFINE
     DEFAULT_CALLNUMBER: '0600000000', // TO DEFINE
     TICKET_STATUS: 'new',
-    TYPE: 'softwareVulnerability'
+    TYPE: 'softwareVulnerability',
+    NVD_PATH: 'https://nvd.nist.gov/vuln/detail/'
   },
   LININFOSEC_SEVERITY_TYPES: {
     MAJOR: 'Major',

@@ -139,7 +139,7 @@ module.exports = dependencies => {
         })
           .then(res => res.data)
           .catch(err => {
-            logger.error('Error while getting CPE configuration', err);
+            logger.info('Error while getting CPE configuration', err);
             return err;
           })
       );
