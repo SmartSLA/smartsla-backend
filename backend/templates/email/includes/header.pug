@@ -19,6 +19,13 @@ head
     margin: 0;
     padding: 0;
     }
+    .column-1[data-isprivate="private"] {
+      border-left: 3px solid #f9acb4;
+    }
+    .column-1[data-isprivate="public"] {
+      border-left: 3px solid #2196f3;
+    }
+
     a[x-apple-data-detectors] {
     color: inherit !important;
     text-decoration: inherit !important;
@@ -34,8 +41,17 @@ head
     .icons-inner {
     text-align: center;
     }
-    .icons_avatar{
+    .icons_avatar {
       display: none;
+    }
+    .column-1 {
+       padding-left: 6px;
+    }
+    [data-isprivate="private"] {
+      border-left: 3px solid #f9acb4;
+    }
+    [data-isprivate="public"] {
+      border-left: 3px solid #2196f3;
     }
     .icons-inner td {
     margin: 0 auto;

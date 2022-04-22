@@ -1,5 +1,6 @@
-- var ticketTitle = `<a style="text-decoration: none;" href="${content.ticketUrl}">${content.ticket.title}</a>`
-- var ticketLink = `<a style="text-decoration: none;" href="${content.ticketUrl}">${content.ticket.id}</a>`
+
+- var ticketTitle = `<a style="text-decoration: none;color: #1656a5;" href="${content.ticketUrl}">${content.ticket.title}</a>`
+- var ticketLink = `<a style="text-decoration: none; color: #1656a5;" href="${content.ticketUrl}">${content.ticket.id}</a>`
 - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
 - var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
 - var surveyUrl = `<a href="${content.limesurveyUrl}">${translate('Please fill out this survey')}</a>`
@@ -7,7 +8,12 @@
 - var userId = content.latestEvent.author.id
 - var author = content.latestEvent.author.name
 - var avatarUrl = `${content.backendUrl}/api/users/${userId}/profile/avatar`
-- var history = content.ticket.events.slice(-4).slice(0,-1).reverse()
+- var history = []
+if(content.notificationType === 'expert_attendees')
+  - history = content.ticket.events.slice(-4).slice(0,-1).reverse()
+else
+  - history = content.ticket.events.filter(e => !e.isPrivate).slice(-4).slice(0,-1).reverse()
+- var classPrivate = (content.latestEvent.isPrivate ? 'private' : 'public')
 
 include ../includes/header.pug
 table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #eeeeee;')
@@ -40,7 +46,7 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                         table.row-content.stack(align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 750px;' width='750')
                           tbody
                             tr
-                              td.column.column-1(width='15%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                              td.column.column-1&attributes({'data-isprivate':classPrivate})(width='15%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;')
                                 table.icons_block.icons_avatar(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
                                   tr
                                     td(style='vertical-align: middle; color: #000000; font-family: inherit; font-size: 14px; padding-right: 20px; text-align: right; padding-top: 5px; padding-bottom: 5px;')
@@ -48,7 +54,7 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                                         tr
                                           td(style='vertical-align: middle; text-align: center; padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;')
                                             img.icon(src=avatarUrl alt='' height='32' width='35' align='center' style='display: block; height: auto; margin: 0 auto; border: 0; border-radius: 50%;')
-                              td.column.column-2(width='85%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                              td.column.column-2&attributes({'data-isprivate':classPrivate})(width='85%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;')
                                 table.heading_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
                                   tr
                                     td(style='text-align:center;width:100%;padding-top:5px;')
@@ -81,5 +87,5 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                                   if (content.limesurveyUrl)
                                     != surveyUrl
                 div(style='border-top: 1px solid #eee; padding-top:10px;')
-                  include ../include/events.pug
+                  include ../includes/events.pug
               include ../includes/footer.pug
