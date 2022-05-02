@@ -15,6 +15,7 @@ const config = {
     ssp: {
       value: {
         sspUrl: 'https://ssp.08000linux.com/',
+        sspUrlReset: 'https://ssp.08000linux.com/?action=sendtoken',
         isSspEnabled: true
       }
     },

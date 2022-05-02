@@ -94,6 +94,7 @@ curl -X PUT -H 'Accept: application/json' -H 'Content-Type: application/json'  h
         "name": "ssp",
         "value": {
           "sspUrl": "https://ssp.08000linux.com/",
+          "sspUrlReset": "https://ssp.08000linux.com/?action=sendtoken",
           "isSspEnabled": true
         }
       }

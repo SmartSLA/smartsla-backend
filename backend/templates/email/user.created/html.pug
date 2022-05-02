@@ -5,9 +5,8 @@ html.mail
     meta(name='viewport', content='width=device-width, initial-scale=1')
 
   body
-    - var ssp = new URL('?action=sendtoken', content.sspUrl).toString();
     - var contactSupport = `<a href='mailto:${content.contactSupport}'>${content.contactSupport}</a>`;
-    - var sspUrl = `<a href="${ssp}">${content.sspUrl}</a>`
+    - var sspUrl = `<a href="${content.sspUrlReset}">${content.sspUrl}</a>`
     - var frontendUrl = `<a href="${content.frontendUrl}">${content.frontendUrl}</a>`
     p #{translate('Hello,')}
     p !{translate('We have just created a beneficiary account for you on the Support platform: {{{site}}}.', {site: frontendUrl})}

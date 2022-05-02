@@ -155,6 +155,7 @@ module.exports = dependencies => {
 
         const content = {
           sspUrl: ssp.sspUrl,
+          sspUrlReset: ssp.sspUrlReset,
           contactSupport: mail.support,
           frontendUrl
         };
