@@ -13,10 +13,18 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                 tbody
                     tr
                       td.column.column-1(width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                tbody
+                    tr
+                      td.column.column-1(width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                        table.image_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                          tr
+                            td(style='width:100%;padding-right:0px;padding-left:0px;')
+                              div(align='center' style='line-height:10px')
+                                img(src="cid:contractexpiration" width='470' height='440' alt="contract expiration image" title="I'm an image")
                         table.text_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
                           tr
                             td
                               div(style='font-family: sans-serif')
-                                .txtTinyMce-wrapper(style='font-size: 12px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2;')
+                                .txtTinyMce-wrapper(style='font-size: 12px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #0556a5; line-height: 1.2;')
                                   p(style='margin: 0; font-size: 14px; text-align: center;') !{translate('The contract {{{contractNameLinked}}} is expired.', {contractNameLinked: contractNameLinked})}
                 include ../includes/footer.pug

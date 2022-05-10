@@ -1,13 +1,15 @@
+
 - var ticketTitle = `<a style="text-decoration: none;color: #1656a5;" href="${content.ticketUrl}">${content.ticket.title}</a>`
 - var ticketLink = `<a style="text-decoration: none; color: #1656a5;" href="${content.ticketUrl}">${content.ticket.id}</a>`
 - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
 - var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
 - var surveyUrl = `<a href="${content.limesurveyUrl}">${translate('Please fill out this survey')}</a>`
-- var commentDate = content.latestEvent.timestamps.createdAt.toDateString()
+- var commentDate = content.moment(content.latestEvent.timestamps.createdAt).format('lll')
 - var userId = content.latestEvent.author.id
 - var author = content.latestEvent.author.name
 - var avatarUrl = `${content.backendUrl}/api/users/${userId}/profile/avatar`
 - var history = []
+
 if(content.notificationType === 'expert_attendees')
   - history = content.ticket.events.slice(-4).slice(0,-1).reverse()
 else
@@ -68,18 +70,22 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                                   tr
                                     td
                                       div(style="color:#393d47;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;")
-                                        p.comment-content(style='margin: 0;') !{content.latestEvent.comment}
+                                        div.comment-content(style='margin: 0;') !{content.latestEvent.comment}
                                 table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
                                   tr
                                     td
                                       div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;')
-                                        if (content.ticket.assignedTo && content.ticket.assignedTo.name)
-                                          - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
-                                          p(style='margin: 0;') !{translate('Status is now {{{ticketStatus}}}', {ticketStatus: ticketStatus})}
-                                          p(style='margin: 0;') !{translate('Assigned to {{{assignee}}} by {{{updateBy}}}',{assignee: assignee, updateBy: updateBy })}
-                                        else
-                                          p(style='margin: 0;') !{translate('The ticket {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:updateBy})} :
-                                            strong !{translate(content.ticket.severity)}.
+                                        if (content.latestEvent.status)
+                                          p(style='margin: 0;') !{translate('Status is now set to {{{ticketStatus}}}', {ticketStatus: content.latestEvent.status})}
+                                        if (content.latestEvent.target && content.latestEvent.target.name)
+                                          - var assignee = `<strong>${content.latestEvent.target.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Has been assigned to {{{assignee}}} by {{{updateBy}}}',{assignee: assignee, updateBy: content.latestEvent.author.name })}
+                                        if (content.latestEvent.responsible && content.latestEvent.responsible.name)
+                                          - var responsible = `<strong>${content.latestEvent.responsible.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Responsible has been set to {{{responsible}}} by {{{updateBy}}}',{responsible: responsible, updateBy: content.latestEvent.author.name })}
+                                        if (content.latestEvent.beneficiary && content.latestEvent.beneficiary.name)
+                                          - var beneficiary = `<strong>${content.latestEvent.beneficiary.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Beneficiary has been set to {{{beneficiary}}} by {{{updateBy}}}',{beneficiary: beneficiary, updateBy: content.latestEvent.author.name })}
                                 if (content.latestEvent.attachments && content.latestEvent.attachments.length)
                                   include ../includes/attachments.pug
                                 div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:center;padding-bottom:10px')

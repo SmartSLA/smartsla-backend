@@ -25,9 +25,24 @@ each event in history
                     tr
                       td
                         div(style="color:#5d717d;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:11px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:left;")
-                          p(style='margin: 0;') !{event.timestamps.createdAt.toDateString()}
+                          p(style='margin: 0;') !{content.moment(event.timestamps.createdAt).format('lll')}
                   table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
                     tr
                       td
-                        div(style="color:#393d47;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;border-bottom:2px solid #eeeeee")
-                          p.comment-content(style='margin: 0;') !{event.comment}
+                        div(style="color:#393d47;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:12px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;")
+                          div.comment-content(style='margin: 0;') !{event.comment}
+                  table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                    tr
+                      td
+                        div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;border-bottom:2px solid #eeeeee')
+                          if (event.status)
+                            p(style='margin: 0;') !{translate('Status has been set to {{{ticketStatus}}}', {ticketStatus: event.status})}
+                          if (event.target && event.target.name)
+                            - var assignee = `<strong>${event.target.name}</strong>`
+                            p(style='margin: 0;') !{translate('Has been assigned to {{{assignee}}} by {{{updateBy}}}',{assignee: assignee, updateBy: event.author.name })}
+                          if (event.responsible && event.responsible.name)
+                            - var responsible = `<strong>${event.responsible.name}</strong>`
+                            p(style='margin: 0;') !{translate('Responsible has been set to {{{responsible}}} by {{{updateBy}}}',{responsible: responsible, updateBy: event.author.name })}
+                          if (event.beneficiary && event.beneficiary.name)
+                            - var beneficiary = `<strong>${event.beneficiary.name}</strong>`
+                            p(style='margin: 0;') !{translate('Beneficiary has been set to {{{beneficiary}}} by {{{updateBy}}}',{beneficiary: beneficiary, updateBy: event.author.name })}

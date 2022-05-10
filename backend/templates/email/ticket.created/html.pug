@@ -3,7 +3,7 @@
 - var ticketLink = `<a style="text-decoration: none;" href="${content.ticketUrl}">${content.ticket.id}</a>`
 - var ticketStatus = `<strong>${translate('registered')}</strong>`
 - var author = content.ticket.author.name
-- var commentDate = content.ticket.timestamps.createdAt.toDateString()
+- var commentDate = content.moment(content.ticket.timestamps.createdAt).format('lll')
 - var userId = content.ticket.author.id
 - var avatarUrl = `${content.backendUrl}/api/users/${userId}/profile/avatar`
 
@@ -62,14 +62,14 @@ table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspaci
                                   tr
                                     td
                                       div(style="color:#393d47;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;")
-                                        p(style='margin: 0;')  !{content.ticket.description}
+                                        div.comment-content(style='margin: 0;') !{content.ticket.description}
                                 table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
                                   tr
                                     td
-                                      div(style='color:#b3a1a1;direction:ltr;font-family:Roboto, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;')
-                                        p(style='margin: 0;') !{translate('The ticket {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})} :
-                                        p(style='margin: 0;') !{translate('The issue is qualified with a severity')}
+                                      div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;')
+                                        p(style='margin: 0;') !{translate('The ticket {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:author})}
+                                        p(style='margin: 0;') !{`${translate('The issue is qualified with a severity')} `}
                                           strong !{translate(content.ticket.severity)}.
                                 if (content.latestEvent.attachments && content.latestEvent.attachments.length)
                                   include ../includes/attachments.pug
-                          include ../includes/footer.pug
+              include ../includes/footer.pug

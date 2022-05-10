@@ -21,7 +21,8 @@ describe('The email module', function() {
     };
 
     i18nModule = {
-      __n: sinon.spy(text => text)
+      __n: sinon.spy(text => text),
+      setLocale: sinon.spy(text => text)
     };
 
     config = [

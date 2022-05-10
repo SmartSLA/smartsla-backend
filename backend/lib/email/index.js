@@ -5,9 +5,13 @@ module.exports = dependencies => {
 
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS, NOTIFICATIONS_TYPE, USER_TYPE } = require('../constants');
+  const moment = require('moment-timezone');
   const i18n = require('../i18n')(dependencies);
   const path = require('path');
   const TEMPLATE_PATH = path.resolve(__dirname, '../../templates/email');
+
+  i18n.setLocale('fr'); //FIXME Need to be chosen by contract as prefered Locale
+  moment.locale(i18n.locale);
 
   return {
     send,
@@ -65,7 +69,7 @@ module.exports = dependencies => {
 
     const limesurveyUrl = getLimesurveyUrl(ticket, limesurvey && limesurvey.limesurveyUrl);
 
-    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl, backendUrl, notificationType};
+    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl, backendUrl, notificationType, moment};
   }
 
   function getLimesurveyUrl(ticket, limesurveyUrl) {
