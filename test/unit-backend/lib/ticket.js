@@ -651,8 +651,6 @@ describe('The ticket lib', function() {
         description: '<p>Some description</p>',
         callNumber: '0707070707',
         meetingId: '01234',
-        relatedRequests: [],
-        participants: [],
         events: [],
         beneficiary: {
           name: 'michael cales'
@@ -678,18 +676,6 @@ describe('The ticket lib', function() {
                 action: 'removed',
                 oldValue: 'Minor',
                 newValue: ''
-              },
-              {
-                field: 'participants',
-                oldValue: '',
-                newValue: '',
-                action: 'changed'
-              },
-              {
-                field: 'relatedRequests',
-                oldValue: '',
-                newValue: '',
-                action: 'changed'
               }
             ],
             author: eventAuthor
