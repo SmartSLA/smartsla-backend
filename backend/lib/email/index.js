@@ -5,9 +5,13 @@ module.exports = dependencies => {
 
   const logger = dependencies('logger');
   const { EMAIL_NOTIFICATIONS, NOTIFICATIONS_TYPE, USER_TYPE } = require('../constants');
+  const moment = require('moment-timezone');
   const i18n = require('../i18n')(dependencies);
   const path = require('path');
   const TEMPLATE_PATH = path.resolve(__dirname, '../../templates/email');
+
+  i18n.setLocale('fr'); //FIXME Need to be chosen by contract as prefered Locale
+  moment.locale(i18n.locale);
 
   return {
     send,
@@ -58,14 +62,14 @@ module.exports = dependencies => {
     return { to: to, cc: cc };
   }
 
-  function getTemplateContent(ticket, frontendUrl, contractName, limesurvey) {
+  function getTemplateContent(ticket, frontendUrl, contractName, limesurvey, backendUrl, notificationType) {
     const latestEvent = ticket.events.slice(-1).pop() || {};
 
     const ticketUrl = getTicketUrl(ticket, frontendUrl);
 
     const limesurveyUrl = getLimesurveyUrl(ticket, limesurvey && limesurvey.limesurveyUrl);
 
-    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl};
+    return {ticket, latestEvent, ticketUrl, frontendUrl, contractName, limesurveyUrl, backendUrl, notificationType, moment};
   }
 
   function getLimesurveyUrl(ticket, limesurveyUrl) {
@@ -101,13 +105,14 @@ module.exports = dependencies => {
       .then(conf => {
         const { frontendUrl, mail, limesurvey } = conf;
 
-        userModule.get(ticket.author.id, (err, user) => {
+        userModule.get(ticket.author.id, async (err, user) => {
           if (err || !user) {
             return logError(err || `User ${ticket.author.id} not found`);
           }
 
-          const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey);
+          const backendUrl = `http://${process.env.WEB_HOST || 'localhost'}:${process.env.WEB_PORT || '8080'}`;
 
+          const content = getTemplateContent(ticket, frontendUrl, contractName, limesurvey, backendUrl, notificationType);
           let recipients = getExpertRecipients(ticket, mail.support);
 
           if (notificationType === NOTIFICATIONS_TYPE.ALL_ATTENDEES) {

@@ -1,29 +1,96 @@
-doctype html
-html.mail
-  head
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
 
-  body
-    - var ticketLink = `<a href="${content.ticketUrl}">${translate('ticket #{{id}}', {id: content.ticket.id})}</a>`
-    - var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
-    - var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
-    - var surveyUrl = `<a href="${content.limesurveyUrl}">${translate('Please fill out this survey')}</a>`
-    if (content.ticket.assignedTo && content.ticket.assignedTo.name)
-      - var assignee = `<strong>${content.ticket.assignedTo.name}</strong>`
-      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} and assigned to {{{assignee}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, assignee: assignee, author:updateBy})} :
-    else
-      p !{translate('The {{{ticketLink}}} has just been {{{ticketStatus}}} by {{{author}}}', {ticketLink: ticketLink,ticketStatus: ticketStatus, author:updateBy})} :
-    hr 
-    if (content.latestEvent.comment)
-      != content.latestEvent.comment
-    p #{translate('The ticket is now {{status}}.', { status: translate(content.ticket.status, 2) })}
-      if (content.ticket.assignedTo && content.ticket.assignedTo.name)
-        br
-        | #{translate('The responsible of the ticket is now {{assignee}}.', {assignee: content.ticket.assignedTo.name})}
-    if (content.limesurveyUrl)
-      != surveyUrl
-    if (content.latestEvent.attachments && content.latestEvent.attachments.length)
-      include ../includes/attachments.pug
-    include ../includes/footer.pug
+- var ticketTitle = `<a style="text-decoration: none;color: #1656a5;" href="${content.ticketUrl}">${content.ticket.title}</a>`
+- var ticketLink = `<a style="text-decoration: none; color: #1656a5;" href="${content.ticketUrl}">${content.ticket.id}</a>`
+- var ticketStatus = `<strong>${translate(content.ticket.status, 2)}</strong>`
+- var updateBy = `<i>${content.latestEvent.author && content.latestEvent.author.name}</i>`
+- var surveyUrl = `<a href="${content.limesurveyUrl}">${translate('Please fill out this survey')}</a>`
+- var commentDate = content.moment(content.latestEvent.timestamps.createdAt).format('lll')
+- var userId = content.latestEvent.author.id
+- var author = content.latestEvent.author.name
+- var avatarUrl = `${content.backendUrl}/api/users/${userId}/profile/avatar`
+- var history = []
 
+if(content.notificationType === 'expert_attendees')
+  - history = content.ticket.events.slice(-4).slice(0,-1).reverse()
+else
+  - history = content.ticket.events.filter(e => !e.isPrivate).slice(-4).slice(0,-1).reverse()
+- var classPrivate = (content.latestEvent.isPrivate ? 'private' : 'public')
+
+include ../includes/header.pug
+table.row.row-3(align='center' width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #eeeeee;')
+  tbody
+    tr
+      td
+        table.row-content.stack(align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 750px;border-radius: 30px 30px 0 0;' width='750')
+          tbody
+            tr
+              td.column.column-1(width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;')
+                table.heading_block(width='100%' border='0' cellpadding='5' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                  tr
+                    td(style="padding:15px 10px 10px")
+                      h2(style="margin: 0; color: #393d47; direction: ltr; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size: 20px; font-weight: bolder; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;")
+                        span.tinyMce-placeholder !{ticketTitle}
+                      h3(style="margin: 0; color: #393d47; direction: ltr; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size: 16px; font-weight: 400; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;")
+                        span.tinyMce-placeholder !{translate('The ticket {{{ticketLink}}} has just been updated', {ticketLink: ticketLink})}
+                table.divider_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                  tr
+                    td
+                      div(align='center')
+                        table(border='0' cellpadding='0' cellspacing='0' role='presentation' width='100%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                          tr
+                            td.divider_inner(style='font-size: 1px; line-height: 1px; border-top: 1px solid #BBBBBB;')
+                              span &hairsp;
+                table.row.row-4(align='center' width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #eeeeee;')
+                  tbody
+                    tr
+                      td
+                        table.row-content.stack(align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 750px;' width='750')
+                          tbody
+                            tr
+                              td.column.column-1&attributes({'data-isprivate':classPrivate})(width='15%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;')
+                                table.icons_block.icons_avatar(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                                  tr
+                                    td(style='vertical-align: middle; color: #000000; font-family: inherit; font-size: 14px; padding-right: 20px; text-align: right; padding-top: 5px; padding-bottom: 5px;')
+                                      table(cellpadding='0' cellspacing='0' role='presentation' align='right' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                                        tr
+                                          td(style='vertical-align: middle; text-align: center; padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;')
+                                            img.icon(src=avatarUrl alt='' height='32' width='35' align='center' style='display: block; height: auto; margin: 0 auto; border: 0; border-radius: 50%;')
+                              td.column.column-2&attributes({'data-isprivate':classPrivate})(width='85%' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px;')
+                                table.heading_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt;')
+                                  tr
+                                    td(style='text-align:center;width:100%;padding-top:5px;')
+                                      h1(style="margin: 0; color: #393d47; direction: ltr; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;")
+                                        span.tinyMce-placeholder !{author}
+                                table.paragraph_block(width='100%' border='0' cellpadding='0' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                                  tr
+                                    td
+                                      div(style="color:#5d717d;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:13px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:left;")
+                                        p(style='margin: 0;') !{commentDate}
+                                table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                                  tr
+                                    td
+                                      div(style="color:#393d47;direction:ltr;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;")
+                                        div.comment-content(style='margin: 0;') !{content.latestEvent.comment}
+                                table.paragraph_block(width='100%' border='0' cellpadding='10' cellspacing='0' role='presentation' style='mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;')
+                                  tr
+                                    td
+                                      div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;')
+                                        if (content.latestEvent.status)
+                                          p(style='margin: 0;') !{translate('Status is now set to {{{ticketStatus}}}', {ticketStatus: content.latestEvent.status})}
+                                        if (content.latestEvent.target && content.latestEvent.target.name)
+                                          - var assignee = `<strong>${content.latestEvent.target.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Has been assigned to {{{assignee}}} by {{{updateBy}}}',{assignee: assignee, updateBy: content.latestEvent.author.name })}
+                                        if (content.latestEvent.responsible && content.latestEvent.responsible.name)
+                                          - var responsible = `<strong>${content.latestEvent.responsible.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Responsible has been set to {{{responsible}}} by {{{updateBy}}}',{responsible: responsible, updateBy: content.latestEvent.author.name })}
+                                        if (content.latestEvent.beneficiary && content.latestEvent.beneficiary.name)
+                                          - var beneficiary = `<strong>${content.latestEvent.beneficiary.name}</strong>`
+                                          p(style='margin: 0;') !{translate('Beneficiary has been set to {{{beneficiary}}} by {{{updateBy}}}',{beneficiary: beneficiary, updateBy: content.latestEvent.author.name })}
+                                if (content.latestEvent.attachments && content.latestEvent.attachments.length)
+                                  include ../includes/attachments.pug
+                                div(style='color:#b3a1a1;direction:ltr;font-family:Lato, Tahoma, Verdana, Segoe, sans-serif;font-size:14px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:center;padding-bottom:10px')
+                                  if (content.limesurveyUrl)
+                                    != surveyUrl
+                div(style='border-top: 1px solid #eee; padding-top:10px;')
+                  include ../includes/events.pug
+              include ../includes/footer.pug
