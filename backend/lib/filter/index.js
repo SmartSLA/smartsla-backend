@@ -13,7 +13,7 @@ module.exports = {
  * @return {Promise} - Resolve on success
  */
 function list({ticketingUser}) {
-  const { type } = ticketingUser;
+  const { type } = ticketingUser || {};
   const filters = FILTER_LIST.filter(filter => {
     if (filter.rights && !filter.rights.includes(type)) {
       return false;
