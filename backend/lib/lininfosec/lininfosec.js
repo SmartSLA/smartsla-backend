@@ -47,7 +47,8 @@ module.exports = dependencies => {
     // Filling oldSoftware
     oldSoftwareArray.forEach(function(oldSoftwareItem) {
       // Using contract id + software id for a unique identifier
-      const uid = `${oldContract._id.toString()}-${oldSoftwareItem._id.toString()}`;
+      logger.info('Generating lininfosec conf uid ', newContract._id, oldSoftwareItem._id, oldSoftwareItem.software._id);
+      const uid = `${oldContract._id.toString()}-${oldSoftwareItem.software._id.toString()}`;
 
       oldSoftware[uid] = oldSoftwareItem.lininfosecConfiguration;
     });
@@ -60,8 +61,8 @@ module.exports = dependencies => {
       const currentLinInfoSecConfiguration = newSoftwareItem.lininfosecConfiguration;
 
       // Using contract id + software id for a unique identifier
-      logger.info('Generating lininfosec conf uid ', newContract._id, newSoftwareItem._id);
-      const uid = `${newContract._id.toString()}-${newSoftwareItem._id.toString()}`;
+      logger.info('Generating lininfosec conf uid ', newContract._id, newSoftwareItem.software._id);
+      const uid = `${newContract._id.toString()}-${newSoftwareItem.software._id.toString()}`;
 
       newSoftware[uid] = currentLinInfoSecConfiguration;
 
