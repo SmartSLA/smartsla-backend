@@ -65,7 +65,6 @@ test:
     - redis:3
     - rabbitmq:3.6
   script:
-    - npm update
     - grunt --chunk=1 --ci
 
 swagger:
@@ -226,7 +225,6 @@ deploy_dev:
     - git checkout ${CI_COMMIT_SHA}
     - npm install --ignore-scripts --production
     - npm --build-from-source install bcrypt
-    - npm update --production
     - npm prune
     - git checkout -- .
     - sudo /etc/init.d/rse.dev restart
